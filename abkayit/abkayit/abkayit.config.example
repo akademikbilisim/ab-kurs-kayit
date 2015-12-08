@@ -1,9 +1,9 @@
 [DB]
-host: 
-port: 
-database: (database name)
-dbuser:
-pass:
+host: <db host> 
+port: <db port>
+database: <db name>
+dbuser: <db user>
+pass: <db password>
 
 [DJANGO]
-secret_key:asdm-9o6rqb^r(r2b1ws(_n9s9f4ga(5p&$qwtjovz4#u!4cnepk&asd 
+secret_key:<application_secretkey> 
