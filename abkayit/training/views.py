@@ -2,7 +2,7 @@
 import json
 import logging
 
-from django.shortcuts import render, render_to_response, RequestContext
+from django.shortcuts import render, render_to_response, RequestContext, redirect
 from django.http.response import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -131,5 +131,16 @@ def apply_to_course(request):
 
 @login_required
 def control_panel(request):
-	data = prepare_template_data(request)
-	return render_to_response("training/controlpanel.html", data)
+	uprofile = UserProfile.objects.get(user=request.user).is_student
+	if not uprofile:
+		#TODO: template form haline getirilip her basvurunun yanına onay butonu koyulup en alta secimleri kaydet butonu eklenmeli.
+		data = prepare_template_data(request)
+		course = Course.objects.filter(approved=True).filter(trainer__user=request.user)[0].pk
+		trainess1 = TrainessCourseRecord.objects.filter(course=course).filter(preference_order=1).values_list('trainess',flat=True)
+		data['trainess1'] = UserProfile.objects.filter(pk__in=trainess1)
+		trainess2 = TrainessCourseRecord.objects.filter(course=course).filter(preference_order=2).values_list('trainess',flat=True)
+		data['trainess2'] = UserProfile.objects.filter(pk__in=trainess2)
+		return render_to_response("training/controlpanel.html", data)
+	else:
+		#TODO: burada kullanici ogrenci ise yapılacak islem secilmeli. simdilik kurslari listeleme olarak birakiyorum
+		return redirect("listcourses")
