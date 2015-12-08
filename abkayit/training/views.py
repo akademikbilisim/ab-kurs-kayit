@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import json
+import logging
 
 from django.shortcuts import render, render_to_response, RequestContext
 from django.http.response import HttpResponseRedirect, HttpResponse
@@ -16,12 +18,12 @@ from userprofile.userprofileops import UserProfileOPS
 from training.models import Course, TrainessCourseRecord
 from training.forms import CreateCourseForm
 
-import json
+log=logging.getLogger(__name__)
 
 @login_required(login_url='/')
 def submitandregister(request):
+	d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
 	data=prepare_template_data(request)
-	print "submitandregister"
 	userops=UserProfileOPS()
 	# TODO:site ve pages'e bi care bulmak lazim
 	site=Site.objects.get(is_active=True)
@@ -30,7 +32,7 @@ def submitandregister(request):
 	try:
 		curuserprof=UserProfile.objects.get(user=request.user)
 	except:
-		print "userprofile yok" 
+		log.info("%s kullanici profili bulunamadi" % (request.user),extra=d)
 	curinstprofform=InstProfileForm(prefix="cur")
 	forms={}
 	for x in xrange(4):

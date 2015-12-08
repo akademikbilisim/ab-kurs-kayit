@@ -1,4 +1,6 @@
 # -*- coding:utf-8  -*-
+import logging
+
 from django.shortcuts import render, render_to_response, redirect
 from django.http.response import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
@@ -17,6 +19,8 @@ from abkayit.models import *
 from abkayit.settings import USER_TYPES
 from abkayit.backend import prepare_template_data
 
+log=logging.getLogger(__name__)
+
 @csrf_exempt
 def loginview(request):
 	# TODO: kullanici ve parola hatali ise ve login olamazsa bir login sayfasina yonlendirilip capcha konulmasi csrf li form ile username password alinmasi gerekiyor
@@ -33,9 +37,11 @@ def loginview(request):
 			user=authenticate(username=username,password=password)
 			if user is not None:
 				login(request,user)
+				log.info("%s user successfuly logged in" % (request.user),extra={'clientip': request.META['REMOTE_ADDR'], 'user': request.user})
 	return HttpResponseRedirect('/')
 
 def subscribe(request):
+	d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
 	data = prepare_template_data(request)	
 	if not request.user.is_authenticated():
 		note = _("Register to system to give training,  participation in courses before the conferences, and  participation in conferences.")
@@ -52,7 +58,7 @@ def subscribe(request):
 					form = None
 				except Exception as e:
 					note="Hesap olusturulamadi. Lutfen daha sonra tekrar deneyin!"
-					print e.message
+					log.error(e.message, extra=d)
 		data['createuserform']=form
 		data['note']=note
 			

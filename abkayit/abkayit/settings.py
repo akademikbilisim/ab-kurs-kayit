@@ -15,7 +15,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 sys.path.insert(0, os.path.join(BASE_DIR, "abkayit"))
 COMMON_CONFIG_FILE='/opt/abkayit.config'
 
-MEDIA_ROOT = "/opt/abkayit/abkayit" #os.path.join(BASE_DIR, '/')
+MEDIA_ROOT = "/opt/ab-kurs-kayit/abkayit" #os.path.join(BASE_DIR, '/')
 MEDIA_URL = '/'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
@@ -115,3 +115,61 @@ USER_TYPES={"inst": "instructor", "stu": "student", "spe":"speaker", "par": "par
 
 CKEDITOR_UPLOAD_PATH = "/static/"
 CKEDITOR_JQUERY_URL = '//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'standard': {
+            'format' : "[%(asctime)s] [%(clientip)s - %(user)-8s] %(levelname)s [%(name)s:%(lineno)s]  %(message)s",
+            'datefmt' : "%d/%b/%Y %H:%M:%S"
+        },
+    },
+    'handlers': {
+        'null': {
+            'level':'DEBUG',
+            'class':'django.utils.log.NullHandler',
+        },
+        'logfile': {
+            'level':'DEBUG',
+            'class':'logging.handlers.RotatingFileHandler',
+            'filename': BASE_DIR + "/logfile",
+            'maxBytes': 2097152,
+            'backupCount': 200,
+            'formatter': 'standard',
+        },
+        'console':{
+            'level':'INFO',
+            'class':'logging.StreamHandler',
+            'formatter': 'standard'
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers':['console'],
+            'propagate': True,
+            'level':'WARN',
+        },
+        'django.db.backends': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'abkayit': {
+            'handlers': ['logfile'],
+            'level': 'DEBUG',
+        },
+        'userprofile': {
+            'handlers': ['logfile'],
+            'level': 'DEBUG',
+        },
+        'seminar': {
+            'handlers': ['logfile'],
+            'level': 'DEBUG',
+        },
+		'training': {
+            'handlers': ['logfile'],
+            'level': 'DEBUG',
+        },
+
+    }
+}
