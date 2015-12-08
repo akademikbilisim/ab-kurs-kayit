@@ -1,0 +1,92 @@
+{% extends "dashboard.html" %}
+{% block content %}
+
+<div class="row" style="margin-top:50px;">
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-check-square fa-5x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div><h3>Kurslara Katıl!</h3></div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="/egitim/applytocourse">
+                            <div class="panel-footer">
+                                <span class="pull-left">Detayları Göster</span>
+                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                <div class="clearfix"></div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-green">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-file-text-o fa-5x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div><h3>Eğitim Önerisi Ver!</h3></div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="/egitim/submit">
+                            <div class="panel-footer">
+                                <span class="pull-left">Detayları Göster!</span>
+                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                <div class="clearfix"></div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-yellow">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-list fa-5x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div><h3>Kursları Listele!</h3></div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="/egitim/listcourses">
+                            <div class="panel-footer">
+                                <span class="pull-left">Detayları Göster</span>
+                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                <div class="clearfix"></div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-red">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-thumbs-o-up fa-5x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div><h3>Seminerlere Katıl!</h3></div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="#">
+                            <div class="panel-footer">
+                                <span class="pull-left">Detayları Göster</span>
+                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                <div class="clearfix"></div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+
+{% endblock %}

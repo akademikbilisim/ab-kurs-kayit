@@ -1,0 +1,31 @@
+{% extends "homepagedashboard.html" %}
+{% block content %}
+    {% if content%}
+        {% autoescape off %}
+            {{content.content}}
+        {% endautoescape %}
+    {% endif %}
+{% endblock %}
+
+{% block dashboard %}
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <i class="fa fa-tachometer"></i>  İşlemler <i class="fa fa-caret-down"></i>
+                </a>
+                <ul class="dropdown-menu" style>
+                    <li>
+                         <a href="/egitim/listcourses"><i class="fa fa-pencil-square-o fa-fw"></i> Mevcut Kurslar</a>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                         <a href="#"><i class="fa fa-pencil-square-o fa-fw"></i> Kurs Başvurusu</a>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                         <a href="#"><i class="fa fa-pencil-square-o fa-fw"></i> Seminer Kayıt</a>
+                    </li>
+                </ul>
+                <!-- /.dropdown-user -->
+            </li>
+
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends "dashboard.html" %}
+{% block content %}
+{% load staticfiles %}
+{% load template_filter %}
+
+<script src="{% static "/static/js/courses.js" %}"></script>
+<link href="{% static "/static/css/courses.css" %}" rel="stylesheet" type="text/css"></link>
+
+<div class="container-fluid" style="margin-top:20px;">
+
+
+<button type="button" class="btn btn-info apply-to-course">Tercih Yap</button>
+
+<table id="course_table" class="table table-hover table-striped" >
+	<thead>
+	    <tr>
+			<th>Seçim</th>
+			<th>Tercih Sırası</th>
+	        <th>Kurs Adı</th>
+	        <th>Açıklama</th>
+	        <th>Anahtar Kelimeler</th>
+	        <th>Durum</th>
+	    </tr>
+	</thead>
+	<tbody>
+	{% for course in courses %}
+		<tr>
+			<th>
+			<!-- START COURSE SELECTION BUTTON -->
+			  {% if course in course_records %}
+			  <button id="button_{{course.id}}" type="button" class="btn btn-circle selectable selected">
+			  <i class="fa fa-thumbs-o-up"></i>
+			  {% else %}
+			  <button id="button_{{course.id}}" type="button" class="btn btn-circle selectable">
+			  <i class="fa fa-thumbs-o-down"></i>
+			  {% endif %}
+			  </button>
+			<!-- END COURSE SELECTION BUTTON -->
+			</th>
+			<th>
+			<!-- START FIRST PREFERENCE BUTTON -->
+			  {% if course_records|hash:course == 1 %}
+			  <button id="button_preference_{{course.id}}" type="button" class="btn btn-circle order-one selected">
+			  {% else %}
+			  <button id="button_preference_{{course.id}}" type="button" class="btn btn-circle order-one">
+			  {% endif %}
+				  <span class="fa-stack">
+					<i class="fa fa-stack-3x"></i>
+				    <strong class="fa-stack-1x fa-stack-text fa-inverse">1</strong>
+				  </span>
+			  </button>
+			<!-- END FIRST PREFERENCE BUTTON -->
+
+			<!-- START SECOND PREFERENCE BUTTON -->
+			  {% if course_records|hash:course == 2 %}
+			  <button id="button_preference_{{course.id}}" type="button" class="btn btn-circle order-two selected">
+			  {% else %}
+			  <button id="button_preference_{{course.id}}" type="button" class="btn btn-circle order-two">
+			  {% endif %}
+				  <span class="fa-stack">
+					<i class="fa fa-stack-2x"></i>
+				    <strong class="fa-stack-1x fa-stack-text fa-inverse">2</strong>
+				  </span>
+			  </button>
+			<!-- START SECOND PREFERENCE BUTTON -->
+			
+			</th>
+			<th data-toggle="tooltip" title="{{course.goal}}">{{course.name}}</th>
+			<th>{{course.description}}</th>
+			<th>
+				{% for k in course.keyword.all %}
+				{{k.name}} 
+				{% endfor %}
+			</th>
+			<th>{{course.registration_end_date}}</th>
+		</tr>
+	{% endfor %}
+	</tbody>
+</table>
+<button type="button" class="btn btn-info apply-to-course" style="margin-top:20px;">Tercih Yap</button>
+</div>
+
+{% endblock %}
+

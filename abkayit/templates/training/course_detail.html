@@ -1,0 +1,46 @@
+{% extends "dashboard.html" %}
+{% block content %}
+{% load staticfiles %}
+<h2><b>{{course.name}}</b></h2>
+<div class="row">
+	<div class="col-md-6">
+		<h4>Kurs Bilgileri</h4>
+		<center>
+		<div class="row bg-success">
+			<h4><b>Açıklama</b></h4>
+			<p>{{course.description}}</p>
+		</div>
+		</br>
+		<div class="row bg-success">
+			<h4><b>Kursun Hedefi</b></h4>
+			<p>{{course.goal}}</p>
+		</div>
+		</br>
+		<div class="row bg-success">
+			<h4><b>Katılım Koşulları</b></h4>
+			<p>{{course.partipation_rules}}</p>
+		</div>
+		</br>
+		<div class="row bg-success">
+			<h4><b>Kurs Başlangıç Tarihi</b></h4>
+			<p>{{course.start_date}}</p>
+		</div>
+		</br>
+		<div class="row bg-success">
+			<h4><b>Kurs Bitiş Tarihi</b></h4>
+			<p>{{course.end_date}}</p>
+		</div>
+		</center>
+	</div>
+	<div class="col-md-4">
+		<h4>Eğitmenler</h4>
+		{% for t in course.trainer.all %}
+			<div class="alert alert-success" role="alert">
+				{{t.user.first_name}} {{t.user.last_name}}</br>
+				{{t.user.email}}
+			</div>
+		{% endfor %}
+	</div>
+</div>
+{% endblock %}
+
