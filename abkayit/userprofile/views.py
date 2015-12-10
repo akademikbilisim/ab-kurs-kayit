@@ -12,7 +12,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext_lazy as _
 
-from userprofile.forms import CreateUserForm, InstProfileForm
+from userprofile.forms import CreateUserForm, InstProfileForm, StuProfileForm
 from userprofile.models import SubscribeNotice
 
 from abkayit.models import *
@@ -61,11 +61,30 @@ def subscribe(request):
 					log.error(e.message, extra=d)
 		data['createuserform']=form
 		data['note']=note
-			
 		return render_to_response("userprofile/subscription.html",data,context_instance=RequestContext(request))
 	else:
 		return redirect("controlpanel")
 
+def createprofile(request):
+    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
+    data = prepare_template_data(request)	
+    form=StuProfileForm()
+    note=_("Isleme devam edebilmek icin lutfen profilinizi tamamlayın")
+    if request.POST:
+        form=StuProfileForm(request.user,request.POST)
+        if form.is_valid():
+            try:
+                profile=form.save(commit=False)
+                profile.is_student=True
+                profile.user=User.objects.get(email=request.user)
+                profile.save()
+                note=_("Profil kaydedildi.")
+                return redirect("applytocourse")
+            except:
+                note=_("Profil oluşturulurken hata olustu.")
+    data['createuserform']=form
+    data['note']=note
+    return render_to_response("userprofile/subscription.html",data,context_instance=RequestContext(request))
 
 def logout(request):
 	logout_user(request)

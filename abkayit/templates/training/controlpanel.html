@@ -8,8 +8,9 @@
 
 <div class="container-fluid" style="margin-top:20px;">
 
-
+<form name="select-student" method="POST">{% csrf_token %}
 <h1> Birinci tercih </h1>
+
 <table id="course_table" class="table table-hover table-striped" >
 	<thead>
 	    <tr>
@@ -28,7 +29,11 @@
 			<th>{{ t.user.last_name }}</th>
 			<th>{{ t.user.email }}</th>
 			<th>{{ t.city }}</th>
-			<th><th>
+			<th>
+				<div class="checkbox">
+					<input type="checkbox" name="students" value="{{ t.user.pk }}"/>
+				</div>
+			<th>
 		</tr>
 	{% endfor %}
 	</tbody>
@@ -52,12 +57,17 @@
                         <th>{{ t.user.last_name }}</th>
                         <th>{{ t.user.email }}</th>
                         <th>{{ t.city }}</th>
-                        <th><th>
+                        <th>
+                        	<div class="checkbox">
+								<input type="checkbox" name="students" value="{{ t.user.pk }}"/>
+							</div>
+						</th>
                 </tr>
         {% endfor %}
         </tbody>
 </table>
+<button type="submit" class="btn btn-default">Gonder</button>
 </div>
-
+</form>
 {% endblock %}
 

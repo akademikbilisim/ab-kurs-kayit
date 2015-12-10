@@ -1,3 +1,6 @@
 *.pyc
 abkayit/logfile*
 abkayit/documents/*
+.project
+.pydevproject
+.settings/

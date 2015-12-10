@@ -8,6 +8,13 @@
 <form name="form-control" class="span4 signup-form" method="POST">{% csrf_token %}
     {% for field in createuserform.hidden_fields %}
         {{ field }}
+        {% if field.errors %}
+				<div class="row">
+					<div class="col-md-6 col-md-offset-2">
+						<span class="label label-danger">{{ field.label }}: {{ field.errors|striptags }}</span>
+					</div>
+				</div>
+		{% endif %}
     {% endfor %}
 
     {% for field in createuserform.visible_fields %}

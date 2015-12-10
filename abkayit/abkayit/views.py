@@ -13,7 +13,7 @@ def index(request):
 		try:
  			menu = Menu.objects.get(site=site.pk, name="Anasayfa").id
 		except ObjectDoesNotExist:
-			print "Ana Sayfa Bulunamadi.."
+			pass
 	pages=Menu.objects.filter(site=site.pk).order_by('order')
 	try:
 		content = Content.objects.get(menu=menu)

@@ -20,7 +20,7 @@ class Course(models.Model):
 	keyword = models.ManyToManyField(Keyword)
 	goal = models.TextField(verbose_name=_("Hedef"))
 	partipation_rules = models.TextField(verbose_name=_("Kursa katilacaklardan beklenenler"))
-	trainess = models.ManyToManyField(UserProfile, related_name="trainess", through='TrainessCourseRecord')
+	trainess = models.ManyToManyField(UserProfile, related_name="trainess")
 	trainer = models.ManyToManyField(UserProfile, related_name="trainer",null=True,blank=True)
 	start_date = models.DateField(verbose_name=_("Baslangic Tarihi"))
 	end_date = models.DateField(verbose_name=_("Bitis Tarihi"))

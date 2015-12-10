@@ -86,13 +86,12 @@ def show_course(request, course_id):
 		data['course'] = course
 		return render_to_response('training/course_detail.html', data)
 	except ObjectDoesNotExist:
-		print "kurs bulunamadi.."
 		return HttpResponse("Kurs Bulunamadi")
 
 @login_required
 def list_courses(request):
 	data = prepare_template_data(request)
-	courses = Course.objects.filter(start_date__year='2016')
+	courses = Course.objects.filter(start_date__year='2015')
 	data['courses'] = courses
 	return render_to_response('training/courses.html', data)	
 
@@ -122,7 +121,7 @@ def apply_to_course(request):
 			if(created):
 				return HttpResponse(json.dumps({'status':'ok'}), content_type="application/json")
 		except ObjectDoesNotExist:
-			print "Profil Bulunamadi"
+			pass
 	courses = Course.objects.filter(approved=True)
 	course_records = TrainessCourseRecord.objects.filter(trainess=request.user)
 	data['courses'] = courses
@@ -131,16 +130,19 @@ def apply_to_course(request):
 
 @login_required
 def control_panel(request):
-	uprofile = UserProfile.objects.get(user=request.user).is_student
-	if not uprofile:
-		#TODO: template form haline getirilip her basvurunun yanına onay butonu koyulup en alta secimleri kaydet butonu eklenmeli.
+	try:
+		uprofile = UserProfile.objects.get(user=request.user).is_student
 		data = prepare_template_data(request)
-		course = Course.objects.filter(approved=True).filter(trainer__user=request.user)[0].pk
-		trainess1 = TrainessCourseRecord.objects.filter(course=course).filter(preference_order=1).values_list('trainess',flat=True)
+		course = Course.objects.filter(approved=True).filter(trainer__user=request.user)
+		trainess1 = TrainessCourseRecord.objects.filter(course=course[0].pk).filter(preference_order=1).values_list('trainess',flat=True)
 		data['trainess1'] = UserProfile.objects.filter(pk__in=trainess1)
-		trainess2 = TrainessCourseRecord.objects.filter(course=course).filter(preference_order=2).values_list('trainess',flat=True)
+		trainess2 = TrainessCourseRecord.objects.filter(course=course[0].pk).filter(preference_order=2).values_list('trainess',flat=True)
 		data['trainess2'] = UserProfile.objects.filter(pk__in=trainess2)
-		return render_to_response("training/controlpanel.html", data)
-	else:
+		if request.POST:
+			for student in request.POST.getlist('students'):
+				course[0].trainess.add(UserProfile.objects.get(user_id=student))
+			course[0].save()
+		return render_to_response("training/controlpanel.html", data,context_instance=RequestContext(request))
+	except UserProfile.DoesNotExist:
 		#TODO: burada kullanici ogrenci ise yapılacak islem secilmeli. simdilik kurslari listeleme olarak birakiyorum
-		return redirect("listcourses")
+		return redirect("createprofile")
