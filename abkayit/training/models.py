@@ -30,6 +30,9 @@ class Course(models.Model):
 	fulltext = models.FileField(upload_to='documents/%Y/%m/%d',null=True)
 	def __unicode__(self):
 		return self.name
+	class Meta:
+        	verbose_name = 'Kurs'
+        	verbose_name_plural = 'Kurslar'
 
 class TrainessCourseRecord(models.Model):
 	trainess = models.ForeignKey(UserProfile)
@@ -38,3 +41,6 @@ class TrainessCourseRecord(models.Model):
 	approved = models.BooleanField(default=False)
 	def __unicode__(self):
 		return self.course.name
+	class Meta:
+        	verbose_name = 'Kursiyer Kurs Tercihi'
+        	verbose_name_plural = 'Kursiyer Kurs Tercihleri'

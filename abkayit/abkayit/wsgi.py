@@ -10,6 +10,12 @@ https://docs.djangoproject.com/en/1.7/howto/deployment/wsgi/
 import os
 import sys
 reload(sys)
+
+
+path = '/home/ozge/web/abkayit/'
+if path not in sys.path:
+   sys.path.append(path)
+
 sys.setdefaultencoding('UTF8')
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "abkayit.settings")
 

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from training.models import Keyword, Course
+from training.models import Keyword, Course, TrainessCourseRecord
 # Register your models here.
 
 @admin.register(Keyword)
@@ -11,3 +11,8 @@ class CourseAdmin(admin.ModelAdmin):
     list_display = ['name','approved','start_date','end_date',]
     list_filter = ('approved','keyword','trainer')
     search_fields = ('name','trainer')
+
+@admin.register(TrainessCourseRecord)
+class TrainessCourseRecordAdmin(admin.ModelAdmin):
+    list_display = ['id','course','trainess','preference_order','approved']
+    

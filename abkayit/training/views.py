@@ -134,14 +134,15 @@ def control_panel(request):
 		uprofile = UserProfile.objects.get(user=request.user).is_student
 		data = prepare_template_data(request)
 		course = Course.objects.filter(approved=True).filter(trainer__user=request.user)
-		trainess1 = TrainessCourseRecord.objects.filter(course=course[0].pk).filter(preference_order=1).values_list('trainess',flat=True)
-		data['trainess1'] = UserProfile.objects.filter(pk__in=trainess1)
-		trainess2 = TrainessCourseRecord.objects.filter(course=course[0].pk).filter(preference_order=2).values_list('trainess',flat=True)
-		data['trainess2'] = UserProfile.objects.filter(pk__in=trainess2)
-		if request.POST:
-			for student in request.POST.getlist('students'):
-				course[0].trainess.add(UserProfile.objects.get(user_id=student))
-			course[0].save()
+		if course:
+			trainess1 = TrainessCourseRecord.objects.filter(course=course[0].pk).filter(preference_order=1).values_list('trainess',flat=True)
+			data['trainess1'] = UserProfile.objects.filter(pk__in=trainess1)
+			trainess2 = TrainessCourseRecord.objects.filter(course=course[0].pk).filter(preference_order=2).values_list('trainess',flat=True)
+			data['trainess2'] = UserProfile.objects.filter(pk__in=trainess2)
+			if request.POST:
+				for student in request.POST.getlist('students'):
+					course[0].trainess.add(UserProfile.objects.get(user_id=student))
+				course[0].save()
 		return render_to_response("training/controlpanel.html", data,context_instance=RequestContext(request))
 	except UserProfile.DoesNotExist:
 		#TODO: burada kullanici ogrenci ise yapılacak islem secilmeli. simdilik kurslari listeleme olarak birakiyorum

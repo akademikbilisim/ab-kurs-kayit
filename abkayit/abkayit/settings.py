@@ -13,9 +13,9 @@ import os
 import sys
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 sys.path.insert(0, os.path.join(BASE_DIR, "abkayit"))
-COMMON_CONFIG_FILE='/opt/abkayit.config'
+COMMON_CONFIG_FILE='/home/ozge/abkayit.conf'
 
-MEDIA_ROOT = "/opt/ab-kurs-kayit/abkayit" #os.path.join(BASE_DIR, '/')
+MEDIA_ROOT = "/home/ozge/web/abkayit" #os.path.join(BASE_DIR, '/')
 MEDIA_URL = '/'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
@@ -46,7 +46,7 @@ INSTALLED_APPS = (
     'userprofile',
 	'seminar',
 	'training',
-	'ckeditor',
+	'ckeditor_uploader',
 	'django_countries',
 )
 

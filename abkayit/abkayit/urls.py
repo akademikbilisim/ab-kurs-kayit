@@ -10,9 +10,9 @@ urlpatterns = patterns('abkayit.views',
     url(r'^$',"index",name="index"),
     url(r'^accounts/',include('userprofile.urls')),
     url(r'^seminer/',include('seminar.urls')),
-	url(r'^egitim/',include('training.urls')),
+    url(r'^egitim/',include('training.urls')),
     url(r'^admin/', include(admin.site.urls)),
-	url(r'^ckeditor/', include('ckeditor.urls')),
+    url(r'^ckeditor/', include('ckeditor_uploader.urls')),
 )
 urlpatterns += staticfiles_urlpatterns()
 
