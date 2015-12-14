@@ -13,7 +13,6 @@ class UserProfile(models.Model):
     address = models.TextField(verbose_name=_("Home Address"))
     job = models.CharField(verbose_name=_("Job"),max_length=40)
     city = models.CharField(verbose_name= _("City"),max_length=40)
-	# ulke kodu tutulacak sadece
     country = CountryField(verbose_name= _("Country"),choices=COUNTRIES,default='TR')
     title =  models.CharField(verbose_name= _("Title"),max_length=40)
     organization= models.CharField(verbose_name= _("Organization"),max_length=50)
@@ -30,3 +29,14 @@ class SubscribeNotice(models.Model):
     subnotice=models.TextField(verbose_name=_("Subscription Notice"))
     def __unicode__(self):
         return self.usertype
+    
+class Accommodation(models.Model):
+    gender=models.CharField(choices=[('E', 'Erkek'), ('K', 'Kadin')], verbose_name=_("Gender"), max_length=1)
+    name=models.CharField(verbose_name=_("Name"), max_length=100)
+    address=models.CharField(verbose_name=_("Address"), max_length=300)
+    website=models.CharField(verbose_name=_("Website"), max_length=300)
+    def __unicode__(self):
+        return self.name
+    class Meta:
+            verbose_name = 'Konaklama Yeri'
+            verbose_name_plural = 'Konaklama Yerleri'

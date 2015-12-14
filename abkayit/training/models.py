@@ -31,8 +31,8 @@ class Course(models.Model):
 	def __unicode__(self):
 		return self.name
 	class Meta:
-        	verbose_name = 'Kurs'
-        	verbose_name_plural = 'Kurslar'
+		verbose_name = 'Kurs'
+		verbose_name_plural = 'Kurslar'
 
 class TrainessCourseRecord(models.Model):
 	trainess = models.ForeignKey(UserProfile)
@@ -42,5 +42,5 @@ class TrainessCourseRecord(models.Model):
 	def __unicode__(self):
 		return self.course.name
 	class Meta:
-        	verbose_name = 'Kursiyer Kurs Tercihi'
-        	verbose_name_plural = 'Kursiyer Kurs Tercihleri'
+		verbose_name = 'Kursiyer Kurs Tercihi'
+		verbose_name_plural = 'Kursiyer Kurs Tercihleri'

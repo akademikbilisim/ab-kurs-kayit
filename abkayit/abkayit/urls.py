@@ -13,6 +13,7 @@ urlpatterns = patterns('abkayit.views',
     url(r'^egitim/',include('training.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^ckeditor/', include('ckeditor_uploader.urls')),
+    #url(r'^ckeditor/', include('ckeditor.urls')),
 )
 urlpatterns += staticfiles_urlpatterns()
 

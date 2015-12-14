@@ -1,5 +1,5 @@
 from django.contrib import admin
-from userprofile.models import SubscribeNotice, UserProfile
+from userprofile.models import SubscribeNotice, UserProfile, Accommodation
 # Register your models here.
 
 @admin.register(UserProfile)
@@ -11,3 +11,8 @@ class UserProfileAdmin(admin.ModelAdmin):
 @admin.register(SubscribeNotice)
 class SubscribeNoticeAdmin(admin.ModelAdmin):
     list_display = ['usertype','subnotice',]
+
+@admin.register(Accommodation)
+class AccommodationAdmin(admin.ModelAdmin):
+    list_display = ['id','name','gender',]
+    list_filter=('gender',)
