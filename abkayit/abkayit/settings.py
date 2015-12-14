@@ -48,6 +48,7 @@ INSTALLED_APPS = (
     'userprofile',
 	'seminar',
 	'training',
+	'ckeditor',
 	'ckeditor_uploader',
 	'django_countries',
 )

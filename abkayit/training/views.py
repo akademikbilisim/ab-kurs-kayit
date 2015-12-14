@@ -130,20 +130,38 @@ def apply_to_course(request):
 
 @login_required
 def control_panel(request):
+	d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
 	try:
 		uprofile = UserProfile.objects.get(user=request.user).is_student
+		log.info(uprofile, extra = d)
 		data = prepare_template_data(request)
-		course = Course.objects.filter(approved=True).filter(trainer__user=request.user)
-		if course:
-			trainess1 = TrainessCourseRecord.objects.filter(course=course[0].pk).filter(preference_order=1).values_list('trainess',flat=True)
-			data['trainess1'] = UserProfile.objects.filter(pk__in=trainess1)
-			trainess2 = TrainessCourseRecord.objects.filter(course=course[0].pk).filter(preference_order=2).values_list('trainess',flat=True)
-			data['trainess2'] = UserProfile.objects.filter(pk__in=trainess2)
-			if request.POST:
-				for student in request.POST.getlist('students'):
-					course[0].trainess.add(UserProfile.objects.get(user_id=student))
-				course[0].save()
-		return render_to_response("training/controlpanel.html", data,context_instance=RequestContext(request))
+		if not uprofile:	
+			courses = Course.objects.filter(approved=True).filter(trainer__user=request.user)
+			log.info(courses, extra = d)
+
+			if courses:
+				trainess = {}
+				for course in courses:
+						trainess1 = TrainessCourseRecord.objects.filter(course=course.pk).filter(preference_order=1).values_list('trainess',flat=True)
+						trainess2 = TrainessCourseRecord.objects.filter(course=course.pk).filter(preference_order=2).values_list('trainess',flat=True)
+						trainess[course] = {}
+						trainess[course]['trainess1'] = UserProfile.objects.filter(pk__in=trainess1)
+						trainess[course]['trainess2'] = UserProfile.objects.filter(pk__in=trainess2)
+				data['trainess'] = trainess
+				log.info(data, extra = d)
+				if request.POST:
+					log.info(request.POST, extra=d)
+					for course in courses:
+						try:
+							course.trainess.clear()
+							for student in request.POST.getlist('students' + str(course.pk)):
+								course.trainess.add(UserProfile.objects.get(user_id=student))
+							course.save()
+						except Exception:
+							pass	
+			return render_to_response("training/controlpanel.html", data,context_instance=RequestContext(request))
+		else:
+			return redirect("applytocourse")
 	except UserProfile.DoesNotExist:
 		#TODO: burada kullanici ogrenci ise yapılacak islem secilmeli. simdilik kurslari listeleme olarak birakiyorum
 		return redirect("createprofile")
