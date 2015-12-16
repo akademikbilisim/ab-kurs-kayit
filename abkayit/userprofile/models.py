@@ -8,6 +8,11 @@ from abkayit.settings import USER_TYPES
 from django_countries.fields import CountryField
 from django_countries.data import COUNTRIES
 
+class UserVerification(models.Model):
+	user_email = models.CharField(max_length=40) 
+	activation_key = models.CharField(max_length=40)
+	key_expires = models.DateTimeField(null=True)
+
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
     address = models.TextField(verbose_name=_("Home Address"))

@@ -18,6 +18,7 @@ class Site(models.Model):
 	year = models.CharField(verbose_name=_("Year"),max_length="4")
 	logo = models.ImageField(verbose_name=_("Logo"),upload_to="static/images/")
 	is_active = models.BooleanField(verbose_name=_("Is Active"),default=False)
+	home_url = models.CharField(verbose_name=_("Home Url"), max_length="128", null=True)
 	def __unicode__(self):
 		return self.name
 
