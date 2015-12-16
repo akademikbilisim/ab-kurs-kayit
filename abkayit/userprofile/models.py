@@ -8,6 +8,11 @@ from abkayit.settings import USER_TYPES, UNIVERSITIES, GENDER
 from django_countries.fields import CountryField
 from django_countries.data import COUNTRIES
 
+class UserVerification(models.Model):
+	user_email = models.CharField(max_length=40) 
+	activation_key = models.CharField(max_length=40)
+	key_expires = models.DateTimeField(null=True)
+
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
     tckimlikno = models.CharField(verbose_name=_("TC Kimlik No"), max_length=11)
