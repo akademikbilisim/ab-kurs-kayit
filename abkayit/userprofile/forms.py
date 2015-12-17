@@ -127,6 +127,9 @@ class StuProfileForm(ModelForm):
 				self.fields['user'].initial=user
 			except:
 				self.fields['user']='1'
+	def clean(self):
+		cleaned_data = super(StuProfileForm, self).clean()
+		return cleaned_data
 
 class SpeProfileForm(ModelForm):
 	# TODO: Seminer verecekler icin ayri form

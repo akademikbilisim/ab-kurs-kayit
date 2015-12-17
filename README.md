@@ -24,6 +24,8 @@ Gereksinimler:
 
 - django-country
 
+- pysimplesoap
+
 Apache ile kullanmak icin gereksinimler:
 
 -- apache2
