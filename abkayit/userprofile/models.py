@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 #!-*- coding:utf-8 -*-
 
+import datetime
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
@@ -17,8 +19,9 @@ class UserVerification(models.Model):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
-    tckimlikno = models.CharField(verbose_name=_("TC Kimlik No"), max_length=11)
-    ykimlikno = models.CharField(verbose_name=_("Yabanci Kimlik No"), max_length=11)
+    birthdate = models.DateField(verbose_name=u"* Dogum Tarihi",default=datetime.date(1970,1,1))
+    tckimlikno = models.CharField(verbose_name=_("TC Kimlik No"), max_length=11,blank=True)
+    ykimlikno = models.CharField(verbose_name=_("Yabanci Kimlik No"), max_length=11,blank=True)
     gender = models.CharField(choices={'E':'Erkek', 'K':'Kadin'}.items(), verbose_name=_("Gender"), max_length=1)
     mobilephonenumber = models.CharField(verbose_name=_("Mobile Phone Number"), max_length=14)
     address = models.TextField(verbose_name=_("Home Address"))
@@ -27,7 +30,7 @@ class UserProfile(models.Model):
     country = CountryField(verbose_name= _("Country"),choices=COUNTRIES,default='TR')
     title =  models.CharField(verbose_name= _("Title"),max_length=40)
     organization = models.CharField(verbose_name= _("Organization"),max_length=50)
-    university = models.CharField(choices=UNIVERSITIES, verbose_name=_("University"), max_length=300)
+    university = models.CharField(choices=UNIVERSITIES, verbose_name=_("University"), max_length=300,blank=True)
     department = models.CharField(verbose_name= _("Department"),max_length=50)
     is_instructor = models.BooleanField(verbose_name=_("Is Instructor"),default=False)
     is_student = models.BooleanField(verbose_name=_("Is Student"),default=False)

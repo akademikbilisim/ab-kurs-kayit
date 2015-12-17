@@ -15,19 +15,23 @@ class Keyword(models.Model):
 		return self.name
 
 class Course(models.Model):
+	# TODO(later): simdilik sadece asagidaki alanlara ihtiyacimiz var
+	# 	gerisini tum portal yapilirken kullanacagiz
+	no = models.CharField(verbose_name=_("Kursu No"), max_length="4", primary_key=True)
 	name = models.CharField(verbose_name=_("Kursun Adi"), max_length="255")
 	description = models.TextField(verbose_name=_("Aciklama"))
-	keyword = models.ManyToManyField(Keyword)
-	goal = models.TextField(verbose_name=_("Hedef"))
-	partipation_rules = models.TextField(verbose_name=_("Kursa katilacaklardan beklenenler"))
+	#keyword = models.ManyToManyField(Keyword, required=False)
+	#goal = models.TextField(verbose_name=_("Hedef"))
+	#partipation_rules = models.TextField(verbose_name=_("Kursa katilacaklardan beklenenler"))
 	trainess = models.ManyToManyField(UserProfile, related_name="trainess")
 	trainer = models.ManyToManyField(UserProfile, related_name="trainer",null=True,blank=True)
 	start_date = models.DateField(verbose_name=_("Baslangic Tarihi"))
 	end_date = models.DateField(verbose_name=_("Bitis Tarihi"))
-	reg_start_date = models.DateField(verbose_name=_("Baslangic Tarihi"),null=True,blank=True)
-	reg_end_date = models.DateField(verbose_name=_("Bitis Tarihi"),null=True,blank=True)
+	reg_start_date = models.DateField(verbose_name=_("Basvuru Baslangic Tarihi"),null=True,blank=True)
+	reg_end_date = models.DateField(verbose_name=_("Basvuru Bitis Tarihi"),null=True,blank=True)
 	approved = models.BooleanField(default=False) 
-	fulltext = models.FileField(upload_to='documents/%Y/%m/%d',null=True)
+	#fulltext = models.FileField(upload_to='documents/%Y/%m/%d',null=True)
+	url = models.CharField(verbose_name=_("URL"), max_length="350")
 	def __unicode__(self):
 		return self.name
 	class Meta:

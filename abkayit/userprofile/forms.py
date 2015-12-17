@@ -4,8 +4,10 @@ from django import forms
 from django.forms.models import ModelForm, ModelChoiceField
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
+from django.forms.extras.widgets import SelectDateWidget
 
 from userprofile.models import UserProfile, Accommodation, UserAccomodationPref
+from userprofile.dynamicfields import DynmcFields 
 
 class CreateUserForm(ModelForm):
 	passwordre = forms.CharField(label=_("Confirm Password"),
@@ -99,6 +101,7 @@ class InstProfileForm(ModelForm):
 
 class StuProfileForm(ModelForm):
 	class Meta:
+		dyncf = DynmcFields()
 		model = UserProfile
 		exclude = {}
 		# fields=['name','surname','username','email','password','password',]
@@ -108,6 +111,7 @@ class StuProfileForm(ModelForm):
 					'is_speaker':forms.HiddenInput(),
 					'is_participant':forms.HiddenInput(),
 					'user':forms.HiddenInput(),
+					'birthdate': SelectDateWidget(years=dyncf.BirthDateYears),
 				 }
 	def __init__(self,user=None, *args, **kwargs):
 		super(StuProfileForm, self).__init__(*args, **kwargs)
@@ -168,6 +172,7 @@ class ChangePasswordForm(ModelForm):
 		if password != passwordre:
 			raise forms.ValidationError(_("Your passwords do not match"))
 		return passwordre
+
 class AccomodationPrefForm(forms.Form):
 	achoices=Accommodation.objects.filter(usertype__in=['stu','hepsi']).values_list('id','name').order_by('name')
 	accomodation = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,choices=achoices)

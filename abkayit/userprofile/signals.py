@@ -10,24 +10,25 @@ import random, hashlib
 EMAIL_FROM_ADDRESS="kayit@ab.org.tr"
 
 def send_confirm_link(sender, instance, created, **kwargs):
-	if created:
-		instance.is_active=False
-		user_verification, created = UserVerification(user_email=instance.username)
-		user_verification.activation_key = create_verification_link(instance)
-		user_verification.save()
-		context={}
-		context['user'] = instance
-		context['activation_key'] = user_verification.activation_key
-		domain = Site.objects.get(is_active=True).home_url
-		if domain.endswith('/'):
-		 	domain = domain.rstrip('/')
-		context['domain'] = domain
-		send_email("userprofile/messages/send_confirm_subject.html",
-						"userprofile/messages/send_confirm.html",
-						"userprofile/messages/send_confirm.text",
-						context,
-						EMAIL_FROM_ADDRESS,
-						[instance.username])
+	if not instance.is_staff:
+		if created:
+			instance.is_active=False
+			user_verification = UserVerification(user_email=instance.username)
+			user_verification.activation_key = create_verification_link(instance)
+			user_verification.save()
+			context={}
+			context['user'] = instance
+			context['activation_key'] = user_verification.activation_key
+			domain = Site.objects.get(is_active=True).home_url
+			if domain.endswith('/'):
+			 	domain = domain.rstrip('/')
+			context['domain'] = domain
+			send_email("userprofile/messages/send_confirm_subject.html",
+							"userprofile/messages/send_confirm.html",
+							"userprofile/messages/send_confirm.text",
+							context,
+							EMAIL_FROM_ADDRESS,
+							[instance.username])
 	
 
 

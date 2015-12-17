@@ -10,7 +10,7 @@ class KeywordAdmin(admin.ModelAdmin):
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
     list_display = ['name','approved','start_date','end_date',]
-    list_filter = ('approved','keyword','trainer')
+    list_filter = ('approved','trainer')
     search_fields = ('name','trainer')
 
 @admin.register(TrainessCourseRecord)
