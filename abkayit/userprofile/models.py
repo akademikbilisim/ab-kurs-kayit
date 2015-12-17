@@ -10,8 +10,10 @@ from django_countries.data import COUNTRIES
 
 class UserVerification(models.Model):
 	user_email = models.CharField(max_length=40) 
-	activation_key = models.CharField(max_length=40)
-	key_expires = models.DateTimeField(null=True)
+	activation_key = models.CharField(max_length=40, null=True)
+	password_reset_key = models.CharField(max_length=40, null=True)
+	activation_key_expires = models.DateTimeField(null=True)
+	password_reset_key_expires = models.DateTimeField(null=True)
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)

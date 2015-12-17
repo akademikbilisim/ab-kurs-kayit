@@ -51,12 +51,12 @@ class CreateInstForm(ModelForm):
 		model = User
 		fields = ['first_name', 'last_name', 'email', 'password', 'username']
 		widgets = {
-                    'first_name': forms.TextInput(attrs={'placeholder':'Ad'}),
-                    'last_name': forms.TextInput(attrs={'placeholder':'Soyad'}),
-                    'email': forms.EmailInput(attrs={'placeholder':'E-posta'}),
-                    'password': forms.HiddenInput(),
-                    'username': forms.HiddenInput()
-                 }
+					'first_name': forms.TextInput(attrs={'placeholder':'Ad'}),
+					'last_name': forms.TextInput(attrs={'placeholder':'Soyad'}),
+					'email': forms.EmailInput(attrs={'placeholder':'E-posta'}),
+					'password': forms.HiddenInput(),
+					'username': forms.HiddenInput()
+				 }
 	def __init__(self, *args, **kwargs):
 		super(CreateInstForm, self).__init__(*args, **kwargs)
 		for field in self.fields:
@@ -81,11 +81,11 @@ class InstProfileForm(ModelForm):
 		exclude = {}
 		fields = ['job', 'title', 'organization', 'country', 'is_instructor', 'is_student', 'is_speaker', 'is_participant', 'user']
 		widgets = {
-				    'is_instructor':forms.HiddenInput(),
-				    'is_student':forms.HiddenInput(),
-				    'is_speaker':forms.HiddenInput(),
-				    'is_participant':forms.HiddenInput(),
-				    'user':forms.HiddenInput(),
+					'is_instructor':forms.HiddenInput(),
+					'is_student':forms.HiddenInput(),
+					'is_speaker':forms.HiddenInput(),
+					'is_participant':forms.HiddenInput(),
+					'user':forms.HiddenInput(),
 				  }
 	def __init__(self, *args, **kwargs):
 		super(InstProfileForm, self).__init__(*args, **kwargs)
@@ -104,11 +104,11 @@ class StuProfileForm(ModelForm):
 		exclude = {}
 		# fields=['name','surname','username','email','password','password',]
 		widgets = {
-				    'is_instructor':forms.HiddenInput(),
-				    'is_student':forms.HiddenInput(),
-				    'is_speaker':forms.HiddenInput(),
-				    'is_participant':forms.HiddenInput(),
-				    'user':forms.HiddenInput(),
+					'is_instructor':forms.HiddenInput(),
+					'is_student':forms.HiddenInput(),
+					'is_speaker':forms.HiddenInput(),
+					'is_participant':forms.HiddenInput(),
+					'user':forms.HiddenInput(),
 				 }
 	def __init__(self,user=None, *args, **kwargs):
 		super(StuProfileForm, self).__init__(*args, **kwargs)
@@ -130,11 +130,11 @@ class SpeProfileForm(ModelForm):
 		model = UserProfile
 		exclude = {}
 		widgets = {
-				    'is_instructor':forms.HiddenInput(),
-				    'is_student':forms.HiddenInput(),
-				    'is_speaker':forms.HiddenInput(),
-				    'is_participant':forms.HiddenInput(),
-				    'user':forms.HiddenInput(),
+					'is_instructor':forms.HiddenInput(),
+					'is_student':forms.HiddenInput(),
+					'is_speaker':forms.HiddenInput(),
+					'is_participant':forms.HiddenInput(),
+					'user':forms.HiddenInput(),
 				  }
 class ParProfileForm(ModelForm):
 	# TODO: Seminer dinleyecekler icin ayrı form olusturulacak
@@ -142,9 +142,29 @@ class ParProfileForm(ModelForm):
 		model = UserProfile
 		exclude = {}
 		widgets = {
-				    'is_instructor':forms.HiddenInput(),
-				    'is_student':forms.HiddenInput(),
-				    'is_speaker':forms.HiddenInput(),
-				    'is_participant':forms.HiddenInput(),
-				    'user':forms.HiddenInput(),
+					'is_instructor':forms.HiddenInput(),
+					'is_student':forms.HiddenInput(),
+					'is_speaker':forms.HiddenInput(),
+					'is_participant':forms.HiddenInput(),
+					'user':forms.HiddenInput(),
 				  }
+
+class ChangePasswordForm(ModelForm):
+	passwordre = forms.CharField(label=_("Confirm Password"),
+									max_length=30,
+									widget=forms.PasswordInput(attrs={'placeholder':_('Confirm Password'), 'class':'form-control'})) 
+	class Meta:
+		model = User
+		fields = ['password']
+		widgets = {'password': forms.PasswordInput(attrs={'placeholder':_('Password'), 'class':'form-control'})}
+	def __init__(self, *args, **kwargs):
+		super(ChangePasswordForm, self).__init__(*args, **kwargs)
+		for field in self.fields:
+			self.fields[field].required = True
+
+	def clean_passwordre(self):
+		password = self.cleaned_data.get('password')
+		passwordre = self.cleaned_data.get('passwordre')
+		if password != passwordre:
+			raise forms.ValidationError(_("Your passwords do not match"))
+		return passwordre

@@ -22,6 +22,8 @@ MEDIA_URL = '/'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
+EMAIL_FROM_ADDRESS="kayit@ab.org.tr"
+
 from readconf import *
 # SECURITY WARNING: keep the secret key used in production secret!
 DJANGOSETTINGS=DjangoSettings()
