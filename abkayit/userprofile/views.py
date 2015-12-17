@@ -15,12 +15,12 @@ from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 
 from userprofile.forms import *
-from userprofile.models import SubscribeNotice, UserVerification
+from userprofile.models import *
 
 from abkayit.models import *
-from abkayit.settings import USER_TYPES
 from abkayit.backend import prepare_template_data, create_verification_link
 from abkayit.adaptor import send_email
+from abkayit.settings import USER_TYPES,GENDER
 
 log=logging.getLogger(__name__)
 
@@ -44,58 +44,89 @@ def loginview(request):
 	return HttpResponseRedirect('/')
 
 def subscribe(request):
-	d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
-	data = prepare_template_data(request)	
-	if not request.user.is_authenticated():
-		note = _("Register to system to give training,  participation in courses before the conferences, and  participation in conferences.")
-		form = CreateUserForm()
-		if request.method == 'POST':
-			form = CreateUserForm(request.POST)
-			if form.is_valid():
-				try:
-				   	user = form.save(commit=True)
-					user.set_password(user.password)
-					user.save()
-					note = _("""Your account created. You can give course proposal, you can register in courses before the conferences, 
-								and you can register to the conferences""")
-					form = None
-				except Exception as e:
-					note="Hesap olusturulamadi. Lutfen daha sonra tekrar deneyin!"
-					log.error(e.message, extra=d)
-		data['createuserform']=form
-		data['note']=note
-		return render_to_response("userprofile/subscription.html",data,context_instance=RequestContext(request))
-	else:
-		return redirect("controlpanel")
+    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
+    data = prepare_template_data(request)    
+    if not request.user.is_authenticated():
+        data['buttonname1']="register"
+        data['buttonname2']="cancel"
+        note = _("Register to system to give training,  participation in courses before the conferences, and  participation in conferences.")
+        form = CreateUserForm()
+        if 'register' in request.POST:
+            form = CreateUserForm(request.POST)
+            if form.is_valid():
+                try:
+                    user = form.save(commit=True)
+                    user.set_password(user.password)
+                    user.save()
+                    note = _("""Your account created. You can give course proposal, you can register in courses before the conferences, 
+                                and you can register to the conferences""")
+                    form = None
+                except Exception as e:
+                    note="Hesap olusturulamadi. Lutfen daha sonra tekrar deneyin!"
+                    log.error(e.message, extra=d)
+        elif 'cancel' in request.POST:
+            return redirect("index")
+        data['createuserform']=form
+        data['note']=note
+        return render_to_response("userprofile/subscription.html",data,context_instance=RequestContext(request))
+    else:
+        return redirect("controlpanel")
 
 def createprofile(request):
-	d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
-	data = prepare_template_data(request)
-	form=StuProfileForm()
-	note=_("Isleme devam edebilmek icin lutfen profilinizi tamamlayın")
-	if request.POST:
-		form=StuProfileForm(request.user,request.POST)
-		if form.is_valid():
-			try:
-				profile=form.save(commit=False)
-				profile.is_student=True
-				profile.user=User.objects.get(email=request.user)
-				profile.save()
-				note=_("Profil kaydedildi.")
-				return redirect("applytocourse")
-			except:
-				note=_("Profil oluşturulurken hata olustu.")
-	data['createuserform']=form
-	data['note']=note
-	return render_to_response("userprofile/subscription.html",data,context_instance=RequestContext(request))
+    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
+    data = prepare_template_data(request)
+    data['buttonname1']='next'
+    data['buttonname2']='cancel'
+    form=StuProfileForm()
+    note=_("Isleme devam edebilmek icin lutfen profilinizi tamamlayın")
+    gender=''
+    if 'next' in request.POST:
+        form=StuProfileForm(request.user,request.POST)
+        if form.is_valid():
+            gender=form.cleaned_data['gender']
+            try:
+                profile=form.save(commit=False)
+                profile.is_student=True
+                profile.user=User.objects.get(email=request.user)
+                profile.save()
+                note=_("Profil kaydedildi. Lütfen konaklama seciminizi yapin")
+            except:
+                note=_("Kullanıcı profili oluşturulurken hata olustu. Lütfen sistem yöneticiniz ile iletişime geciniz")
+            achoices=Accommodation.objects.filter(usertype__in=['stu','hepsi']).filter(gender__in=[gender,'H']).values_list('id','name').order_by('name')
+            form = AccomodationPrefForm(achoices)
+            data['buttonname1']='register'
+    elif 'register' in request.POST:
+        gender=UserProfile.objects.get(user=User.objects.get(email=request.user)).gender
+        achoices=Accommodation.objects.filter(usertype__in=['stu','hepsi']).filter(gender__in=[gender,'H']).values_list('id','name').order_by('name')
+        form = AccomodationPrefForm(achoices,request.POST)
+        if form.is_valid():
+            if form.cleaned_data['accomodation']:
+                try:
+                    counter=0
+                    for a in form.cleaned_data['accomodation']:
+                        counter+=1
+                        uaccpref=UserAccomodationPref(user=UserProfile.objects.get(user=request.user.pk),accomodation=Accommodation.objects.get(pk=a),usertype="stu",preference_order=counter)
+                        uaccpref.save()
+                    return redirect("applytocourse")
+                except:
+                    note=_("Profil oluşturuldu ancak konaklama tercihi olusturulurken hata olustu.")
+            else:
+                note=_("Lütfen aşağıdaki alanları doldurun!")
+        else:
+            note=_("Lutfen asagidaki alanları doldurun")
+    elif 'cancel' in request.POST:
+        return redirect("index")
+    data['createuserform']=form
+    data['note']=note
+    return render_to_response("userprofile/subscription.html",data,context_instance=RequestContext(request))
 
 def activate(request, key):
-	user_verification = UserVerification.objects.get(activation_key=key)
-	if user_verification:
-		user = User.objects.get(username=user_verification.user_email)	
-		user.is_active=True
-		user.save()
-		return HttpResponse("kullanici aktif edildi")
+    user_verification = UserVerification.objects.get(activation_key=key)
+    if user_verification:
+        user = User.objects.get(username=user_verification.user_email)
+        user.is_active=True
+        user.save()
+        return HttpResponse("kullanici aktif edildi")
 
 @login_required(login_url='/')
 def password_reset(request):

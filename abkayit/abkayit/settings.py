@@ -1,3 +1,4 @@
+# -*- coding:utf-8  -*-
 """
 Django settings for abkayit project.
 
@@ -50,7 +51,7 @@ INSTALLED_APPS = (
     'userprofile',
 	'seminar',
 	'training',
-	'ckeditor',
+	#'ckeditor',
 	'ckeditor_uploader',
 	'django_countries',
 )
@@ -116,7 +117,7 @@ TEMPLATE_DIRS = (
 )
 
 LOGIN_URL="/accounts/login"
-USER_TYPES={"inst": "instructor", "stu": "student", "spe":"speaker", "par": "participant"}
+USER_TYPES={"inst": "instructor", "stu": "student", "spe":"speaker", "par": "participant","hepsi":"hepsi"}
 
 CKEDITOR_UPLOAD_PATH = "/static/"
 CKEDITOR_JQUERY_URL = '//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'
@@ -178,3 +179,81 @@ LOGGING = {
 
     }
 }
+GENDER={'E':'Erkek', 'K':'Kadin','H':'Hepsi'}
+UNIVERSITIES=[('Abant İzzet Baysal Üniversitesi (Bolu)','Abant İzzet Baysal Üniversitesi (Bolu)'),
+    ('Adnan Menderes Üniversitesi (Aydın)','Adnan Menderes Üniversitesi (Aydın)'),
+    ('Afyon Kocatepe Üniversitesi(Afyon)','Afyon Kocatepe Üniversitesi(Afyon)'),
+    ('Akdeniz Üniversitesi (Antalya)','Akdeniz Üniversitesi (Antalya)'),
+    ('Anadolu Üniversitesi (Eskişehir)','Anadolu Üniversitesi (Eskişehir)'),
+    ('Ankara Üniversitesi(Ankara)','Ankara Üniversitesi(Ankara)'),
+    ('Atatürk Üniversitesi (Erzurum)','Atatürk Üniversitesi (Erzurum)'),
+    ('Atılım Üniversitesi (Ankara)','Atılım Üniversitesi (Ankara)'),
+    ('Bahçeşehir Üniversitesi(İstanbul)','Bahçeşehir Üniversitesi(İstanbul)'),
+    ('Balıkesir Üniversitesi(Balıkesir)','Balıkesir Üniversitesi(Balıkesir)'),
+    ('Başkent Üniversitesi (Ankara)','Başkent Üniversitesi (Ankara)'),
+    ('Beykent Üniversitesi (İstanbul)','Beykent Üniversitesi (İstanbul)'),
+    ('Bilkent Üniversitesi (Ankara)','Bilkent Üniversitesi (Ankara)'),
+    ('Boğaziçi Üniversitesi (İstanbul)','Boğaziçi Üniversitesi (İstanbul)'),
+    ('Celâl Bayar Üniversitesi (Manisa)','Celâl Bayar Üniversitesi (Manisa)'),
+    ('Cumhuriyet Üniversitesi (Sivas)','Cumhuriyet Üniversitesi (Sivas)'),
+    ('Çağ Üniversitesi (Tarsus-İçel)','Çağ Üniversitesi (Tarsus-İçel)'),
+    ('Çanakkale Onsekiz Mart Üniversitesi(Çanakkale)','Çanakkale Onsekiz Mart Üniversitesi(Çanakkale)'),
+    ('Çankaya Üniversitesi (Ankara)','Çankaya Üniversitesi (Ankara)'),
+    ('Çukurova Üniversitesi (Adana)','Çukurova Üniversitesi (Adana)'),
+    ('Dicle Üniversitesi (Diyarbakır)','Dicle Üniversitesi (Diyarbakır)'),
+    ('Doğuş Üniversitesi (İstanbul)','Doğuş Üniversitesi (İstanbul)'),
+    ('Dokuz Eylül Üniversitesi (İzmir)','Dokuz Eylül Üniversitesi (İzmir)'),
+    ('Dumlupınar Üniversitesi (Kütahya)','Dumlupınar Üniversitesi (Kütahya)'),
+    ('Ege Üniversitesi (İzmir)','Ege Üniversitesi (İzmir)'),
+    ('Erciyes Üniversitesi (Kayseri)','Erciyes Üniversitesi (Kayseri)'),
+    ('Fatih Üniversitesi (İstanbul)','Fatih Üniversitesi (İstanbul)'),
+    ('Fırat Üniversitesi (Elazığ)','Fırat Üniversitesi (Elazığ)'),
+    ('Galatasaray Üniversitesi (İstanbul)','Galatasaray Üniversitesi (İstanbul)'),
+    ('Gazi Üniversitesi (Ankara)','Gazi Üniversitesi (Ankara)'),
+    ('Gaziantep Üniversitesi(Gaziantep)','Gaziantep Üniversitesi(Gaziantep)'),
+    ('Gaziosmanpaşa Üniversitesi (Tokat)','Gaziosmanpaşa Üniversitesi (Tokat)'),
+    ('Gebze Yüksek Teknoloji Enstitüsü(İzmit-Kocaeli)','Gebze Yüksek Teknoloji Enstitüsü(İzmit-Kocaeli)'),
+    ('Hacettepe Üniversitesi (Ankara)','Hacettepe Üniversitesi (Ankara)'),
+    ('Haliç Üniversitesi(İstanbul)','Haliç Üniversitesi(İstanbul)'),
+    ('Harran Üniversitesi (Şanlıurfa)','Harran Üniversitesi (Şanlıurfa)'),
+    ('Işık Üniversitesi (İstanbul)','Işık Üniversitesi (İstanbul)'),
+    ('İnönü Üniversitesi (Malatya)','İnönü Üniversitesi (Malatya)'),
+    ('İstanbul Üniversitesi(İstanbul)','İstanbul Üniversitesi(İstanbul)'),
+    ('İstanbul Bilgi Üniversitesi(İstanbul)','İstanbul Bilgi Üniversitesi(İstanbul)'),
+    ('İstanbul Kültür Üniversitesi(İstanbul)','İstanbul Kültür Üniversitesi(İstanbul)'),
+    ('İstanbul Teknik Üniversitesi(İstanbul)','İstanbul Teknik Üniversitesi(İstanbul)'),
+    ('İstanbul Ticaret Üniversitesi(İstanbul)','İstanbul Ticaret Üniversitesi(İstanbul)'),
+    ('İzmir Yüksek Teknoloji Enstitüsü(İzmir)','İzmir Yüksek Teknoloji Enstitüsü(İzmir)'),
+    ('İzmir Ekonomi Üniversitesi(İzmir)','İzmir Ekonomi Üniversitesi(İzmir)'),
+    ('Kadir Has Üniversitesi(İstanbul)','Kadir Has Üniversitesi(İstanbul)'),
+    ('Kafkas Üniversitesi (Kars)','Kafkas Üniversitesi (Kars)'),
+    ('Kahramanmaraş Sütçü İmam Üniversitesi(Kahramanmaraş)','Kahramanmaraş Sütçü İmam Üniversitesi(Kahramanmaraş)'),
+    ('Karadeniz Teknik Üniversitesi (Trabzon)','Karadeniz Teknik Üniversitesi (Trabzon)'),
+    ('Kırıkkale Üniversitesi(Kırıkkale)','Kırıkkale Üniversitesi(Kırıkkale)'),
+    ('Kocaeli Üniversitesi(Kocaeli-İzmit)','Kocaeli Üniversitesi(Kocaeli-İzmit)'),
+    ('Koç Üniversitesi (İstanbul)','Koç Üniversitesi (İstanbul)'),
+    ('Maltepe Üniversitesi (İstanbul)','Maltepe Üniversitesi (İstanbul)'),
+    ('Marmara Üniversitesi (İstanbul)','Marmara Üniversitesi (İstanbul)'),
+    ('Mersin Üniversitesi(Mersin-İçel)','Mersin Üniversitesi(Mersin-İçel)'),
+    ('Mimar Sinan Üniversitesi (İstanbul)','Mimar Sinan Üniversitesi (İstanbul)'),
+    ('Muğla Üniversitesi(Muğla)','Muğla Üniversitesi(Muğla)'),
+    ('Mustafa Kemal Üniversitesi (Hatay)','Mustafa Kemal Üniversitesi (Hatay)'),
+    ('Niğde Üniversitesi(Niğde)','Niğde Üniversitesi(Niğde)'),
+    ('Okan Üniversitesi(İstanbul)','Okan Üniversitesi(İstanbul)'),
+    ('Ondokuz Mayıs Üniversitesi (Samsun)','Ondokuz Mayıs Üniversitesi (Samsun)'),
+    ('Orta Doğu Teknik Üniversitesi (Ankara)','Orta Doğu Teknik Üniversitesi (Ankara)'),
+    ('Osmangazi Üniversitesi (Eskişehir)','Osmangazi Üniversitesi (Eskişehir)'),
+    ('Pamukkale Üniversitesi (Denizli)','Pamukkale Üniversitesi (Denizli)'),
+    ('Sabancı Üniversitesi(İstanbul)','Sabancı Üniversitesi(İstanbul)'),
+    ('Sakarya Üniversitesi(Sakarya-Adapazarı)','Sakarya Üniversitesi(Sakarya-Adapazarı)'),
+    ('Selçuk Üniversitesi (Konya)','Selçuk Üniversitesi (Konya)'),
+    ('Süleyman Demirel Üniversitesi (Isparta)','Süleyman Demirel Üniversitesi (Isparta)'),
+    ('Trakya Üniversitesi (Edirne)','Trakya Üniversitesi (Edirne)'),
+    ('TOBB Ekonomi ve Teknoloji Üniversitesi(Ankara)','TOBB Ekonomi ve Teknoloji Üniversitesi(Ankara)'),
+    ('Ufuk Üniversitesi (Ankara)','Ufuk Üniversitesi (Ankara)'),
+    ('Uludağ Üniversitesi (Bursa)','Uludağ Üniversitesi (Bursa)'),
+    ('Yaşar Üniversitesi (İzmir)','Yaşar Üniversitesi (İzmir)'),
+    ('Yeditepe Üniversitesi (İstanbul)','Yeditepe Üniversitesi (İstanbul)'),
+    ('Yıldız Teknik Üniversitesi (İstanbul)','Yıldız Teknik Üniversitesi (İstanbul)'),
+    ('Yüzüncü Yıl Üniversitesi (Van)','Yüzüncü Yıl Üniversitesi (Van)'),
+    ('Zonguldak Karaelmas Üniversitesi(Zonguldak)','Zonguldak Karaelmas Üniversitesi(Zonguldak)'),]

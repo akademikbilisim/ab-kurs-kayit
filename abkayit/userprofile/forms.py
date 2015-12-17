@@ -1,11 +1,11 @@
 # -*- coding:utf-8  -*-
 from django import forms
 
-from django.forms.models import ModelForm
-from userprofile.models import UserProfile
+from django.forms.models import ModelForm, ModelChoiceField
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
-from userprofileops import UserProfileOPS
+
+from userprofile.models import UserProfile, Accommodation, UserAccomodationPref
 
 class CreateUserForm(ModelForm):
 	passwordre = forms.CharField(label=_("Confirm Password"),
@@ -98,7 +98,6 @@ class InstProfileForm(ModelForm):
 		self.fields['user'].required = False
 
 class StuProfileForm(ModelForm):
-	# TODO: Kursa katılacaklar icin ayrı form
 	class Meta:
 		model = UserProfile
 		exclude = {}
@@ -119,10 +118,11 @@ class StuProfileForm(ModelForm):
 		self.fields['is_speaker'].required = False
 		self.fields['is_participant'].required = False
 		self.fields['user'].required = False
-		self.fields['accommodation_needed'].required = False
 		if user:
-			self.fields['user'].initial=User.objects.get(email=user).pk
-		
+			try:
+				self.fields['user'].initial=user
+			except:
+				self.fields['user']='1'
 
 class SpeProfileForm(ModelForm):
 	# TODO: Seminer verecekler icin ayri form
@@ -168,3 +168,10 @@ class ChangePasswordForm(ModelForm):
 		if password != passwordre:
 			raise forms.ValidationError(_("Your passwords do not match"))
 		return passwordre
+class AccomodationPrefForm(forms.Form):
+	achoices=Accommodation.objects.filter(usertype__in=['stu','hepsi']).values_list('id','name').order_by('name')
+	accomodation = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,choices=achoices)
+	def __init__(self,achoices=None, *args, **kwargs):
+		super(AccomodationPrefForm, self).__init__(*args, **kwargs)
+		if achoices:
+			self.fields['accomodation'] = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,choices=achoices)

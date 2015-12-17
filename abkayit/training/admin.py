@@ -1,3 +1,4 @@
+#!-*- coding:utf-8 -*-
 from django.contrib import admin
 from training.models import Keyword, Course, TrainessCourseRecord
 # Register your models here.
