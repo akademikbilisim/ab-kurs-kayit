@@ -77,14 +77,23 @@ def createprofile(request):
     data = prepare_template_data(request)
     data['buttonname1']='next'
     data['buttonname2']='cancel'
+    uform=UpdateUserForm(instance=User.objects.get(email=request.user))
     form=StuProfileForm()
     note=_("Isleme devam edebilmek icin lutfen profilinizi tamamlayın")
     gender=''
+    data['uform']=uform
     if 'next' in request.POST:
-        form=StuProfileForm(request.user,request.POST)
+        first_name = request.POST.get('first_name','')
+        last_name = request.POST.get('last_name','')
+        form=StuProfileForm(request.user,request.POST,ruser=request.user)
         if form.is_valid():
             gender=form.cleaned_data['gender']
             try:
+                if first_name or last_name:
+                    u=User.objects.get(email=request.user)
+                    u.first_name=first_name
+                    u.last_name=last_name
+                    u.save()
                 profile=form.save(commit=False)
                 profile.is_student=True
                 profile.user=User.objects.get(email=request.user)
@@ -95,6 +104,7 @@ def createprofile(request):
             achoices=Accommodation.objects.filter(usertype__in=['stu','hepsi']).filter(gender__in=[gender,'H']).values_list('id','name').order_by('name')
             form = AccomodationPrefForm(achoices)
             data['buttonname1']='register'
+            data['uform']=None
     elif 'register' in request.POST:
         gender=UserProfile.objects.get(user=User.objects.get(email=request.user)).gender
         achoices=Accommodation.objects.filter(usertype__in=['stu','hepsi']).filter(gender__in=[gender,'H']).values_list('id','name').order_by('name')
