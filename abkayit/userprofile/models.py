@@ -20,8 +20,8 @@ class UserVerification(models.Model):
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
     birthdate = models.DateField(verbose_name=u"* Dogum Tarihi",default=datetime.date(1970,1,1))
-    tckimlikno = models.CharField(verbose_name=_("TC Kimlik No"), max_length=11,blank=True)
-    ykimlikno = models.CharField(verbose_name=_("Yabanci Kimlik No"), max_length=11,blank=True)
+    tckimlikno = models.CharField(verbose_name=_("TC Kimlik No"), max_length=11,blank=True, unique=True)
+    ykimlikno = models.CharField(verbose_name=_("Yabanci Kimlik No"), max_length=11,blank=True, unique=True)
     gender = models.CharField(choices={'E':'Erkek', 'K':'Kadin'}.items(), verbose_name=_("Gender"), max_length=1)
     mobilephonenumber = models.CharField(verbose_name=_("Mobile Phone Number"), max_length=14)
     address = models.TextField(verbose_name=_("Home Address"))
