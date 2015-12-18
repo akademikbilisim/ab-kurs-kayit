@@ -17,7 +17,7 @@ class Keyword(models.Model):
 class Course(models.Model):
 	# TODO(later): simdilik sadece asagidaki alanlara ihtiyacimiz var
 	# 	gerisini tum portal yapilirken kullanacagiz
-	no = models.CharField(verbose_name=_("Kursu No"), max_length="4", primary_key=True)
+	no = models.CharField(verbose_name=_("Kursu No"), max_length="4")
 	name = models.CharField(verbose_name=_("Kursun Adi"), max_length="255")
 	description = models.TextField(verbose_name=_("Aciklama"))
 	#keyword = models.ManyToManyField(Keyword, required=False)
