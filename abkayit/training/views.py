@@ -4,12 +4,14 @@ import logging
 
 from django.shortcuts import render, render_to_response, RequestContext, redirect
 from django.http.response import HttpResponseRedirect, HttpResponse
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.urlresolvers import reverse_lazy
 
 from abkayit.backend import prepare_template_data
 from abkayit.models import Site, Menu
+from abkayit.decorators import active_required
 
 from userprofile.models import UserProfile
 from userprofile.forms import InstProfileForm,CreateInstForm
@@ -21,6 +23,7 @@ from training.forms import CreateCourseForm
 log=logging.getLogger(__name__)
 
 @login_required(login_url='/')
+@user_passes_test(active_required, login_url="/")
 def submitandregister(request):
 	d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
 	data=prepare_template_data(request)
@@ -79,6 +82,7 @@ def new_course(request):
 	return HttpResponse("Yeni kurs kaydi")
 
 @login_required
+@user_passes_test(active_required, login_url="/")
 def show_course(request, course_id):
 	try:
 		data = prepare_template_data(request)	
@@ -89,6 +93,7 @@ def show_course(request, course_id):
 		return HttpResponse("Kurs Bulunamadi")
 
 @login_required
+@user_passes_test(active_required, login_url=reverse_lazy("active_resend"))
 def list_courses(request):
 	data = prepare_template_data(request)
 	courses = Course.objects.filter(start_date__year='2015')

@@ -7,7 +7,7 @@ urlpatterns = patterns('abkayit.views',
     # Examples:
     # url(r'^$', 'abkayit.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
-    url(r'^/(?P<menu>[1-9]+)/$',"index",name="index"),
+    url(r'^/(?P<menu_id>[1-9]+)/$',"index",name="index"),
     url(r'^$',"index",name="index"),
     url(r'^accounts/',include('userprofile.urls')),
     url(r'^seminer/',include('seminar.urls')),

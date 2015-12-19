@@ -1,10 +1,11 @@
 Merhaba {{user.first_name}} {{user.last_name}},
 
-Akademik Bilisim kayit sistemine hosgeldiniz.
+Akademik Bilişim kayıt sistemine hoşgeldiniz.
 
-Bu ileti asagidaki hesabin basarili bir sekilde olustugunu dogrular. 
-E-posta : {{user.email}}
+Bu ileti aşağıdaki hesabın başarılı bir şekilde oluştuğunu doğrular.
+E-posta : {{user.username}}
 
-Hesabiniz ile ilgili islemlere devam edebilmek icin asagidaki linke tiklayarak aktif etmelisiniz.
+Hesabınız ile ilgili işlemlere devam edebilmek için aşağıdaki linke tıklayarak hesabınızı aktif etmelisiniz.
 
-{{domain}}accounts/activate/{{activation_key}}
+{{domain}}/accounts/active/done/{{activation_key}}
+

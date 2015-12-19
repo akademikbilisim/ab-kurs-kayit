@@ -1,14 +1,17 @@
 <html>
 <body>
-Merhaba {{user.first_name}} {{user.last_name}},</br>
+<div>
+<p>
+Merhaba {{user.first_name}} {{user.last_name}},<br><br> 
 
-Akademik Bilisim kayit sistemine hosgeldiniz.</br>
+Akademik Bilişim kayıt sistmeine hoşgeldiniz.<br>
 
-Bu ileti asagidaki hesabin basarili bir sekilde olustugunu dogrular. 
-E-posta : {{user.username}}
+Bu ileti aşağıdaki hesabın başarılı bir şekilde oluştuğunu doğrular.<br>
+<b>E-posta : {{user.username}}</b><br><br>
 
-Hesabiniz ile ilgili islemlere devam edebilmek icin asagidaki linke tiklayarak aktif etmelisiniz.
+Hesabınız ile ilgili işlemlere devam edebilmek için aşağıdaki linke tıklayarak hesabınızı aktif etmelisiniz.<br>
 
-{{domain}}/accounts/activate/{{activation_key}}
+{{domain}}/accounts/active/done/{{activation_key}}
+</p>
 </body>
 </html>

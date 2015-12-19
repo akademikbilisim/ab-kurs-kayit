@@ -1,130 +1,139 @@
 {% load staticfiles %}
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-	<title>{% block title %}{{ site.name }}{% endblock %}</title>
-
+    <title>{% block title %}{{ site.name }}{% endblock %}</title>
+  
     <!-- Bootstrap Core CSS -->
     <link href="{% static "/static/theme/bower_components/bootstrap/dist/css/bootstrap.min.css" %}" rel="stylesheet">
-
+  
     <!-- MetisMenu CSS -->
     <link href="{% static "/static/theme/bower_components/metisMenu/dist/metisMenu.min.css" %}" rel="stylesheet">
-
+  
     <!-- Timeline CSS -->
     <link href="{% static "/static/theme/dist/css/timeline.css" %}" rel="stylesheet">
-
+  
     <!-- Custom CSS -->
     <link href="{% static "/static/theme/dist/css/sb-admin-2.css" %}" rel="stylesheet">
-
+  
     <!-- Morris Charts CSS -->
     <link href="{% static "/static/theme/bower_components/morrisjs/morris.css" %}" rel="stylesheet">
-
+  
     <!-- Custom Fonts -->
     <link href="{% static "/static/theme/bower_components/font-awesome/css/font-awesome.min.css" %}" rel="stylesheet" type="text/css">
     
-
-	<link href="{% static "/static/css/dataTables.min.css" %}" rel="stylesheet" type="text/css">
-
-
-
+  
+    <link href="{% static "/static/css/dataTables.min.css" %}" rel="stylesheet" type="text/css">
+  
+  
+  
     <!-- jQuery -->
     <script src="{% static "/static/theme/bower_components/jquery/dist/jquery.min.js" %}"></script>
-
+  
     <!-- Bootstrap Core JavaScript -->
     <script src="{% static "/static/theme/bower_components/bootstrap/dist/js/bootstrap.min.js" %}"></script>
-
+  
     <!-- Metis Menu Plugin JavaScript -->
     <script src="{% static "/static/theme/bower_components/metisMenu/dist/metisMenu.min.js" %}"></script>
-
+  
     <!-- Morris Charts JavaScript -->
     <script src="{% static "/static/theme/bower_components/raphael/raphael-min.js" %}"></script>
     <script src="{% static "/static/theme/bower_components/morrisjs/morris.min.js" %}"></script>
     <script src="{% static "/static/theme/js/morris-data.js" %}"></script>
-	<script src="{% static "/static/js/jquery.js" %}"></script>
-	<script src="{% static "/static/js/dataTables.min.js" %}"></script>
-	
-	<script src="{% static "/static/js/main.js" %}"></script>
-	{% block head %}{% endblock %}
-</head>
-<body>
-	<nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-	    <div class="navbar-header">
-		<a  href="/"><img style="margin-left:20px; height: 50px;" src="/{{site.logo}}"> <span style="margin-left:20px"> {{ site.name }} {{ site.year }}</span></a>
-	    </div>
-	    <!-- /.navbar-header -->
-	    <ul class="nav navbar-top-links navbar-right">
-	    	{% if user.is_authenticated %}
-			{% block dashboard %} 
-			{% endblock %}
-	        <li class="dropdown">
-	            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-	                <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
-	            </a>
-	            <ul class="dropdown-menu dropdown-user">
-	                <li>
-	                     <a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
-	                </li>
-	                <li class="divider"></li>
-	                <li><a href="{% url "logout" %}"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
-	                </li>
-	            </ul>
-	            <!-- /.dropdown-user -->
-	        </li>
-	        <!-- /.dropdown -->
-		{% else %}
-			{% if state %}
-				<div class="alert {{ alerttype }}" role="alert" style="width:20%">{{ state }}</div>
-			{%endif%}
-            <form class="form-inline" action="{% url 'login' %}" method="POST" style="margin-top:10px; margin-right:10px;">
-			  <div class="form-group">
-			    <label class="sr-only">Email address</label>
-			    <input name="username" class="form-control" placeholder="Email">
-			  </div>
-			  <div class="form-group">
-			    <label class="sr-only">Password</label>
-			    <input type="password" name="password" class="form-control" placeholder="Password">
-			  </div>
-			  <div class="form-group">
-                <button type="submit" id="btn-login" name="login" class="btn col-md-12 col-sm-12 col-xs-12">Giriş Yap</button>
-			  </div>
-			</form>
-			<div class="pull-right">
-				<a href="{% url 'account_reset_password_key' %}">Parolamı Unuttum</a>
-			</div>
-	    {% endif %}
-	    </ul>
-	    <!-- /.navbar-top-links -->
-	
-	    <div class="navbar-default sidebar" role="navigation">
-	        <div class="sidebar-nav navbar-collapse">
-	            <ul class="nav" id="side-menu">
-					{% for page in pages %}
-	                	<li>
-	                	    <a href="/?menu={{page.id}}">{{page.name}}</a>
-	                	</li>
-					{% endfor %}
-	            </ul>
-	        </div>
-	        <!-- /.sidebar-collapse -->
-	    </div>
-	    <!-- /.navbar-static-side -->
-	</nav>
-    <!-- /#wrapper -->
-    </div>
-
-    <div id="content" class="body-content">
-        <div id="page-wrapper">
-        {% block content %}{% endblock %}
+    <script src="{% static "/static/js/jquery.js" %}"></script>
+    <script src="{% static "/static/js/dataTables.min.js" %}"></script>
+    
+    <script src="{% static "/static/js/main.js" %}"></script>
+    
+    {% block head %}{% endblock %}
+  </head>
+  
+  <body>
+    <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+      <div class="navbar-header">
+        <a  href="/">
+          <img style="margin-left:20px; height: 50px;" src="/{{site.logo}}">
+          <span style="margin-left:20px"> {{ site.name }} {{ site.year }}</span>
+        </a>
+      </div>
+      <ul class="nav navbar-top-links navbar-right">
+        <!-- START AUTHENTICATED USER --> 
+        {% if user.is_authenticated %}
+          {% block dashboard %} {% endblock %}
+          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+              <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+            </a>
+            <ul class="dropdown-menu dropdown-user">
+              <li>
+                <a href="#"><i class="fa fa-user fa-fw"></i> {% trans "User Profile" %}</a>
+              </li>
+              <li class="divider"></li>
+              <li>
+                <a href="{% url "logout" %}">
+                <i class="fa fa-sign-out fa-fw"></i> {% trans "Log out"%}</a>
+              </li>
+            </ul>
+          </li>
+        <!-- END AUTHENTICATED USER --> 
+   
+        <!-- START ANONYMOUS USER --> 
+        {% else %}
+          {% if state %}
+            <div class="alert {{ alerttype }}" role="alert" style="width:20%">{{ state }}</div>
+          {%endif%}
+         
+          <!-- START LOGIN FORM --> 
+          <form class="form-inline" action="{% url 'login' %}" method="POST" style="margin-top:10px; margin-right:10px;">
+            <div class="form-group">
+              <label class="sr-only">{% trans "Email adress" %}</label>
+              <input name="username" class="form-control" placeholder="{% trans "Email" %}">
+            </div>
+            <div class="form-group">
+              <label class="sr-only">{% trans "Password" %}</label>
+              <input type="password" name="password" class="form-control" placeholder="{% trans "Password" %}">
+            </div>
+            <div class="form-group">
+              <button type="submit" id="btn-login" name="login" class="btn col-md-12 col-sm-12 col-xs-12">{% trans "Log in" %}</button>
+            </div>
+          </form>
+          <!-- END LOGIN FORM -->
+          <div class="pull-right">
+            <a href="{% url 'account_reset_password_key' %}">{% trans "Forgot password" %}?</a>
+          </div>
+        {% endif %}
+        <!-- END ANONYMOUS USER -->
+      </ul>
+     
+      <!-- START MENU -->
+      <div class="navbar-default sidebar" role="navigation" style="margin-top:65px;">
+        <div class="sidebar-nav navbar-collapse">
+          <ul class="nav" id="side-menu">
+            {% for menu in menus %}
+              <li>
+                <a href="/?menu_id={{menu.id}}">{{menu.name}}</a>
+              </li>
+            {% endfor %}
+          </ul>
         </div>
-        <!-- /#page-wrapper -->
-
+      </div>
+      <!-- END MENU -->
+    </nav>
+ 
+    <!-- START MENU CONTENT --> 
+    <div id="content" class="body-content">
+      <div id="page-wrapper">
+        {% block content %}{% endblock %}
+      </div>
     </div>
-
-</body>
+    <!-- END MENU CONTENT -->
+  
+  </body>
 </html>
 

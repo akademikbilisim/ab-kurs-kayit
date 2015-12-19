@@ -74,9 +74,9 @@ class CreateInstForm(ModelForm):
 		model = User
 		fields = ['first_name', 'last_name', 'email', 'password', 'username']
 		widgets = {
-					'first_name': forms.TextInput(attrs={'placeholder':'Ad'}),
-					'last_name': forms.TextInput(attrs={'placeholder':'Soyad'}),
-					'email': forms.EmailInput(attrs={'placeholder':'E-posta'}),
+					'first_name': forms.TextInput(attrs={'placeholder':_("First Name")}),
+					'last_name': forms.TextInput(attrs={'placeholder':_("Last Name")}),
+					'email': forms.EmailInput(attrs={'placeholder':_("Email")}),
 					'password': forms.HiddenInput(),
 					'username': forms.HiddenInput()
 				 }
@@ -162,15 +162,17 @@ class StuProfileForm(ModelForm):
 			if cleaned_data['tckimlikno'] and cleaned_data['ykimlikno']:
 				raise forms.ValidationError(_("Please fill only one of them:tckimlikno,ykimlikno"))
 			elif not cleaned_data['tckimlikno'] and cleaned_data['country'] == 'TR':
-				raise forms.ValidationError(_("TR vatandaslari icin TCKimlikNo bos birakilamaz."))
+				raise forms.ValidationError(_("TC identifier no can not be empty for Turkish citizens"))
 			elif not cleaned_data['ykimlikno'] and cleaned_data['country'] != 'TR':
-				raise forms.ValidationError(_("TR vatandasi olmayanlar icin Yabanci Kimlik No bos birakilamaz."))
+				raise forms.ValidationError(_("Foreigner identifier no can not be blank for non Turkish citizens"))
 			elif cleaned_data['tckimlikno'] and cleaned_data['country'] == 'TR':
 				tckisvalid=UserProfileOPS.validateTCKimlikNo(cleaned_data['tckimlikno'], first_name, last_name, byear)
 				if tckisvalid == -1:
-					raise forms.ValidationError(_("TC Kimlik no dogrulanirken hata olustu"))
+					raise forms.ValidationError(_("Error occured during verify your TC identifier no"))
 				elif not tckisvalid:
-					raise forms.ValidationError(_("Kimlik bilgileriniz dogrulanamadi, TC Kimlik numaranizi, adinizi, soyadinizi (Turkce karakterler ile ve birden fazla varsa tam olarak) ve dogum tarihinizi tam olarak yaziniz"))
+					raise forms.ValidationError(_("Your identification informations couldn't be verified, Please enter \
+                                                     your TC identifier no, your name, your last name (with Turkish character) \
+                                                     and your bird date completely"))
 		else:
 			raise forms.ValidationError(_("User not found"))
 		return cleaned_data

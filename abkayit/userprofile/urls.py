@@ -10,7 +10,9 @@ urlpatterns = patterns('userprofile.views',
     url(r'^logout', 'logout', name="logout"),
 
 	#email verification
-	url(r'^activate/(?P<key>\w+)/$', 'activate', name="activate"),
+	url(r'^active/done/(?P<key>\w+)/$', 'active', name="active"),
+	url(r'^active/resend/$', 'active_resend', name="active_resend"),
+		
 
     # password reset
     url(r"^password/reset/$", 'password_reset', name="account_reset_password"),
