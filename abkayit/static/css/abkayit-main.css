@@ -1,8 +1,13 @@
-.login-form {
+/*.login-form {
 	background-color: #FAFAFA;
 	padding: 15px 45px 45px;
 }
 .main-topbar {
 	background-color: #EEEEEE;
 	height: 60px;	
+}
+*/
+.form-group .required:after {
+  content:"*";
+  color:red;
 }

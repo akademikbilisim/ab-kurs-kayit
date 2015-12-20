@@ -1,0 +1,181 @@
+{% extends "dashboard.html" %}
+{% load i18n %}
+
+{% block content %}
+  <div class="container-fluid">
+
+    <div class="alert alert-info">{{ note }}</div>
+   
+
+	{% if update_user_form %}
+      {% if update_user_form.non_field_errors %}
+        <div class="alert alert-danger">{{ update_user_form.non_field_errors.as_text }}</div>
+      {% endif %}
+	{% endif %}
+
+    {% if form %}
+      {% if form.non_field_errors %}
+        <div class="alert alert-danger">{{ form.non_field_errors.as_text }}</div>
+      {% endif %}
+	{% endif %} 
+
+
+	<!-- UPDATE USER FORM -->
+	{% if update_user_form %}
+
+        {% for field in update_user_form.hidden_fields %}
+          {{ field }}
+          {% if field.errors %}
+            <div class="row">
+  		    <div class="col-md-6 col-md-offset-2">
+                <span class="label label-danger">{{ field.label }}: {{ field.errors|striptags }}</span>
+              </div>
+            </div>
+  		{% endif %}
+        {% endfor %}
+        
+        {% for field in update_user_form.visible_fields %}
+  		<div class="form-group">
+            <div class="row">
+              <div class="col-md-2">
+                <b>{{ field.label }}</b>
+				{% if field.field.required %}
+			        <span class="required"></span>
+			    {% endif %}
+              </div>
+  			<div class="col-md-6">
+                {{ field }}
+              </div>
+          </div>
+  		{% if field.errors %}
+            <div class="row">
+              <div class="col-md-6 col-md-offset-2">
+                <span class="label label-danger">{{ field.label }}: {{ field.errors|striptags }}</span>
+              </div>
+            </div>
+          {% endif %}
+  		</div>
+        {% endfor %}
+  
+    {%endif%}
+	<!--END USER UPDATE FORM-->
+
+
+
+
+    {% if form %}
+
+      <!-- START USERPROFILE FORM -->
+      <form name="form-control" class="span4 signup-form" method="POST">{% csrf_token %}
+        {% for field in form.hidden_fields %}
+          {{ field }}
+          {% if field.errors %}
+            <div class="row">
+  		    <div class="col-md-6 col-md-offset-2">
+                <span class="label label-danger">{{ field.label }}: {{ field.errors|striptags }}</span>
+              </div>
+            </div>
+  		{% endif %}
+        {% endfor %}
+        
+        {% for field in form.visible_fields %}
+  		<div class="form-group">
+            <div class="row">
+              <div class="col-md-2">
+                <b>{{ field.label }}</b>
+				{% if field.field.required %}
+			        <span class="required"></span>
+			    {% endif %}
+              </div>
+  			<div class="col-md-6">
+                {{ field }}
+              </div>
+          </div>
+  		{% if field.errors %}
+            <div class="row">
+              <div class="col-md-6 col-md-offset-2">
+                <span class="label label-danger">{{ field.label }}: {{ field.errors|striptags }}</span>
+              </div>
+            </div>
+          {% endif %}
+  		</div>
+        {% endfor %}
+
+
+
+
+
+
+    {% if accomodation_form %}
+      <!-- START USERPROFILE FORM -->
+        {% for a_field in accomodation_form.hidden_fields %}
+          {{ a_field }}
+          {% if a_field.errors %}
+            <div class="row">
+  		    <div class="col-md-6 col-md-offset-2">
+                <span class="label label-danger">{{ field.label }}: {{ field.errors|striptags }}</span>
+              </div>
+            </div>
+  		{% endif %}
+        {% endfor %}
+        
+        {% for a_field in accomodation_form.visible_fields %}
+  		<div class="form-group">
+            <div class="row">
+              <div class="col-md-2">
+                <b>{{ a_field.label }}</b>
+				{% if a_field.field.required %}
+			        <span class="required"></span>
+			    {% endif %}
+              </div>
+  			<div class="col-md-6">
+                {{ a_field }}
+              </div>
+          </div>
+  		{% if a_field.errors %}
+            <div class="row">
+              <div class="col-md-6 col-md-offset-2">
+                <span class="label label-danger">{{ a_field.label }}: {{ a_field.errors|striptags }}</span>
+              </div>
+            </div>
+          {% endif %}
+  		</div>
+        {% endfor %}
+  
+      <!-- END USERPROFILE FORM-->
+    {%endif%}
+
+
+
+
+
+
+
+
+
+  
+  	  <input type="submit" name="register" class="btn btn-primary" value="{% trans "Register" %}">
+  	  <input type="submit" name="cancel" class="btn btn-primary" value="{% trans "Cancel"%}">
+      </form>
+      <!-- END USERPROFILE FORM-->
+    {%endif%}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+{% endblock %}

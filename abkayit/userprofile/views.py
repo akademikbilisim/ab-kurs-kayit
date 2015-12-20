@@ -15,6 +15,7 @@ from django.contrib.auth.decorators import user_passes_test, login_required
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django.core.exceptions import *
+from django.core.urlresolvers import reverse_lazy
 
 from userprofile.forms import *
 from userprofile.models import *
@@ -30,26 +31,29 @@ log = logging.getLogger(__name__)
 @csrf_exempt
 def loginview(request):
 	# TODO: kullanici ve parola hatali ise ve login olamazsa bir login sayfasina yonlendirilip capcha konulmasi csrf li form ile username password alinmasi gerekiyor
-	state=""
-	alerttype=""
+	d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
+	state = ""
+	alerttype = ""
 	if not request.user.is_authenticated():
-		username=""
-		password=""
-		alerttype="alert-info"
-		state="Hesabiniz varsa buradan giris yapabilirsiniz!"
+		username = ""
+		password = ""
+		alerttype = "alert-info"
+		state = _("If you have account, you can enter from here!")
 		if request.POST:
 			username=request.POST['username']
 			password=request.POST['password']
-			user=authenticate(username=username,password=password)
+			user = authenticate(username=username,password=password)
 			if user is not None:
 				login(request,user)
-				log.info("%s user successfuly logged in" % (request.user),extra={'clientip': request.META['REMOTE_ADDR'], 'user': request.user})
+				log.info("%s user successfuly logged in" % (request.user), extra=d)
 	return HttpResponseRedirect('/')
 
 def subscribe(request):
 	d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
 	data = prepare_template_data(request)	
 	if not request.user.is_authenticated():
+		data['buttonname1'] = "register"
+		data['buttonname2'] = "cancel"
 		note = _("Register to system to participate in courses before the conferences")
 		form = CreateUserForm()
 		if 'register' in request.POST:
@@ -59,10 +63,10 @@ def subscribe(request):
 					user = form.save(commit=True)
 					user.set_password(user.password)
 					user.save()
-					note = _("""Your account has been created. Please check your email for activation link""")
+					note = _("Your account has been created. Please check your email for activation link")
 					form = None
 				except Exception as e:
-					note = _("""Your account couldn't create. Please try again!""")
+					note = _("Your account couldn't create. Please try again!")
 					log.error(e.message, extra=d)
 		elif 'cancel' in request.POST:
 			return redirect("index")
@@ -72,63 +76,65 @@ def subscribe(request):
 	else:
 		return redirect("controlpanel")
 
+@login_required(login_url='/')
+@user_passes_test(active_required, login_url=reverse_lazy("active_resend"))
 def createprofile(request):
 	d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
 	data = prepare_template_data(request)
-	data['buttonname1'] = 'next'
-	data['buttonname2'] = 'cancel'
-	uform=UpdateUserForm(instance=User.objects.get(email=request.user))
-	form=StuProfileForm()
-	note=_("If you want to continue please complete your profile")
-	gender=''
-	data['uform']=uform
-	if 'next' in request.POST:
+
+	note = _("If you want to continue please complete your profile. Accomodation options will be enable to select after create profile")
+
+	update_user_form = UpdateUserForm()
+	form = StuProfileForm()
+	accomodation_form = None
+	try:
+		user = User.objects.get(username=request.user.username)	
+		update_user_form = UpdateUserForm(instance=user)
+		form = StuProfileForm(instance=UserProfile.objects.get(user=user))
+		try:
+			user_profile = UserProfile.objects.get(user=user)
+			form = StuProfileForm(instance=user_profile)
+			achoices=Accommodation.objects.filter(
+				usertype__in=['stu','hepsi']).filter(
+				gender__in=[user_profile.gender,'H']).values_list('id','name').order_by('name')
+			accomodation_form = AccomodationPrefForm(achoices=achoices)
+			note = _("You can update your profile")
+		except Exception as e:
+			log.error(e.message, extra=d)
+	except Exception as e:
+		log.error(e.message, extra=d)
+
+	if 'register' in request.POST:
 		first_name = request.POST.get('first_name','')
 		last_name = request.POST.get('last_name','')
-		form=StuProfileForm(request.user,request.POST,ruser=request.user)
+		form = StuProfileForm(request.user, request.POST, ruser=request.user)
+		try:
+			form.instance = UserProfile.objects.get(user=request.user)
+		except Exception as e:
+			log.info("Createing new profile", extra=d)
 		if form.is_valid():
-			gender=form.cleaned_data['gender']
-			try:
-				if first_name or last_name:
-					u=User.objects.get(email=request.user)
-					u.first_name=first_name
-					u.last_name=last_name
-					u.save()
-				profile=form.save(commit=False)
-				profile.is_student = True
-				profile.user = User.objects.get(email=request.user)
-				profile.save()
-				note=_("Your profile has been saved succesfully. Please choice your accommodation preference")
-			except:
-				note=_("Error occured during create user profile. Please contact system administrator")
-			achoices=Accommodation.objects.filter(usertype__in=['stu','hepsi']).filter(gender__in=[gender,'H']).values_list('id','name').order_by('name')
-			form = AccomodationPrefForm(achoices)
-			data['buttonname1'] = 'register'
-			data['uform'] = None
-	elif 'register' in request.POST:
-		gender=UserProfile.objects.get(user=User.objects.get(email=request.user)).gender
-		achoices=Accommodation.objects.filter(usertype__in=['stu','hepsi']).filter(gender__in=[gender,'H']).values_list('id','name').order_by('name')
-		form = AccomodationPrefForm(achoices,request.POST)
-		if form.is_valid():
-			if form.cleaned_data['accomodation']:
-				try:
-					counter=0
-					for a in form.cleaned_data['accomodation']:
-						counter += 1
-						uaccpref = UserAccomodationPref(user=UserProfile.objects.get(user=request.user.pk),accomodation=Accommodation.objects.get(pk=a),usertype="stu",preference_order=counter)
-						uaccpref.save()
-					return redirect("applytocourse")
-				except:
-					note = _("Your profile has been created. But Error occured during create your accommodation preference")
-			else:
-				note = _("Please fill in the following fields!")
-		else:
-			note = _("Please fill in the following fields")
-	elif 'cancel' in request.POST:
-		return redirect("index")
-	data['createuserform'] = form
+			if first_name or last_name:
+				user = User.objects.get(username=request.user.username)
+				user.first_name=first_name
+				user.last_name=last_name
+				user.save()
+			profile = form.save(commit=False)
+			profile.is_student = True
+			profile.user = User.objects.get(email=request.user)
+			profile.save()
+			achoices=Accommodation.objects.filter(
+				usertype__in=['stu','hepsi']).filter(
+				gender__in=[user_profile.gender,'H']).values_list('id','name').order_by('name')
+			accomodation_form = AccomodationPrefForm(achoices=achoices)
+			note = _("Your profile has been updated")	   	
+	if 'cancel' in request.POST:
+		return redirect("createprofile")	
+	data['update_user_form'] = update_user_form
+	data['form'] = form
+	data['accomodation_form'] = accomodation_form
 	data['note'] = note
-	return render_to_response("userprofile/subscription.html",data,context_instance=RequestContext(request))
+	return render_to_response("userprofile/user_profile.html",data,context_instance=RequestContext(request))
+
 
 def active(request, key):
 	d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
@@ -260,10 +266,6 @@ def password_reset_key_done(request, key=None):
 	return render_to_response("userprofile/change_password.html", data, context_instance=RequestContext(request))
 
 
-
-
 def logout(request):
 	logout_user(request)
 	return HttpResponseRedirect("/")
-
-

@@ -10,41 +10,6 @@
     {% endif %}
     {% if createuserform %}
       <form name="form-control" class="span4 signup-form" method="POST">{% csrf_token %}
-  	  {% if uform %}
-  
-          {% for field in uform.hidden_fields %}
-            {{ field }}
-            {% if field.errors %}
-              <div class="row">
-                <div class="col-md-6 col-md-offset-2">
-                  <span class="label label-danger">{{ field.label }}: {{ field.errors|striptags }}</span>
-                </div>
-              </div>
-            {% endif %}
-          {% endfor %}
-  
-          {% for field in uform.visible_fields %}
-            <div class="form-group">
-              <div class="row">
-                <div class="col-md-2">
-                  <b>{{ field.label }}</b>
-                </div>
-                <div class="col-md-6">
-                  {{ field }}
-                </div>
-              </div>
-              {% if field.errors %}
-                <div class="row">
-                  <div class="col-md-6 col-md-offset-2">
-                    <span class="label label-danger">{{ field.label }}: {{ field.errors|striptags }}</span>
-                  </div>
-                </div>
-              {% endif %}
-            </div>
-          {% endfor %}
-  
-  	  {% endif %}
-      
         {% for field in createuserform.hidden_fields %}
           {{ field }}
           {% if field.errors %}
@@ -76,8 +41,8 @@
   		</div>
         {% endfor %}
   
-  	  <input type="submit" name="register" class="btn btn-primary" value="{{ buttonname1 }}">
-  	  <input type="submit" name="cancel" class="btn btn-primary" value="{{ buttonname2 }}">
+  	  <input type="submit" name="{{buttonname1}}" class="btn btn-primary" value="{{ buttonname1 }}">
+  	  <input type="submit" name="{{buttonname2}}" class="btn btn-primary" value="{{ buttonname2 }}">
       </form>
     {%endif%}
   </div>

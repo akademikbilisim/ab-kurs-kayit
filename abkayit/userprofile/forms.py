@@ -9,6 +9,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.forms.extras.widgets import SelectDateWidget
 from django.forms.widgets import TextInput
 
+from django_countries.widgets import CountrySelectWidget
+
 from userprofile.models import UserProfile, Accommodation, UserAccomodationPref
 from userprofile.dynamicfields import DynmcFields 
 from userprofile.userprofileops import UserProfileOPS
@@ -60,7 +62,7 @@ class UpdateUserForm(ModelForm):
         widgets = {
                     'first_name': forms.TextInput(attrs={'placeholder':_('First Name'), 'class':'form-control'}),
                     'last_name': forms.TextInput(attrs={'placeholder':_('Last Name'), 'class':'form-control'}),
-                    'email': TextInput(attrs={'readonly':'readonly'}),
+                    'email': TextInput(attrs={'readonly':'readonly', 'class':'form-control'}),
                     'username': forms.HiddenInput()
                   }
     def __init__(self, *args, **kwargs):
@@ -127,6 +129,18 @@ class StuProfileForm(ModelForm):
 		exclude = {}
 		# fields=['name','surname','username','email','password','password',]
 		widgets = {
+					'tckimlikno' : forms.NumberInput(attrs={'placeholder':_('Turkish ID No'), 'class':'form-control'}),
+					'ykimlikno' : forms.NumberInput(attrs={'placeholder':_('Foreigner ID No'), 'class':'form-control'}),
+					'gender' : forms.Select(attrs={'placeholder':_('Gender'), 'class':'form-control'}),
+					'mobilephonenumber' : forms.TextInput(attrs={'placeholder':_('Mobile Phone Number'), 'class':'form-control'}),
+					'address' : forms.Textarea(attrs={'placeholder':_('Address'), 'class':'form-control'}),
+					'job' : forms.TextInput(attrs={'placeholder':_('Job'), 'class':'form-control'}),
+					'city' : forms.TextInput(attrs={'placeholder':_('City'), 'class':'form-control'}),
+					'country' : CountrySelectWidget(attrs={'placeholder':_('Country'), 'class':'form-control'}),
+					'title' : forms.TextInput(attrs={'placeholder':_('Title'), 'class':'form-control'}),
+					'organization' : forms.TextInput(attrs={'placeholder':_('Organization'), 'class':'form-control'}),
+					'university' : forms.Select(attrs={'placeholder':_('University'), 'class':'form-control'}),
+					'department' : forms.TextInput(attrs={'placeholder':_('Department'), 'class':'form-control'}),
 					'is_instructor':forms.HiddenInput(),
 					'is_student':forms.HiddenInput(),
 					'is_speaker':forms.HiddenInput(),
@@ -222,10 +236,12 @@ class ChangePasswordForm(ModelForm):
 			raise forms.ValidationError(_("Your passwords do not match"))
 		return passwordre
 
+
 class AccomodationPrefForm(forms.Form):
-	achoices=Accommodation.objects.filter(usertype__in=['stu','hepsi']).values_list('id','name').order_by('name')
+	achoices = Accommodation.objects.filter(usertype__in=['stu','hepsi']).values_list('id', 'name').order_by('name')
 	accomodation = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,choices=achoices)
-	def __init__(self,achoices=None, *args, **kwargs):
+	def __init__(self, achoices = None, *args, **kwargs):
 		super(AccomodationPrefForm, self).__init__(*args, **kwargs)
 		if achoices:
 			self.fields['accomodation'] = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,choices=achoices)
+

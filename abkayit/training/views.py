@@ -23,7 +23,7 @@ from training.forms import CreateCourseForm
 log=logging.getLogger(__name__)
 
 @login_required(login_url='/')
-@user_passes_test(active_required, login_url="/")
+@user_passes_test(active_required, login_url=reverse_lazy("active_resend"))
 def submitandregister(request):
 	d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
 	data=prepare_template_data(request)
@@ -82,7 +82,7 @@ def new_course(request):
 	return HttpResponse("Yeni kurs kaydi")
 
 @login_required
-@user_passes_test(active_required, login_url="/")
+@user_passes_test(active_required, login_url=reverse_lazy("active_resend"))
 def show_course(request, course_id):
 	try:
 		data = prepare_template_data(request)	
