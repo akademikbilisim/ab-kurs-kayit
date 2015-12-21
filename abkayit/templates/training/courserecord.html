@@ -18,8 +18,8 @@
 			<th>Tercih Sırası</th>
 	        <th>Kurs Adı</th>
 	        <th>Açıklama</th>
-	        <th>Anahtar Kelimeler</th>
-	        <th>Durum</th>
+	        <th>Egitmen</th>
+	        <th>No</th>
 	    </tr>
 	</thead>
 	<tbody>
@@ -65,14 +65,14 @@
 			<!-- START SECOND PREFERENCE BUTTON -->
 			
 			</th>
-			<th data-toggle="tooltip" title="{{course.goal}}">{{course.name}}</th>
-			<th>{{course.description}}</th>
+			<th data-toggle="tooltip" title="{{course.goal}}"><a href="{{course.url}}">{{course.name}}</a></th>
+			<th><a href="{{course.url}}">{{course.description}}</a></th>
 			<th>
-				{% for k in course.keyword.all %}
-				{{k.name}} 
-				{% endfor %}
-			</th>
-			<th>{{course.registration_end_date}}</th>
+                {% for t in course.trainer.all %}
+                    {{t.user}} </br>
+                {% endfor %}
+            </th>
+            <th>{{course.no}}</th>
 		</tr>
 	{% endfor %}
 	</tbody>

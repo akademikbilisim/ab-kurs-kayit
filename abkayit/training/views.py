@@ -96,7 +96,7 @@ def show_course(request, course_id):
 @user_passes_test(active_required, login_url=reverse_lazy("active_resend"))
 def list_courses(request):
 	data = prepare_template_data(request)
-	courses = Course.objects.filter(start_date__year='2015')
+	courses = Course.objects.filter(start_date__year=data['site'].year)
 	data['courses'] = courses
 	return render_to_response('training/courses.html', data)	
 
