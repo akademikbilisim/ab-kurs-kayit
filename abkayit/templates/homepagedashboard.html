@@ -57,6 +57,12 @@
   </head>
   
   <body>
+	{% if state %}
+	<div class="alert {{ alerttype }}" role="alert">
+	<button type="button" class="close" data-dismiss="alert">×</button>
+	<strong>{{ state }}</strong>
+	</div>
+	{%endif%}
     <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
       <div class="navbar-header">
         <a  href="/">
@@ -90,12 +96,9 @@
    
         <!-- START ANONYMOUS USER --> 
         {% else %}
-          {% if state %}
-            <div class="alert {{ alerttype }}" role="alert" style="width:20%">{{ state }}</div>
-          {%endif%}
          
           <!-- START LOGIN FORM --> 
-          <form class="form-inline" action="{% url 'login' %}" method="POST" style="margin-top:10px; margin-right:10px;">
+          <form class="form-inline" action="{% url 'index' %}" method="POST" style="margin-top:10px; margin-right:10px;">
             <div class="form-group">
               <label class="sr-only">{% trans "Email adress" %}</label>
               <input name="username" class="form-control" placeholder="{% trans "Email" %}">

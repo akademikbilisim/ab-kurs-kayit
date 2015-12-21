@@ -71,5 +71,5 @@ class UserAccomodationPref(models.Model):
 	def __unicode__(self):
 		return self.user.user.username
 	class Meta:
-		verbose_name = _("Participant Accommodation")
-		verbose_name_plural = _("Participant Accommodations")
+		verbose_name = _("Participant Accommodation Preference")
+		verbose_name_plural = _("Participant Accommodation Preferences")

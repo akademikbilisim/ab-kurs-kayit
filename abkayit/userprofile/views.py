@@ -1,5 +1,5 @@
 # -*- coding:utf-8  -*-
-
+import json
 import logging
 import hashlib
 import random
@@ -16,6 +16,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django.core.exceptions import *
 from django.core.urlresolvers import reverse_lazy
+from django.core.exceptions import ObjectDoesNotExist
 
 from userprofile.forms import *
 from userprofile.models import *
@@ -28,25 +29,6 @@ from abkayit.decorators import active_required
 
 log = logging.getLogger(__name__)
 
-@csrf_exempt
-def loginview(request):
-	# TODO: kullanici ve parola hatali ise ve login olamazsa bir login sayfasina yonlendirilip capcha konulmasi csrf li form ile username password alinmasi gerekiyor
-	d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
-	state = ""
-	alerttype = ""
-	if not request.user.is_authenticated():
-		username = ""
-		password = ""
-		alerttype = "alert-info"
-		state = _("If you have account, you can enter from here!")
-		if request.POST:
-			username=request.POST['username']
-			password=request.POST['password']
-			user = authenticate(username=username,password=password)
-			if user is not None:
-				login(request,user)
-				log.info("%s user successfuly logged in" % (request.user), extra=d)
-	return HttpResponseRedirect('/')
 
 def subscribe(request):
 	d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
@@ -81,60 +63,67 @@ def subscribe(request):
 def createprofile(request):
 	d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
 	data = prepare_template_data(request)
-
-	note = _("If you want to continue please complete your profile. Accomodation options will be enable to select after create profile")
-
-	update_user_form = UpdateUserForm()
-	form = StuProfileForm()
-	accomodation_form = None
+	user=User.objects.get(email=request.user)
+	data['update_user_form']=UpdateUserForm(instance=user)
+	data['form']=None
+	action=""
 	try:
-		user = User.objects.get(username=request.user.username)	
-		update_user_form = UpdateUserForm(instance=user)
-		form = StuProfileForm(instance=UserProfile.objects.get(user=user))
-		try:
-			user_profile = UserProfile.objects.get(user=user)
-			form = StuProfileForm(instance=user_profile)
-			achoices=Accommodation.objects.filter(
-				usertype__in=['stu','hepsi']).filter(
-				gender__in=[user_profile.gender,'H']).values_list('id','name').order_by('name')
-			accomodation_form = AccomodationPrefForm(achoices=achoices)
-			note = _("You can update your profile")
-		except Exception as e:
-			log.error(e.message, extra=d)
-	except Exception as e:
-		log.error(e.message, extra=d)
-
-	if 'register' in request.POST:
+		user_profile = UserProfile.objects.get(user=user)
+		note = _("You can update your profile below")
+		action="update"
+		data['form']= StuProfileForm(instance=user_profile)
+	except ObjectDoesNotExist:
+		note = _("If you want to continue please complete your profile. Accomodation options will be enable to select after create profile")
+		action="create"
+		data['form'] = StuProfileForm()
+	data['buttonname1']='next'	
+	data['buttonname2']='cancel'
+	if 'next' in request.POST:
 		first_name = request.POST.get('first_name','')
 		last_name = request.POST.get('last_name','')
-		form = StuProfileForm(request.user, request.POST, ruser=request.user)
-		try:
-			form.instance = UserProfile.objects.get(user=request.user)
-		except Exception as e:
-			log.info("Createing new profile", extra=d)
-		if form.is_valid():
+		data['form'] = StuProfileForm(request.user, request.POST, ruser=request.user)
+		if action=="update":
+			data['form'].instance = UserProfile.objects.get(user=user)
+		if data['form'].is_valid():
 			if first_name or last_name:
 				user = User.objects.get(username=request.user.username)
 				user.first_name=first_name
 				user.last_name=last_name
 				user.save()
-			profile = form.save(commit=False)
+			profile = data['form'].save(commit=False)
 			profile.is_student = True
-			profile.user = User.objects.get(email=request.user)
+			if action=="create":
+				profile.user = User.objects.get(email=request.user)
 			profile.save()
-			achoices=Accommodation.objects.filter(
+			data['accomodations'] = Accommodation.objects.filter(
 				usertype__in=['stu','hepsi']).filter(
-				gender__in=[user_profile.gender,'H']).values_list('id','name').order_by('name')
-			accomodation_form = AccomodationPrefForm(achoices=achoices)
-			note = _("Your profile has been updated")	   	
-	if 'cancel' in request.POST:
+				gender__in=[profile.gender,'H']).filter(
+				site=data['site']).order_by('name')
+			data['preferences'] = [ i+1 for i in range(len(data['accomodations']))]
+			note = _("Your profile has been saved")
+			data['buttonname1']='register'
+			data['form']=None
+			data['update_user_form']=None
+	elif request.POST:
+		accomodations=json.loads(request.POST.get('accomodation'))
+		if accomodations:
+			try:
+				for a in accomodations:
+					uaccpref=UserAccomodationPref(user=UserProfile.objects.get(user=request.user.pk),
+												accomodation=Accommodation.objects.get(pk=a['id']),
+												usertype="stu",preference_order=a['preference'])
+					uaccpref.save()
+				note=_("Accomodation prefferences saved!")
+				return HttpResponse(json.dumps({'url': 'http://'+request.META['SERVER_NAME']+':'+request.META['SERVER_PORT']+'/egitim/applytocourse'}), content_type="application/json")
+			except:
+				note=_("Accomodation prefferences can not be saved!")
+		else:
+			note=_("Please select at least one of them!")
+
+	elif 'cancel' in request.POST:
 		return redirect("createprofile")	
-	data['update_user_form'] = update_user_form
-	data['form'] = form
-	data['accomodation_form'] = accomodation_form
 	data['note'] = note
 	return render_to_response("userprofile/user_profile.html",data,context_instance=RequestContext(request))
-
 
 def active(request, key):
 	d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
@@ -161,7 +150,7 @@ def active_resend(request):
 		context['user'] = user
 		domain = Site.objects.get(is_active=True).home_url
 		if domain.endswith('/'):
-		    domain = domain.rstrip('/')
+			domain = domain.rstrip('/')
 		context['domain'] = domain
 		
 		user_verification, created = UserVerification.objects.get_or_create(user_email=user.username)
@@ -169,11 +158,11 @@ def active_resend(request):
 		user_verification.save()
 		context['activation_key'] = user_verification.activation_key
 		send_email("userprofile/messages/send_confirm_subject.html",
-		                "userprofile/messages/send_confirm.html",
-		                "userprofile/messages/send_confirm.text",
-		                context,
-		                settings.EMAIL_FROM_ADDRESS,
-		                [user.username])
+						"userprofile/messages/send_confirm.html",
+						"userprofile/messages/send_confirm.text",
+						context,
+						settings.EMAIL_FROM_ADDRESS,
+						[user.username])
 
 		note = _("Your activation link has been sent to your email address")
 	data['note'] = note

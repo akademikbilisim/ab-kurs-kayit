@@ -236,12 +236,3 @@ class ChangePasswordForm(ModelForm):
 			raise forms.ValidationError(_("Your passwords do not match"))
 		return passwordre
 
-
-class AccomodationPrefForm(forms.Form):
-	achoices = Accommodation.objects.filter(usertype__in=['stu','hepsi']).values_list('id', 'name').order_by('name')
-	accomodation = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,choices=achoices)
-	def __init__(self, achoices = None, *args, **kwargs):
-		super(AccomodationPrefForm, self).__init__(*args, **kwargs)
-		if achoices:
-			self.fields['accomodation'] = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,choices=achoices)
-

@@ -1,6 +1,40 @@
 {% extends "dashboard.html" %}
 {% load i18n %}
+{% block head %}
+<script type="text/javascript">
+$(document).ready(function(){
+{%if accomodations%}
+$('.accopref').on('click', function(){
+        var jsonData = {};
+        var item = [];
+		$("#accomodations tr[id^=acc]").each(function(){
+				a_id = $(this).prop('id').split('_')[1];
+				pref = $(this).find("select[id^=pref]").val();
+				item.push('{"id":"'+a_id+'", "preference": "'+pref+'"}')
+		});
 
+        jsonData['accomodation'] =  "[" + item.join(',') + "]";
+        jsonData['csrfmiddlewaretoken'] = getCookie('csrftoken');
+		debugger;
+        $.ajax({
+            url : "/accounts/profil",
+            type : "POST",
+            dataType: "json",
+            data : jsonData,
+			success : function(json) {
+				
+				console.log(json['url'])
+                window.location.assign(json['url']);
+            },
+            error : function(xhr,errmsg,err) {
+                alert(xhr.status + ": " + xhr.responseText);
+            }
+        });
+    })
+{%endif%}
+});
+</script>
+{% endblock %}
 {% block content %}
   <div class="container-fluid">
 
@@ -64,9 +98,9 @@
 
 
     {% if form %}
-
+   <form name="form-control" class="span4 signup-form" method="POST">{% csrf_token %}
+		
       <!-- START USERPROFILE FORM -->
-      <form name="form-control" class="span4 signup-form" method="POST">{% csrf_token %}
         {% for field in form.hidden_fields %}
           {{ field }}
           {% if field.errors %}
@@ -100,13 +134,38 @@
           {% endif %}
   		</div>
         {% endfor %}
+	<input type="submit" name="{{ buttonname1 }}" class="btn btn-primary" value="{{ buttonname1 }}">
+	<input type="submit" name="{{ buttonname2 }}" class="btn btn-primary" value="{{ buttonname2 }}">
+  	  <!--input type="submit" name="{{ buttonname }}" class="btn btn-primary" value="{% trans "Register" %}">
+  	  <input type="submit" name="cancel" class="btn btn-primary" value="{% trans "Cancel"%}"-->
+      </form>
+    {%endif%}
 
+    {% if accomodations %}
 
-
-
-
-
-    {% if accomodation_form %}
+	<table id="accomodations" class="table table-striped">
+    <thead>
+      <tr>
+        <th>name</th>
+        <th>preference</th>
+      </tr>
+    </thead>
+    <tbody>
+	{%for a in accomodations%}
+      <tr id="acc_{{ a.id }}">
+        <td>{{a.name}}</td>
+        <td>
+		<select id="pref_{{a.id}}">
+			<option value="---" selected>---</option>
+			{% for p in preferences %}
+				<option value="{{p}}">{{p}}</option>
+			{% endfor %}
+		</select>
+		</td>
+      </tr>
+	{% endfor %}
+    </tbody>
+  </table>
       <!-- START USERPROFILE FORM -->
         {% for a_field in accomodation_form.hidden_fields %}
           {{ a_field }}
@@ -143,38 +202,10 @@
         {% endfor %}
   
       <!-- END USERPROFILE FORM-->
+	<button type="button" class="btn btn-info accopref" style="margin-top:20px;">Tercih Yap</button>
     {%endif%}
 
-
-
-
-
-
-
-
-
-  
-  	  <input type="submit" name="register" class="btn btn-primary" value="{% trans "Register" %}">
-  	  <input type="submit" name="cancel" class="btn btn-primary" value="{% trans "Cancel"%}">
-      </form>
       <!-- END USERPROFILE FORM-->
-    {%endif%}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   </div>
 
