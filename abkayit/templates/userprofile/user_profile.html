@@ -21,13 +21,12 @@ $('.accopref').on('click', function(){
             type : "POST",
             dataType: "json",
             data : jsonData,
-			success : function(json) {
-				
+			success : function(json) {				
 				console.log(json['url'])
                 window.location.assign(json['url']);
             },
             error : function(xhr,errmsg,err) {
-                alert(xhr.status + ": " + xhr.responseText);
+                alert("Lutfen her konaklama tercihi icin bir oncelik belirtiniz!");
             }
         });
     })
