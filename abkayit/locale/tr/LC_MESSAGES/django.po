@@ -222,7 +222,7 @@ msgstr "Ülke"
 
 #: userprofile/forms.py:140 userprofile/models.py:35
 msgid "Title"
-msgstr "Başlık"
+msgstr "Unvan"
 
 #: userprofile/forms.py:141 userprofile/models.py:36
 msgid "Organization"
