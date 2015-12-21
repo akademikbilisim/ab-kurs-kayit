@@ -107,6 +107,9 @@ def createprofile(request):
 	elif request.POST:
 		accomodations=json.loads(request.POST.get('accomodation'))
 		if accomodations:
+			prefs=UserAccomodationPref.objects.filter(user=UserProfile.objects.get(user=user.pk))
+			if prefs:
+				prefs.delete()
 			try:
 				for a in accomodations:
 					uaccpref=UserAccomodationPref(user=UserProfile.objects.get(user=request.user.pk),
