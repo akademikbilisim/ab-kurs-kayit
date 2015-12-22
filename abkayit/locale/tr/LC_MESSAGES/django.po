@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-12-21 18:08+0000\n"
+"POT-Creation-Date: 2015-12-22 22:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -58,7 +58,9 @@ msgstr "HTML İçerik"
 msgid ""
 "If you already have an account, please login from top right hand side of the "
 "page"
-msgstr "Eğer bir hesabınız varsa, lütfen sayfanın sağ üst tarafından oturum açabilirsiniz"
+msgstr ""
+"Eğer bir hesabınız varsa, lütfen sayfanın sağ üst tarafından oturum "
+"açabilirsiniz"
 
 #: abkayit/views.py:32
 msgid "Login Failed!"
@@ -80,38 +82,58 @@ msgstr ""
 msgid "Brief"
 msgstr ""
 
-#: templates/homepagedashboard.html:83
+#: templates/homepagedashboard.html:85
 msgid "User Profile"
 msgstr "Kullanıcı Profili"
 
-#: templates/homepagedashboard.html:86
+#: templates/homepagedashboard.html:88
 msgid "Change Password"
 msgstr "Parola Değiştir"
 
-#: templates/homepagedashboard.html:91
+#: templates/homepagedashboard.html:93
 msgid "Log out"
 msgstr "Çıkış"
 
-#: templates/homepagedashboard.html:103
+#: templates/homepagedashboard.html:105
 msgid "Email adress"
 msgstr "E-posta adresi"
 
-#: templates/homepagedashboard.html:104 userprofile/forms.py:81
+#: templates/homepagedashboard.html:106 userprofile/forms.py:81
 msgid "Email"
 msgstr "E-posta"
 
-#: templates/homepagedashboard.html:107 templates/homepagedashboard.html:108
+#: templates/homepagedashboard.html:109 templates/homepagedashboard.html:110
 #: userprofile/forms.py:31 userprofile/forms.py:226
 msgid "Password"
 msgstr "Parola"
 
-#: templates/homepagedashboard.html:111
+#: templates/homepagedashboard.html:113
 msgid "Log in"
 msgstr "Giriş"
 
-#: templates/homepagedashboard.html:116
+#: templates/homepagedashboard.html:118
 msgid "Forgot password"
 msgstr "Parolamı unuttum"
+
+#: templates/training/courserecord.html:74
+msgid "Preference"
+msgstr "Tercih"
+
+#: templates/training/courserecord.html:90
+msgid "Course Preferences"
+msgstr "Kurs Tercihleri"
+
+#: templates/training/courserecord.html:93
+msgid "Add Preference"
+msgstr "Tercih Ekle"
+
+#: templates/training/courserecord.html:102
+msgid "Save My Preferences"
+msgstr "Tercihlerimi Kaydet"
+
+#: templates/training/courserecord.html:105
+msgid "Remove Preference"
+msgstr "Tercih Sil"
 
 #: templates/training/courses.html:11 training/models.py:21
 msgid "Course Name"
@@ -131,7 +153,7 @@ msgstr "Bildiri ID"
 
 #: templates/userprofile/activate_resend.html:10
 msgid "Send Activation Link"
-msgstr ""
+msgstr "Aktifleştirme Bağlantısı Gönder"
 
 #: templates/userprofile/change_password.html:40
 msgid "Update"
@@ -172,6 +194,10 @@ msgstr "Uygulama Bitiş Tarihi"
 #: training/models.py:34
 msgid "URL"
 msgstr "URL"
+
+#: training/views.py:112
+msgid "You can choose courses in order of preference."
+msgstr "Tercih sırasına göre kursları seçebilirsiniz"
 
 #: userprofile/forms.py:21 userprofile/forms.py:23 userprofile/forms.py:220
 #: userprofile/forms.py:222
@@ -269,7 +295,10 @@ msgid ""
 "identifier no, your name, your last name (with Turkish "
 "character)                                                      and your "
 "bird date completely"
-msgstr "Kimlik bilgileriniz doğrulanamadı, lütfen kimlik numaranızı, isminizi, soyisminizi(Türkçe karakterler birlikte) ve doğrum tarihinizi eksiksiz giriniz."
+msgstr ""
+"Kimlik bilgileriniz doğrulanamadı, lütfen kimlik numaranızı, isminizi, "
+"soyisminizi(Türkçe karakterler birlikte) ve doğrum tarihinizi eksiksiz "
+"giriniz."
 
 #: userprofile/forms.py:191
 msgid "User not found"
@@ -342,7 +371,9 @@ msgstr "Konferans öncesi kurslara katılmak için sisteme kaydolun"
 #: userprofile/views.py:48
 msgid ""
 "Your account has been created. Please check your email for activation link"
-msgstr "Hesabınız oluşturuldu. Lütfen aktifleştirme bağlantısı için e-posta adresinizi kontrol ediniz"
+msgstr ""
+"Hesabınız oluşturuldu. Lütfen aktifleştirme bağlantısı için e-posta "
+"adresinizi kontrol ediniz"
 
 #: userprofile/views.py:51
 msgid "Your account couldn't create. Please try again!"
@@ -356,54 +387,58 @@ msgstr "Profilinizi aşağıda güncelleyebilirsiniz"
 msgid ""
 "If you want to continue please complete your profile. Accomodation options "
 "will be enable to select after create profile"
-msgstr "Eğer devam etmek istiyorsanız profilinizi tamamlamalısınız. Konaklama seçenekleri profilinizi oluşturduktan sonra etkin olacaktır"
+msgstr ""
+"Eğer devam etmek istiyorsanız profilinizi tamamlamalısınız. Konaklama "
+"seçenekleri profilinizi oluşturduktan sonra etkin olacaktır"
 
 #: userprofile/views.py:103
 msgid "Your profile has been saved"
 msgstr "Profiliniz kaydedildi"
 
-#: userprofile/views.py:116
+#: userprofile/views.py:119
 msgid "Accomodation prefferences saved!"
 msgstr "Konaklama tercihleri kaydedildi!"
 
-#: userprofile/views.py:119
+#: userprofile/views.py:122
 msgid "Accomodation prefferences can not be saved!"
 msgstr "Konaklama tercihleri kaydedilemedi!"
 
-#: userprofile/views.py:121
+#: userprofile/views.py:124
 msgid "Please select at least one of them!"
 msgstr "Lütfen onlardan en az birini seçiniz"
 
-#: userprofile/views.py:145
+#: userprofile/views.py:148
 msgid ""
 "Please activate your account.  If you want to re-send an activation email, "
 "please click following button"
-msgstr "Lütfen hesabınızı aktifleştirin. Eğer aktifleştirme e-postasını tekrar göndermek istiyorsanız aşağıdaki düğmeye tıklayınız"
+msgstr ""
+"Lütfen hesabınızı aktifleştirin. Eğer aktifleştirme e-postasını tekrar "
+"göndermek istiyorsanız aşağıdaki düğmeye tıklayınız"
 
-#: userprofile/views.py:167
+#: userprofile/views.py:170
 msgid "Your activation link has been sent to your email address"
 msgstr "Aktifleştirme bağlantınız e-posta adresinize gönderildi"
 
-#: userprofile/views.py:176 userprofile/views.py:228 userprofile/views.py:230
+#: userprofile/views.py:179 userprofile/views.py:231 userprofile/views.py:233
 msgid "Change your password"
 msgstr "Parolanızı değiştirin"
 
-#: userprofile/views.py:183 userprofile/views.py:246
+#: userprofile/views.py:186 userprofile/views.py:249
 msgid "Your password has been changed"
 msgstr "Parolanız değiştirildi"
 
-#: userprofile/views.py:186 userprofile/views.py:250
+#: userprofile/views.py:189 userprofile/views.py:253
 msgid "Your password couldn't be changed"
 msgstr "Parolanız değiştirilemedi"
 
-#: userprofile/views.py:195
+#: userprofile/views.py:198
 msgid "Please enter your registered email"
 msgstr "Lütfen kayıtlı e-posta adresinizi giriniz"
 
-#: userprofile/views.py:217
+#: userprofile/views.py:220
 msgid "Password reset key has been sent"
 msgstr "Parola sıfırlama anahtarı gönderildi"
 
-#: userprofile/views.py:219 userprofile/views.py:238
+#: userprofile/views.py:222 userprofile/views.py:241
 msgid "Password reset operation failed"
 msgstr "Parola sıfırlama işlemi başarısız"
