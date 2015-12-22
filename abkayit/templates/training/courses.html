@@ -16,15 +16,15 @@
 	</thead>
 	<tbody>
 	{% for course in courses %}
-		<tr href="/egitim/showcourse/{{course.id}}">
-			<th>{{course.trainer}}</th>
+		<tr href="{{course.url}}">
+			<th>{{course.name}}</th>
 			<th>{{course.description}}</th>
 			<th>
 				{% for t in course.trainer.all %}
-					{{t.user.first_name}} </br>
+					{{t.user}} </br>
 				{% endfor %}
 			</th>
-			<th><a href="http://ab.org.tr/ab16/kursdir/{{course.no}}"></a></th>
+			<th>{{course.no}}</th>
 		</tr>
 	{% endfor %}
 	</tbody>
