@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse_lazy
+from django.utils.translation import ugettext_lazy as _
 
 from abkayit.backend import prepare_template_data
 from abkayit.models import Site, Menu
@@ -96,7 +97,7 @@ def show_course(request, course_id):
 @user_passes_test(active_required, login_url=reverse_lazy("active_resend"))
 def list_courses(request):
 	data = prepare_template_data(request)
-	courses = Course.objects.filter(start_date__year='2015')
+	courses = Course.objects.filter(start_date__year=data['site'].year)
 	data['courses'] = courses
 	return render_to_response('training/courses.html', data)	
 
@@ -107,30 +108,33 @@ def edit_course(request):
 @login_required
 def apply_to_course(request):
 	data=prepare_template_data(request)
+	message = ""
+	note = _("You can choose courses in order of preference.")
 	if request.method == "POST":
-		selected_courses = []
-		for key in request.POST.iterkeys():
-			if key!="csrfmiddlewaretoken":
-				selected_courses.append(request.POST.get(key))
 		try:
 			userprofile = UserProfile.objects.get(user=request.user)
 			TrainessCourseRecord.objects.filter(trainess=userprofile).delete()
 			created = True
 			for course_pre in json.loads(request.POST.get('course')):
+				TrainessCourseRecord.objects.filter(trainess=userprofile).delete()
 				course_record, created = TrainessCourseRecord.objects.get_or_create(
 												trainess=userprofile, 
-												course=Course.objects.get(id=course_pre['id']), 
-												preference_order=course_pre['preference'])
+												course=Course.objects.get(id=course_pre['value']), 
+												preference_order=course_pre['name'])
 				if(created == False):
-					return HttpResponse(json.dumps({'status':'nok'}), content_type="application/json")
+					message = "Tercihleriniz kaydedilirken hata oluştu"
+					return HttpResponse(json.dumps({'status':'-1', 'message':message}), content_type="application/json")
 			if(created):
-				return HttpResponse(json.dumps({'status':'ok'}), content_type="application/json")
+				message = "Tercihleriniz başarılı bir şekilde güncellendi"
+				return HttpResponse(json.dumps({'status':'0', 'message':message}), content_type="application/json")
 		except ObjectDoesNotExist:
-			pass
+			message = "Tercihleriniz kaydedilirken hata oluştu"
+			return HttpResponse(json.dumps({'status':'-1', 'message':message}), content_type="application/json")
 	courses = Course.objects.filter(approved=True)
-	course_records = TrainessCourseRecord.objects.filter(trainess=request.user)
+	course_records = TrainessCourseRecord.objects.filter(trainess__user=request.user).order_by('preference_order')
 	data['courses'] = courses
-	data['course_records'] = {cs.course:cs.preference_order for cs in course_records}
+	data['course_records'] = course_records
+	data['note'] = note
 	return render_to_response('training/courserecord.html', data)
 
 @login_required

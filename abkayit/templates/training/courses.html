@@ -17,7 +17,7 @@
 	<tbody>
 	{% for course in courses %}
 		<tr href="/egitim/showcourse/{{course.id}}">
-			<th>{{course.name}}</th>
+			<th>{{course.trainer}}</th>
 			<th>{{course.description}}</th>
 			<th>
 				{% for t in course.trainer.all %}
