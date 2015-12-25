@@ -36,6 +36,7 @@ class CreateUserForm(ModelForm):
 		for field in self.fields:
 			self.fields[field].required = True
 		self.fields['username'].required = False
+		self.fields['password'].label = _("Password")
 
 	def clean_email(self):
 		email = self.cleaned_data.get('email')

@@ -15,7 +15,6 @@ $('.accopref').on('click', function(){
 
         jsonData['accomodation'] =  "[" + item.join(',') + "]";
         jsonData['csrfmiddlewaretoken'] = getCookie('csrftoken');
-		debugger;
         $.ajax({
             url : "/accounts/profil",
             type : "POST",
@@ -133,8 +132,8 @@ $('.accopref').on('click', function(){
           {% endif %}
   		</div>
         {% endfor %}
-	<input type="submit" name="{{ buttonname1 }}" class="btn btn-primary" value="{{ buttonname1 }}">
-	<input type="submit" name="{{ buttonname2 }}" class="btn btn-primary" value="{{ buttonname2 }}">
+	<input type="submit" name="{{ buttonname1 }}" class="btn btn-primary" value="{{ buttonname1_value }}">
+	<input type="submit" name="{{ buttonname2 }}" class="btn btn-primary" value="{{ buttonname2_value }}">
   	  <!--input type="submit" name="{{ buttonname }}" class="btn btn-primary" value="{% trans "Register" %}">
   	  <input type="submit" name="cancel" class="btn btn-primary" value="{% trans "Cancel"%}"-->
       </form>
@@ -201,7 +200,7 @@ $('.accopref').on('click', function(){
         {% endfor %}
   
       <!-- END USERPROFILE FORM-->
-	<button type="button" class="btn btn-info accopref" style="margin-top:20px;">Tercih Yap</button>
+	<button type="button" class="btn btn-info accopref" style="margin-top:20px;">{%trans Make a Selection%}</button>
     {%endif%}
 
       <!-- END USERPROFILE FORM-->
