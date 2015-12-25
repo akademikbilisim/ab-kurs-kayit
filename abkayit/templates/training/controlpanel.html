@@ -11,7 +11,7 @@
 	{% if value.trainess1 %}
 	<form name="select-student{{course.id}}" method="POST">{% csrf_token %}
 	<h3> Birinci tercih </h3>
-	<table id="course_table" class="table table-hover table-striped" >
+	<table data-id="course_table" id="course_table{{course.id}}" class="table table-hover table-striped" >
 		<thead>
 		    <tr>
 				<th>İsim</th>
@@ -46,7 +46,7 @@
 	{% endif %}
 	{% if value.trainess2 %}
 		<h3> İkinci Tercih </h3>
-		<table id="course_table" class="table table-hover table-striped" >
+		<table data-id="course_table" id="course_table2{{courses.id}}" class="table table-hover table-striped" >
 		        <thead>
 		            <tr>
 		                <th>İsim</th>
