@@ -36,6 +36,8 @@ def subscribe(request):
 	if not request.user.is_authenticated():
 		data['buttonname1'] = "register"
 		data['buttonname2'] = "cancel"
+		data['buttonname1_value'] = _("Register")
+		data['buttonname2_value'] = _("Cancel")
 		note = _("Register to system to participate in courses before the conferences")
 		form = CreateUserForm()
 		if 'register' in request.POST:
@@ -51,7 +53,7 @@ def subscribe(request):
 					note = _("Your account couldn't create. Please try again!")
 					log.error(e.message, extra=d)
 		elif 'cancel' in request.POST:
-			return redirect("index")
+			return redirect("subscribe")
 		data['createuserform'] = form
 		data['note']=note
 		return render_to_response("userprofile/subscription.html", data, context_instance=RequestContext(request))
@@ -78,6 +80,8 @@ def createprofile(request):
 		data['form'] = StuProfileForm()
 	data['buttonname1']='next'	
 	data['buttonname2']='cancel'
+	data['buttonname1_value']=_('Next')	
+	data['buttonname2_value']=_('Cancel')
 	if 'next' in request.POST:
 		first_name = request.POST.get('first_name','')
 		last_name = request.POST.get('last_name','')
@@ -102,6 +106,7 @@ def createprofile(request):
 			data['preferences'] = [ i+1 for i in range(len(data['accomodations']))]
 			note = _("Your profile has been saved")
 			data['buttonname1']='register'
+			data['buttonname1_value']=_('Register')
 			data['form']=None
 			data['update_user_form']=None
 	elif request.POST:
@@ -197,30 +202,34 @@ def password_reset_key(request):
 	data = prepare_template_data(request)
 	note = _("Please enter your registered email")
 	if request.method == 'POST':
-		try:
-			user = User.objects.get(username=request.POST['email'])
-			user_verification, created = UserVerification.objects.get_or_create(user_email=user.username)
-			user_verification.password_reset_key = create_verification_link(user)
-			user_verification.save()
-			context = {}
-			context['user'] = user
-			context['activation_key'] = user_verification.password_reset_key
-			domain = Site.objects.get(is_active=True).home_url
-			if domain.endswith('/'):
-				domain = domain.rstrip('/')
-			context['domain'] = domain
-	
-			send_email("userprofile/messages/send_reset_password_key_subject.html",
-							"userprofile/messages/send_reset_password_key.html",
-							"userprofile/messages/send_reset_password_key.text",
-							context,
-							settings.EMAIL_FROM_ADDRESS,
-							[user.username])
-	
-			note = _("""Password reset key has been sent""")
-		except Exception as e:
-			note = _("""Password reset operation failed""")
-			log.error(e.message, extra=d)
+		email = request.POST['email']
+		if email and email != "":
+			try:
+				user = User.objects.get(username=request.POST['email'])
+				user_verification, created = UserVerification.objects.get_or_create(user_email=user.username)
+				user_verification.password_reset_key = create_verification_link(user)
+				user_verification.save()
+				context = {}
+				context['user'] = user
+				context['activation_key'] = user_verification.password_reset_key
+				domain = Site.objects.get(is_active=True).home_url
+				if domain.endswith('/'):
+					domain = domain.rstrip('/')
+				context['domain'] = domain
+		
+				send_email("userprofile/messages/send_reset_password_key_subject.html",
+								"userprofile/messages/send_reset_password_key.html",
+								"userprofile/messages/send_reset_password_key.text",
+								context,
+								settings.EMAIL_FROM_ADDRESS,
+								[user.username])
+		
+				note = _("""Password reset key has been sent""")
+			except Exception as e:
+				note = _("""Password reset operation failed""")
+				log.error(e.message, extra=d)
+		else:
+			note = _("""Email field can not be empty""")	
 	data['note'] = note
 	return render_to_response("userprofile/change_password_key_request.html", data, context_instance=RequestContext(request))
 
