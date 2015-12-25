@@ -1,3 +1,19 @@
+$(document).ready(function () {
+
+    $("table input[type='checkbox']").change(function (e) {
+        if ($(this).is(":checked")) {
+            $(this).closest('tr').css("background-color","#DDFFDD");
+        } else {
+            $(this).closest('tr').css("background-color", "");
+        }
+    });
+        $("table input[type='checkbox']").trigger("change");
+
+});
+
+
+
+
 function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie != '') {
