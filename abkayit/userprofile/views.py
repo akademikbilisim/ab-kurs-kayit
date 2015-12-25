@@ -85,6 +85,8 @@ def createprofile(request):
 	if 'next' in request.POST:
 		first_name = request.POST.get('first_name','')
 		last_name = request.POST.get('last_name','')
+		request.user.first_name = first_name
+		request.user.last_name = last_name
 		data['form'] = StuProfileForm(request.user, request.POST, ruser=request.user)
 		if action=="update":
 			data['form'].instance = UserProfile.objects.get(user=user)

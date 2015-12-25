@@ -51,6 +51,9 @@ $('.accopref').on('click', function(){
       {% endif %}
 	{% endif %} 
 
+    {% if form %}
+   <form name="form-control" class="span4 signup-form" method="POST">{% csrf_token %}
+
 
 	<!-- UPDATE USER FORM -->
 	{% if update_user_form %}
@@ -95,8 +98,7 @@ $('.accopref').on('click', function(){
 
 
 
-    {% if form %}
-   <form name="form-control" class="span4 signup-form" method="POST">{% csrf_token %}
+
 		
       <!-- START USERPROFILE FORM -->
         {% for field in form.hidden_fields %}
@@ -200,7 +202,7 @@ $('.accopref').on('click', function(){
         {% endfor %}
   
       <!-- END USERPROFILE FORM-->
-	<button type="button" class="btn btn-info accopref" style="margin-top:20px;">{%trans Make a Selection%}</button>
+	<button type="button" class="btn btn-info accopref" style="margin-top:20px;">{%trans "Make a Selection"%}</button>
     {%endif%}
 
       <!-- END USERPROFILE FORM-->
