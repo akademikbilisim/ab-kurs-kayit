@@ -13,7 +13,7 @@ def send_confirm_link(sender, instance, created, **kwargs):
 	if not instance.is_staff:
 		if created:
 			instance.is_active=False
-			user_verification = UserVerification(user_email=instance.username)
+			user_verification, created = UserVerification.objects.get_or_create(user_email=instance.username)
 			user_verification.activation_key = create_verification_link(instance)
 			user_verification.save()
 			context={}
