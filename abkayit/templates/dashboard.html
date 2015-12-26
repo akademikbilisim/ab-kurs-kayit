@@ -14,12 +14,23 @@
                 </a>
                 <ul class="dropdown-menu" style>
                     <li>
-                         <a href="/egitim/listcourses"><i class="fa fa-pencil-square-o fa-fw"></i> Mevcut Kurslar</a>
+                         <a href="{% url "listcourses" %}"><i class="fa fa-pencil-square-o fa-fw"></i> Mevcut Kurslar</a>
                     </li>
+					{%if user.userprofile %}
+						{% if user.userprofile.is_student %}
+                    		<li>
+                    		     <a href="{% url "applytocourse" %}"><i class="fa fa-pencil-square-o fa-fw"></i> Kurs Başvurusu</a>
+                    		</li>
+
+						{% endif %}
+						{% if user.userprofile.is_instructor %}
+                    		<li>
+                    		     <a href="{% url "controlpanel" %}"><i class="fa fa-pencil-square-o fa-fw"></i> Kurs Başvurusu</a>
+                    		</li>
+
+						{% endif %}
+					{% endif%}
                     <li class="divider"></li>
-                    <li>
-                         <a href="/egitim/applytocourse"><i class="fa fa-pencil-square-o fa-fw"></i> Kurs Başvurusu</a>
-                    </li>
                 </ul>
                 <!-- /.dropdown-user -->
             </li>
