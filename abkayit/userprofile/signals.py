@@ -23,16 +23,12 @@ def send_confirm_link(sender, instance, created, **kwargs):
 			if domain.endswith('/'):
 			 	domain = domain.rstrip('/')
 			context['domain'] = domain
-			try:
-				send_email("userprofile/messages/send_confirm_subject.html",
-							"userprofile/messages/send_confirm.html",
-							"userprofile/messages/send_confirm.text",
-							context,
-							EMAIL_FROM_ADDRESS,
-							[instance.username])
-			except:
-				#TODO: exception loga eklenecek.
-				pass
+			send_email("userprofile/messages/send_confirm_subject.html",
+						"userprofile/messages/send_confirm.html",
+						"userprofile/messages/send_confirm.text",
+						context,
+						EMAIL_FROM_ADDRESS,
+						[instance.username])
 	
 
 

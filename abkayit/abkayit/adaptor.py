@@ -13,4 +13,7 @@ def send_email(subject_template, content_template, content_text, data, from_emai
 	msg = EmailMessage(subject, html_content, from_email, to_addresses)
 	msg.content_subtype = "html"
 	#msg.attach_alternative(html_content, "text/html")
-	return msg.send()
+	try:
+		msg.send()
+	except:
+		pass

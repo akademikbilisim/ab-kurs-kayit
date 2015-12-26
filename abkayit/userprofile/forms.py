@@ -137,7 +137,7 @@ class StuProfileForm(ModelForm):
 					'address' : forms.Textarea(attrs={'placeholder':_('Address'), 'class':'form-control'}),
 					'job' : forms.TextInput(attrs={'placeholder':_('Job'), 'class':'form-control'}),
 					'city' : forms.TextInput(attrs={'placeholder':_('City'), 'class':'form-control'}),
-					'country' : CountrySelectWidget(attrs={'placeholder':_('Country'), 'class':'form-control'}),
+					'country' : CountrySelectWidget(attrs={'placeholder':_('Country')}),
 					'title' : forms.TextInput(attrs={'placeholder':_('Title'), 'class':'form-control'}),
 					'organization' : forms.TextInput(attrs={'placeholder':_('Organization'), 'class':'form-control'}),
 					'university' : forms.Select(attrs={'placeholder':_('University'), 'class':'form-control'}),
@@ -161,6 +161,7 @@ class StuProfileForm(ModelForm):
 		self.fields['is_student'].required = False
 		self.fields['is_speaker'].required = False
 		self.fields['is_participant'].required = False
+		self.fields['university'].required = False
 		self.fields['user'].required = False
 		if user:
 			try:
