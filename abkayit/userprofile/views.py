@@ -65,7 +65,7 @@ def subscribe(request):
 def createprofile(request):
 	d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
 	data = prepare_template_data(request)
-	user=User.objects.get(email=request.user)
+	user=User.objects.get(username=request.user.username)
 	data['update_user_form']=UpdateUserForm(instance=user)
 	data['form']=None
 	action=""
@@ -99,7 +99,7 @@ def createprofile(request):
 			profile = data['form'].save(commit=False)
 			profile.is_student = True
 			if action=="create":
-				profile.user = User.objects.get(email=request.user)
+				profile.user = User.objects.get(username=request.user.username)
 			profile.save()
 			data['accomodations'] = Accommodation.objects.filter(
 				usertype__in=['stu','hepsi']).filter(
