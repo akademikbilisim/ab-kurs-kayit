@@ -14,6 +14,7 @@
 	<table data-id="course_table" id="course_table{{course.id}}" class="table table-hover table-striped" >
 		<thead>
 		    <tr>
+                <th>#</th>
 				<th>İsim</th>
 				<th>Soyisim</th>
 		        <th>E-posta</th>
@@ -24,6 +25,9 @@
 		<tbody>
 		{% for t in value.trainess1 %}
 			<tr>
+                <th>
+                  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#detail{{t.user.id}}">Detay</a>
+                </th>
 				<th>{{ t.user.first_name }}</th>
 				<th>{{ t.user.last_name }}</th>
 				<th>{{ t.user.email }}</th>
@@ -38,6 +42,29 @@
 					</div>
 				<th>
 			</tr>
+	            <tr><td colspan="6" style="padding: 0 !important;">
+                    <div id="detail{{t.user.id}}" class="accordion-body collapse">
+                      <div class="accordion-inner" style="margin-left:10px;">
+                        <div class="row">
+                          <div class="col-md-4">
+                            <label for="title" style="color:red;">{%trans "Title" %}</label> {{t.title}}
+                          </div>
+                          <div class="col-md-4">
+                            <label for="title" style="color:red;">{%trans "Organization" %}</label> {{t.organization}}
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-4">
+                        <label for="title" style="color:red;">{%trans "University" %}</label> {{t.university}}
+                          </div>
+                          <div class="col-md-4">
+                        <label for="title" style="color:red;">{%trans "Department" %}</label> {{t.department}}
+                          </div>
+                      </div>
+                    </div>
+</td>
+            </tr>
+
 		{% empty %}
 		<tr><th>Goruntulenecek basvuru yok</th></tr>
 		{% endfor %}
@@ -49,6 +76,7 @@
 		<table data-id="course_table" id="course_table2{{courses.id}}" class="table table-hover table-striped" >
 		        <thead>
 		            <tr>
+                		<th>#</th>
 		                <th>İsim</th>
 		                <th>Soyisim</th>
 		                <th>E-posta</th>
@@ -60,6 +88,9 @@
 		        <tbody>
 		        {% for t in value.trainess2 %}
 		                <tr>
+                				<th>
+				                  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#detail{{t.user.id}}">Detay</a>
+				                </th>
 		                        <th>{{ t.user.first_name }}</th>
 		                        <th>{{ t.user.last_name }}</th>
 		                        <th>{{ t.user.email }}</th>
@@ -70,6 +101,28 @@
 									</div>
 								</th>
 		                </tr>
+	            <tr><td colspan="6" style="padding: 0 !important;">
+                    <div id="detail{{t.user.id}}" class="accordion-body collapse">
+                      <div class="accordion-inner" style="margin-left:10px;">
+                        <div class="row">
+                          <div class="col-md-4">
+                            <label for="title" style="color:red;">{%trans "Title" %}</label> {{t.title}}
+                          </div>
+                          <div class="col-md-4">
+                            <label for="title" style="color:red;">{%trans "Organization" %}</label> {{t.organization}}
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-4">
+                        <label for="title" style="color:red;">{%trans "University" %}</label> {{t.university}}
+                          </div>
+                          <div class="col-md-4">
+                        <label for="title" style="color:red;">{%trans "Department" %}</label> {{t.department}}
+                          </div>
+                      </div>
+                    </div>
+</td>
+            </tr>
 		        {% endfor %}
 		        </tbody>
 		</table>
