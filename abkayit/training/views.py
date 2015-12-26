@@ -97,7 +97,7 @@ def show_course(request, course_id):
 @user_passes_test(active_required, login_url=reverse_lazy("active_resend"))
 def list_courses(request):
 	data = prepare_template_data(request)
-	courses = Course.objects.filter(start_date__year=data['site'].year)
+	courses = Course.objects.filter(site=data['site'])
 	data['courses'] = courses
 	return render_to_response('training/courses.html', data)	
 
@@ -114,19 +114,17 @@ def apply_to_course(request):
 		try:
 			userprofile = UserProfile.objects.get(user=request.user)
 			TrainessCourseRecord.objects.filter(trainess=userprofile).delete()
-			created = True
 			for course_pre in json.loads(request.POST.get('course')):
-				TrainessCourseRecord.objects.filter(trainess=userprofile).delete()
-				course_record, created = TrainessCourseRecord.objects.get_or_create(
-												trainess=userprofile, 
-												course=Course.objects.get(id=course_pre['value']), 
-												preference_order=course_pre['name'])
-				if(created == False):
+				try:
+					course_record = TrainessCourseRecord(trainess=userprofile, 
+									      course=Course.objects.get(id=course_pre['value']), 
+									      preference_order=course_pre['name'])
+                                	course_record.save()
+					message = "Tercihleriniz başarılı bir şekilde güncellendi"
+				except:
 					message = "Tercihleriniz kaydedilirken hata oluştu"
 					return HttpResponse(json.dumps({'status':'-1', 'message':message}), content_type="application/json")
-			if(created):
-				message = "Tercihleriniz başarılı bir şekilde güncellendi"
-				return HttpResponse(json.dumps({'status':'0', 'message':message}), content_type="application/json")
+			return HttpResponse(json.dumps({'status':'0', 'message':message}), content_type="application/json")
 		except ObjectDoesNotExist:
 			message = "Tercihleriniz kaydedilirken hata oluştu"
 			return HttpResponse(json.dumps({'status':'-1', 'message':message}), content_type="application/json")

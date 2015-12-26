@@ -5,7 +5,8 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from userprofile.models import UserProfile
-
+from abkayit.models import Site
+ 
 def make_choices(choices):
 	return tuple([(k, _(v)) for k, v in choices.items()])
 
@@ -23,14 +24,11 @@ class Course(models.Model):
 	#keyword = models.ManyToManyField(Keyword, required=False)
 	#goal = models.TextField(verbose_name=_("Hedef"))
 	#partipation_rules = models.TextField(verbose_name=_("Kursa katilacaklardan beklenenler"))
-	trainess = models.ManyToManyField(UserProfile, related_name="trainess")
-	trainer = models.ManyToManyField(UserProfile, related_name="trainer", null=True, blank=True)
-	start_date = models.DateField(verbose_name=_("Start Date"))
-	end_date = models.DateField(verbose_name=_("End Date"))
-	reg_start_date = models.DateField(verbose_name=_("Application Start Date"), null=True, blank=True)
-	reg_end_date = models.DateField(verbose_name=_("Application End Date"), null=True, blank=True)
+	trainess = models.ManyToManyField(UserProfile, related_name="trainess", null=True, blank=True)
+	trainer = models.ManyToManyField(UserProfile, related_name="trainer")
 	approved = models.BooleanField(default=False) 
-	#fulltext = models.FileField(upload_to='documents/%Y/%m/%d',null=True)
+	site = models.ForeignKey(Site)
+        #fulltext = models.FileField(upload_to='documents/%Y/%m/%d',null=True)
 	url = models.CharField(verbose_name=_("URL"), max_length="350")
 	def __unicode__(self):
 		return self.name
