@@ -82,12 +82,17 @@
             </a>
             <ul class="dropdown-menu dropdown-user">
               <li>
+				<center>{{user.first_name}} {{user.last_name}}</center>
+              </li>
+   			  <li class="divider"></li>
+			  </hr>
+              <li>
                 <a href="{%url "createprofile"%}"><i class="fa fa-user fa-fw"></i> {% trans "User Profile" %}</a>
               </li>
               <li>
                 <a href="{%url "account_reset_password" %}"><i class="fa fa-user fa-fw"></i> {% trans "Change Password" %}</a>
               </li>
-   <li class="divider"></li>
+			  <li class="divider"></li>
               <li>
                 <a href="{% url "logout" %}">
                 <i class="fa fa-sign-out fa-fw"></i> {% trans "Log out"%}</a>
