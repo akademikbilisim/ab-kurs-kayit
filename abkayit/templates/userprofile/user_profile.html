@@ -20,13 +20,33 @@ function addPreference(){
     container.append(body);
 
     {% for accomodation in accomodations %}
-        if(selectedAccomodations.indexOf("{{accomodation.id}}")==-1){
+        if(selectedAccomodations.indexOf("{{accomodation.id}}")!=-1){
+            body.find('select').append("<option value='"+ "{{accomodation.id}}"+ "' hidden>"+"{{accomodation.name}}"+"</option>");
+        }else{
             body.find('select').append("<option value='"+ "{{accomodation.id}}"+ "' >"+"{{accomodation.name}}"+"</option>");
-        }
+
+		}
     {% endfor %}
 
     $("#remove").show();
     $("#sendPreference").show();
+    $("select").unbind("change");
+    $('select').change(function() {
+        var myOpt = [];
+        $("select").each(function () {
+            myOpt.push($(this).val());
+        });
+        $("select").each(function () {
+            $(this).find("option").prop('hidden', false);
+            var sel = $(this);
+            $.each(myOpt, function(key, value) {
+                if((value != "") && (value != sel.val())) {
+                    sel.find("option").filter('[value="' + value +'"]').prop('hidden', true);
+                }
+            });
+        });
+    });
+    $("select").bind("change");
 
 }
 
@@ -48,6 +68,7 @@ $(document).ready(function(){
         $("#remove").hide();
         //$("#sendPreference").hide();
     }
+    $("select").trigger("change");
   });
 
   {% for accomodation_record in accomodation_records %}

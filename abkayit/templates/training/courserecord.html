@@ -26,9 +26,10 @@ function addPreference(){
   		$(this).parents("[data-id='container']").remove();
   	});
   	container.append(body);
-  	 
 	{% for course in courses %}
-		if(selectedCourses.indexOf("{{course.id}}")==-1){
+		if(selectedCourses.indexOf("{{course.id}}")!=-1){
+  			body.find('select').append("<option value='"+ "{{course.id}}"+ "' hidden >"+"{{course.name}}"+"</option>");
+		}else{
   			body.find('select').append("<option value='"+ "{{course.id}}"+ "' >"+"{{course.name}}"+"</option>");
 		}
   	{% endfor %}
@@ -48,6 +49,24 @@ $(document).ready(function() {
   $("#add-field").click(function (e) {
   	e.preventDefault();
 	addPreference();
+//   $("select").unbind("change");
+   $('select').change(function() {
+       var myOpt = [];
+       $("select").each(function () {
+           myOpt.push($(this).val());
+       });
+       $("select").each(function () {
+           $(this).find("option").prop('hidden', false);
+           var sel = $(this);
+           $.each(myOpt, function(key, value) {
+               if((value != "") && (value != sel.val())) {
+                   sel.find("option").filter('[value="' + value +'"]').prop('hidden', true);
+               }
+           });
+       });
+   });
+	$("select").bind("change");
+
   });
   
   $("#remove").click(function(){
@@ -58,6 +77,7 @@ $(document).ready(function() {
 		$("#remove").hide();
 		//$("#sendPreference").hide();
 	}
+	$("select").trigger("change");
   });
 
 	{% for course_record in course_records %}
@@ -65,8 +85,9 @@ $(document).ready(function() {
 		var container = $("#field-row-container");
 		container.find("[data-id='container']").last().find('select').val("{{course_record.course.id}}")
   	{% endfor %}
-
 });
+
+
 
 
 </script>
