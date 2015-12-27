@@ -2,36 +2,100 @@
 {% load i18n %}
 {% block head %}
 <script type="text/javascript">
-$(document).ready(function(){
-{%if accomodations%}
-$('.accopref').on('click', function(){
-        var jsonData = {};
-        var item = [];
-		$("#accomodations tr[id^=acc]").each(function(){
-				a_id = $(this).prop('id').split('_')[1];
-				pref = $(this).find("select[id^=pref]").val();
-				item.push('{"id":"'+a_id+'", "preference": "'+pref+'"}')
-		});
 
-        jsonData['accomodation'] =  "[" + item.join(',') + "]";
-        jsonData['csrfmiddlewaretoken'] = getCookie('csrftoken');
+
+function addPreference(){
+    var container = $("#field-row-container");
+    var selectedAccomodations =  [];
+    $("#field-row-container").find('select').each(function(){selectedAccomodations.push($(this).val());})
+	if (container.find("[data-id='container']").size() == {{accomodations|length}}){
+		return false;
+	}
+    var text = $("#field-row").text();
+    var id = container.find("[data-id='container']").size() + 1;
+    var body = $(text.format(id, id));
+    body.find("button[data-id='remove']").click(function () {
+        $(this).parents("[data-id='container']").remove();
+    });
+    container.append(body);
+
+    {% for accomodation in accomodations %}
+        if(selectedAccomodations.indexOf("{{accomodation.id}}")==-1){
+            body.find('select').append("<option value='"+ "{{accomodation.id}}"+ "' >"+"{{accomodation.name}}"+"</option>");
+        }
+    {% endfor %}
+
+    $("#remove").show();
+    $("#sendPreference").show();
+
+}
+
+
+
+
+
+$(document).ready(function(){
+  $("#add-field").click(function (e) {
+    e.preventDefault();
+    addPreference();
+  });
+
+  $("#remove").click(function(){
+    var container = $("#field-row-container");
+    var id = container.find("[data-id='container']").size();
+    $("select[id='"+ id +"']").parent().parent().parent().remove();
+    if(id=="1"){
+        $("#remove").hide();
+        //$("#sendPreference").hide();
+    }
+  });
+
+  {% for accomodation_record in accomodation_records %}
+      addPreference();
+      var container = $("#field-row-container");
+      container.find("[data-id='container']").last().find('select').val("{{accomodation_record.accomodation.id}}")
+  {% endfor %}
+
+
+{%if accomodations%}
+  $("#sendPreference").click(function(){
+    var selectedAccomodations = JSON.stringify($("#accomodations_pref :input").serializeArray());
+    var jsonData = {};
+    jsonData['accomodation'] = selectedAccomodations;
+    jsonData['csrfmiddlewaretoken'] = getCookie('csrftoken');
+    console.log(JSON.stringify(jsonData));
         $.ajax({
             url : "/accounts/profil",
             type : "POST",
             dataType: "json",
             data : jsonData,
-			success : function(json) {				
-				console.log(json['url'])
-                window.location.assign(json['url']);
+            success : function(json) {
+                bootbox.alert(json.message, function() {});
             },
             error : function(xhr,errmsg,err) {
-                alert("Lutfen her konaklama tercihi icin bir oncelik belirtiniz!");
+                bootbox.alert(errmsg, function() {});
             }
         });
-    })
+  });
+
 {%endif%}
 });
 </script>
+
+<script id="field-row" type="text/template">
+  <div data-id="container" class="m-b-10">
+    <label for="{0}" class="col-xs-3 control-label" style="margin-top:10px;">{%trans "Preference"%} {1}:</label>
+    <div class="col-xs-8" style="margin-top:10px;">
+      <div>
+        <select id="{0}"  class="form-control" data-id="field" name="{0}">
+        </select>
+      </div>
+    </div>
+  </div>
+</script>
+
+
+
 {% endblock %}
 {% block content %}
   <div class="container-fluid">
@@ -143,70 +207,48 @@ $('.accopref').on('click', function(){
 
     {% if accomodations %}
 
-	<table id="accomodations" class="table table-striped">
-    <thead>
-      <tr>
-        <th>name</th>
-        <th>preference</th>
-      </tr>
-    </thead>
-    <tbody>
-	{%for a in accomodations%}
-      <tr id="acc_{{ a.id }}">
-        <td>{{a.name}}</td>
-        <td>
-		<select id="pref_{{a.id}}">
-			<option value="---" selected>---</option>
-			{% for p in preferences %}
-				<option value="{{p}}">{{p}}</option>
-			{% endfor %}
-		</select>
-		</td>
-      </tr>
-	{% endfor %}
-    </tbody>
-  </table>
-      <!-- START USERPROFILE FORM -->
-        {% for a_field in accomodation_form.hidden_fields %}
-          {{ a_field }}
-          {% if a_field.errors %}
-            <div class="row">
-  		    <div class="col-md-6 col-md-offset-2">
-                <span class="label label-danger">{{ field.label }}: {{ field.errors|striptags }}</span>
-              </div>
-            </div>
-  		{% endif %}
-        {% endfor %}
-        
-        {% for a_field in accomodation_form.visible_fields %}
-  		<div class="form-group">
-            <div class="row">
-              <div class="col-md-2">
-                <b>{{ a_field.label }}</b>
-				{% if a_field.field.required %}
-			        <span class="required"></span>
-			    {% endif %}
-              </div>
-  			<div class="col-md-6">
-                {{ a_field }}
-              </div>
-          </div>
-  		{% if a_field.errors %}
-            <div class="row">
-              <div class="col-md-6 col-md-offset-2">
-                <span class="label label-danger">{{ a_field.label }}: {{ a_field.errors|striptags }}</span>
-              </div>
-            </div>
-          {% endif %}
-  		</div>
-        {% endfor %}
-  
-      <!-- END USERPROFILE FORM-->
-	<button type="button" class="btn btn-info accopref" style="margin-top:20px;">{%trans "Make a Selection"%}</button>
-    {%endif%}
 
-      <!-- END USERPROFILE FORM-->
 
+
+
+
+
+<div id="accomodations_pref">
+
+  <div class="form-group m-b-5">
+    <label class="col-xs-3 control-label"><strong>{% trans "Course Preferences" %}</strong></label>
+    <div class="col-xs-8">
+      <button class="btn btn-primary pull-right" type="button" id="add-field"><i class="fa fa-fw fa-plus"></i>
+        {% trans "Add Preference"%}
+      </button>
+    </div>
   </div>
+
+  <div class="form-group" id="field-row-container"></div>
+  <div class="form-group m-b-5">
+    <div class="col-xs-8 col-xs-offset-3">
+      <button class="btn btn-success pull-left" type="button" id="sendPreference" style="display: none;">
+        {% trans "Save My Preferences"%}
+      </button>
+      <button class="btn btn-danger pull-right" type="button" id="remove" style="display: none;"><i class="fa fa-fw fa-minus"></i>
+        {% trans "Remove Preference"%}
+      </button>
+    </div>
+  </div>
+  <div class="form-group m-b-5">
+    <div class="col-xs-8 col-xs-offset-3">
+    </div>
+  </div>
+
+</div>
+{%endif%}
+
+
+
+
+
+
+
+
 
 {% endblock %}

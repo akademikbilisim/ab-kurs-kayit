@@ -111,6 +111,7 @@ def createprofile(request):
                 site=data['site']).order_by('name')
             data['preferences'] = [ i+1 for i in range(len(data['accomodations']))]
             note = _("Your profile has been saved")
+            data['accomodation_records'] = UserAccomodationPref.objects.filter(user=UserProfile.objects.get(user=request.user)).order_by('preference_order')
             data['buttonname1']='register'
             data['buttonname1_value']=_('Register')
             data['form']=None
@@ -124,8 +125,8 @@ def createprofile(request):
             try:
                 for a in accomodations:
                     uaccpref=UserAccomodationPref(user=UserProfile.objects.get(user=request.user.pk),
-                                                accomodation=Accommodation.objects.get(pk=a['id']),
-                                                usertype="stu",preference_order=a['preference'])
+                                                accomodation=Accommodation.objects.get(pk=a['value']),
+                                                usertype="stu",preference_order=a['name'])
                     uaccpref.save()
                 note=_("Accomodation prefferences saved!")
                 return HttpResponse(json.dumps({'url': 'http://'+request.META['SERVER_NAME']+':'+request.META['SERVER_PORT']+'/egitim/applytocourse'}), content_type="application/json")
