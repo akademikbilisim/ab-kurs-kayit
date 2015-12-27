@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
+
 import json
 import logging
+from datetime import datetime
 
 from django.shortcuts import render, render_to_response, RequestContext, redirect
 from django.http.response import HttpResponseRedirect, HttpResponse
@@ -109,9 +111,28 @@ def edit_course(request):
 @login_required
 def apply_to_course(request):
     data=prepare_template_data(request)
+    data['closed'] = "0"
     message = ""
+    now = datetime.date(datetime.now())
+    if now < data['site'].application_start_date:
+        data['note'] = _("You can choose courses in future")
+        data['closed'] = "1"
+        return render_to_response('training/courserecord.html', data)
+    elif now > data['site'].application_end_date:
+        data['note'] = _("The course choosing process is closed")
+        data['closed'] = "1"
+        return render_to_response('training/courserecord.html', data) 
     note = _("You can choose courses in order of preference.")
     if request.method == "POST":
+        now = datetime.now()
+        if now < data['site'].application_start_date:
+            data['note'] = _("You can choose courses in future")
+            data['closed'] = True
+            return render_to_response('training/courserecord.html', data)
+        elif now > data['site'].application_end_date:
+            data['note'] = _("The course choosing process is closed")
+            data['closed'] = True
+            return render_to_response('training/courserecord.html', data) 
         try:
             userprofile = UserProfile.objects.get(user=request.user)
             TrainessCourseRecord.objects.filter(trainess=userprofile).delete()
@@ -139,10 +160,21 @@ def apply_to_course(request):
 @login_required
 def control_panel(request):
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
+    data = prepare_template_data(request)
+    note = _("You can accept trainees")
+    now = datetime.date(datetime.now())
+    if now < data['site'].aproval_start_date:
+        data['note'] = _("You can choose courses in future")
+        data['closed'] = "1"
+        return render_to_response("training/controlpanel.html", data,context_instance=RequestContext(request))
+    elif now > data['site'].aproval_end_date:
+        data['note'] = _("The course choosing process is closed")
+        data['closed'] = "1"
+        return render_to_response("training/controlpanel.html", data,context_instance=RequestContext(request))
+
     try:
         uprofile = UserProfile.objects.get(user=request.user).is_student
         log.info(uprofile, extra = d)
-        data = prepare_template_data(request)
         if not uprofile:    
             courses = Course.objects.filter(approved=True).filter(trainer__user=request.user)
             log.info(courses, extra = d)
@@ -166,7 +198,8 @@ def control_panel(request):
                                 course.trainess.add(UserProfile.objects.get(user_id=student))
                             course.save()
                         except Exception:
-                            pass    
+                            pass   
+            data['note'] = note
             return render_to_response("training/controlpanel.html", data,context_instance=RequestContext(request))
         else:
             return redirect("applytocourse")

@@ -38,6 +38,12 @@ function addPreference(){
 
 }
 $(document).ready(function() {
+  if ({{closed}} == "1"){
+  	$("form").hide();
+  }
+  else{
+  	$("form").show();
+  }
 
   $("#add-field").click(function (e) {
   	e.preventDefault();
@@ -61,9 +67,6 @@ $(document).ready(function() {
   	{% endfor %}
 
 });
-
-
-
 
 
 </script>

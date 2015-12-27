@@ -7,6 +7,7 @@
 <script src="{% static "/static/js/courses.js" %}"></script>
 <link href="{% static "/static/css/courses.css" %}" rel="stylesheet" type="text/css"></link>
 <div class="container-fluid" style="margin-top:20px;">
+    <div class="alert alert-info">{{ note }}</div>
 {% for course,value in trainess.items %}
 	{% if value.trainess1 or value.trainess2 %}<h2><b>{{ course.name }}</b></h2>{%endif%}
 	{% if value.trainess1 %}
