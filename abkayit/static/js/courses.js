@@ -1,14 +1,12 @@
 $(document).ready(function(){
 
-    $('[data-id="course_table"]').each(function(){
-        $(this).DataTable({
+    $('[data-id="course_table"]').DataTable({
              "language": {
                     "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Turkish.json"
              },
             "searching": true,
             "ordering": true,
             "paging" : false
-        });
     });
 
 	$('#course_table tbody tr').click(function(){

@@ -29,6 +29,43 @@
 			<tr>
                 <th>
                   <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#1detail{{t.user.id}}">Detay</a>
+                    <div id="1detail{{t.user.id}}" class="accordion-body collapse">
+                      <div class="accordion-inner">
+                        <div class="row">
+                          <div class="col-md-2">
+                            <label for="title" style="color:red;">{%trans "Title" %}</label>
+                          </div>
+						</div>
+                        <div class="row">
+                          <div class="col-md-2">
+                           {{t.title}}
+                          </div>
+						</div>
+
+
+                        <div class="row">
+                          <div class="col-md-2">
+                            <label for="title" style="color:red;">{%trans "Organization" %}</label>
+                          </div>
+						</div>
+                        <div class="row">
+                          <div class="col-md-2">
+                           {{t.organization}}
+                          </div>
+						</div>
+
+                        <div class="row">
+                          <div class="col-md-2">
+                            <label for="title" style="color:red;">{%trans "Department" %}</label>
+                          </div>
+						</div>
+                        <div class="row">
+                          <div class="col-md-2">
+                           {{t.department}}
+                          </div>
+						</div>
+					 </div>
+                    </div>
                 </th>
 				<th>{{ t.user.first_name }}</th>
 				<th>{{ t.user.last_name }}</th>
@@ -44,29 +81,6 @@
 					</div>
 				</th>
 			</tr>
-	            <tr>
-				<td colspan="6" style="padding: 0 !important;">
-                    <div id="1detail{{t.user.id}}" class="accordion-body collapse">
-                      <div class="accordion-inner" style="margin-left:10px;">
-                        <div class="row">
-                          <div class="col-md-4">
-                            <label for="title" style="color:red;">{%trans "Title" %}</label> {{t.title}}
-                          </div>
-                          <div class="col-md-4">
-                            <label for="title" style="color:red;">{%trans "Organization" %}</label> {{t.organization}}
-                          </div>
-                        </div>
-                        <div class="row">
-                          <div class="col-md-4">
-                        <label for="title" style="color:red;">{%trans "University" %}</label> {{t.university}}
-                          </div>
-                          <div class="col-md-4">
-                        <label for="title" style="color:red;">{%trans "Department" %}</label> {{t.department}}
-                          </div>
-                      </div>
-                    </div>
-			  </td>
-            </tr>
 
 		{% empty %}
 		<tr><th>Goruntulenecek basvuru yok</th></tr>
@@ -93,6 +107,43 @@
 		                <tr>
                 				<th>
 				                  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#detail{{t.user.id}}">Detay</a>
+                    <div id="detail{{t.user.id}}" class="accordion-body collapse">
+                      <div class="accordion-inner">
+                        <div class="row">
+                          <div class="col-md-2">
+                            <label for="title" style="color:red;">{%trans "Title" %}</label>
+                          </div>
+						</div>
+                        <div class="row">
+                          <div class="col-md-2">
+                           {{t.title}}
+                          </div>
+						</div>
+
+
+                        <div class="row">
+                          <div class="col-md-2">
+                            <label for="title" style="color:red;">{%trans "Organization" %}</label>
+                          </div>
+						</div>
+                        <div class="row">
+                          <div class="col-md-2">
+                           {{t.organization}}
+                          </div>
+						</div>
+
+                        <div class="row">
+                          <div class="col-md-2">
+                            <label for="title" style="color:red;">{%trans "Department" %}</label>
+                          </div>
+						</div>
+                        <div class="row">
+                          <div class="col-md-2">
+                           {{t.department}}
+                          </div>
+						</div>
+					 </div>
+                    </div>
 				                </th>
 		                        <th>{{ t.user.first_name }}</th>
 		                        <th>{{ t.user.last_name }}</th>
@@ -104,29 +155,6 @@
 									</div>
 								</th>
 		                </tr>
-	            <tr>
-				  <td colspan="6" style="padding: 0 !important;">
-                    <div id="detail{{t.user.id}}" class="accordion-body collapse">
-                      <div class="accordion-inner" style="margin-left:10px;">
-                        <div class="row">
-                          <div class="col-md-4">
-                            <label for="title" style="color:red;">{%trans "Title" %}</label> {{t.title}}
-                          </div>
-                          <div class="col-md-4">
-                            <label for="title" style="color:red;">{%trans "Organization" %}</label> {{t.organization}}
-                          </div>
-                        </div>
-                        <div class="row">
-                          <div class="col-md-4">
-                        <label for="title" style="color:red;">{%trans "University" %}</label> {{t.university}}
-                          </div>
-                          <div class="col-md-4">
-                        <label for="title" style="color:red;">{%trans "Department" %}</label> {{t.department}}
-                          </div>
-                      </div>
-                    </div>
-			  </td>
-            </tr>
 		        {% endfor %}
 		        </tbody>
 		</table>
