@@ -50,8 +50,11 @@ def subscribe(request):
                 try:
                     user = form.save(commit=True)
                     user.set_password(user.password)
-                    user.save()
-                    note = _("Your account has been created. Please check your email for activation link")
+                    try:
+                        user.save()
+                        note = _("Your account has been created. Please check your email for activation link")
+                    except Exception as e:
+                        note = e.message
                     form = None
                 except Exception as e:
                     note = _("Your account couldn't create. Please try again!")
@@ -193,14 +196,17 @@ def active_resend(request):
         user_verification.activation_key = create_verification_link(user)
         user_verification.save()
         context['activation_key'] = user_verification.activation_key
-        send_email("userprofile/messages/send_confirm_subject.html",
-                        "userprofile/messages/send_confirm.html",
-                        "userprofile/messages/send_confirm.text",
-                        context,
-                        settings.EMAIL_FROM_ADDRESS,
-                        [user.username])
+        try:
+            send_email("userprofile/messages/send_confirm_subject.html",
+                            "userprofile/messages/send_confirm.html",
+                            "userprofile/messages/send_confirm.text",
+                            context,
+                            settings.EMAIL_FROM_ADDRESS,
+                            [user.username])
 
-        note = _("Your activation link has been sent to your email address")
+            note = _("Your activation link has been sent to your email address")
+        except Exception as e:
+            note = e.message
     data['note'] = note
     return render_to_response("userprofile/activate_resend.html", data, context_instance=RequestContext(request))
 
@@ -244,18 +250,20 @@ def password_reset_key(request):
                 if domain.endswith('/'):
                     domain = domain.rstrip('/')
                 context['domain'] = domain
+                try: 
+                    send_email("userprofile/messages/send_reset_password_key_subject.html",
+                                    "userprofile/messages/send_reset_password_key.html",
+                                    "userprofile/messages/send_reset_password_key.text",
+                                    context,
+                                    settings.EMAIL_FROM_ADDRESS,
+                                    [user.username])
         
-                send_email("userprofile/messages/send_reset_password_key_subject.html",
-                                "userprofile/messages/send_reset_password_key.html",
-                                "userprofile/messages/send_reset_password_key.text",
-                                context,
-                                settings.EMAIL_FROM_ADDRESS,
-                                [user.username])
-        
-                note = _("""Password reset key has been sent""")
-            except Exception as e:
+                    note = _("""Password reset key has been sent""")
+                except Exception as e:
+                    note = e.message
+            except:
                 note = _("""Password reset operation failed""")
-                log.error(e.message, extra=d)
+                log.error(note, extra=d)
         else:
             note = _("""Email field can not be empty""")    
     data['note'] = note
