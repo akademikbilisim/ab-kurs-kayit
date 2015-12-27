@@ -16,6 +16,14 @@
                     <li>
                          <a href="{% url "listcourses" %}"><i class="fa fa-pencil-square-o fa-fw"></i> Mevcut Kurslar</a>
                     </li>
+			{% if user.is_staff %}
+				<li>
+                                     <a href="{% url "alluser" %}"><i class="fa fa-pencil-square-o fa-fw"></i>Tüm Kullanıcılar</a>
+                                </li>
+				<li>
+                                     <a href="{% url "allcoursepref" %}"><i class="fa fa-pencil-square-o fa-fw"></i>Tüm Kurs Başvuruları</a>
+                                </li>
+			{% else %}
 					{%if user.userprofile %}
 						{% if user.userprofile.is_student %}
                     		<li>
@@ -30,6 +38,7 @@
 
 						{% endif %}
 					{% endif%}
+			{% endif %}
                     <li class="divider"></li>
                 </ul>
                 <!-- /.dropdown-user -->

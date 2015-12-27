@@ -1,0 +1,35 @@
+{% extends "dashboard.html" %}
+{% load i18n %}
+{% block content %}
+{% load staticfiles %}
+<script src="{% static "/static/js/allusers.js" %}"></script>
+
+<div class="container-fluid">
+<table id="list_table" class="table table-hover table-striped">
+	<thead>
+	    <tr>
+	        <th>{% trans "First Name" %}</th>
+	        <th>{% trans "Last Name" %}</th>
+	        <th>{% trans "E-mail" %}</th>
+	        <th>{% trans "TC Kimlik No / Yabancı Kimlik No" %}</th>
+	        <th>{% trans "Tercih Sırası" %}</th>
+	        <th>{% trans "Course Name" %}</th>
+	    </tr>
+	</thead>
+	<tbody>
+	{% for data in datalist %}
+		<tr>
+			<th>{{data.trainess.user.first_name}}</th>
+			<th>{{data.trainess.user.last_name}}</th>
+			<th>{{data.trainess.user.email}}</th>
+            <th>{{data.trainess.tckimlikno}}{{data.trainess.ykimlikno}}</th>
+			<th>{{data.preference_order}}</th>
+			<th>{{data.course.name}}</th>
+		</tr>
+	{% endfor %}
+	</tbody>
+</table>
+</div>
+
+{% endblock %}
+
