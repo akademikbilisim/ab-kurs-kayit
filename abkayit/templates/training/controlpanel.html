@@ -28,7 +28,7 @@
 		{% for t in value.trainess1 %}
 			<tr>
                 <th>
-                  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#detail{{t.user.id}}">Detay</a>
+                  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#1detail{{t.user.id}}">Detay</a>
                 </th>
 				<th>{{ t.user.first_name }}</th>
 				<th>{{ t.user.last_name }}</th>
@@ -42,10 +42,11 @@
 						<input type="checkbox" name="students{{course.id}}" value="{{ t.user.pk }}"/>
 						{% endif %}
 					</div>
-				<th>
+				</th>
 			</tr>
-	            <tr><td colspan="6" style="padding: 0 !important;">
-                    <div id="detail{{t.user.id}}" class="accordion-body collapse">
+	            <tr>
+				<td colspan="6" style="padding: 0 !important;">
+                    <div id="1detail{{t.user.id}}" class="accordion-body collapse">
                       <div class="accordion-inner" style="margin-left:10px;">
                         <div class="row">
                           <div class="col-md-4">
@@ -64,7 +65,7 @@
                           </div>
                       </div>
                     </div>
-</td>
+			  </td>
             </tr>
 
 		{% empty %}
@@ -103,7 +104,8 @@
 									</div>
 								</th>
 		                </tr>
-	            <tr><td colspan="6" style="padding: 0 !important;">
+	            <tr>
+				  <td colspan="6" style="padding: 0 !important;">
                     <div id="detail{{t.user.id}}" class="accordion-body collapse">
                       <div class="accordion-inner" style="margin-left:10px;">
                         <div class="row">
@@ -123,7 +125,7 @@
                           </div>
                       </div>
                     </div>
-</td>
+			  </td>
             </tr>
 		        {% endfor %}
 		        </tbody>
