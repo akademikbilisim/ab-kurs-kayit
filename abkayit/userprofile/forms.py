@@ -142,6 +142,7 @@ class StuProfileForm(ModelForm):
 					'organization' : forms.TextInput(attrs={'placeholder':_('Organization'), 'class':'form-control'}),
 					'university' : forms.Select(attrs={'placeholder':_('University'), 'class':'form-control'}),
 					'department' : forms.TextInput(attrs={'placeholder':_('Department'), 'class':'form-control'}),
+					'additional_information' : forms.Textarea(attrs={'placeholder':_('Additional Information'), 'class':'form-control'}),
 					'is_instructor':forms.HiddenInput(),
 					'is_student':forms.HiddenInput(),
 					'is_speaker':forms.HiddenInput(),
@@ -163,6 +164,7 @@ class StuProfileForm(ModelForm):
 		self.fields['is_participant'].required = False
 		self.fields['university'].required = False
 		self.fields['user'].required = False
+		self.fields['additional_information'].required = False
 		if user:
 			try:
 				self.fields['user'].initial=user
