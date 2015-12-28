@@ -104,9 +104,9 @@ $(document).ready(function(){
 </script>
 
 <script id="field-row" type="text/template">
-  <div data-id="container" class="m-b-10">
-    <label for="{0}" class="col-xs-3 control-label" style="margin-top:10px;">{%trans "Preference"%} {1}:</label>
-    <div class="col-xs-8" style="margin-top:10px;">
+  <div data-id="container" class="row col-xs-12">
+    <label for="{0}" class="col-xs-2" style="margin-top:10px;">{%trans "Preference"%} {1}:</label>
+    <div class="col-xs-10" style="margin-top:10px;">
       <div>
         <select id="{0}"  class="form-control" data-id="field" name="{0}">
         </select>
@@ -235,19 +235,33 @@ $(document).ready(function(){
 
 
 <div id="accomodations_pref">
+  <div class="form-group">
+    <div class="row col-xs-8 col-md-12 col-sm-12 control-label">
+		<strong>{% trans "Accomodation Preferences" %}</strong>
+    </div> 
+  </div>
 
-  <div class="form-group m-b-5">
-    <label class="col-xs-3 control-label"><strong>{% trans "Accomodation Preferences" %}</strong></label>
-    <div class="col-xs-8">
+  <div class="form-group">
+    <div class="row col-xs-8 col-md-12 col-sm-12 control-label">
+      <label>
+		<div class="alert alert-info">{% trans "Please, click 'Add Preference' button for making multiple selection" %}</div>
+	  </label>
+    </div>
+  </div>
+
+
+  <div class="form-group">
+    <div class="row col-xs-8 control-label">
       <button class="btn btn-primary pull-right" type="button" id="add-field"><i class="fa fa-fw fa-plus"></i>
         {% trans "Add Preference"%}
       </button>
     </div>
   </div>
 
-  <div class="form-group" id="field-row-container"></div>
+
+  <div class="form-group col-xs-8" id="field-row-container"></div>
   <div class="form-group m-b-5">
-    <div class="col-xs-8 col-xs-offset-3">
+    <div class="col-xs-8 ">
       <button class="btn btn-success pull-left" type="button" id="sendPreference" style="display: none;">
         {% trans "Save My Preferences"%}
       </button>
