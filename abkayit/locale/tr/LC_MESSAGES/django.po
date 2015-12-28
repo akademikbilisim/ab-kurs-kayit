@@ -274,7 +274,7 @@ msgstr "Konaklama Tercihleri"
 
 #: templates/userprofile/user_profile.html:242
 msgid "Please, click 'Add Preference' button for making multiple selection"
-msgstr "Lütfen, daha fazla seçim yapmak için 'Tercih Ekle' düğmesine tıklayınız"
+msgstr "Lütfen, konaklama tercihlerinizi belirtmek için 'Tercih Ekle' düğmesine tıklayınız"
 
 #: training/models.py:14
 msgid "Anahtar Kelimeler"
