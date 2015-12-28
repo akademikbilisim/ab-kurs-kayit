@@ -21,6 +21,9 @@ class UserVerification(models.Model):
 	activation_key_expires = models.DateTimeField(null=True)
 	password_reset_key_expires = models.DateTimeField(null=True)
 
+	def __unicode__(self):
+		return self.user_email
+
 class UserProfile(models.Model):
 	user = models.OneToOneField(User)
 	birthdate = models.DateField(verbose_name=_("Bird Date"), default=datetime.date(1970,1,1))

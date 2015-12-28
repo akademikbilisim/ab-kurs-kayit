@@ -12,7 +12,6 @@ def send_email(subject_template, content_template, content_text, data, from_emai
         text_content = render_to_string(content_text, data).strip()
         msg = EmailMessage(subject, html_content, from_email, to_addresses)
         msg.content_subtype = "html"
-        deneme = "1"+1
         msg.send()
     except:
         raise Exception(_("Mail could not be sent"))

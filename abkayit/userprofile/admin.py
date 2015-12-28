@@ -1,7 +1,7 @@
 #!-*- coding:utf-8 -*-
 
 from django.contrib import admin
-from userprofile.models import SubscribeNotice, UserProfile, Accommodation, UserAccomodationPref
+from userprofile.models import SubscribeNotice, UserProfile, Accommodation, UserAccomodationPref, UserVerification
 # Register your models here.
 
 @admin.register(UserProfile)
@@ -20,6 +20,10 @@ class AccommodationAdmin(admin.ModelAdmin):
     list_filter=('gender',)
     
 @admin.register(UserAccomodationPref)
-class UserAccomodationPref(admin.ModelAdmin):
+class UserAccomodationPrefAdmin(admin.ModelAdmin):
     list_display = ['id','user','usertype','preference_order','approved',]
     list_filter=('usertype','preference_order','accomodation')
+
+@admin.register(UserVerification)
+class UserVerificationAdmin(admin.ModelAdmin):
+	pass
