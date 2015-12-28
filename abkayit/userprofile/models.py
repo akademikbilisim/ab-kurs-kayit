@@ -40,6 +40,8 @@ class UserProfile(models.Model):
 	is_student = models.BooleanField(verbose_name=_("Is Student"), default=False)
 	is_speaker = models.BooleanField(verbose_name=_("Is Speaker"), default=False)
 	is_participant = models.BooleanField(verbose_name=_("Is Participant"), default=False)
+	additional_information = models.TextField(verbose_name=_("Additional Information"), null=True)
+
 	def __unicode__(self):
 		return self.user.username
 	
