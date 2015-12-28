@@ -232,6 +232,7 @@ class ChangePasswordForm(ModelForm):
 		super(ChangePasswordForm, self).__init__(*args, **kwargs)
 		for field in self.fields:
 			self.fields[field].required = True
+		self.fields['password'].label = _("Password")
 
 	def clean_passwordre(self):
 		password = self.cleaned_data.get('password')
