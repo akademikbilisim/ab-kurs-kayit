@@ -1,12 +1,19 @@
 $(document).ready(function(){
 
     $('[data-id="course_table"]').DataTable({
-             "language": {
+            "dom": 'T<"clear">lfrtip',
+            "tableTools": {
+                      "sSwfPath": "../static/images/copy_csv_xls_pdf.swf"
+            },
+            "language": {
                     "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Turkish.json"
-             },
-            "searching": true,
+            },
+            "searching": false,
+            "bJQueryUI": false,
             "ordering": true,
-            "paging" : false
+            "paging" : false,
+            buttons : [
+                        ],
     });
 
 	$('#course_table tbody tr').click(function(){
