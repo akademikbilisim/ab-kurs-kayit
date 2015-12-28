@@ -162,19 +162,19 @@ def control_panel(request):
     data = prepare_template_data(request)
     note = _("You can accept trainees")
     now = datetime.date(datetime.now())
-    if now < data['site'].aproval_start_date:
-        data['note'] = _("You can choose courses in future")
-        data['closed'] = "1"
-        return render_to_response("training/controlpanel.html", data,context_instance=RequestContext(request))
-    elif now > data['site'].aproval_end_date:
-        data['note'] = _("The course choosing process is closed")
-        data['closed'] = "1"
-        return render_to_response("training/controlpanel.html", data,context_instance=RequestContext(request))
-
     try:
         uprofile = UserProfile.objects.get(user=request.user).is_student
         log.info(uprofile, extra = d)
         if not uprofile:    
+            if now < data['site'].aproval_start_date:
+                data['note'] = _("You can choose courses in future")
+                data['closed'] = "1"
+                return render_to_response("training/controlpanel.html", data,context_instance=RequestContext(request))
+            elif now > data['site'].aproval_end_date:
+                data['note'] = _("The course choosing process is closed")
+                data['closed'] = "1"
+                return render_to_response("training/controlpanel.html", data,context_instance=RequestContext(request))
+
             courses = Course.objects.filter(approved=True).filter(trainer__user=request.user)
             log.info(courses, extra = d)
 
