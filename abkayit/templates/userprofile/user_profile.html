@@ -91,7 +91,7 @@ $(document).ready(function(){
             dataType: "json",
             data : jsonData,
             success : function(json) {
-                bootbox.alert(json.message, function() {});
+                bootbox.alert(json.note, function() {});
             },
             error : function(xhr,errmsg,err) {
                 bootbox.alert(errmsg, function() {});

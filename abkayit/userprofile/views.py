@@ -121,6 +121,9 @@ def createprofile(request):
             data['update_user_form']=None
     elif request.POST:
         accomodations=json.loads(request.POST.get('accomodation'))
+        json_response = {}
+        response_note = ""
+        response_status = '1'
         if accomodations:
             prefs=UserAccomodationPref.objects.filter(user=UserProfile.objects.get(user=user.pk))
             if prefs:
@@ -131,12 +134,17 @@ def createprofile(request):
                                                 accomodation=Accommodation.objects.get(pk=a['value']),
                                                 usertype="stu",preference_order=a['name'])
                     uaccpref.save()
-                note=_("Accomodation prefferences saved!")
-                return HttpResponse(json.dumps({'url': 'http://'+request.META['SERVER_NAME']+':'+request.META['SERVER_PORT']+'/egitim/applytocourse'}), content_type="application/json")
+                response_note= "Konaklama Tercihleriniz Kaydedildi"
+                response_status = '0'  
             except:
-                note=_("Accomodation prefferences can not be saved!")
+                response_note= "Konaklama Tercihleriniz Kaydedilemedi"
+                response_status = '1'
         else:
-            note=_("Please select at least one of them!")
+            response_note= "Lütfen bunlardan birini seçiniz"
+            response_status = '1'
+        json_response['note'] = response_note
+        json_response['status'] = response_status
+        return HttpResponse(json.dumps(json_response), content_type="application/json")
 
     elif 'cancel' in request.POST:
         return redirect("createprofile")    
