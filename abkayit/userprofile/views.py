@@ -258,17 +258,15 @@ def password_reset_key(request):
                 if domain.endswith('/'):
                     domain = domain.rstrip('/')
                 context['domain'] = domain
-                try: 
-                    send_email("userprofile/messages/send_reset_password_key_subject.html",
-                                    "userprofile/messages/send_reset_password_key.html",
-                                    "userprofile/messages/send_reset_password_key.text",
-                                    context,
-                                    settings.EMAIL_FROM_ADDRESS,
-                                    [user.username])
-        
-                    note = _("""Password reset key has been sent""")
-                except Exception as e:
-                    note = e.message
+                send_email("userprofile/messages/send_reset_password_key_subject.html",
+                                "userprofile/messages/send_reset_password_key.html",
+                                "userprofile/messages/send_reset_password_key.text",
+                                context,
+                                settings.EMAIL_FROM_ADDRESS,
+                                [user.username]) 
+                note = _("""Password reset key has been sent""")
+            except ObjectDoesNotExist:
+                note=_("""There isn't any user record with this e-mail on the system""") 
             except:
                 note = _("""Password reset operation failed""")
                 log.error(note, extra=d)
