@@ -67,6 +67,7 @@ def subscribe(request):
     else:
         return redirect("controlpanel")
 
+
 @login_required(login_url='/')
 @user_passes_test(active_required, login_url=reverse_lazy("active_resend"))
 def createprofile(request):
@@ -76,20 +77,30 @@ def createprofile(request):
     data['update_user_form']=UpdateUserForm(instance=user)
     data['form']=None
     action=""
+    json_response={}
+    accomodations = Accommodation.objects.filter(
+                usertype__in=['stu','hepsi']).filter(
+                gender__in=['E','K','H']).filter(
+                site=data['site']).order_by('name')
+    data['accomodations']=accomodations
     try:
         user_profile = UserProfile.objects.get(user=user)
         note = _("You can update your profile below")
         action="update"
         data['form']= StuProfileForm(instance=user_profile)
+        log.info(data['site'],extra=d)
+        data['accomodations'] = Accommodation.objects.filter(
+                usertype__in=['stu','hepsi']).filter(
+                gender__in=[user_profile.gender,'H']).filter(
+                site=data['site']).order_by('name')
+        data['accomodation_records'] = UserAccomodationPref.objects.filter(
+                user=UserProfile.objects.get(user=request.user)).order_by('preference_order')
     except ObjectDoesNotExist:
         note = _("If you want to continue please complete your profile. Accomodation options will be enable to select after create profile")
         action="create"
         data['form'] = StuProfileForm()
-    data['buttonname1']='next'    
-    data['buttonname2']='cancel'
-    data['buttonname1_value']=_('Next')    
-    data['buttonname2_value']=_('Cancel')
-    if 'next' in request.POST:
+    if 'register' in request.POST:
+        log.info(request.POST,extra=d)
         first_name = request.POST.get('first_name','')
         last_name = request.POST.get('last_name','')
         request.user.first_name = first_name
@@ -108,46 +119,21 @@ def createprofile(request):
             if action=="create":
                 profile.user = User.objects.get(username=request.user.username)
             profile.save()
-            data['accomodations'] = Accommodation.objects.filter(
-                usertype__in=['stu','hepsi']).filter(
-                gender__in=[profile.gender,'H']).filter(
-                site=data['site']).order_by('name')
-            data['preferences'] = [ i+1 for i in range(len(data['accomodations']))]
-            note = _("Your profile has been saved")
-            data['accomodation_records'] = UserAccomodationPref.objects.filter(user=UserProfile.objects.get(user=request.user)).order_by('preference_order')
-            data['buttonname1']='register'
-            data['buttonname1_value']=_('Register')
-            data['form']=None
-            data['update_user_form']=None
-    elif 'cancel' in request.POST:
-        return redirect("createprofile")    
-    elif request.POST:
-        accomodations=json.loads(request.POST.get('accomodation'))
-        json_response = {}
-        response_note = ""
-        response_status = '1'
-        if accomodations:
             prefs=UserAccomodationPref.objects.filter(user=UserProfile.objects.get(user=user.pk))
             if prefs:
                 prefs.delete()
-            try:
-                for a in accomodations:
-                    uaccpref=UserAccomodationPref(user=UserProfile.objects.get(user=request.user.pk),
-                                                accomodation=Accommodation.objects.get(pk=a['value']),
-                                                usertype="stu",preference_order=a['name'])
-                    uaccpref.save()
-                response_note= "Konaklama Tercihleriniz Kaydedildi"
-                response_status = '0'  
-            except:
-                response_note= "Konaklama Tercihleriniz Kaydedilemedi"
-                response_status = '1'
-        else:
-            response_note= "Lütfen bunlardan birini seçiniz"
-            response_status = '1'
-        json_response['note'] = response_note
-        json_response['status'] = response_status
-        return HttpResponse(json.dumps(json_response), content_type="application/json")
-
+            for pref in range(0,len(accomodations)):
+                if 'tercih'+str(pref+1) in request.POST.keys():
+                    try:
+                        uaccpref=UserAccomodationPref(user=profile,
+                                                 accomodation=Accommodation.objects.get(pk=request.POST['tercih'+str(pref+1)]),
+                                                 usertype="stu",preference_order=pref)
+                        uaccpref.save()
+                        note = "Profiliniz başarılı bir şekilde kaydedildi. Kurs tercihleri adımından devam edebilirsiniz"
+                    except:
+                        response_note = "Profiliniz kaydedildi ancak konaklama tercihleriniz kaydedilemedi. Sistem yöneticisi ile görüşün!"
+    elif 'cancel' in request.POST:
+        return redirect("createprofile")
     data['note'] = note
     return render_to_response("userprofile/user_profile.html",data,context_instance=RequestContext(request))
 

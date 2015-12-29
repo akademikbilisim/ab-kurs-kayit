@@ -49,11 +49,11 @@ INSTALLED_APPS = (
     'django.views',
     'abkayit',
     'userprofile',
-	'seminar',
-	'training',
-	'ckeditor',
-	'ckeditor_uploader',
-	'django_countries',
+    'seminar',
+    'training',
+    'ckeditor',
+    'ckeditor_uploader',
+    'django_countries',
 )
 
 MIDDLEWARE_CLASSES = (
