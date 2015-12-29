@@ -5,7 +5,7 @@
 
 $(document).ready(function(){
   var accomodations={}
-  $("#id_gender").select(function (){
+  $("#id_gender").change(function (){
        $.ajax({
               url : "/accounts/getaccomodations/stu/"+$("#id_gender").val(),
               type : "GET",
