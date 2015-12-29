@@ -14,26 +14,26 @@
                 </a>
                 <ul class="dropdown-menu" style>
                     <li>
-                         <a href="{% url "listcourses" %}"><i class="fa fa-pencil-square-o fa-fw"></i> Mevcut Kurslar</a>
+                         <a href="{% url "listcourses" %}"><i class="fa fa-list fa-fw"></i> Mevcut Kurslar</a>
                     </li>
 			{% if user.is_staff %}
 				<li>
-                                     <a href="{% url "alluser" %}"><i class="fa fa-pencil-square-o fa-fw"></i>Tüm Kullanıcılar</a>
+                                     <a href="{% url "alluser" %}"><i class="fa fa-users fa-fw"></i>Tüm Kullanıcılar</a>
                                 </li>
 				<li>
-                                     <a href="{% url "allcoursepref" %}"><i class="fa fa-pencil-square-o fa-fw"></i>Tüm Kurs Başvuruları</a>
+                                     <a href="{% url "allcoursepref" %}"><i class="fa fa-list-alt fa-fw"></i>Tüm Kurs Başvuruları</a>
                                 </li>
 			{% else %}
 					{%if user.userprofile %}
 						{% if user.userprofile.is_student %}
                     		<li>
-                    		     <a href="{% url "applytocourse" %}"><i class="fa fa-pencil-square-o fa-fw"></i> Kurs Başvurusu</a>
+                    		     <a href="{% url "applytocourse" %}"><i class="fa fa-check-square-o fa-fw"></i> Kurs Başvurusu</a>
                     		</li>
 
 						{% endif %}
 						{% if user.userprofile.is_instructor %}
                     		<li>
-                    		     <a href="{% url "controlpanel" %}"><i class="fa fa-pencil-square-o fa-fw"></i> Kursum</a>
+                    		     <a href="{% url "controlpanel" %}"><i class="fa fa-book fa-fw"></i> Kursum</a>
                     		</li>
 
 						{% endif %}

@@ -115,7 +115,7 @@ TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'templates/'),
 )
 
-LOGIN_URL="/accounts/login"
+LOGIN_URL="/"
 USER_TYPES={"inst": "instructor", "stu": "student", "spe":"speaker", "par": "participant","hepsi":"hepsi"}
 
 CKEDITOR_UPLOAD_PATH = "/static/"
