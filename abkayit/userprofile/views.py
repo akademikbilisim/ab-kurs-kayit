@@ -184,7 +184,7 @@ def active(request, key):
         log.error(e.message, extra=d)
     except Exception as e:
         log.error(e.message, extra=d)
-    return redirect("index")
+    return redirect("createprofile")
 
 
 def active_resend(request):
