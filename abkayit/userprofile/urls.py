@@ -6,6 +6,7 @@ urlpatterns = patterns('userprofile.views',
     #register,login,logout
     url(r'^kayit', 'subscribe', name="subscribe"),
     url(r'^profil', 'createprofile', name="createprofile"),
+    url(r'^getaccomodations/(?P<usertype>[a-zA-Z]+)/(?P<gender>[a-zA-Z]+)', 'getaccomodations', name="getaccomodations"),
     url(r'^logout', 'logout', name="logout"),
 
     #email verification

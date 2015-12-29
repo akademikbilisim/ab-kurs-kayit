@@ -3,7 +3,19 @@
 {% block head %}
 <script type="text/javascript">
 
-
+$(document).ready(function(){
+  var accomodations={}
+  $("#id_gender").select(function (){
+       $.ajax({
+              url : "/accounts/getaccomodations/stu/"+$("#id_gender").val(),
+              type : "GET",
+              dataType: "json",
+              success : function(data) {
+                        accomodations=data
+              },
+       });
+      
+  });
 function addPreference(){
     var container = $("#field-row-container");
     var selectedAccomodations =  [];
@@ -19,16 +31,24 @@ function addPreference(){
         $(this).parents("[data-id='container']").remove();
     });
     container.append(body);
+    if(!jQuery.isEmptyObject(accomodations)){
+        $.each(accomodations, function(k,v){
+            if(selectedAccomodations.indexOf(k)!=-1){
+                body.find('select').append("<option value='"+ k+ "' hidden>"+v+"</option>");
+            }else{
+                body.find('select').append("<option value='"+ k+ "' >"+v+"</option>");
+ 	        }   
+       });
 
-    {% for accomodation in accomodations %}
-        if(selectedAccomodations.indexOf("{{accomodation.id}}")!=-1){
-            body.find('select').append("<option value='"+ "{{accomodation.id}}"+ "' hidden>"+"{{accomodation.name}}"+"</option>");
-        }else{
-            body.find('select').append("<option value='"+ "{{accomodation.id}}"+ "' >"+"{{accomodation.name}}"+"</option>");
-
-		}
-    {% endfor %}
-
+   }else{
+        {% for accomodation in accomodations %}
+           if(selectedAccomodations.indexOf("{{accomodation.id}}")!=-1){
+                body.find('select').append("<option value='"+ "{{accomodation.id}}"+ "' hidden>"+"{{accomodation.name}}"+"</option>");
+            }else{
+                body.find('select').append("<option value='"+ "{{accomodation.id}}"+ "' >"+"{{accomodation.name}}"+"</option>");
+    	    }
+        {% endfor %}
+    }
     $("#remove").show();
     $("#sendPreference").show();
     $("select").unbind("change");
@@ -48,11 +68,7 @@ function addPreference(){
         });
     });
     $("select").bind("change");
-
 }
-
-$(document).ready(function(){
-
   $("#add-field").click(function (e) {
     e.preventDefault();
     addPreference();
@@ -64,16 +80,14 @@ $(document).ready(function(){
     $("select[id='tercih"+ id +"']").parent().parent().parent().remove();
     if(id=="tercih1"){
         $("#remove").hide();
-        //$("#sendPreference").hide();
     }
     $("select").trigger("change");
   });
-
-  {% for accomodation_record in accomodation_records %}
+{% for accomodation_record in accomodation_records %}
       addPreference();
       var container = $("#field-row-container");
       container.find("[data-id='container']").last().find('select').val("{{accomodation_record.accomodation.id}}")
-  {% endfor %}
+{% endfor %}
 
 });
 </script>

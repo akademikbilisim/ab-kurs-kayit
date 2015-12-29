@@ -67,6 +67,18 @@ def subscribe(request):
     else:
         return redirect("controlpanel")
 
+@login_required(login_url='/')
+def getaccomodations(request,usertype,gender):
+    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
+    data = prepare_template_data(request)
+    jsondata={}
+    accomodations = Accommodation.objects.filter(
+                            usertype__in=[usertype,'hepsi']).filter(
+                            gender__in=[gender,'H']).filter(
+                            site=data['site']).values_list('id','name').order_by('name')
+    for a in accomodations:
+        jsondata[a[0]]=a[1]
+    return HttpResponse(json.dumps(jsondata), content_type="application/json")
 
 @login_required(login_url='/')
 @user_passes_test(active_required, login_url=reverse_lazy("active_resend"))
@@ -127,7 +139,7 @@ def createprofile(request):
                     try:
                         uaccpref=UserAccomodationPref(user=profile,
                                                  accomodation=Accommodation.objects.get(pk=request.POST['tercih'+str(pref+1)]),
-                                                 usertype="stu",preference_order=pref)
+                                                 usertype="stu",preference_order=pref+1)
                         uaccpref.save()
                         note = "Profiliniz başarılı bir şekilde kaydedildi. Kurs tercihleri adımından devam edebilirsiniz"
                     except:
