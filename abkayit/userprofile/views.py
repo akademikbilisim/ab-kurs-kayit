@@ -119,6 +119,8 @@ def createprofile(request):
             data['buttonname1_value']=_('Register')
             data['form']=None
             data['update_user_form']=None
+    elif 'cancel' in request.POST:
+        return redirect("createprofile")    
     elif request.POST:
         accomodations=json.loads(request.POST.get('accomodation'))
         json_response = {}
@@ -146,8 +148,6 @@ def createprofile(request):
         json_response['status'] = response_status
         return HttpResponse(json.dumps(json_response), content_type="application/json")
 
-    elif 'cancel' in request.POST:
-        return redirect("createprofile")    
     data['note'] = note
     return render_to_response("userprofile/user_profile.html",data,context_instance=RequestContext(request))
 
