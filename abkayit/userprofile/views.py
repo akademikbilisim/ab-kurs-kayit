@@ -176,8 +176,9 @@ def active(request, key):
         user_verification = UserVerification.objects.get(activation_key=key)
         user = User.objects.get(username=user_verification.user_email)
         user.is_active=True
-        user.is_authenticated=True
+        user.backend = 'django.contrib.auth.backends.ModelBackend'
         user.save()
+        login(request, user)
     except ObjectDoesNotExist as e:
         log.error(e.message, extra=d)
     except Exception as e:
