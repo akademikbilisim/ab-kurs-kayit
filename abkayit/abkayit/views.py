@@ -77,6 +77,9 @@ def testbeforeapply(request):
                         uprof.userpassedtest=True
                         uprof.save()
                 return render_to_response('abkayit/faqtest.html',data)
+            else:
+                uprof.userpassedtest=True
+                uprof.save()
         return redirect("applytocourse") 
     except ObjectDoesNotExist:
         return redirect('createprofile')
