@@ -164,6 +164,7 @@ class StuProfileForm(ModelForm):
         self.fields['is_speaker'].required = False
         self.fields['is_participant'].required = False
         self.fields['university'].required = False
+        self.fields['userpassedtest'].required = False
         self.fields['user'].required = False
         self.fields['additional_information'].required = False
         if user:
