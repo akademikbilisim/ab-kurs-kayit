@@ -22,4 +22,11 @@ class MenuAdmin(admin.ModelAdmin):
 		ContentInline,
 	]
 
+@admin.register(Question)
+class QuestionAdmin(admin.ModelAdmin):
+    list_display = ['id','no','detail','rightanswer','active']
+    list_filter = ['no','active']
 
+@admin.register(Answer)
+class AnswerAdmin(admin.ModelAdmin):
+    list_display = ['id','detail']
