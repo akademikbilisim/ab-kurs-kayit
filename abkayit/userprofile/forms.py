@@ -186,7 +186,7 @@ class StuProfileForm(ModelForm):
             elif not cleaned_data['ykimlikno'] and cleaned_data['country'] != 'TR':
                 raise forms.ValidationError(_("Foreigner identifier no can not be blank for non Turkish citizens"))
             elif cleaned_data['tckimlikno'] and cleaned_data['country'] == 'TR':
-                tckisvalid=UserProfileOPS.validateTCKimlikNo(cleaned_data['tckimlikno'], first_name, last_name, byear)
+                tckisvalid=UserProfileOPS.validateTCKimlikNo(cleaned_data['tckimlikno'].rstrip().lstrip(), first_name, last_name, byear)
                 if tckisvalid == -1:
                     raise forms.ValidationError(_("Error occured during verify your TC identifier no"))
                 elif not tckisvalid:
