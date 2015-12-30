@@ -111,29 +111,33 @@ def edit_course(request):
 @login_required
 def apply_to_course(request):
     data=prepare_template_data(request)
-    data['closed'] = "0"
-    message = ""
-    now = datetime.date(datetime.now())
-    if now < data['site'].application_start_date:
-        data['note'] = _("You can choose courses in future")
-        data['closed'] = "1"
-        return render_to_response('training/courserecord.html', data)
-    elif now > data['site'].application_end_date:
-        data['note'] = _("The course choosing process is closed")
-        data['closed'] = "1"
-        return render_to_response('training/courserecord.html', data) 
-    note = _("You can choose courses in order of preference.")
-    if request.method == "POST":
+    userprofile=None
+    try:
+        userprofile = UserProfile.objects.get(user=request.user)
+    except ObjectDoesNotExist:
+        return redirect("createprofile")
+    if userprofile.userpassedtest:
+        data['closed'] = "0"
+        message = ""
+        now = datetime.date(datetime.now())
         if now < data['site'].application_start_date:
-            message = _("You can choose courses in future")
-            data['closed'] = True
-            return HttpResponse(json.dumps({'status':'-1', 'message':message}), content_type="application/json")
+            data['note'] = _("You can choose courses in future")
+            data['closed'] = "1"
+            return render_to_response('training/courserecord.html', data)
         elif now > data['site'].application_end_date:
-            message = _("The course choosing process is closed")
-            data['closed'] = True
-            return HttpResponse(json.dumps({'status':'-1', 'message':message}), content_type="application/json")
-        try:
-            userprofile = UserProfile.objects.get(user=request.user)
+            data['note'] = _("The course choosing process is closed")
+            data['closed'] = "1"
+            return render_to_response('training/courserecord.html', data) 
+        note = _("You can choose courses in order of preference.")
+        if request.method == "POST":
+            if now < data['site'].application_start_date:
+                message = _("You can choose courses in future")
+                data['closed'] = True
+                return HttpResponse(json.dumps({'status':'-1', 'message':message}), content_type="application/json")
+            elif now > data['site'].application_end_date:
+                message = _("The course choosing process is closed")
+                data['closed'] = True
+                return HttpResponse(json.dumps({'status':'-1', 'message':message}), content_type="application/json")
             TrainessCourseRecord.objects.filter(trainess=userprofile).delete()
             for course_pre in json.loads(request.POST.get('course')):
                 try:
@@ -146,15 +150,14 @@ def apply_to_course(request):
                     message = "Tercihleriniz kaydedilirken hata oluştu"
                     return HttpResponse(json.dumps({'status':'-1', 'message':message}), content_type="application/json")
             return HttpResponse(json.dumps({'status':'0', 'message':message}), content_type="application/json")
-        except ObjectDoesNotExist:
-            message = "Tercihleriniz kaydedilirken hata oluştu"
-            return HttpResponse(json.dumps({'status':'-1', 'message':message}), content_type="application/json")
-    courses = Course.objects.filter(approved=True)
-    course_records = TrainessCourseRecord.objects.filter(trainess__user=request.user).order_by('preference_order')
-    data['courses'] = courses
-    data['course_records'] = course_records
-    data['note'] = note
-    return render_to_response('training/courserecord.html', data)
+        courses = Course.objects.filter(approved=True)
+        course_records = TrainessCourseRecord.objects.filter(trainess__user=request.user).order_by('preference_order')
+        data['courses'] = courses
+        data['course_records'] = course_records
+        data['note'] = note
+        return render_to_response('training/courserecord.html', data)
+    else:
+        return redirect("testbeforeapply")
 
 @login_required
 def control_panel(request):

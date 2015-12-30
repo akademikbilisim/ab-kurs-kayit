@@ -45,3 +45,23 @@ class Content(models.Model):
     menu = models.OneToOneField(Menu, related_name="+", null=True)
     def __unicode__(self):
         return self.name
+
+class Answer(models.Model):
+    detail = models.CharField(verbose_name=_("Detail"),max_length="500")
+    class Meta:
+        verbose_name = _("Answer")
+        verbose_name_plural = _("Answers")
+    def __unicode__(self):
+        return self.detail
+
+class Question(models.Model):
+    no = models.IntegerField()
+    detail = models.CharField(verbose_name=_("Question"),max_length="5000")
+    choices = models.ManyToManyField(Answer, related_name="choices")
+    rightanswer = models.ForeignKey(Answer, related_name="rightanswer")
+    active = models.BooleanField(verbose_name=_("Is Active"),default=False)
+    class Meta:
+        verbose_name = _("Question")
+        verbose_name_plural = _("Questions")
+    def __unicode__(self):
+        return self.detail
