@@ -16,6 +16,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from abkayit.backend import prepare_template_data
 from abkayit.models import Site, Menu
 from abkayit.decorators import active_required
+from abkayit.settings import PREFERENCE_LIMIT
 
 from userprofile.models import UserProfile
 from userprofile.forms import InstProfileForm,CreateInstForm
@@ -118,6 +119,7 @@ def apply_to_course(request):
         return redirect("createprofile")
     if userprofile.userpassedtest:
         data['closed'] = "0"
+        data['PREFERENCE_LIMIT'] = PREFERENCE_LIMIT
         message = ""
         now = datetime.date(datetime.now())
         if now < data['site'].application_start_date:
@@ -140,21 +142,25 @@ def apply_to_course(request):
                 return HttpResponse(json.dumps({'status':'-1', 'message':message}), content_type="application/json")
             TrainessCourseRecord.objects.filter(trainess=userprofile).delete()
             course_prefs = json.loads(request.POST.get('course'))
-            if len(set([i['value'] for i in course_prefs])) == len([i['value'] for i in course_prefs]):
-                for course_pre in course_prefs:
-                    try:
-                        course_record = TrainessCourseRecord(trainess=userprofile, 
-                                              course=Course.objects.get(id=course_pre['value']), 
-                                              preference_order=course_pre['name'])
-                        course_record.save()
-                        message = "Tercihleriniz başarılı bir şekilde güncellendi"
-                    except:
-                        message = "Tercihleriniz kaydedilirken hata oluştu"
-                        return HttpResponse(json.dumps({'status':'-1', 'message':message}), content_type="application/json")
+            if len(course_prefs) <= PREFERENCE_LIMIT:
+                if len(set([i['value'] for i in course_prefs])) == len([i['value'] for i in course_prefs]):
+                    for course_pre in course_prefs:
+                        try:
+                            course_record = TrainessCourseRecord(trainess=userprofile, 
+                                                  course=Course.objects.get(id=course_pre['value']), 
+                                                  preference_order=course_pre['name'])
+                            course_record.save()
+                            message = "Tercihleriniz başarılı bir şekilde güncellendi"
+                        except:
+                            message = "Tercihleriniz kaydedilirken hata oluştu"
+                            return HttpResponse(json.dumps({'status':'-1', 'message':message}), content_type="application/json")
+                else:
+                    message = "Farklı Tercihlerinizde Aynı Kursu Seçemezsiniz"
+                    return HttpResponse(json.dumps({'status':'-1', 'message':message}), content_type="application/json")
+                return HttpResponse(json.dumps({'status':'0', 'message':message}), content_type="application/json")
             else:
-                message = "Farklı Tercihlerinizde Aynı Kursu Seçemezsiniz"
+                message = "En fazla "+ PREFERENCE_LIMIT + " tane tercih hakkına sahipsiniz"
                 return HttpResponse(json.dumps({'status':'-1', 'message':message}), content_type="application/json")
-            return HttpResponse(json.dumps({'status':'0', 'message':message}), content_type="application/json")
         courses = Course.objects.filter(approved=True)
         course_records = TrainessCourseRecord.objects.filter(trainess__user=request.user).order_by('preference_order')
         data['courses'] = courses
@@ -163,6 +169,7 @@ def apply_to_course(request):
         return render_to_response('training/courserecord.html', data)
     else:
         return redirect("testbeforeapply")
+
 
 @login_required
 def control_panel(request):

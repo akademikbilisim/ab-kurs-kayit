@@ -11,12 +11,12 @@
 
 var PREFERENCE_LIMIT = 2;
 
-function addPreference(){
+function addPreference(preference_limit){
   	var container = $("#field-row-container");
 	var selectedCourses =  [];
 	$("#field-row-container").find('select').each(function(){selectedCourses.push($(this).val());})
-  	if (container.find("[data-id='container']").size() >= PREFERENCE_LIMIT) {
-  		return false;
+  	if (container.find("[data-id='container']").size() >= preference_limit) {
+  		 bootbox.alert("Tercih Hakkınız Doldu", function() {});
   	}
 
   	var text = $("#field-row").text();
@@ -62,6 +62,7 @@ var changeFuntion = function(){
 
 }
 $(document).ready(function() {
+  var PREFERENCE_LIMIT = "{{PREFERENCE_LIMIT}}"
   if ({{closed}} == "1"){
   	$("form").hide();
   }
@@ -70,7 +71,7 @@ $(document).ready(function() {
   }
   $("#add-field").click(function (e) {
   	e.preventDefault();
-	addPreference();
+	addPreference(PREFERENCE_LIMIT);
 	$("select").change();
 
   });
@@ -87,7 +88,7 @@ $(document).ready(function() {
   });
 
 	{% for course_record in course_records %}
-		addPreference();
+		addPreference(PREFERENCE_LIMIT);
 		var container = $("#field-row-container");
 		container.find("[data-id='container']").last().find('select').val("{{course_record.course.id}}")
   	{% endfor %}
