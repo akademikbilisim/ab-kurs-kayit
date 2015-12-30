@@ -26,16 +26,39 @@ function addPreference(){
   		$(this).parents("[data-id='container']").remove();
   	});
   	container.append(body);
+	var select = body.find('select');
 	{% for course in courses %}
 		if(selectedCourses.indexOf("{{course.id}}")!=-1){
-  			body.find('select').append("<option value='"+ "{{course.id}}"+ "' hidden >"+"{{course.name}}"+"</option>");
+  			select.append("<option value='"+ "{{course.id}}"+ "' hidden >"+"{{course.name}}"+"</option>");
 		}else{
-  			body.find('select').append("<option value='"+ "{{course.id}}"+ "' >"+"{{course.name}}"+"</option>");
+  			select.append("<option value='"+ "{{course.id}}"+ "' >"+"{{course.name}}"+"</option>");
 		}
   	{% endfor %}
-
+    select.val(select.find("option:not([hidden]):first").val());
+	select.change(changeFuntion).change();
 	$("#remove").show();
 	$("#sendPreference").show();
+
+}
+var changeFuntion = function(){
+		$this = $(this);
+		var baseVal = $this.val();
+		$("select").find("option").prop("hidden",false);
+		//console.log(baseVal, $("select").not(this),this);
+		var values = $.map( $("select").not(this), function(item, i ) {
+  			return $(item).val();
+		});
+		$(values).each(function(index, val){
+			$this.find("option[value='"+val+"']").prop("hidden",true);
+		});
+		$("select").not($this).each(function(){
+			var cur = $(this);
+			var val = cur.val();
+			cur.find("option[value='"+baseVal+"']").prop("hidden",true);
+			if(val === baseVal){
+    			cur.val(cur.find("option:not([hidden]):first").val());
+			}
+		});
 
 }
 $(document).ready(function() {
@@ -45,27 +68,10 @@ $(document).ready(function() {
   else{
   	$("form").show();
   }
-
   $("#add-field").click(function (e) {
   	e.preventDefault();
 	addPreference();
-//   $("select").unbind("change");
-   $('select').change(function() {
-       var myOpt = [];
-       $("select").each(function () {
-           myOpt.push($(this).val());
-       });
-       $("select").each(function () {
-           $(this).find("option").prop('hidden', false);
-           var sel = $(this);
-           $.each(myOpt, function(key, value) {
-               if((value != "") && (value != sel.val())) {
-                   sel.find("option").filter('[value="' + value +'"]').prop('hidden', true);
-               }
-           });
-       });
-   });
-	$("select").bind("change");
+	$("select").change();
 
   });
   
