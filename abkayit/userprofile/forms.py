@@ -176,8 +176,8 @@ class StuProfileForm(ModelForm):
         cleaned_data = super(StuProfileForm, self).clean()
         ruser = self.ruser
         if ruser:
-            first_name = ruser.first_name
-            last_name = ruser.last_name
+            first_name = ruser.first_name.rstrip().lstrip()
+            last_name = ruser.last_name.rstrip().lstrip()
             byear = cleaned_data['birthdate'].year
             if cleaned_data['tckimlikno'] and cleaned_data['ykimlikno']:
                 raise forms.ValidationError(_("Please fill only one of them:tckimlikno,ykimlikno"))
