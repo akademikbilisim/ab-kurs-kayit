@@ -88,7 +88,19 @@ function addPreference(){
       var container = $("#field-row-container");
       container.find("[data-id='container']").last().find('select').val("{{accomodation_record.accomodation.id}}")
 {% endfor %}
-
+ 
+   $("#id_tckimlikno").parent().parent().find('div').first().append("<span class='required'></span>");
+   $("#id_ykimlikno").parent().parent().find('div').first().append("<span class='required'></span>");
+   $("#id_country").on('change', function(){
+     if($(this).val() == 'TR'){
+		$("#id_tckimlikno").parent().parent().find('span').show();
+		$("#id_ykimlikno").parent().parent().find('span').hide();
+     }else{
+		$("#id_ykimlikno").parent().parent().find('span').show();
+		$("#id_tckimlikno").parent().parent().find('span').hide();
+	 }
+   });
+ $("#id_country").trigger('change');
 });
 </script>
 
