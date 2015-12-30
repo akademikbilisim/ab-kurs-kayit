@@ -15,10 +15,10 @@ import sys
 import datetime
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 sys.path.insert(0, os.path.join(BASE_DIR, "abkayit"))
-COMMON_CONFIG_FILE='/home/ozge/abkayit.conf'
-#COMMON_CONFIG_FILE='/opt/abkayit.config'
-MEDIA_ROOT = "/home/ozge/web/abkayit/" #os.path.join(BASE_DIR, '/')
-#MEDIA_ROOT = "/home/ozge/workspace/abkayit/abkayit" #os.path.join(BASE_DIR, '/')
+#COMMON_CONFIG_FILE='/home/ozge/abkayit.conf'
+COMMON_CONFIG_FILE='/opt/abkayit.config'
+#MEDIA_ROOT = "/home/ozge/web/abkayit/" #os.path.join(BASE_DIR, '/')
+MEDIA_ROOT = "/home/ozge/workspace/abkayit/abkayit" #os.path.join(BASE_DIR, '/')
 
 MEDIA_URL = '/'
 # Quick-start development settings - unsuitable for production

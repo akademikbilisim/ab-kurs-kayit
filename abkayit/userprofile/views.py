@@ -100,7 +100,6 @@ def createprofile(request):
         note = _("You can update your profile below")
         action="update"
         data['form']= StuProfileForm(instance=user_profile)
-        log.info(data['site'],extra=d)
         data['accomodations'] = Accommodation.objects.filter(
                 usertype__in=['stu','hepsi']).filter(
                 gender__in=[user_profile.gender,'H']).filter(
@@ -112,7 +111,6 @@ def createprofile(request):
         action="create"
         data['form'] = StuProfileForm()
     if 'register' in request.POST:
-        log.info(request.POST,extra=d)
         first_name = request.POST.get('first_name','')
         last_name = request.POST.get('last_name','')
         request.user.first_name = first_name

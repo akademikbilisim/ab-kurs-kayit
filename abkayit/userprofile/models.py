@@ -44,7 +44,7 @@ class UserProfile(models.Model):
     is_speaker = models.BooleanField(verbose_name=_("Is Speaker"), default=False)
     is_participant = models.BooleanField(verbose_name=_("Is Participant"), default=False)
     additional_information = models.TextField(verbose_name=_("Additional Information"), null=True)
-    userpassedtest = models.BooleanField(verbose_name=_("Basvuru yapabilir mi?"), default=False)
+    userpassedtest = models.BooleanField(verbose_name=_("Basvuru yapabilir mi?"),blank=True, default=False)
     def __unicode__(self):
         return self.user.username
 
