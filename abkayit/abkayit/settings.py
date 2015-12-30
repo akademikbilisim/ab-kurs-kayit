@@ -31,9 +31,9 @@ from readconf import *
 DJANGOSETTINGS=DjangoSettings()
 SECRET_KEY = DJANGOSETTINGS.getsecretkey()
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-TEMPLATE_DEBUG = True
+TEMPLATE_DEBUG = False
 
 ALLOWED_HOSTS = []
 
