@@ -1,0 +1,5 @@
+
+
+/* Overriding border colors so ckeditor box fits in with django admin better */
+.cke_top {border-right-color: #F5F5F5 !important ; border-bottom-color: #ddd !important ;}
+.cke_contents {border-color: #ddd !important ;}
