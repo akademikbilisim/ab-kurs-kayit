@@ -176,9 +176,8 @@ def active(request, key):
         user_verification = UserVerification.objects.get(activation_key=key)
         user = User.objects.get(username=user_verification.user_email)
         user.is_active=True
-        user.backend = 'django.contrib.auth.backends.ModelBackend'
         user.save()
-        login(request, user)
+        backend_login(request, user)
     except ObjectDoesNotExist as e:
         log.error(e.message, extra=d)
     except Exception as e:
@@ -228,7 +227,8 @@ def password_reset(request):
         if form.is_valid():
             try:
                 request.user.set_password(form.cleaned_data['password'])
-                request.user.save()
+                request.user.save() 
+                backend_login(request, request.user)
                 note = _("""Your password has been changed""")
                 form = None
             except Exception as e:
@@ -311,3 +311,8 @@ def password_reset_key_done(request, key=None):
 def logout(request):
     logout_user(request)
     return HttpResponseRedirect("/")
+
+def backend_login(request, user):
+    user.backend = 'django.contrib.auth.backends.ModelBackend'
+    login(request, user)
+

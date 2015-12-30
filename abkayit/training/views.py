@@ -139,16 +139,21 @@ def apply_to_course(request):
                 data['closed'] = True
                 return HttpResponse(json.dumps({'status':'-1', 'message':message}), content_type="application/json")
             TrainessCourseRecord.objects.filter(trainess=userprofile).delete()
-            for course_pre in json.loads(request.POST.get('course')):
-                try:
-                    course_record = TrainessCourseRecord(trainess=userprofile, 
-                                          course=Course.objects.get(id=course_pre['value']), 
-                                          preference_order=course_pre['name'])
-                    course_record.save()
-                    message = "Tercihleriniz başarılı bir şekilde güncellendi"
-                except:
-                    message = "Tercihleriniz kaydedilirken hata oluştu"
-                    return HttpResponse(json.dumps({'status':'-1', 'message':message}), content_type="application/json")
+            course_prefs = json.loads(request.POST.get('course'))
+            if len(set([i['value'] for i in course_prefs])) == len([i['value'] for i in course_prefs]):
+                for course_pre in course_prefs:
+                    try:
+                        course_record = TrainessCourseRecord(trainess=userprofile, 
+                                              course=Course.objects.get(id=course_pre['value']), 
+                                              preference_order=course_pre['name'])
+                        course_record.save()
+                        message = "Tercihleriniz başarılı bir şekilde güncellendi"
+                    except:
+                        message = "Tercihleriniz kaydedilirken hata oluştu"
+                        return HttpResponse(json.dumps({'status':'-1', 'message':message}), content_type="application/json")
+            else:
+                message = "Farklı Tercihlerinizde Aynı Kursu Seçemezsiniz"
+                return HttpResponse(json.dumps({'status':'-1', 'message':message}), content_type="application/json")
             return HttpResponse(json.dumps({'status':'0', 'message':message}), content_type="application/json")
         courses = Course.objects.filter(approved=True)
         course_records = TrainessCourseRecord.objects.filter(trainess__user=request.user).order_by('preference_order')
