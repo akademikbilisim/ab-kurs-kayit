@@ -97,6 +97,7 @@ def createprofile(request):
         action="update"
         data['form']= StuProfileForm(instance=user_profile)
         if not user_profile.is_instructor:
+            log.debug("egitmen olmayan kullanici icin isleme devam ediliyor", extra=d)
             data['accomodations'] = Accommodation.objects.filter(
                 usertype__in=['stu','hepsi']).filter(
                 gender__in=[user_profile.gender,'H']).filter(
@@ -104,6 +105,7 @@ def createprofile(request):
             data['accomodation_records'] = UserAccomodationPref.objects.filter(
                 user=user_profile).order_by('preference_order')
     except ObjectDoesNotExist:
+        log.debug("Kullanıcı profili bulunamadi, yeni profil olusturmak icin isleme devam ediliyor", extra=d)
         note = _("If you want to continue please complete your profile.")
         action="create"
         data['form'] = StuProfileForm()
@@ -146,9 +148,11 @@ def createprofile(request):
                                                          usertype="stu",preference_order=pref+1)
                                 uaccpref.save()
                                 note = "Profiliniz başarılı bir şekilde kaydedildi. Kurs tercihleri adımından devam edebilirsiniz"
-                            except:
+                            except Exception as e:
+                                log.error(e.message, extra=d)
                                 response_note = "Profiliniz kaydedildi ancak konaklama tercihleriniz kaydedilemedi. Sistem yöneticisi ile görüşün!"
-            except:
+            except Exception as e:
+                log.error(e.message, extra=d)
                 note = "Profiliniz kaydedilirken hata oluştu lütfen sayfayı yeniden yükleyip tekrar deneyin"
         else:
             note = "Profiliniz aşağıdaki sebeplerden dolayı oluşturulamadı"
@@ -315,11 +319,14 @@ def password_reset_key(request):
                 note = _("""Password reset key has been sent""")
             except ObjectDoesNotExist:
                 note=_("""There isn't any user record with this e-mail on the system""") 
-            except:
+                log.error(note, extra=d)
+            except Exception as e:
                 note = _("""Password reset operation failed""")
                 log.error(note, extra=d)
+                log.error(e.message, extra=d)
         else:
             note = _("""Email field can not be empty""")    
+            log.error(note, extra=d)
     data['note'] = note
     return render_to_response("userprofile/change_password_key_request.html", data, context_instance=RequestContext(request))
 
