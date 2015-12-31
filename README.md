@@ -26,6 +26,8 @@ Gereksinimler:
 
 - pysimplesoap
 
+- longerusernameandemail
+
 Apache ile kullanmak icin gereksinimler:
 
 -- apache2
