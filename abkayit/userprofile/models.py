@@ -36,7 +36,7 @@ class UserProfile(models.Model):
     city = models.CharField(verbose_name= _("City"), max_length=40)
     country = CountryField(verbose_name= _("Country"), choices=COUNTRIES,default='TR')
     title =  models.CharField(verbose_name= _("Title"), max_length=40)
-    organization = models.CharField(verbose_name= _("Organization"), max_length=50)
+    organization = models.CharField(verbose_name= _("Organization"), max_length=200)
     university = models.CharField(choices=UNIVERSITIES, verbose_name=_("University"), max_length=300,blank=True)
     department = models.CharField(verbose_name= _("Department"), max_length=50) 
     is_instructor = models.BooleanField(verbose_name=_("Is Instructor"), default=False)

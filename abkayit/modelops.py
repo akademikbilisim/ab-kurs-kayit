@@ -10,15 +10,16 @@ from abkayit.models import Site
 # user model fields: first_name, last_name, email = username 
 
 def savetrainers():
-    with open("egitmenler") as e:
+    with open("sisteme_eklenecek_egitmenler.csv_bk") as e:
         egitmenler = e.readlines()
         for egit in egitmenler:
+            print egit
             cols=egit.split('|')
-            egitu = User(first_name=cols[0],last_name=cols[1],email=cols[2],username=cols[2])
+            egitu = User(first_name=cols[0],last_name=cols[1],email=cols[4],username=cols[4])
             egitu.set_password = '123456'
             egitu.save()
             egitup = UserProfile(user=egitu,
-                                 organization=cols[3],
+                                 organization=cols[2],
                                  tckimlikno='',
                                  ykimlikno='',
                                  gender='',
@@ -29,6 +30,7 @@ def savetrainers():
                                  title='',
                                  university='',
                                  department='',
+                                 country=cols[3],
                                  is_instructor=True) 
             egitup.save()
 # no|name|description|url|trainers

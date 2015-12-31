@@ -38,8 +38,10 @@ TEMPLATE_DEBUG = False
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'kayit.ab.org.tr']
 
 # Application definition
+REQUIRE_UNIQUE_EMAIL = False
 
 INSTALLED_APPS = (
+	'longerusernameandemail',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
