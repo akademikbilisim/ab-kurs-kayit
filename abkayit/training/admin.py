@@ -11,7 +11,7 @@ class KeywordAdmin(admin.ModelAdmin):
 class CourseAdmin(admin.ModelAdmin):
     list_display = ['no','name','approved']
     list_filter = ('approved','trainer')
-    search_fields = ('name','trainer')
+    search_fields = ('name','trainer__user__username')
 
 @admin.register(TrainessCourseRecord)
 class TrainessCourseRecordAdmin(admin.ModelAdmin):
