@@ -85,3 +85,8 @@ class InstructorInformation(models.Model):
     additional_information = models.CharField(verbose_name=_("Additional Information"), max_length=300, null=True)
     arrival_date = models.DateField(verbose_name=_("Arrival Date"), default=datetime.date.today)
     departure_date = models.DateField(verbose_name=_("Departure Date"), default=datetime.date.today)
+    def __unicode__(self):
+        return self.user.user.username
+    class Meta:
+        verbose_name = _("Egitmen Ek Bilgiler")
+        verbose_name_plural = _("Egitmen Ek Bilgiler")
