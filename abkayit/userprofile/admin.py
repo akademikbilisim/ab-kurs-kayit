@@ -6,8 +6,8 @@ from userprofile.models import InstructorInformation, SubscribeNotice, UserProfi
 
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ['user','is_instructor','is_student','is_speaker','is_participant']
-    list_filter=('is_instructor','is_student','is_speaker','is_participant')
+    list_display = ['user','is_instructor','tckimlikno','gender','mobilephonenumber']
+    list_filter=('is_instructor','is_student')
     search_fields=('user__username',)
 
 @admin.register(SubscribeNotice)
