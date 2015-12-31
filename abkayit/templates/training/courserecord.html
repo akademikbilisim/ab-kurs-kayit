@@ -17,6 +17,7 @@ function addPreference(preference_limit){
 	$("#field-row-container").find('select').each(function(){selectedCourses.push($(this).val());})
   	if (container.find("[data-id='container']").size() >= preference_limit) {
   		 bootbox.alert("Tercih Hakkınız Doldu", function() {});
+         return false;
   	}
 
   	var text = $("#field-row").text();
