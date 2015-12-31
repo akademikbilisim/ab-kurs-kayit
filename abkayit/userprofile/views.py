@@ -85,35 +85,32 @@ def getaccomodations(request,usertype,gender):
 def createprofile(request):
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
     data = prepare_template_data(request)
-    user=User.objects.get(username=request.user.username)
+    log.info("create profile form",extra=d)
+    user=User.objects.get(username=request.user)
     data['update_user_form']=UpdateUserForm(instance=user)
     data['form']=None
     action=""
     json_response={}
-    if request.user.userprofile:
-        if not request.user.userprofile.is_instructor:
-            accomodations = Accommodation.objects.filter(
-                usertype__in=['stu','hepsi']).filter(
-                gender__in=['E','K','H']).filter(
-                site=data['site']).order_by('name')
-            data['accomodations']=accomodations
     try:
         user_profile = UserProfile.objects.get(user=user)
         note = _("You can update your profile below")
         action="update"
         data['form']= StuProfileForm(instance=user_profile)
-        if request.user.userprofile:
-            if not request.user.userprofile.is_instructor:
-                data['accomodations'] = Accommodation.objects.filter(
-                    usertype__in=['stu','hepsi']).filter(
-                    gender__in=[user_profile.gender,'H']).filter(
-                    site=data['site']).order_by('name')
-                data['accomodation_records'] = UserAccomodationPref.objects.filter(
-                    user=UserProfile.objects.get(user=request.user)).order_by('preference_order')
+        if not user_profile.is_instructor:
+            data['accomodations'] = Accommodation.objects.filter(
+                usertype__in=['stu','hepsi']).filter(
+                gender__in=[user_profile.gender,'H']).filter(
+                site=data['site']).order_by('name')
+            data['accomodation_records'] = UserAccomodationPref.objects.filter(
+                user=user_profile).order_by('preference_order')
     except ObjectDoesNotExist:
         note = _("If you want to continue please complete your profile.")
         action="create"
         data['form'] = StuProfileForm()
+        data['accomodations'] = Accommodation.objects.filter(
+            usertype__in=['stu','hepsi']).filter(
+            gender__in=['K','E','H']).filter(
+            site=data['site']).order_by('name')
     if 'register' in request.POST:
         first_name = request.POST.get('first_name','')
         last_name = request.POST.get('last_name','')
@@ -131,25 +128,26 @@ def createprofile(request):
                 user.save()
             log.info("formvalid", extra=d)
             profile = data['form'].save(commit=False)
-            profile.is_student = True
             if action=="create":
+                profile.is_student = True
                 log.info("create",extra=d)
-                profile.user = User.objects.get(username=request.user.username)
+                profile.user = User.objects.get(username=request.user)
             try:
                 profile.save()
-                prefs=UserAccomodationPref.objects.filter(user=UserProfile.objects.get(user=user.pk))
-                if prefs:
-                    prefs.delete()
-                for pref in range(0,len(accomodations)):
-                    if 'tercih'+str(pref+1) in request.POST.keys():
-                        try:
-                            uaccpref=UserAccomodationPref(user=profile,
-                                                     accomodation=Accommodation.objects.get(pk=request.POST['tercih'+str(pref+1)]),
-                                                     usertype="stu",preference_order=pref+1)
-                            uaccpref.save()
-                            note = "Profiliniz başarılı bir şekilde kaydedildi. Kurs tercihleri adımından devam edebilirsiniz"
-                        except:
-                            response_note = "Profiliniz kaydedildi ancak konaklama tercihleriniz kaydedilemedi. Sistem yöneticisi ile görüşün!"
+                if profile.is_student:
+                    prefs=UserAccomodationPref.objects.filter(user=UserProfile.objects.get(user=user))
+                    if prefs:
+                        prefs.delete()
+                    for pref in range(0,len(accomodations)):
+                        if 'tercih'+str(pref+1) in request.POST.keys():
+                            try:
+                                uaccpref=UserAccomodationPref(user=profile,
+                                                         accomodation=Accommodation.objects.get(pk=request.POST['tercih'+str(pref+1)]),
+                                                         usertype="stu",preference_order=pref+1)
+                                uaccpref.save()
+                                note = "Profiliniz başarılı bir şekilde kaydedildi. Kurs tercihleri adımından devam edebilirsiniz"
+                            except:
+                                response_note = "Profiliniz kaydedildi ancak konaklama tercihleriniz kaydedilemedi. Sistem yöneticisi ile görüşün!"
             except:
                 note = "Profiliniz kaydedilirken hata oluştu lütfen sayfayı yeniden yükleyip tekrar deneyin"
         else:
