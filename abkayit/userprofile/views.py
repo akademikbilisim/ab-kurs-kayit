@@ -138,7 +138,7 @@ def createprofile(request):
                     prefs=UserAccomodationPref.objects.filter(user=UserProfile.objects.get(user=user))
                     if prefs:
                         prefs.delete()
-                    for pref in range(0,len(accomodations)):
+                    for pref in range(0,len(data['accomodations'])):
                         if 'tercih'+str(pref+1) in request.POST.keys():
                             try:
                                 uaccpref=UserAccomodationPref(user=profile,
