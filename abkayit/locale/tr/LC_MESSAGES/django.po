@@ -430,11 +430,7 @@ msgstr "Ulaşım şeklinizi seçin"
 
 #: userprofile/forms.py:234
 msgid "If you want to add additional information, please enter to here"
-msgstr ""
-"Ek bilgi vermek isterseniz, lütfen buraya yazınDevam edebilmek için lütfen "
-"önce profilinizi tamamlayın.Eğer devam etmek istiyorsanız profilinizi "
-"tamamlamalısınız. Konaklama seçenekleri profilinizi oluşturduktan sonra "
-"etkin olacaktır"
+msgstr "Ek bilgi vermek isterseniz, lütfen buraya yazın"
 
 #: userprofile/forms.py:235
 msgid ""
