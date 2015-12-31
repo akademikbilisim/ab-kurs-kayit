@@ -16,8 +16,11 @@ urlpatterns = patterns('userprofile.views',
     # for admins
     url(r'^tumkullanicilar', 'alluserview', name="alluser"),
 
+    #for instructor
+    url(r'^egitmen/bilgi', 'instructor_information', name="instructor_information"),
+    
     # password reset
     url(r"^password/reset/$", 'password_reset', name="account_reset_password"),
     url(r"^password/reset/key/$", 'password_reset_key', name="account_reset_password_key"),
-	url(r'^password/reset/key/(?P<key>\w+)/$', 'password_reset_key_done', name="account_reset_password_key_done"),
+    url(r'^password/reset/key/(?P<key>\w+)/$', 'password_reset_key_done', name="account_reset_password_key_done"),
 )
