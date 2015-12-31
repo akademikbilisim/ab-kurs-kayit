@@ -8,6 +8,7 @@
 <table id="list_table" class="table table-hover table-striped">
 	<thead>
 	    <tr>
+	        <th>{% trans "Basvuru No" %}</th>
 	        <th>{% trans "First Name" %}</th>
 	        <th>{% trans "Last Name" %}</th>
 	        <th>{% trans "E-mail" %}</th>
@@ -19,6 +20,7 @@
 	<tbody>
 	{% for data in datalist %}
 		<tr>
+			<th>{{data.id}}</th>
 			<th>{{data.trainess.user.first_name}}</th>
 			<th>{{data.trainess.user.last_name}}</th>
 			<th>{{data.trainess.user.email}}</th>
