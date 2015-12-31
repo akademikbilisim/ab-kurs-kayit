@@ -90,22 +90,26 @@ def createprofile(request):
     data['form']=None
     action=""
     json_response={}
-    accomodations = Accommodation.objects.filter(
+    if request.user.userprofile:
+        if not request.user.userprofile.is_instructor:
+            accomodations = Accommodation.objects.filter(
                 usertype__in=['stu','hepsi']).filter(
                 gender__in=['E','K','H']).filter(
                 site=data['site']).order_by('name')
-    data['accomodations']=accomodations
+            data['accomodations']=accomodations
     try:
         user_profile = UserProfile.objects.get(user=user)
         note = _("You can update your profile below")
         action="update"
         data['form']= StuProfileForm(instance=user_profile)
-        data['accomodations'] = Accommodation.objects.filter(
-                usertype__in=['stu','hepsi']).filter(
-                gender__in=[user_profile.gender,'H']).filter(
-                site=data['site']).order_by('name')
-        data['accomodation_records'] = UserAccomodationPref.objects.filter(
-                user=UserProfile.objects.get(user=request.user)).order_by('preference_order')
+        if request.user.userprofile:
+            if not request.user.userprofile.is_instructor:
+                data['accomodations'] = Accommodation.objects.filter(
+                    usertype__in=['stu','hepsi']).filter(
+                    gender__in=[user_profile.gender,'H']).filter(
+                    site=data['site']).order_by('name')
+                data['accomodation_records'] = UserAccomodationPref.objects.filter(
+                    user=UserProfile.objects.get(user=request.user)).order_by('preference_order')
     except ObjectDoesNotExist:
         note = _("If you want to continue please complete your profile.")
         action="create"
@@ -155,6 +159,47 @@ def createprofile(request):
     data['note'] = note
     return render_to_response("userprofile/user_profile.html",data,context_instance=RequestContext(request))
 
+@login_required(login_url='/')
+@user_passes_test(active_required, login_url=reverse_lazy("active_resend"))
+def instructor_information(request):
+    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
+    if request.user.userprofile == None:
+        log.error("Kullanıcı Profili Bulunamadı", extra=d)
+        return redirect("createprofile")
+    data = prepare_template_data(request)
+    note = ""
+    if not request.user.userprofile.is_instructor:
+        note = _("You don't have permission to access to here")
+    else:
+        note = _("Please enter your transformation, arrival date, departure date informations")
+        instructor_information = None
+        try:
+            instructor_information = InstructorInformation.objects.get(user=request.user.userprofile)
+            form = InstructorInformationForm(instance = instructor_information)
+        except Exception as e:
+            log.debug("Egitmen bilgileri bulunamadi, yeni bilgiler olusturulmak icin form acilacak", extra=d)
+            log.error(e.message, extra=d)
+            form = InstructorInformationForm()
+        if request.POST:
+            if instructor_information:
+                form = InstructorInformationForm(request.POST, instance=instructor_information)
+            else:
+                form = InstructorInformationForm(request.POST)
+            if form.is_valid():
+                try:
+                    form.instance.user = request.user.userprofile
+                    instructor_info = form.save(commit=True)
+                    instructor_info.user = request.user.userprofile
+                    instructor_info.save()
+                    note = _("Your informations saved successfully")
+                except Exception as e:
+                    note = _("Error occured during save your informations")
+                    log.error(e.message, extra=d)
+        data['form'] = form
+    data['note'] = note    
+    return render_to_response("userprofile/instructor_information.html",data,context_instance=RequestContext(request))
+            
+    
 
 @staff_member_required
 def alluserview(request):

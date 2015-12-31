@@ -9,7 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 from django_countries.fields import CountryField
 from django_countries.data import COUNTRIES
 
-from abkayit.settings import USER_TYPES, UNIVERSITIES, GENDER
+from abkayit.settings import USER_TYPES, UNIVERSITIES, GENDER, TRANSPORTATION
 
 from abkayit.models import Site
 
@@ -78,3 +78,10 @@ class UserAccomodationPref(models.Model):
     class Meta:
         verbose_name = _("Participant Accommodation Preference")
         verbose_name_plural = _("Participant Accommodation Preferences")
+
+class InstructorInformation(models.Model):
+    user = models.ForeignKey(UserProfile)
+    transportation = models.CharField(choices=TRANSPORTATION.items(), verbose_name=_("Transportation"), max_length=1) 
+    additional_information = models.CharField(verbose_name=_("Additional Information"), max_length=300, null=True)
+    arrival_date = models.DateField(verbose_name=_("Arrival Date"), default=datetime.date.today)
+    departure_date = models.DateField(verbose_name=_("Departure Date"), default=datetime.date.today)

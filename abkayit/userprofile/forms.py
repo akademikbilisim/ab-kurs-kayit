@@ -5,13 +5,14 @@ from django import forms
 
 from django.forms.models import ModelForm, ModelChoiceField
 from django.contrib.auth.models import User
+from django.contrib.admin import widgets                                       
 from django.utils.translation import ugettext_lazy as _
 from django.forms.extras.widgets import SelectDateWidget
 from django.forms.widgets import TextInput
 
 from django_countries.widgets import CountrySelectWidget
 
-from userprofile.models import UserProfile, Accommodation, UserAccomodationPref
+from userprofile.models import *
 from userprofile.dynamicfields import DynmcFields 
 from userprofile.userprofileops import UserProfileOPS
 
@@ -218,3 +219,24 @@ class ChangePasswordForm(ModelForm):
             raise forms.ValidationError(_("Your passwords do not match"))
         return passwordre
 
+class InstructorInformationForm(ModelForm):
+    class Meta:
+        model = InstructorInformation
+        fields = ['transportation', 'additional_information', 'arrival_date', 'departure_date']
+        widgets = {
+                    'transportation' : forms.Select(attrs={'placeholder':_('Transportation'), 'class':'form-control'}),
+                    'additional_information': forms.TextInput(attrs={'placeholder':_('Additional Information'), 'class':'form-control'}),
+                    'arrival_date': SelectDateWidget(attrs={'placeholder':_('Arrival Date')}),
+                    'departure_date': SelectDateWidget(attrs={'placeholder':_('Departure Date')}),
+                  }
+        help_texts = {
+            'transportation': _('Select your transportation to go Akademik Bilisim'),
+            'additional_information' : _('If you want to add additional information, please enter to here'),
+            'arrival_date' : _('Arrival Date (Example: If your first day is 1st February(for accommodation), please select 1st February'),
+            'departure_date': _('Departure Date (Example: If you will be stay at 3rd february(for accommodation), please select 3rd February)')
+        } 
+    def __init__(self, *args, **kwargs):
+        super(InstructorInformationForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].required = True
+        self.fields['additional_information'].required = False
