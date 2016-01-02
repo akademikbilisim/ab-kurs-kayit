@@ -14,9 +14,10 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.admin.views.decorators import staff_member_required
 
 from abkayit.backend import prepare_template_data
+from abkayit.adaptor import send_email
 from abkayit.models import Site, Menu
 from abkayit.decorators import active_required
-from abkayit.settings import PREFERENCE_LIMIT
+from abkayit.settings import PREFERENCE_LIMIT, EMAIL_FROM_ADDRESS
 
 from userprofile.models import UserProfile
 from userprofile.forms import InstProfileForm,CreateInstForm
@@ -111,6 +112,7 @@ def edit_course(request):
 
 @login_required
 def apply_to_course(request):
+    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
     data=prepare_template_data(request)
     userprofile=None
     try:
@@ -151,12 +153,30 @@ def apply_to_course(request):
                                                   preference_order=course_pre['name'])
                             course_record.save()
                             message = "Tercihleriniz başarılı bir şekilde güncellendi"
-                        except:
+                        except Exception as e:
+                            log.error(e.message, extra = d)
                             message = "Tercihleriniz kaydedilirken hata oluştu"
                             return HttpResponse(json.dumps({'status':'-1', 'message':message}), content_type="application/json")
                 else:
                     message = "Farklı Tercihlerinizde Aynı Kursu Seçemezsiniz"
                     return HttpResponse(json.dumps({'status':'-1', 'message':message}), content_type="application/json")
+                try:
+                    context={}
+                    context['user'] = request.user
+                    domain = Site.objects.get(is_active=True).home_url
+                    if domain.endswith('/'):
+                        domain = domain.rstrip('/')
+                    context['domain'] = domain
+ 
+                    send_email("training/messages/preference_saved_subject.html",
+                                 "training/messages/preference_saved.html",
+                                 "training/messages/preference_saved.text",
+                                 context,
+                                 EMAIL_FROM_ADDRESS,
+                                 [request.user.username])
+                except Exception as e:
+                    log.error(e.message, extra = d)
+ 
                 return HttpResponse(json.dumps({'status':'0', 'message':message}), content_type="application/json")
             else:
                 message = "En fazla "+ PREFERENCE_LIMIT + " tane tercih hakkına sahipsiniz"
