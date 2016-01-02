@@ -217,12 +217,9 @@ def control_panel(request):
                 trainess = {}
                 for course in courses:
                         trainess[course] = {}
-                        trainess1 = TrainessCourseRecord.objects.filter(course=course.pk).filter(preference_order=1)
-                        trainess2 = TrainessCourseRecord.objects.filter(course=course.pk).filter(preference_order=2)
-                        trainess3 = TrainessCourseRecord.objects.filter(course=course.pk).filter(preference_order=3)
-                        trainess[course]['trainess1'] = UserProfile.objects.filter(pk__in=trainess1)
-                        trainess[course]['trainess2'] = UserProfile.objects.filter(pk__in=trainess2)
-                        trainess[course]['trainess3'] = UserProfile.objects.filter(pk__in=trainess3)
+                        trainess[course]['trainess1'] = TrainessCourseRecord.objects.filter(course=course.pk).filter(preference_order=1)
+                        trainess[course]['trainess2'] = TrainessCourseRecord.objects.filter(course=course.pk).filter(preference_order=2)
+                        trainess[course]['trainess3'] = TrainessCourseRecord.objects.filter(course=course.pk).filter(preference_order=3)
                 data['trainess'] = trainess
                 log.info(data, extra = d)
                 if request.POST:
@@ -230,18 +227,24 @@ def control_panel(request):
                     for course in courses:
                         try:
                             course.trainess.clear()
-                            for student in request.POST.getlist('students' + str(course.pk)):
-                                course.trainess.add(UserProfile.objects.get(user_id=student))
+                            allprefs=TrainessCourseRecord.objects.filter(course=course.pk)
+                            approvedr = request.POST.getlist('students' + str(course.pk))
+                            for p in allprefs:
+                                if str(p.pk) not in approvedr: 
+                                    p.approved=False
+                                elif str(p.pk) in approvedr:
+                                    p.approved=True
+                                    course.trainess.add(p.trainess)
+                                p.save()
                             course.save()
-                            data['note'] = "Seçimleriniz başarılı bir şekilde kaydedildi."
+                            note = "Seçimleriniz başarılı bir şekilde kaydedildi."
                         except Exception:
-                            data['note'] = "Beklenmedik bir hata oluştu!"
+                            note = "Beklenmedik bir hata oluştu!"
             data['note'] = note
             return render_to_response("training/controlpanel.html", data,context_instance=RequestContext(request))
         else:
             return redirect("applytocourse")
     except UserProfile.DoesNotExist:
-        #TODO: burada kullanici ogrenci ise yapılacak islem secilmeli. simdilik kurslari listeleme olarak birakiyorum
         return redirect("createprofile")
 
 @staff_member_required

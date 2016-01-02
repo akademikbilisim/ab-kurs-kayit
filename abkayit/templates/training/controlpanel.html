@@ -29,8 +29,8 @@
 		{% for t in value.trainess1 %}
 			<tr>
                 <th>
-                  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#1detail{{t.user.id}}">Detay</a>
-                    <div id="1detail{{t.user.id}}" class="accordion-body collapse">
+                  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#1detail{{t.trainess.user.pk}}">Detay</a>
+                    <div id="1detail{{t.trainess.user.pk}}" class="accordion-body collapse">
                       <div class="accordion-inner">
                         <div class="row">
                           <div class="col-md-2">
@@ -39,7 +39,7 @@
 						</div>
                         <div class="row">
                           <div class="col-md-2">
-                           {{t.title}}
+                           {{t.trainess.title}}
                           </div>
 						</div>
 
@@ -51,7 +51,7 @@
 						</div>
                         <div class="row">
                           <div class="col-md-2">
-                           {{t.organization}}
+                           {{t.trainess.organization}}
                           </div>
 						</div>
 
@@ -62,7 +62,7 @@
 						</div>
                         <div class="row">
                           <div class="col-md-2">
-                           {{t.department}}
+                           {{t.trainess.department}}
                           </div>
 						</div>
                         <div class="row">
@@ -72,23 +72,23 @@
 						</div>
                         <div class="row">
                           <div class="col-md-2">
-                           {{t.additional_information}}
+                           {{t.trainess.additional_information}}
                           </div>
 						</div>
 					 </div>
                     </div>
                 </th>
-				<th>{{ t.user.id }}</th>
-				<th>{{ t.user.first_name }}</th>
-				<th>{{ t.user.last_name }}</th>
-				<th>{{ t.user.email }}</th>
-				<th>{{ t.city }}</th>
+				<th>{{ t.pk }}</th>
+				<th>{{ t.trainess.user.first_name }}</th>
+				<th>{{ t.trainess.user.last_name }}</th>
+				<th>{{ t.trainess.user.email }}</th>
+				<th>{{ t.trainess.city }}</th>
 				<th>
 					<div class="checkbox">
-						{%if t in course.trainess.all%}
-						   <input type="checkbox" checked name="students{{course.id}}" value="{{ t.user.pk }}"/>
+						{%if t.approved%}
+						   <input type="checkbox" checked name="students{{course.id}}" value="{{ t.pk }}"/>
 						{% else %}
-						   <input type="checkbox" name="students{{course.id}}" value="{{ t.user.pk }}"/>
+						   <input type="checkbox" name="students{{course.id}}" value="{{ t.pk }}"/>
 						{% endif %}
 					</div>
 				</th>
@@ -106,6 +106,7 @@
 		        <thead>
 		            <tr>
                 		<th>#</th>
+				        <th>Basvuru No</th>
 		                <th>İsim</th>
 		                <th>Soyisim</th>
 		                <th>E-posta</th>
@@ -115,11 +116,11 @@
 		            </tr>
 		        </thead>
 		        <tbody>
-		        {% for t in value.trainess2 %}
+		        {% for t2 in value.trainess2 %}
 		                <tr>
                 				<th>
-				                  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#detail{{t.user.id}}">Detay</a>
-                    <div id="detail{{t.user.id}}" class="accordion-body collapse">
+				                  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#detail{{t2.trainess.user.pk}}">Detay</a>
+                    <div id="detail{{t2.trainess.user.pk}}" class="accordion-body collapse">
                       <div class="accordion-inner">
                         <div class="row">
                           <div class="col-md-2">
@@ -128,7 +129,7 @@
 						</div>
                         <div class="row">
                           <div class="col-md-2">
-                           {{t.title}}
+                           {{t2.trainess.title}}
                           </div>
 						</div>
 
@@ -140,7 +141,7 @@
 						</div>
                         <div class="row">
                           <div class="col-md-2">
-                           {{t.organization}}
+                           {{t2.trainess.organization}}
                           </div>
 						</div>
 
@@ -151,7 +152,7 @@
 						</div>
                         <div class="row">
                           <div class="col-md-2">
-                           {{t.department}}
+                           {{t2.trainess.department}}
                           </div>
 						</div>
                         <div class="row">
@@ -161,22 +162,23 @@
 						</div>
                         <div class="row">
                           <div class="col-md-2">
-                           {{t.additional_information}}
+                           {{t2.trainess.additional_information}}
                           </div>
 						</div>
 					 </div>
                     </div>
 				                </th>
-		                        <th>{{ t.user.first_name }}</th>
-		                        <th>{{ t.user.last_name }}</th>
-		                        <th>{{ t.user.email }}</th>
-		                        <th>{{ t.city }}</th>
+		                        <th>{{ t2.pk }}</th>
+		                        <th>{{ t2.trainess.user.first_name }}</th>
+		                        <th>{{ t2.trainess.user.last_name }}</th>
+		                        <th>{{ t2.trainess.user.email }}</th>
+		                        <th>{{ t2.trainess.city }}</th>
 				<th>
 					<div class="checkbox">
-						{%if t in course.trainess.all %}
-						   <input type="checkbox" checked name="students{{course.id}}" value="{{ t.user.pk }}"/>
+						{%if t2.approved %}
+						   <input type="checkbox" checked name="students{{course.id}}" value="{{ t2.pk }}"/>
 						{% else %}
-						   <input type="checkbox" name="students{{course.id}}" value="{{ t.user.pk }}"/>
+						   <input type="checkbox" name="students{{course.id}}" value="{{ t2.pk }}"/>
 						{% endif %}
 					</div>
 				</th>
@@ -191,6 +193,7 @@
 		        <thead>
 		            <tr>
                 		<th>#</th>
+				        <th>Basvuru No</th>
 		                <th>İsim</th>
 		                <th>Soyisim</th>
 		                <th>E-posta</th>
@@ -200,11 +203,11 @@
 		            </tr>
 		        </thead>
 		        <tbody>
-		        {% for t in value.trainess3 %}
+		        {% for t3 in value.trainess3 %}
 		                <tr>
                 				<th>
-				                  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#detail{{t.user.id}}">Detay</a>
-                    <div id="detail{{t.user.id}}" class="accordion-body collapse">
+				                  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#detail{{t3.trainess.user.pk}}">Detay</a>
+                    <div id="detail{{t3.trainess.user.pk}}" class="accordion-body collapse">
                       <div class="accordion-inner">
                         <div class="row">
                           <div class="col-md-2">
@@ -213,7 +216,7 @@
 						</div>
                         <div class="row">
                           <div class="col-md-2">
-                           {{t.title}}
+                           {{t3.trainess.title}}
                           </div>
 						</div>
 
@@ -225,7 +228,7 @@
 						</div>
                         <div class="row">
                           <div class="col-md-2">
-                           {{t.organization}}
+                           {{t3.trainess.organization}}
                           </div>
 						</div>
 
@@ -236,7 +239,7 @@
 						</div>
                         <div class="row">
                           <div class="col-md-2">
-                           {{t.department}}
+                           {{t3.trainess.department}}
                           </div>
 						</div>
                         <div class="row">
@@ -246,22 +249,23 @@
 						</div>
                         <div class="row">
                           <div class="col-md-2">
-                           {{t.additional_information}}
+                           {{t3.trainess.additional_information}}
                           </div>
 						</div>
 					 </div>
                     </div>
 				                </th>
-		                        <th>{{ t.user.first_name }}</th>
-		                        <th>{{ t.user.last_name }}</th>
-		                        <th>{{ t.user.email }}</th>
-		                        <th>{{ t.city }}</th>
+		                        <th>{{ t3.pk}}</th>
+		                        <th>{{ t3.trainess.user.first_name }}</th>
+		                        <th>{{ t3.trainess.user.last_name }}</th>
+		                        <th>{{ t3.trainess.user.email }}</th>
+		                        <th>{{ t3.trainess.city }}</th>
 				<th>
 					<div class="checkbox">
-						{%if t in course.trainess.all %}
-						   <input type="checkbox" checked name="students{{course.id}}" value="{{ t.user.pk }}"/>
+						{%if t3.approved %}
+						   <input type="checkbox" checked name="students{{course.id}}" value="{{ t3.pk }}"/>
 						{% else %}
-						   <input type="checkbox" name="students{{course.id}}" value="{{ t.user.pk }}"/>
+						   <input type="checkbox" name="students{{course.id}}" value="{{ t3.pk }}"/>
 						{% endif %}
 					</div>
 				</th>
@@ -271,12 +275,12 @@
 		</table>
 	{% endif %}
 	{% if value.trainess1 or  value.trainess2 or value.trainess3%}
-	<button type="submit" class="btn btn-default">Gonder</button>
 	{% endif %}
+{% endfor %}
+	<button type="submit" class="btn btn-default">Gonder</button>
 	</div>
 	</form>
 </br>
 <hr>
-{% endfor %}
 {% endblock %}
 
