@@ -3,72 +3,43 @@
 {% block head %}
 <script type="text/javascript">
 
-$(document).ready(function(){
-  var accomodations={}
-  $("#id_gender").change(function (){
-       $.ajax({
-              url : "/accounts/getaccomodations/stu/"+$("#id_gender").val(),
-              type : "GET",
-              dataType: "json",
-              success : function(data) {
-                        accomodations=data
-              },
-       });
-      
+function addPreference(selectedPreference){
+  var container = $("#field-row-container");
+  var text = $("#field-row").text();
+  var idn = container.find("[data-id='container']").size() + 1;
+  var id = "tercih" + idn
+  var body = $(text.format(id, idn));
+  body.find("button[data-id='remove']").click(function () {
+    $(this).parents("[data-id='container']").remove();
   });
-function addPreference(){
-    var container = $("#field-row-container");
-    var selectedAccomodations =  [];
-    $("#field-row-container").find('select').each(function(){selectedAccomodations.push($(this).val());})
-	if (container.find("[data-id='container']").size() == {{accomodations|length}}){
-		return false;
-	}
-    var text = $("#field-row").text();
-    var idn = container.find("[data-id='container']").size() + 1;
-    var id = "tercih" + idn
-    var body = $(text.format(id, idn));
-    body.find("button[data-id='remove']").click(function () {
-        $(this).parents("[data-id='container']").remove();
-    });
-    container.append(body);
-    if(!jQuery.isEmptyObject(accomodations)){
-        $.each(accomodations, function(k,v){
-            if(selectedAccomodations.indexOf(k)!=-1){
-                body.find('select').append("<option value='"+ k+ "' hidden>"+v+"</option>");
-            }else{
-                body.find('select').append("<option value='"+ k+ "' >"+v+"</option>");
- 	        }   
-       });
+  container.append(body);
 
-   }else{
-        {% for accomodation in accomodations %}
-           if(selectedAccomodations.indexOf("{{accomodation.id}}")!=-1){
-                body.find('select').append("<option value='"+ "{{accomodation.id}}"+ "' hidden>"+"{{accomodation.name}}"+"</option>");
-            }else{
-                body.find('select').append("<option value='"+ "{{accomodation.id}}"+ "' >"+"{{accomodation.name}}"+"</option>");
-    	    }
-        {% endfor %}
-    }
-    $("#remove").show();
-    $("#sendPreference").show();
-    $("select").unbind("change");
-    $('select').change(function() {
-        var myOpt = [];
-        $("select").each(function () {
-            myOpt.push($(this).val());
-        });
-        $("select").each(function () {
-            $(this).find("option").prop('hidden', false);
-            var sel = $(this);
-            $.each(myOpt, function(key, value) {
-                if((value != "") && (value != sel.val())) {
-                    sel.find("option").filter('[value="' + value +'"]').prop('hidden', true);
-                }
-            });
-        });
-    });
-    $("select").bind("change");
+
+  var accomodations={}
+  var selectOptions = "";
+  $.ajax({
+         url : "/accounts/getaccomodations/stu/"+$("#id_gender").val(),
+         type : "GET",
+         dataType: "json",
+         success : function(data) {
+                   accomodations=data;
+                   $.each(accomodations,function(key,value){
+                     selectOptions += "<option value='" + key + "'>" + value + "</option>" 
+                   });
+                   body.find('select').append(selectOptions);
+                   if(selectedPreference){
+                     body.find('select').val(selectedPreference);
+                   }
+                   $("#remove").show();
+         },
+  });
 }
+$(document).ready(function(){
+  $("#id_gender").change(function(){
+     $("#field-row-container").html("");
+     bootbox.alert("Konaklama Tercihlerinizi Güncelleyiniz", function(){});
+     addPreference();
+  });
   $("#add-field").click(function (e) {
     e.preventDefault();
     addPreference();
@@ -78,16 +49,14 @@ function addPreference(){
     var container = $("#field-row-container");
     var id = container.find("[data-id='container']").size();
     $("select[id='tercih"+ id +"']").parent().parent().parent().remove();
-    if(id=="tercih1"){
+    if(id=="1"){
         $("#remove").hide();
     }
-    $("select").trigger("change");
   });
-{% for accomodation_record in accomodation_records %}
-      addPreference();
-      var container = $("#field-row-container");
-      container.find("[data-id='container']").last().find('select').val("{{accomodation_record.accomodation.id}}")
-{% endfor %}
+
+  {% for accomodation_record in accomodation_records %}
+      addPreference({{accomodation_record.accomodation.id}});
+  {% endfor %}
  
    $("#id_tckimlikno").parent().parent().find('div').first().append("<span class='required'></span>");
    $("#id_ykimlikno").parent().parent().find('div').first().append("<span class='required'></span>");
