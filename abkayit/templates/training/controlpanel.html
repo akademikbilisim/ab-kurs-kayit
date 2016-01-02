@@ -8,10 +8,10 @@
 <link href="{% static "/static/css/courses.css" %}" rel="stylesheet" type="text/css"></link>
 <div class="container-fluid" style="margin-top:20px;">
     <div class="alert alert-info">{{ note }}</div>
+<form name="select-student{{course.id}}" method="POST">{% csrf_token %}
 {% for course,value in trainess.items %}
-	{% if value.trainess1 or value.trainess2 %}<h2><b>{{ course.name }}</b></h2>{%endif%}
+	{% if value.trainess1 or value.trainess2 or value.trainess3 %}<h2><b>{{ course.name }}</b></h2>{%endif%}
 	{% if value.trainess1 %}
-	<form name="select-student{{course.id}}" method="POST">{% csrf_token %}
 	<h3> Birinci tercih </h3>
 	<table data-id="course_table" id="course_table{{course.id}}" class="table table-hover table-striped" >
 		<thead>
@@ -78,17 +78,17 @@
 					 </div>
                     </div>
                 </th>
-				<th>{{ t.id }}</th>
+				<th>{{ t.user.id }}</th>
 				<th>{{ t.user.first_name }}</th>
 				<th>{{ t.user.last_name }}</th>
 				<th>{{ t.user.email }}</th>
 				<th>{{ t.city }}</th>
 				<th>
 					<div class="checkbox">
-						{%if t in course.trainess.all %}
-						<input type="checkbox" checked name="students{{course.id}}" value="{{ t.user.pk }}"/>
+						{%if t in course.trainess.all%}
+						   <input type="checkbox" checked name="students{{course.id}}" value="{{ t.user.pk }}"/>
 						{% else %}
-						<input type="checkbox" name="students{{course.id}}" value="{{ t.user.pk }}"/>
+						   <input type="checkbox" name="students{{course.id}}" value="{{ t.user.pk }}"/>
 						{% endif %}
 					</div>
 				</th>
@@ -171,17 +171,106 @@
 		                        <th>{{ t.user.last_name }}</th>
 		                        <th>{{ t.user.email }}</th>
 		                        <th>{{ t.city }}</th>
-		                        <th>
-		                        	<div class="checkbox">
-										<input type="checkbox" name="students" value="{{ t.user.pk }}"/>
-									</div>
-								</th>
+				<th>
+					<div class="checkbox">
+						{%if t in course.trainess.all %}
+						   <input type="checkbox" checked name="students{{course.id}}" value="{{ t.user.pk }}"/>
+						{% else %}
+						   <input type="checkbox" name="students{{course.id}}" value="{{ t.user.pk }}"/>
+						{% endif %}
+					</div>
+				</th>
 		                </tr>
 		        {% endfor %}
 		        </tbody>
 		</table>
 	{% endif %}
-	{% if value.trainess1 or  value.trainess2 %}
+	{% if value.trainess3 %}
+		<h3> Üçüncü Tercih </h3>
+		<table data-id="course_table" id="course_table3{{course.id}}" class="table table-hover table-striped" >
+		        <thead>
+		            <tr>
+                		<th>#</th>
+		                <th>İsim</th>
+		                <th>Soyisim</th>
+		                <th>E-posta</th>
+		                <th>Sehir</th>
+		                <th>Onayla</th>
+		
+		            </tr>
+		        </thead>
+		        <tbody>
+		        {% for t in value.trainess3 %}
+		                <tr>
+                				<th>
+				                  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#detail{{t.user.id}}">Detay</a>
+                    <div id="detail{{t.user.id}}" class="accordion-body collapse">
+                      <div class="accordion-inner">
+                        <div class="row">
+                          <div class="col-md-2">
+                            <label for="title" style="color:red;">{%trans "Title" %}</label>
+                          </div>
+						</div>
+                        <div class="row">
+                          <div class="col-md-2">
+                           {{t.title}}
+                          </div>
+						</div>
+
+
+                        <div class="row">
+                          <div class="col-md-2">
+                            <label for="title" style="color:red;">{%trans "Organization" %}</label>
+                          </div>
+						</div>
+                        <div class="row">
+                          <div class="col-md-2">
+                           {{t.organization}}
+                          </div>
+						</div>
+
+                        <div class="row">
+                          <div class="col-md-2">
+                            <label for="title" style="color:red;">{%trans "Department" %}</label>
+                          </div>
+						</div>
+                        <div class="row">
+                          <div class="col-md-2">
+                           {{t.department}}
+                          </div>
+						</div>
+                        <div class="row">
+                          <div class="col-md-2">
+                            <label for="title" style="color:red;">{%trans "Additional Information" %}</label>
+                          </div>
+						</div>
+                        <div class="row">
+                          <div class="col-md-2">
+                           {{t.additional_information}}
+                          </div>
+						</div>
+					 </div>
+                    </div>
+				                </th>
+		                        <th>{{ t.user.first_name }}</th>
+		                        <th>{{ t.user.last_name }}</th>
+		                        <th>{{ t.user.email }}</th>
+		                        <th>{{ t.city }}</th>
+				<th>
+					<div class="checkbox">
+						{%if t in course.trainess.all %}
+						   <input type="checkbox" checked name="students{{course.id}}" value="{{ t.user.pk }}"/>
+						{% else %}
+						   <input type="checkbox" name="students{{course.id}}" value="{{ t.user.pk }}"/>
+						{% endif %}
+					</div>
+				</th>
+		                </tr>
+		        {% endfor %}
+		        </tbody>
+		</table>
+	{% endif %}
+	{% if value.trainess1 or  value.trainess2 or value.trainess3%}
 	<button type="submit" class="btn btn-default">Gonder</button>
 	{% endif %}
 	</div>
