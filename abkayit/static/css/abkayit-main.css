@@ -21,3 +21,15 @@ input[type=number]::-webkit-inner-spin-button {
 .clickableRow {
   cursor: pointer;
 }
+
+.checked-trainee-for-another-course{
+  background-color: #FFDDDC;
+}
+
+.checked-trainee-course{
+  background-color: #9FFFAA;
+}
+
+.avaliable-trainee{
+  background-color: #DEDEDE;
+}

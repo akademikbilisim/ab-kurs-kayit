@@ -2,13 +2,17 @@ $(document).ready(function () {
 
     $("table input[type='checkbox']").change(function (e) {
         if ($(this).is(":checked")) {
-            $(this).closest('tr').css("background-color","#DDFFDD");
+            $(this).closest('tr').css("background-color", "#9FFFAA");
         } else {
-            $(this).closest('tr').css("background-color", "");
+           if($(this).parent().parent().find(".checked-for-another-course").length){
+               $(this).closest('tr').css("background-color", "#FFDDDC");
+           }
+           else {
+               $(this).closest('tr').css("background-color", "");
+           }
         }
     });
-        $("table input[type='checkbox']").trigger("change");
-
+    $("table input[type='checkbox']").trigger("change");
 });
 
 
