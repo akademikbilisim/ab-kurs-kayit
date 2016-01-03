@@ -202,7 +202,7 @@ msgstr "Ünvan"
 #: templates/training/controlpanel.html:136 userprofile/forms.py:143
 #: userprofile/models.py:39
 msgid "Organization"
-msgstr "Organizasyon"
+msgstr "Kurum"
 
 #: templates/training/controlpanel.html:59
 #: templates/training/controlpanel.html:147 userprofile/forms.py:145

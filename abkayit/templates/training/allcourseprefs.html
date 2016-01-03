@@ -11,7 +11,10 @@
 	        <th>{% trans "Basvuru No" %}</th>
 	        <th>{% trans "First Name" %}</th>
 	        <th>{% trans "Last Name" %}</th>
+	        <th>{% trans "Sehir" %}</th>
 	        <th>{% trans "E-mail" %}</th>
+	        <th>{% trans "Kurum" %}</th>
+	        <th>{% trans "Universite" %}</th>
 	        <th>{% trans "TC Kimlik No / Yabancı Kimlik No" %}</th>
 	        <th>{% trans "Tercih Sırası" %}</th>
 	        <th>{% trans "Course Name" %}</th>
@@ -23,7 +26,10 @@
 			<th>{{data.id}}</th>
 			<th>{{data.trainess.user.first_name}}</th>
 			<th>{{data.trainess.user.last_name}}</th>
+			<th>{{data.trainess.city}}</th>
 			<th>{{data.trainess.user.email}}</th>
+			<th>{{data.trainess.organization}}</th>
+			<th>{{data.trainess.university}}</th>
             <th>{{data.trainess.tckimlikno}}{{data.trainess.ykimlikno}}</th>
 			<th>{{data.preference_order}}</th>
 			<th>{{data.course.name}}</th>
