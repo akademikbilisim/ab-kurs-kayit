@@ -2,6 +2,7 @@
 
 import json
 import logging
+import itertools
 from datetime import datetime
 
 from django.shortcuts import render, render_to_response, RequestContext, redirect
@@ -12,6 +13,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.admin.views.decorators import staff_member_required
+from django.db.models import Count
 
 from abkayit.backend import prepare_template_data
 from abkayit.adaptor import send_email
@@ -253,4 +255,26 @@ def allcourseprefview(request):
     data = prepare_template_data(request)
     data['datalist']=TrainessCourseRecord.objects.all()
     return render_to_response("training/allcourseprefs.html",data,context_instance=RequestContext(request))
+
+
+
+@staff_member_required
+def statistic(request):
+    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
+    try:
+        data=prepare_template_data(request)
+    
+        record_data = TrainessCourseRecord.objects.filter().values(
+                                            'course','preference_order').annotate(
+                                              Count('preference_order')).order_by(
+                                               'course','preference_order')
+        statistic_by_course = {}
+        for key, group in itertools.groupby(record_data, lambda item: item["course"]):
+            statistic_by_course[Course.objects.get(pk=key)] = {item['preference_order']:item['preference_order__count'] for item in group}
+        data['statistic_by_course'] = statistic_by_course
+        statistic_by_gender = UserProfile.objects.filter(is_student=True).values('gender').annotate(Count('user'))
+        data['statistic_by_gender'] = statistic_by_gender
+    except Exception as e:
+        log.error(e.message, extra=d)
+    return render_to_response("training/statistic.html", data)
 

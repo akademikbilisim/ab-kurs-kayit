@@ -9,5 +9,6 @@ urlpatterns = patterns('training.views',
     url(r'^showcourse/(?P<course_id>[1-9]+)/$', 'show_course', name="showcourse"),
     url(r'^applytocourse', 'apply_to_course', name="applytocourse"),
     url(r'^basvurular', 'allcourseprefview', name="allcoursepref"),
+    url(r'^istatistik/$', 'statistic', name="statistic"),
 )
 

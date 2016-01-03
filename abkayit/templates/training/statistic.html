@@ -1,0 +1,153 @@
+{% extends "dashboard.html" %}
+{% load i18n %}
+{% block content %}
+{% load staticfiles %}
+
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script type="text/javascript">
+  $(document).ready(function(){
+  courseList = []
+  coursePreference1 = []
+  coursePreference2 = []
+  coursePreference3 = []
+  {% for course,course_stat_detail in statistic_by_course.items%}
+    courseList.push("{{course}}");
+    var courseStatisticDetail = {{course_stat_detail}};
+    if(courseStatisticDetail[1]){
+       coursePreference1.push(courseStatisticDetail[1])
+    }else{
+       coursePreference1.push(0);
+    }
+    if(courseStatisticDetail[2]){
+       coursePreference2.push(courseStatisticDetail[2])
+    }else{
+       coursePreference2.push(0);
+    }
+    if(courseStatisticDetail[3]){
+       coursePreference3.push(courseStatisticDetail[3])
+    }else{
+       coursePreference3.push(0);
+    }
+  {% endfor%}
+
+  $(function () {
+      $('#statistic-by-course').highcharts({
+          chart: {
+              type: 'bar'
+          },
+          title: {
+              text: 'Tercihler'
+          },
+          xAxis: {
+              categories: courseList,
+              title: {
+                  text: null
+              }
+          },
+          yAxis: {
+              min: 0,
+              title: {
+                  align: 'high'
+              },
+              labels: {
+                  overflow: 'justify'
+              }
+          },
+          tooltip: {
+              valueSuffix: ' kişi'
+          },
+          plotOptions: {
+              bar: {
+                  dataLabels: {
+                      enabled: true
+                  }
+              }
+          },
+          legend: {
+              layout: 'vertical',
+              align: 'right',
+              verticalAlign: 'top',
+              x: -40,
+              y: 80,
+              floating: true,
+              borderWidth: 1,
+              backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
+              shadow: true
+          },
+          credits: {
+              enabled: false
+          },
+          series: [{
+              name: '1. Tercih',
+              data: coursePreference1
+          }, {
+              name: '2. Tercih',
+              data: coursePreference2
+          }, {
+              name: '3. Tercih',
+              data: coursePreference3
+          }]
+      });
+  });
+
+
+
+
+   var genderStatistic = [];
+
+  {% for gender_stat in statistic_by_gender%}
+    var temp = {};
+    {%for key,value in gender_stat.items%} 
+       if("{{key}}" == "gender"){
+         temp['name'] = "{{value}}";
+       }else{
+         temp['y'] = parseInt("{{value}}");
+       }
+    {%endfor%}
+       genderStatistic.push(temp);
+  {% endfor%}
+   $('#statistic-by-gender').highcharts({
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+                type: 'pie'
+            },
+            title: {
+                text: 'Kadın/Erkek Dağılımı'
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: false
+                    },
+                    showInLegend: true
+                }
+            },
+            series: [{
+                name: 'Gender',
+                colorByPoint: true,
+                data: genderStatistic
+            }]
+        });
+
+
+
+
+});
+  
+</script>
+
+<div id="statistic-by-course" style="min-width: 310px; max-width: 800px; height: 400px; margin: 0 auto"></div>
+
+</br>
+</br>
+</br>
+<div id="statistic-by-gender" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
+{%endblock%}
