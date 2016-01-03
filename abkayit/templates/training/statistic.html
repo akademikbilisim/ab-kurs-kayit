@@ -94,6 +94,70 @@
 
 
 
+  universityList = []
+  userSize = []
+  {% for item in statistic_by_university%}
+    universityList.push("{{item.university}}");
+    userSize.push({{item.university__count}});
+  {% endfor%}
+  $(function () {
+      $('#statistic-by-university').highcharts({
+          chart: {
+              type: 'bar'
+          },
+          title: {
+              text: 'Üniversite/Katılım'
+          },
+          xAxis: {
+              categories: universityList,
+              title: {
+                  text: null
+              }
+          },
+          yAxis: {
+              min: 0,
+              title: {
+                  align: 'high'
+              },
+              labels: {
+                  overflow: 'justify'
+              }
+          },
+          tooltip: {
+              valueSuffix: ' kişi'
+          },
+          plotOptions: {
+              bar: {
+                  dataLabels: {
+                      enabled: true
+                  }
+              }
+          },
+          legend: {
+              layout: 'vertical',
+              align: 'right',
+              verticalAlign: 'top',
+              x: -40,
+              y: 80,
+              floating: true,
+              borderWidth: 1,
+              backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
+              shadow: true
+          },
+          credits: {
+              enabled: false
+          },
+          series: [{
+              name: 'Katılım',
+              data: userSize
+          }]
+      });
+  });
+
+
+
+
+
    var genderStatistic = [];
 
   {% for gender_stat in statistic_by_gender%}
@@ -145,6 +209,11 @@
 </script>
 
 <div id="statistic-by-course" style="min-width: 360px; max-width: 800px; height: 1600px; margin: 0 auto"></div>
+
+</br>
+</br>
+</br>
+<div id="statistic-by-university" style="min-width: 360px; max-width: 800px; height: 2000px; margin: 0 auto"></div>
 
 </br>
 </br>

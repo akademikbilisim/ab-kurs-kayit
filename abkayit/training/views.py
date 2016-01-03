@@ -272,8 +272,12 @@ def statistic(request):
         for key, group in itertools.groupby(record_data, lambda item: item["course"]):
             statistic_by_course[Course.objects.get(pk=key)] = {item['preference_order']:item['preference_order__count'] for item in group}
         data['statistic_by_course'] = statistic_by_course
+
         statistic_by_gender = UserProfile.objects.filter(is_student=True).values('gender').annotate(Count('user'))
         data['statistic_by_gender'] = statistic_by_gender
+
+        statistic_by_university = UserProfile.objects.filter().values('university').annotate(Count('university'))
+        data['statistic_by_university'] = statistic_by_university
     except Exception as e:
         log.error(e.message, extra=d)
     return render_to_response("training/statistic.html", data)
