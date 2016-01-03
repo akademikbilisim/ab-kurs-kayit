@@ -329,7 +329,6 @@ UNIVERSITIES=[('Abant İzzet Baysal Üniversitesi (Bolu)','Abant İzzet Baysal �
     ('Ondokuz Mayıs Üniversitesi (Samsun)','Ondokuz Mayıs Üniversitesi (Samsun)'),
     ('Orta Doğu Teknik Üniversitesi (Ankara)','Orta Doğu Teknik Üniversitesi (Ankara)'),
     ('Ordu Üniversitesi (Ordu)','Ordu Üniversitesi (Ordu)'),
-    ('Osmangazi Üniversitesi (Eskişehir)','Osmangazi Üniversitesi (Eskişehir)'),
     ('Osmaniye Korkut Ata Üniversitesi (Osmaniye)','Osmaniye Korkut Ata Üniversitesi (Osmaniye)'),
     ('Özyeğin Üniversitesi (İstanbul)','Özyeğin Üniversitesi (İstanbul)'),
     ('Pamukkale Üniversitesi (Denizli)','Pamukkale Üniversitesi (Denizli)'),
