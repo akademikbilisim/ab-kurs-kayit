@@ -1,10 +1,7 @@
 $(document).ready(function(){
 
     $('[data-id="course_table"]').DataTable({
-            "dom": 'T<"clear">lfrtip',
-            "tableTools": {
-                      "sSwfPath": "../static/images/copy_csv_xls_pdf.swf"
-            },
+            "dom": 'Bfrtip',
             "language": {
                     "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Turkish.json"
             },
@@ -13,6 +10,10 @@ $(document).ready(function(){
             "ordering": true,
             "paging" : false,
             buttons : [
+          'copyHtml5',
+            'excelHtml5',
+            'csvHtml5',
+            'pdfHtml5'
                         ],
     });
 
