@@ -278,6 +278,10 @@ def statistic(request):
 
         statistic_by_university = UserProfile.objects.filter(is_student=True).values('university').annotate(Count('university'))
         data['statistic_by_university'] = statistic_by_university
+
+        total_profile = len(UserProfile.objects.filter(is_student=True))
+        total_preference = len(TrainessCourseRecord.objects.all())
+        data['statistic_by_totalsize'] = {'Toplam Profil(Kişi)': total_profile, 'Toplam Tercih': total_preference}
     except Exception as e:
         log.error(e.message, extra=d)
     return render_to_response("training/statistic.html", data)
