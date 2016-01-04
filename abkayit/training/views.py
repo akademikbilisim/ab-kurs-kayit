@@ -126,14 +126,6 @@ def apply_to_course(request):
         data['PREFERENCE_LIMIT'] = PREFERENCE_LIMIT
         message = ""
         now = datetime.date(datetime.now())
-        if now < data['site'].application_start_date:
-            data['note'] = _("You can choose courses in future")
-            data['closed'] = "1"
-            return render_to_response('training/courserecord.html', data)
-        elif now > data['site'].application_end_date:
-            data['note'] = _("The course choosing process is closed")
-            data['closed'] = "1"
-            return render_to_response('training/courserecord.html', data) 
         note = _("You can choose courses in order of preference.")
         if request.method == "POST":
             if now < data['site'].application_start_date:
@@ -188,6 +180,14 @@ def apply_to_course(request):
         data['courses'] = courses
         data['course_records'] = course_records
         data['note'] = note
+        if now < data['site'].application_start_date:
+            data['note'] = _("You can choose courses in future")
+            data['closed'] = "1"
+            return render_to_response('training/courserecord.html', data)
+        elif now > data['site'].application_end_date:
+            data['note'] = _("The course choosing process is closed")
+            data['closed'] = "1"
+            return render_to_response('training/courserecord.html', data) 
         return render_to_response('training/courserecord.html', data)
     else:
         return redirect("testbeforeapply")
@@ -286,3 +286,19 @@ def statistic(request):
         log.error(e.message, extra=d)
     return render_to_response("training/statistic.html", data)
 
+@login_required
+def cancel_all_preference(request):
+    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
+    if request.POST:
+        try:
+            userprofile = UserProfile.objects.get(user=request.user)
+            TrainessCourseRecord.objects.filter(trainess=userprofile).delete()
+            message = "Tüm Başvurularınız Silindi"
+        except ObjectDoesNotExist:
+            message = "Başvurularınız Silinirken Hata Oluştu"
+        except Exception as e:
+            message = "Başvurularınız Silinirken Hata Oluştu"
+            log.error(e.message, extra=d) 
+        return HttpResponse(json.dumps({'status':'-1', 'message':message}), content_type="application/json")
+    message = "Başvurularınız Silinirken Hata Oluştu"
+    return HttpResponse(json.dumps({'status':'-1', 'message':message}), content_type="application/json")

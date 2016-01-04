@@ -63,13 +63,7 @@ var changeFuntion = function(){
 
 }
 $(document).ready(function() {
-  var PREFERENCE_LIMIT = "{{PREFERENCE_LIMIT}}"
-  if ({{closed}} == "1"){
-  	$("form").hide();
-  }
-  else{
-  	$("form").show();
-  }
+  var PREFERENCE_LIMIT = "{{PREFERENCE_LIMIT}}";
   $("#add-field").click(function (e) {
   	e.preventDefault();
 	addPreference(PREFERENCE_LIMIT);
@@ -93,6 +87,14 @@ $(document).ready(function() {
 		var container = $("#field-row-container");
 		container.find("[data-id='container']").last().find('select').val("{{course_record.course.id}}")
   	{% endfor %}
+  if ({{closed}} == 1){
+    $("form select").each(function(){$(this).attr("disabled","disabled")});
+    $("form button").each(function(){$(this).attr("disabled","disabled")});
+  }
+  else{
+    $("form select").each(function(){$(this).removeAttr("disabled")});
+    $("form button").each(function(){$(this).removeAttr("disabled")});
+  }
 });
 
 
@@ -116,6 +118,7 @@ $(document).ready(function() {
 
     <div class="alert alert-info">{{ note }}</div>
 
+<button type="button" class="btn btn-danger" id="cancel-all">Tüm Başvurularımı İptal Et</button>
 
 <form id="field-container-form" class="form-horizontal">
   <div class="form-group m-b-5">
