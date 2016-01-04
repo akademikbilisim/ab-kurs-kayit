@@ -7,10 +7,10 @@
 <script src="https://code.highcharts.com/modules/exporting.js"></script>
 <script type="text/javascript">
   $(document).ready(function(){
-  courseList = []
-  coursePreference1 = []
-  coursePreference2 = []
-  coursePreference3 = []
+  courseList = [];
+  coursePreference1 = [];
+  coursePreference2 = [];
+  coursePreference3 = [];
   {% for course,course_stat_detail in statistic_by_course.items%}
     courseList.push("{{course}}");
     var courseStatisticDetail = {{course_stat_detail}};
@@ -94,8 +94,8 @@
 
 
 
-  universityList = []
-  userSize = []
+  universityList = [];
+  userSize = [];
   {% for item in statistic_by_university%}
     universityList.push("{{item.university}}");
     userSize.push({{item.university__count}});
@@ -157,8 +157,8 @@
 
 
 
-  var totalStatText = []
-  var totalStatValue = []
+  var totalStatText = [];
+  var totalStatValue = [];
  
   {% for item,value in statistic_by_totalsize.items%}
     totalStatText.push("{{item}}");
