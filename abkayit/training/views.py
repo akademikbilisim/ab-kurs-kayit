@@ -309,7 +309,7 @@ def cancel_course_application(request):
     message = ""
     if request.POST:
         try:
-            course = Course.objects.get(id=request.POST.get("course"))
+            course = Course.objects.get(id=request.POST.get("course"), approved=True, trainer__user=request.user)
             if request.POST.get("isOpen") == "true":
                 course.application_is_open = True
                 message = "Bu Kurs İçin Başvurular Açıldı"
