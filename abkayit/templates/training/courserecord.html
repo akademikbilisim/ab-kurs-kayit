@@ -9,7 +9,6 @@
 
 <script type="text/javascript">
 
-var PREFERENCE_LIMIT = 2;
 
 function addPreference(preference_limit){
   	var container = $("#field-row-container");
@@ -30,14 +29,23 @@ function addPreference(preference_limit){
 	var select = body.find('select');
 	{% for course in courses %}
 		if(selectedCourses.indexOf("{{course.id}}")!=-1){
-  			select.append("<option value='"+ "{{course.id}}"+ "' hidden >"+"{{course.name}}"+"</option>");
+            {% if course.application_is_open%}
+     			select.append("<option value='"+ "{{course.id}}"+ "' hidden >"+"{{course.name}}"+"</option>");
+            {% else %}
+     			select.append("<option value='"+ "{{course.id}}"+ "' hidden disabled>"+"{{course.name}}"+"</option>");
+            {% endif %}
 		}else{
-  			select.append("<option value='"+ "{{course.id}}"+ "' >"+"{{course.name}}"+"</option>");
+            {% if course.application_is_open%}
+  			    select.append("<option value='"+ "{{course.id}}"+ "' >"+"{{course.name}}"+"</option>");
+            {% else %}
+  			    select.append("<option value='"+ "{{course.id}}"+ "' disabled>"+"{{course.name}}"+"</option>");
+            {% endif %}
 		}
   	{% endfor %}
     select.val(select.find("option:not([hidden]):first").val());
 	select.change(changeFuntion).change();
 	$("#remove").show();
+	$("#cancel-all").show();
 	$("#sendPreference").show();
 
 }
@@ -77,6 +85,7 @@ $(document).ready(function() {
 	$("select[id='"+ id +"']").parent().parent().parent().remove();
 	if(id=="1"){
 		$("#remove").hide();
+	    $("#cancel-all").hide();
 		//$("#sendPreference").hide();
 	}
 	$("select").trigger("change");
@@ -94,6 +103,24 @@ $(document).ready(function() {
   else{
     $("form select").each(function(){$(this).removeAttr("disabled")});
     $("form button").each(function(){$(this).removeAttr("disabled")});
+  }
+ 
+  $("#closed-courses").html("");
+  $("#closed-courses").hide();
+  var check=false;
+  var closedCourses = "<strong>Başvurusu Kapanan Kurslar</strong>";
+  closedCourses += "<ul>";
+  {% for course in courses %}
+    {% if not course.application_is_open or closed == "1"%}
+      check=true;
+      closedCourses += "<li>" + "{{course.name}}"+ "</li>";
+    {% endif %}
+  {% endfor %}
+  closedCourses += "<ul>";
+  if(check){
+    $("#closed-courses").html(closedCourses);
+    $("#closed-courses").show();
+ 
   }
 });
 
@@ -118,7 +145,7 @@ $(document).ready(function() {
 
     <div class="alert alert-info">{{ note }}</div>
 
-<button type="button" class="btn btn-danger" id="cancel-all">Tüm Başvurularımı İptal Et</button>
+<button type="button" class="btn btn-danger" id="cancel-all" style="display:none;">Tüm Başvurularımı İptal Et</button>
 
 <form id="field-container-form" class="form-horizontal">
   <div class="form-group m-b-5">
@@ -143,6 +170,11 @@ $(document).ready(function() {
   </div>
   <div class="form-group m-b-5">
     <div class="col-xs-8 col-xs-offset-3">
+    </div>
+  </div>
+  <div class="form-group" id="field-row-container">
+
+    <div data-id="container" id="closed-courses" class="col-xs-8 col-xs-offset-3" style="margin-top:10px;display:none;">
     </div>
   </div>
 </form>

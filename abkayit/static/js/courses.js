@@ -86,4 +86,54 @@ $(document).ready(function(){
    });
   });
 
+
+
+  $('[data-id="applicationopen"]').change(function(){
+    var isClosed = $(this).prop('checked');
+    applyMessage = "<strong>" + $(this).parent().parent().find("strong").text() + "</strong></br>";
+    if(isClosed){
+      applyMessage += "Kursu Başvurulara Açmak Üzeresiniz";
+    }else{
+      applyMessage += "Kursu Başvurulara Kapatmak Üzeresiniz";
+    }
+    jsonData = {};
+    jsonData['isOpen'] = isClosed;
+    jsonData['course'] = ($(this).attr("id")).split("-")[1];
+	jsonData['csrfmiddlewaretoken'] = getCookie('csrftoken');
+    bootbox.dialog({
+        message: applyMessage,
+        title: "Onaylıyor musunuz?",
+        buttons: {
+          success: {
+            label: "Evet!",
+            className: "btn-success",
+            callback: function() {
+		        $.ajax({
+		            url : "/egitim/cancelcourseapplication/", 
+		            type : "POST",
+		            dataType: "json", 
+		            data : jsonData,
+		            success : function(json) {
+		        		bootbox.alert(json.message, function() {
+                          location.reload();
+                        });
+		            },
+		            error : function(xhr,errmsg,err) {
+		        		bootbox.alert(json.message, function() {
+                          location.reload();
+                        });
+		            }
+		       });
+            }
+          },
+          danger: {
+            label: "Hayır!",
+            className: "btn-danger",
+            callback: function() {
+            }
+          }
+        }
+   });
+  });
+
 });

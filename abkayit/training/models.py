@@ -27,6 +27,7 @@ class Course(models.Model):
 	trainess = models.ManyToManyField(UserProfile, related_name="trainess", null=True, blank=True)
 	trainer = models.ManyToManyField(UserProfile, related_name="trainer")
 	approved = models.BooleanField(default=False) 
+	application_is_open = models.BooleanField(default=True) 
 	site = models.ForeignKey(Site)
         #fulltext = models.FileField(upload_to='documents/%Y/%m/%d',null=True)
 	url = models.CharField(verbose_name=_("URL"), max_length="350")

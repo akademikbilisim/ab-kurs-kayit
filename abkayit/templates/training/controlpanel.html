@@ -5,7 +5,9 @@
 {% load template_filter %}
 
 <script src="{% static "/static/js/courses.js" %}"></script>
+
 <link href="{% static "/static/css/courses.css" %}" rel="stylesheet" type="text/css"></link>
+
 <div class="container-fluid" style="margin-top:20px;">
   <div class="alert alert-info">{{ note }}</div>
   <form name="select-student{{course.id}}" method="POST">{% csrf_token %}
@@ -17,7 +19,19 @@
       <span class="label checked-trainee-course">Katılımcı Bu Kurs İçin Onaylanmış</span>
       </h4>
       </br>
-      <h2><strong>{{ course.name }}</strong></h2>
+      <div>
+      <h2><strong>{{ course.name }}</strong></h2> 
+      Başvurular Açık: <input id="applicationopen-{{course.id}}" data-id="applicationopen" type="checkbox" checked>
+      </div>
+      <script type="text/javascript">
+         $(document).ready(function(){
+            {% if course.application_is_open %}
+              $("#applicationopen-{{course.id}}").prop("checked");
+            {% else %} 
+              $("#applicationopen-{{course.id}}").removeAttr("checked");
+            {%endif%}
+         });
+      </script>
     {%endif%}
     {% if value.trainess1 %}
       <h3> Birinci tercih </h3>
