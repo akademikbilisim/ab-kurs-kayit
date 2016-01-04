@@ -36,7 +36,7 @@ msgstr "Logo"
 
 #: abkayit/models.py:22 abkayit/models.py:62
 msgid "Is Active"
-msgstr "Atif Mi"
+msgstr "Aktif Mi"
 
 #: abkayit/models.py:23
 msgid "Home Url"
