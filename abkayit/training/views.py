@@ -276,7 +276,7 @@ def statistic(request):
         statistic_by_gender = UserProfile.objects.filter(is_student=True).values('gender').annotate(Count('user'))
         data['statistic_by_gender'] = statistic_by_gender
 
-        statistic_by_university = UserProfile.objects.filter(is_student=True).values('university').annotate(Count('university'))
+        statistic_by_university = UserProfile.objects.filter(is_student=True).values('university').annotate(Count('university')).order_by('university')
         data['statistic_by_university'] = statistic_by_university
 
         total_profile = len(UserProfile.objects.filter(is_student=True))
