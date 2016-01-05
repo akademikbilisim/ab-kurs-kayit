@@ -36,9 +36,11 @@ function addPreference(selectedPreference){
 }
 $(document).ready(function(){
   $("#id_gender").change(function(){
-     $("#field-row-container").html("");
-     bootbox.alert("Konaklama Tercihlerinizi Güncelleyiniz", function(){});
-     addPreference();
+     if($(".accomodations_pref_div select").length){
+      $("#field-row-container").html("");
+      bootbox.alert("Konaklama Tercihlerinizi Güncelleyiniz", function(){});
+      addPreference();
+     }
   });
   $("#add-field").click(function (e) {
     e.preventDefault();
@@ -196,7 +198,7 @@ $(document).ready(function(){
                         </button>
                     </div>
                 </div>
-                <div class="form-group col-xs-8" id="field-row-container"></div>
+                <div class="form-group col-xs-8 accomodations_pref_div" id="field-row-container"></div>
                 <div class="form-group">
                     <div class="row col-xs-8 control-label">
                         <!--button class="btn btn-success pull-left" type="button" id="sendPreference" style="display: none;">
