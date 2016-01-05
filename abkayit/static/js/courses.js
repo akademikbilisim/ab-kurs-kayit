@@ -37,10 +37,12 @@ $(document).ready(function(){
             },
             "columnDefs": [
                {
-                "targets": [ 7 ]
+                "targets": [ 7 ],
+                "visible": false
                },
                {
-                "targets": [ 8 ]
+                "targets": [ 8 ],
+                "visible": false
                },
                {
                 "targets": [ 9 ],
