@@ -152,6 +152,9 @@ class StuProfileForm(ModelForm):
                     'user':forms.HiddenInput(),
                     'birthdate': SelectDateWidget(years=dyncf.BirthDateYears),
                  }
+        help_texts = {
+            'organization': 'Kurum Bilgisi; okuyorsanız okuduğunuz kurum, çalışıyorsanız çalıştığınız kurum bilgisidir',
+        } 
     def __init__(self,user=None, *args, **kwargs):
         #User.objects.get(email=request.user)
         self.ruser=kwargs.pop('ruser', None)

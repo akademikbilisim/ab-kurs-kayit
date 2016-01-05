@@ -130,6 +130,7 @@ $(document).ready(function(){
                             {{ field }}
                         </div>
                     </div>
+
       		        {% if field.errors %}
                         <div class="row">
                             <div class="col-md-6 col-md-offset-2">
@@ -166,6 +167,9 @@ $(document).ready(function(){
                         {{ field }}
                     </div>
                 </div>
+                {% if field.help_text%}
+                    <span class="helptext">{{field.help_text}}</span>
+                {%endif%}
   		        {% if field.errors %}
                     <div class="row">
                         <div class="col-md-6 col-md-offset-2">
