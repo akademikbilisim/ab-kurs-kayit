@@ -1,5 +1,18 @@
-$(document).ready(function(){
+function fnFormatDetails ( dTable, nTr )
+{
+    var aData = dTable.fnGetData( nTr );
+    var sOut = '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
+    sOut += '<tr><td><b>Ünvan:</b></td><td>'+aData[7]+'</td></tr>';
+    sOut += '<tr><td><b>Kurum:</b></td><td>'+aData[8]+'</td></tr>';
+    sOut += '<tr><td><b>Üniversite:</b></td><td>'+aData[9]+'</td></tr>';
+    sOut += '<tr><td><b>Bölüm:</b></td><td>'+aData[10]+'</td></tr>';
+    sOut += '<tr><td><b>Ek Bilgiler:</b></td><td>'+aData[11]+'</td></tr>';
+    sOut += '</table>';
+     
+    return sOut;
+}
 
+$(document).ready(function(){
     $('[data-id="course_table"]').DataTable({
             "dom": 'Bfrtip',
             "language": {
@@ -15,6 +28,57 @@ $(document).ready(function(){
             'csvHtml5',
             'pdfHtml5'
                         ],
+    });
+    $('[data-id="course_table_control_panel"]').each(function(){
+       var dTable = $(this).dataTable({
+            "dom": 'Bfrtip',
+            "language": {
+              "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Turkish.json"
+            },
+            "columnDefs": [
+               {
+                "targets": [ 7 ]
+               },
+               {
+                "targets": [ 8 ]
+               },
+               {
+                "targets": [ 9 ],
+                "visible": false
+               },
+               {
+                "targets": [ 10 ],
+                "visible": false
+               },
+               {
+                "targets": [ 11 ],
+                "visible": false
+               }
+            ],
+            "searching": false,
+            "bJQueryUI": false,
+            "ordering": true,
+            "paging" : false,
+            buttons : [
+              'copyHtml5',
+              'excelHtml5',
+              'csvHtml5',
+              'pdfHtml5'
+            ],
+      });
+
+      dTable.find('tbody a').click(function(){
+             var nTr = $(this).parents('tr')[0];
+          if ( dTable.fnIsOpen(nTr) )
+          {
+              dTable.fnClose( nTr );
+         1 }
+          else
+          {
+              dTable.fnOpen( nTr, fnFormatDetails(dTable, nTr), 'details' );
+          }
+      });
+
     });
 
 	$('#course_table tbody tr').click(function(){

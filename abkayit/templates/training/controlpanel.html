@@ -35,7 +35,7 @@
     {%endif%}
     {% if value.trainess1 %}
       <h3> Birinci tercih </h3>
-      <table data-id="course_table" id="course_table{{course.id}}" class="table table-hover table-striped" >
+      <table data-id="course_table_control_panel" id="course_table{{course.id}}" class="table table-hover table-striped" >
         <thead>
           <tr>
             <th>#</th>
@@ -45,65 +45,25 @@
             <th>E-posta</th>
             <th>Sehir</th>
             <th>Onayla</th>
+            <th>Ünvan</th>
+            <th>Kurum</th>
+            <th>Üniversite</th>
+            <th>Bölüm</th>
+            <th>Ek Bilgiler</th>
           </tr>
         </thead>
         <tbody>
           {% for t in value.trainess1 %}
             <tr>
-              <th>
-                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#1detail{{t.trainess.user.pk}}">Detay</a>
-                <div id="1detail{{t.trainess.user.pk}}" class="accordion-body collapse">
-                  <div class="accordion-inner">
-                    <div class="row">
-                      <div class="col-md-2">
-                        <label for="title" style="color:red;">{%trans "Title" %}</label>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-2">
-                        {{t.trainess.title}}
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-2">
-                        <label for="title" style="color:red;">{%trans "Organization" %}</label>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-2">
-                        {{t.trainess.organization}}
-                      </div>
-                    </div>
-
-                    <div class="row">
-                      <div class="col-md-2">
-                        <label for="title" style="color:red;">{%trans "Department" %}</label>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-2">
-                        {{t.trainess.department}}
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-2">
-                        <label for="title" style="color:red;">{%trans "Additional Information" %}</label>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-2">
-                        {{t.trainess.additional_information}}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </th>
-              <th>{{ t.pk }}</th>
-              <th>{{ t.trainess.user.first_name }}</th>
-              <th>{{ t.trainess.user.last_name }}</th>
-              <th>{{ t.trainess.user.email }}</th>
-              <th>{{ t.trainess.city }}</th>
-              <th>
+              <td>
+                <a class="clickableRow" >Detay</a>
+              </td>
+              <td>{{ t.pk }}</td>
+              <td>{{ t.trainess.user.first_name }}</td>
+              <td>{{ t.trainess.user.last_name }}</td>
+              <td>{{ t.trainess.user.email }}</td>
+              <td>{{ t.trainess.city }}</td>
+              <td>
                 {% for tcr in t.trainess.trainesscourserecord_set.values%}
                   {% if tcr.course_id != course.id %}
                     {%if tcr.approved %}
@@ -118,11 +78,16 @@
                     <input type="checkbox" name="students{{course.id}}" value="{{ t.pk }}"/>
                   {% endif %}
                 </div>
-              </th>
+              </td>
+              <td>{{ t.trainess.title }}</td>
+              <td>{{ t.trainess.organization }}</td>
+              <td>{{ t.trainess.university }}</td>
+              <td>{{ t.trainess.department }}</td>
+              <td>{{ t.trainess.additional_information }}</td>
             </tr>
 
             {% empty %}
-              <tr><th>Goruntulenecek basvuru yok</th></tr>
+              <tr><td>Goruntulenecek basvuru yok</td></tr>
              {% endfor %}
          </tbody>
       </table>
@@ -130,7 +95,7 @@
 
     {% if value.trainess2 %}
       <h3> İkinci Tercih </h3>
-      <table data-id="course_table" id="course_table2{{course.id}}" class="table table-hover table-striped" >
+      <table data-id="course_table_control_panel" id="course_table2{{course.id}}" class="table table-hover table-striped" >
         <thead>
           <tr>
             <th>#</th>
@@ -140,64 +105,25 @@
             <th>E-posta</th>
             <th>Sehir</th>
             <th>Onayla</th>
+            <th>Ünvan</th>
+            <th>Kurum</th>
+            <th>Üniversite</th>
+            <th>Bölüm</th>
+            <th>Ek Bilgiler</th>
           </tr>
         </thead>
         <tbody>
           {% for t2 in value.trainess2 %}
             <tr>
-              <th>
-                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#detail{{t2.trainess.user.pk}}">Detay</a>
-                <div id="detail{{t2.trainess.user.pk}}" class="accordion-body collapse">
-                  <div class="accordion-inner">
-                    <div class="row">
-                      <div class="col-md-2">
-                        <label for="title" style="color:red;">{%trans "Title" %}</label>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-2">
-                        {{t2.trainess.title}}
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-2">
-                        <label for="title" style="color:red;">{%trans "Organization" %}</label>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-2">
-                        {{t2.trainess.organization}}
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-2">
-                        <label for="title" style="color:red;">{%trans "Department" %}</label>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-2">
-                        {{t2.trainess.department}}
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-2">
-                        <label for="title" style="color:red;">{%trans "Additional Information" %}</label>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-2">
-                        {{t2.trainess.additional_information}}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </th>
-              <th>{{ t2.pk }}</th>
-              <th>{{ t2.trainess.user.first_name }}</th>
-              <th>{{ t2.trainess.user.last_name }}</th>
-              <th>{{ t2.trainess.user.email }}</th>
-              <th>{{ t2.trainess.city }}</th>
-              <th>
+              <td>
+                <a class="clickableRow">Detay</a>
+              </td>
+              <td>{{ t2.pk }}</td>
+              <td>{{ t2.trainess.user.first_name }}</td>
+              <td>{{ t2.trainess.user.last_name }}</td>
+              <td>{{ t2.trainess.user.email }}</td>
+              <td>{{ t2.trainess.city }}</td>
+              <td>
                 {% for tcr in t.trainess.trainesscourserecord_set.values%}
                   {% if tcr.course_id != course.id %}
                     {%if tcr.approved %}
@@ -212,7 +138,12 @@
                     <input type="checkbox" name="students{{course.id}}" value="{{ t2.pk }}"/>
                   {% endif %}
                 </div>
-              </th>
+              </td>
+              <td>{{ t2.trainess.title }}</td>
+              <td>{{ t2.trainess.organization }}</td>
+              <td>{{ t2.trainess.university }}</td>
+              <td>{{ t2.trainess.department }}</td>
+              <td>{{ t2.trainess.additional_information }}</td>
             </tr>
           {% endfor %}
         </tbody>
@@ -221,7 +152,7 @@
 
     {% if value.trainess3 %}
       <h3> Üçüncü Tercih </h3>
-      <table data-id="course_table" id="course_table3{{course.id}}" class="table table-hover table-striped" >
+      <table data-id="course_table_control_panel" id="course_table3{{course.id}}" class="table table-hover table-striped" >
         <thead>
           <tr>
             <th>#</th>
@@ -231,65 +162,25 @@
             <th>E-posta</th>
             <th>Sehir</th>
             <th>Onayla</th>
+            <th>Ünvan</th>
+            <th>Kurum</th>
+            <th>Üniversite</th>
+            <th>Bölüm</th>
+            <th>Ek Bilgiler</th>
           </tr>
         </thead>
         <tbody>
           {% for t3 in value.trainess3 %}
             <tr>
-              <th>
-                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#detail{{t3.trainess.user.pk}}">Detay</a>
-                <div id="detail{{t3.trainess.user.pk}}" class="accordion-body collapse">
-                  <div class="accordion-inner">
-                    <div class="row">
-                      <div class="col-md-2">
-                        <label for="title" style="color:red;">{%trans "Title" %}</label>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-2">
-                        {{t3.trainess.title}}
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-2">
-                        <label for="title" style="color:red;">{%trans "Organization" %}</label>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-2">
-                        {{t3.trainess.organization}}
-                      </div>
-                    </div>
-
-                    <div class="row">
-                      <div class="col-md-2">
-                        <label for="title" style="color:red;">{%trans "Department" %}</label>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-2">
-                        {{t3.trainess.department}}
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-2">
-                        <label for="title" style="color:red;">{%trans "Additional Information" %}</label>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-2">
-                        {{t3.trainess.additional_information}}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </th>
-              <th>{{ t3.pk}}</th>
-              <th>{{ t3.trainess.user.first_name }}</th>
-              <th>{{ t3.trainess.user.last_name }}</th>
-              <th>{{ t3.trainess.user.email }}</th>
-              <th>{{ t3.trainess.city }}</th>
-              <th>
+              <td>
+                <a class="clickableRow">Detay</a>
+              </td>
+              <td>{{ t3.pk}}</td>
+              <td>{{ t3.trainess.user.first_name }}</td>
+              <td>{{ t3.trainess.user.last_name }}</td>
+              <td>{{ t3.trainess.user.email }}</td>
+              <td>{{ t3.trainess.city }}</td>
+              <td>
                 {% for tcr in t.trainess.trainesscourserecord_set.values%}
                   {% if tcr.course_id != course.id %}
                     {%if tcr.approved %}
@@ -304,7 +195,12 @@
                     <input type="checkbox" name="students{{course.id}}" value="{{ t3.pk }}"/>
                   {% endif %}
                 </div>
-              </th>
+              </td>
+              <td>{{ t3.trainess.title }}</td>
+              <td>{{ t3.trainess.organization }}</td>
+              <td>{{ t3.trainess.university }}</td>
+              <td>{{ t3.trainess.department }}</td>
+              <td>{{ t3.trainess.additional_information }}</td>
             </tr>
           {% endfor %}
         </tbody>
