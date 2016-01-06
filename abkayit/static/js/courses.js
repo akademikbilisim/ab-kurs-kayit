@@ -2,12 +2,12 @@ function fnFormatDetails ( dTable, nTr )
 {
     var aData = dTable.fnGetData( nTr );
     var sOut = '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
-    sOut += '<tr><td><b>Ãnvan:</b></td><td>'+aData[7]+'</td></tr>';
+    sOut += '<tr><td><b>Ünvan:</b></td><td>'+aData[7]+'</td></tr>';
     sOut += '<tr><td><b>Kurum:</b></td><td>'+aData[8]+'</td></tr>';
-    sOut += '<tr><td><b>Ãniversite:</b></td><td>'+aData[9]+'</td></tr>';
-    sOut += '<tr><td><b>BÃ¶lÃ¼m:</b></td><td>'+aData[10]+'</td></tr>';
+    sOut += '<tr><td><b>Üniversite:</b></td><td>'+aData[9]+'</td></tr>';
+    sOut += '<tr><td><b>Bölüm:</b></td><td>'+aData[10]+'</td></tr>';
     sOut += '<tr><td><b>Ek Bilgiler:</b></td><td>'+aData[11]+'</td></tr>';
-    sOut += '<tr><td>Secilen Diger Kurslar: </td><td>'+aData[12]+'</td></tr>';
+    sOut += '<tr><td><b>Kursiyerin Seçtiği Diğer Kurslar: </b></td><td>'+aData[12]+'</td></tr>';
     sOut += '<tr><td></td><td>'+aData[13]+'</td></tr>';
     sOut += '</table>';
      
@@ -122,7 +122,7 @@ $(document).ready(function(){
   });
 
   $("#cancel-all").click(function(){
-    var selectedCourse = "BaÅvurduÄunuz Kurslar Ä°ptal Edilecektir</br></br>";
+    var selectedCourse = "Başvurduğunuz Kurslar İptal Edilecektir</br></br>";
     $("#field-container-form select option:selected").each(function(){
         selectedCourse += "<strong>- " + $(this).text() + " </strong></br>";
     });
@@ -130,7 +130,7 @@ $(document).ready(function(){
 	jsonData['csrfmiddlewaretoken'] = getCookie('csrftoken');
     bootbox.dialog({
         message: selectedCourse,
-        title: "OnaylÄ±yor musunuz?",
+        title: "Onaylıyor musunuz?",
         buttons: {
           success: {
             label: "Evet!",
@@ -153,7 +153,7 @@ $(document).ready(function(){
             }
           },
           danger: {
-            label: "HayÄ±r!",
+            label: "Hayır!",
             className: "btn-danger",
             callback: function() {
             }
@@ -168,9 +168,9 @@ $(document).ready(function(){
     var isClosed = $(this).prop('checked');
     applyMessage = "<strong>" + $(this).parent().parent().find("strong").text() + "</strong></br>";
     if(isClosed){
-      applyMessage += "Kursu BaÅvurulara AÃ§mak Ãzeresiniz";
+      applyMessage += "Kursu Başvurulara Açmak Üzeresiniz";
     }else{
-      applyMessage += "Kursu BaÅvurulara Kapatmak Ãzeresiniz";
+      applyMessage += "Kursu Başvurulara Kapatmak Üzeresiniz";
     }
     jsonData = {};
     jsonData['isOpen'] = isClosed;
@@ -178,7 +178,7 @@ $(document).ready(function(){
 	jsonData['csrfmiddlewaretoken'] = getCookie('csrftoken');
     bootbox.dialog({
         message: applyMessage,
-        title: "OnaylÄ±yor musunuz?",
+        title: "Onaylıyor musunuz?",
         buttons: {
           success: {
             label: "Evet!",
@@ -203,7 +203,7 @@ $(document).ready(function(){
             }
           },
           danger: {
-            label: "HayÄ±r!",
+            label: "Hayır!",
             className: "btn-danger",
             callback: function() {
             }

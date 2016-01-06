@@ -80,7 +80,7 @@
               <td>
                 {% for tcr in t.trainess.trainesscourserecord_set.all%}
                  {% if tcr.course.id != course.id %}
-                      <div class="checked-for-another-course"> - {{tcr.course.name}}</br></div>
+                      <div class="checked-for-another-course"> - {{tcr.course.name}} ({{tcr.course.no}}) </br></div>
                   {% endif%}
                 {%endfor%}
 
@@ -149,7 +149,7 @@
               <td>
                 {% for tcr in t2.trainess.trainesscourserecord_set.all%}
                  {% if tcr.course.id != course.id %}
-                      <div class="checked-for-another-course"> - {{tcr.course.name}}</br></div>
+                      <div class="checked-for-another-course"> - {{tcr.course.name}} ({{tcr.course.no}}) </br></div>
                   {% endif%}
                 {%endfor%}
 
@@ -216,7 +216,7 @@
               <td>
                 {% for tcr in t3.trainess.trainesscourserecord_set.all%}
                  {% if tcr.course.id != course.id %}
-                      <div class="checked-for-another-course"> - {{tcr.course.name}}</br></div>
+                      <div class="checked-for-another-course"> - {{tcr.course.name}} ({{tcr.course.no}}) </br></div>
                   {% endif%}
                 {%endfor%}
 
