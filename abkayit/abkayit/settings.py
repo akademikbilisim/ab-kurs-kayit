@@ -185,7 +185,7 @@ TRANSPORTATION={'0':'Uçak','1':'Otobüs','2':'Araba','3':'Diğer'}
 UNIVERSITIES=[('Abant İzzet Baysal Üniversitesi (Bolu)','Abant İzzet Baysal Üniversitesi (Bolu)'),
     ('Abdullah Gül Üniversitesi (Kayseri)','Abdullah Gül Üniversitesi (Kayseri)'),
     ('Acıbadem Üniversitesi (İstanbul)','Acıbadem Üniversitesi (İstanbul)'),
-    ('Adana Bilim ve Teknoloji Üniversitesi (İstanbul)','Adana Bilim ve Teknoloji Üniversitesi (Adana)'),
+    ('Adana Bilim ve Teknoloji Üniversitesi (Adana)','Adana Bilim ve Teknoloji Üniversitesi (Adana)'),
     ('Adıyaman Üniversitesi (Adıyaman)','Adıyaman Üniversitesi (Adıyaman)'),
     ('Adnan Menderes Üniversitesi (Aydın)','Adnan Menderes Üniversitesi (Aydın)'),
     ('Afyon Kocatepe Üniversitesi(Afyon)','Afyon Kocatepe Üniversitesi(Afyon)'),
