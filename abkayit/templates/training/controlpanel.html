@@ -67,7 +67,7 @@
                 {% for tcr in t.trainess.trainesscourserecord_set.values%}
                   {% if tcr.course_id != course.id %}
                     {%if tcr.approved %}
-                      <div class="checked-for-another-course"></div>
+                      <div class="checked-for-another-course">Onaylanan: {{tcr.course_id}}</br></div>
                     {% endif%}    
                   {% endif%}
                 {%endfor%}
@@ -84,6 +84,15 @@
               <td>{{ t.trainess.university }}</td>
               <td>{{ t.trainess.department }}</td>
               <td>{{ t.trainess.additional_information }}</td>
+              <td>
+                {% for tcr in t.trainess.trainesscourserecord_set.all%}
+                 {% if tcr.course.id != course.id %}
+                    {%if tcr.approved %}
+                      <div class="checked-for-another-course">Kursiyerin seçtiği {{tcr.course.name}} kursu onaylanmış</br></div>
+                    {% endif%}    
+                  {% endif%}
+                {%endfor%}
+              </td>
             </tr>
 
             {% empty %}
@@ -124,10 +133,10 @@
               <td>{{ t2.trainess.user.email }}</td>
               <td>{{ t2.trainess.city }}</td>
               <td>
-                {% for tcr in t.trainess.trainesscourserecord_set.values%}
+                {% for tcr in t2.trainess.trainesscourserecord_set.values%}
                   {% if tcr.course_id != course.id %}
                     {%if tcr.approved %}
-                      <div class="checked-for-another-course"></div>
+                      <div class="checked-for-another-course">Onaylanan: {{tcr.course_id}}</br></div>
                     {% endif%}    
                   {% endif%}
                 {%endfor%}
@@ -144,6 +153,15 @@
               <td>{{ t2.trainess.university }}</td>
               <td>{{ t2.trainess.department }}</td>
               <td>{{ t2.trainess.additional_information }}</td>
+              <td>
+                {% for tcr in t2.trainess.trainesscourserecord_set.all%}
+                 {% if tcr.course.id != course.id %}
+                    {%if tcr.approved %}
+                      <div class="checked-for-another-course">Kursiyerin seçtiği {{tcr.course.name}} kursu onaylanmış</br></div>
+                    {% endif%}    
+                  {% endif%}
+                {%endfor%}
+              </td>
             </tr>
           {% endfor %}
         </tbody>
@@ -181,13 +199,6 @@
               <td>{{ t3.trainess.user.email }}</td>
               <td>{{ t3.trainess.city }}</td>
               <td>
-                {% for tcr in t.trainess.trainesscourserecord_set.values%}
-                  {% if tcr.course_id != course.id %}
-                    {%if tcr.approved %}
-                      <div class="checked-for-another-course"></div>
-                    {% endif%}    
-                  {% endif%}
-                {%endfor%}
                 <div class="checkbox">
                   {%if t3.approved %}
                     <input type="checkbox" checked name="students{{course.id}}" value="{{ t3.pk }}"/>
@@ -201,6 +212,15 @@
               <td>{{ t3.trainess.university }}</td>
               <td>{{ t3.trainess.department }}</td>
               <td>{{ t3.trainess.additional_information }}</td>
+              <td>
+                {% for tcr in t3.trainess.trainesscourserecord_set.all%}
+                 {% if tcr.course.id != course.id %}
+                    {%if tcr.approved %}
+                      <div class="checked-for-another-course">Kursiyerin seçtiği {{tcr.course.name}} kursu onaylanmış</br></div>
+                    {% endif%}    
+                  {% endif%}
+                {%endfor%}
+              </td>
             </tr>
           {% endfor %}
         </tbody>

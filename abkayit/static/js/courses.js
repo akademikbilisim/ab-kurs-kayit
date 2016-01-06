@@ -7,6 +7,7 @@ function fnFormatDetails ( dTable, nTr )
     sOut += '<tr><td><b>Üniversite:</b></td><td>'+aData[9]+'</td></tr>';
     sOut += '<tr><td><b>Bölüm:</b></td><td>'+aData[10]+'</td></tr>';
     sOut += '<tr><td><b>Ek Bilgiler:</b></td><td>'+aData[11]+'</td></tr>';
+    sOut += '<tr><td></td><td>'+aData[12]+'</td></tr>';
     sOut += '</table>';
      
     return sOut;
@@ -54,6 +55,10 @@ $(document).ready(function(){
                },
                {
                 "targets": [ 11 ],
+                "visible": false
+               },
+               {
+                "targets": [ 12 ],
                 "visible": false
                }
             ],

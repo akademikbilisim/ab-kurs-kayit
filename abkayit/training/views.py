@@ -219,9 +219,9 @@ def control_panel(request):
                 trainess = {}
                 for course in courses:
                         trainess[course] = {}
-                        trainess[course]['trainess1'] = TrainessCourseRecord.objects.filter(course=course.pk).filter(preference_order=1)
-                        trainess[course]['trainess2'] = TrainessCourseRecord.objects.filter(course=course.pk).filter(preference_order=2)
-                        trainess[course]['trainess3'] = TrainessCourseRecord.objects.filter(course=course.pk).filter(preference_order=3)
+                        trainess[course]['trainess1'] = TrainessCourseRecord.objects.filter(course=course.pk).filter(preference_order=1).prefetch_related('course')
+                        trainess[course]['trainess2'] = TrainessCourseRecord.objects.filter(course=course.pk).filter(preference_order=2).prefetch_related('course')
+                        trainess[course]['trainess3'] = TrainessCourseRecord.objects.filter(course=course.pk).filter(preference_order=3).prefetch_related('course')
                 data['trainess'] = trainess
                 log.info(data, extra = d)
                 if request.POST:

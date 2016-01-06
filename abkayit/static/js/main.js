@@ -4,7 +4,7 @@ $(document).ready(function () {
         if ($(this).is(":checked")) {
             $(this).closest('tr').css("background-color", "#9FFFAA");
         } else {
-           if($(this).parent().parent().find(".checked-for-another-course").length){
+           if($(this).parent().parent().parent().find(".checked-for-another-course").length){
                $(this).closest('tr').css("background-color", "#FFDDDC");
            }
            else {
