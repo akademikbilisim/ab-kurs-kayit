@@ -12,5 +12,6 @@ urlpatterns = patterns('training.views',
     url(r'^istatistik/$', 'statistic', name="statistic"),
     url(r'^cancelallpreference/$', 'cancel_all_preference', name="cancel_all_preference"),
     url(r'^cancelcourseapplication/$', 'cancel_course_application', name="cancel_course_application"),
+    url(r'^getpreferredcourses/$', 'get_preferred_courses', name="get_preferred_courses"),
 )
 
