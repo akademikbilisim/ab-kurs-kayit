@@ -90,7 +90,9 @@
                 {% for tcr in t.trainess.trainesscourserecord_set.all%}
                  {% if tcr.course.id != course.id %}
                     {%if tcr.approved %}
-                      <div class="checked-for-another-course">Kursiyerin seçtiği {{tcr.course.name}} kursu onaylanmış</br></div>
+                      {%if closed != "1" %}
+                          <div class="checked-for-another-course">Kursiyerin seçtiği {{tcr.course.name}} kursu onaylanmış</br></div>
+                      {%endif%}
                     {% endif%}    
                   {% endif%}
                 {%endfor%}
@@ -159,7 +161,9 @@
                 {% for tcr in t2.trainess.trainesscourserecord_set.all%}
                  {% if tcr.course.id != course.id %}
                     {%if tcr.approved %}
-                      <div class="checked-for-another-course">Kursiyerin seçtiği {{tcr.course.name}} kursu onaylanmış</br></div>
+                      {%if closed != "1" %}
+                          <div class="checked-for-another-course">Kursiyerin seçtiği {{tcr.course.name}} kursu onaylanmış</br></div>
+                      {%endif%}
                     {% endif%}    
                   {% endif%}
                 {%endfor%}
@@ -226,7 +230,9 @@
                 {% for tcr in t3.trainess.trainesscourserecord_set.all%}
                  {% if tcr.course.id != course.id %}
                     {%if tcr.approved %}
-                      <div class="checked-for-another-course">Kursiyerin seçtiği {{tcr.course.name}} kursu onaylanmış</br></div>
+                      {%if closed != "1" %}
+                          <div class="checked-for-another-course">Kursiyerin seçtiği {{tcr.course.name}} kursu onaylanmış</br></div>
+                      {%endif%}
                     {% endif%}    
                   {% endif%}
                 {%endfor%}

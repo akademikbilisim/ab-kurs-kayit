@@ -204,13 +204,11 @@ def control_panel(request):
         log.info(uprofile, extra = d)
         if not uprofile:    
             if now < data['site'].aproval_start_date:
-                data['note'] = _("You can choose courses in future")
+                note = _("You can choose courses in future")
                 data['closed'] = "1"
-                return render_to_response("training/controlpanel.html", data,context_instance=RequestContext(request))
             elif now > data['site'].aproval_end_date:
-                data['note'] = _("The course choosing process is closed")
+                note = _("The course choosing process is closed")
                 data['closed'] = "1"
-                return render_to_response("training/controlpanel.html", data,context_instance=RequestContext(request))
 
             courses = Course.objects.filter(approved=True).filter(trainer__user=request.user)
             log.info(courses, extra = d)
@@ -225,6 +223,12 @@ def control_panel(request):
                 data['trainess'] = trainess
                 log.info(data, extra = d)
                 if request.POST:
+                    if now < data['site'].aproval_start_date:
+                        data['note'] = _("You can choose courses in future")
+                        data['closed'] = "1"
+                    elif now > data['site'].aproval_end_date:
+                        data['note'] = _("The course choosing process is closed")
+                        data['closed'] = "1"
                     log.info(request.POST, extra=d)
                     for course in courses:
                         try:
