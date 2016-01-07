@@ -23,13 +23,13 @@ input[type=number]::-webkit-inner-spin-button {
 }
 
 .checked-trainee-for-another-course{
-  background-color: #FFDDDC;
+  background-color: #FFDDDC !important;
 }
 
 .checked-trainee-course{
-  background-color: #9FFFAA;
+  background-color: #9FFFAA !important;
 }
 
 .avaliable-trainee{
-  background-color: #DEDEDE;
+  background-color: #DEDEDE !important;
 }

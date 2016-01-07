@@ -2,15 +2,14 @@ $(document).ready(function () {
 
     $("table input[type='checkbox']").change(function (e) {
         if ($(this).is(":checked")) {
-            $(this).closest('tr').css("background-color", "#9FFFAA");
+            $(this).closest('tr').addClass("checked-trainee-course");
         } else {
-           if($(this).parent().parent().parent().find(".checked-for-another-course").length){
-               $(this).closest('tr').css("background-color", "#FFDDDC");
-           }
-           else {
-               $(this).closest('tr').css("background-color", "");
-           }
+            $(this).closest('tr').removeClass("checked-trainee-course");
         }
+        if($(this).parent().parent().parent().find(".checked-for-another-course").length){
+            $(this).closest('tr').addClass("checked-trainee-for-another-course");
+        }
+          
     });
     $("table input[type='checkbox']").trigger("change");
 });
