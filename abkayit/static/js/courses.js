@@ -181,7 +181,8 @@ $(document).ready(function(){
 	});
   });
 
-
+/******************************************************/
+/* #52 numarali issue ile kapatildi   
 
   $('[data-id="applicationopen"]').change(function(){
     var isClosed = $(this).prop('checked');
@@ -230,5 +231,5 @@ $(document).ready(function(){
         }
    });
   });
-
+*/
 });

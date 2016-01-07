@@ -303,33 +303,34 @@ def cancel_all_preference(request):
     message = "Başvurularınız Silinirken Hata Oluştu"
     return HttpResponse(json.dumps({'status':'-1', 'message':message}), content_type="application/json")
 
-@login_required
-def cancel_course_application(request):
-    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
-    message = ""
-    status = "-1"
-    if request.POST:
-        try:
-            course = Course.objects.get(id=request.POST.get("course"), approved=True, trainer__user=request.user)
-            if request.POST.get("isOpen") == "true":
-                course.application_is_open = True
-                message = "Bu Kurs İçin Başvurular Açıldı"
-                status = "0"
-            else: 
-                course.application_is_open = False
-                message = "Bu Kurs İçin Başvurular Kapandı"
-                status = "0"
-            course.save()
-        except ObjectDoesNotExist:
-            message = "İşleminiz Sırasında Hata Oluştu"
-            status = "-1"
-        except Exception as e:
-            message = "İşleminiz Sırasında Hata Oluştu"
-            status = "-1"
-            log.error(e.message, extra=d) 
-        return HttpResponse(json.dumps({'status':'-1', 'message':message}), content_type="application/json")
-    message = "İşleminiz Sırasında Hata Oluştu"
-    return HttpResponse(json.dumps({'status':'-1', 'message':message}), content_type="application/json")
+# 52 numarali issue ile kapatildi
+#@login_required
+#def cancel_course_application(request):
+#    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
+#    message = ""
+#    status = "-1"
+#    if request.POST:
+#        try:
+#            course = Course.objects.get(id=request.POST.get("course"), approved=True, trainer__user=request.user)
+#            if request.POST.get("isOpen") == "true":
+#                course.application_is_open = True
+#                message = "Bu Kurs İçin Başvurular Açıldı"
+#                status = "0"
+#            else: 
+#                course.application_is_open = False
+#                message = "Bu Kurs İçin Başvurular Kapandı"
+#                status = "0"
+#            course.save()
+#        except ObjectDoesNotExist:
+#            message = "İşleminiz Sırasında Hata Oluştu"
+#            status = "-1"
+#        except Exception as e:
+#            message = "İşleminiz Sırasında Hata Oluştu"
+#            status = "-1"
+#            log.error(e.message, extra=d) 
+#        return HttpResponse(json.dumps({'status':'-1', 'message':message}), content_type="application/json")
+#    message = "İşleminiz Sırasında Hata Oluştu"
+#    return HttpResponse(json.dumps({'status':'-1', 'message':message}), content_type="application/json")
 
 @login_required
 def get_preferred_courses(request):
