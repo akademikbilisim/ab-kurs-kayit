@@ -7,6 +7,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from ckeditor.fields import RichTextField
 
+from abkayit.settings import PREFERENCE_LIMIT
 
 def make_choices(choices):
     """
@@ -23,8 +24,6 @@ class Site(models.Model):
     home_url = models.CharField(verbose_name=_("Home Url"), max_length="128", null=True)
     application_start_date = models.DateField(verbose_name=_("Course Application Start Date"), default=datetime.now) 
     application_end_date = models.DateField(verbose_name=_("Course Application End Date"), default=datetime.now) 
-    aproval_start_date = models.DateField(verbose_name=_("Trainess Aproval Start Date"), default=datetime.now) 
-    aproval_end_date = models.DateField(verbose_name=_("Trainess Aproval End Date"), default=datetime.now) 
     def __unicode__(self):
         return self.name
 
@@ -65,3 +64,11 @@ class Question(models.Model):
         verbose_name_plural = _("Questions")
     def __unicode__(self):
         return self.detail
+
+class ApprovalDate(models.Model):
+    start_date = models.DateTimeField(verbose_name=_("Start Date"), default=datetime.now)
+    end_date = models.DateTimeField(verbose_name=_("End Date"), default=datetime.now)
+    preference_order = models.SmallIntegerField(verbose_name=_("Preference"))
+    site = models.ForeignKey(Site)
+    class Meta:
+        verbose_name = _("Approval Date")
