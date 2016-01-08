@@ -233,7 +233,7 @@ def control_panel(request):
                         note = "  Kurs Seçim İşlemi %s - %s tarihleri arasındadır" % (
                                                    first_pref_approve_start.strftime(DATETIME_FORMAT),
                                                    third_pref_approve_end.strftime(DATETIME_FORMAT)) + "  "
-                        data['closed'] = "0"
+                        data['closed'] = "1"
                     elif (now_for_approve > first_pref_approve_start and now_for_approve < third_pref_approve_end):
                         if ((now_for_approve > first_pref_approve_start) and (now_for_approve < first_pref_approve_end)):
                             trainess[course]['trainess1'] = TrainessCourseRecord.objects.filter(
