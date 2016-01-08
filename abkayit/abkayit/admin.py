@@ -5,9 +5,6 @@ from abkayit.models import *
 from ckeditor.widgets import CKEditorWidget
 from django import forms
 
-from abkayit.forms import *
-
-
 class ApprovalDateInline(admin.StackedInline):
     model = ApprovalDate
     extra = 0
