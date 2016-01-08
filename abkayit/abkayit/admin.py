@@ -5,22 +5,28 @@ from abkayit.models import *
 from ckeditor.widgets import CKEditorWidget
 from django import forms
 
+from abkayit.forms import *
+
+
+class ApprovalDateInline(admin.StackedInline):
+    model = ApprovalDate
+    extra = 0
 
 @admin.register(Site)
 class SiteAdmin(admin.ModelAdmin):
-	pass
-
+    inlines = [
+        ApprovalDateInline,
+    ]
 
 class ContentInline(admin.TabularInline):
     content = forms.CharField(widget=CKEditorWidget())
     model = Content
 
-
 @admin.register(Menu)
 class MenuAdmin(admin.ModelAdmin):
-	inlines = [
-		ContentInline,
-	]
+    inlines = [
+        ContentInline,
+    ]
 
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):

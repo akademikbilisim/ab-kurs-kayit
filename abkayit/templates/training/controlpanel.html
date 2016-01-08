@@ -7,11 +7,20 @@
 <script src="{% static "/static/js/courses.js" %}"></script>
 
 <link href="{% static "/static/css/courses.css" %}" rel="stylesheet" type="text/css"></link>
-
+<script type="text/javascript">
+ $(document).ready(function(){
+   {% if closed == "1"%}
+     $("input:checkbox").attr("disabled",true);
+   {% endif %}  
+ });
+</script>
 <div class="container-fluid" style="margin-top:20px;">
   <div class="alert alert-info">{{ note }}</div>
   <form name="select-student{{course.id}}" method="POST">{% csrf_token %}
   {% for course,value in trainess.items %}
+    {% if not value.trainess1 and not value.trainess2 and not value.trainess3%}
+       Görüntülenecek kayıt bulunamadı
+    {%endif%}
     {% if value.trainess1 or value.trainess2 or value.trainess3 %}
       <h4> 
       <span class="avaliable-trainee label">Seçim Yapabilirsiniz</span>
@@ -243,10 +252,13 @@
       </table>
     {% endif %}
     
-    {% if value.trainess1 or  value.trainess2 or value.trainess3%}
-    {% endif %}
+  {% empty %}
+    Görüntülenecek kayıt bulunamadı
   {% endfor %}
-  <button type="submit" class="btn btn-default">Gonder</button>
+
+  {%if closed != "1" %}
+      <button type="submit" class="btn btn-default">Gonder</button>
+  {% endif %}
   </div>
   </form>
   </br>
