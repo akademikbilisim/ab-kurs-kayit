@@ -23,6 +23,7 @@ class AccommodationAdmin(admin.ModelAdmin):
 class UserAccomodationPrefAdmin(admin.ModelAdmin):
     list_display = ['id','user','usertype','preference_order','approved',]
     list_filter=('usertype','preference_order','accomodation')
+    search_fields=('user__username',)
 
 @admin.register(UserVerification)
 class UserVerificationAdmin(admin.ModelAdmin):
@@ -32,3 +33,4 @@ class UserVerificationAdmin(admin.ModelAdmin):
 class InstructorInformationAdmin(admin.ModelAdmin):
     list_display = ['id','user','transportation','arrival_date','departure_date']
     list_filter=('transportation','arrival_date','departure_date')
+    search_fields=('user__username',)

@@ -221,7 +221,7 @@ def control_panel(request):
                         trainess[course]['trainess2'] = TrainessCourseRecord.objects.filter(course=course.pk).filter(preference_order=2).prefetch_related('course')
                         trainess[course]['trainess3'] = TrainessCourseRecord.objects.filter(course=course.pk).filter(preference_order=3).prefetch_related('course')
                 data['trainess'] = trainess
-                log.info(data, extra = d)
+                #log.info(data, extra = d)
                 if request.POST:
                     if now < data['site'].aproval_start_date:
                         data['note'] = _("You can choose courses in future")
