@@ -4,7 +4,7 @@ $(document).ready(function(){
             "language": {
                     "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Turkish.json"
             },
-            "searching": false,
+            "searching": true,
             "bJQueryUI": false,
             "ordering": true,
             "paging" : false,
