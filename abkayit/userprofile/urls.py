@@ -15,7 +15,8 @@ urlpatterns = patterns('userprofile.views',
 
     # for admins
     url(r'^tumkullanicilar', 'alluserview', name="alluser"),
-
+    url(r'^tumegitmenler', 'get_all_trainers_view', name="alltrainers"),
+    
     #for instructor
     url(r'^egitmen/bilgi', 'instructor_information', name="instructor_information"),
     

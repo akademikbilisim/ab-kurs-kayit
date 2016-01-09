@@ -223,6 +223,18 @@ def alluserview(request):
     return render_to_response("userprofile/allusers.html",data,context_instance=RequestContext(request))
 
 
+@staff_member_required
+def get_all_trainers_view(request):
+    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
+    data = prepare_template_data(request)
+    try:
+        trainers = UserProfile.objects.filter(is_instructor=True)
+        data['trainers'] = trainers
+    except Exception as e:
+        log.error(e.message)
+    return render_to_response("userprofile/alltrainess.html", data, context_instance=RequestContext(request))
+
+
 def active(request, key):
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
     try:

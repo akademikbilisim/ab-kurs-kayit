@@ -1,0 +1,43 @@
+{% extends "dashboard.html" %}
+{% load i18n %}
+{% block content %}
+{% load staticfiles %}
+<script src="{% static "/static/js/allusers.js" %}"></script>
+
+<div class="container-fluid">
+<table id="list_table" class="table table-hover table-striped">
+	<thead>
+	    <tr>
+	        <th>{% trans "Ad Soyad" %}</th>
+	        <th>{% trans "E-posta" %}</th>
+	        <th>{% trans "Kurs Adı" %}</th>
+	        <th>{% trans "Ulaşım Türü" %}</th>
+	        <th>{% trans "Varış Tarihi" %}</th>
+	        <th>{% trans "Ayrılış Tarihi" %}</th>
+	        <th>{% trans "Ek Bilgi" %}</th>
+	    </tr>
+	</thead>
+	<tbody>
+	{% for trainer in trainers %}
+		<tr>
+			<td>{{trainer.user.first_name}} {{trainer.user.last_name}}</td>
+			<td>{{trainer.user.email}}</td>
+            <td>
+                {% for c in trainer.trainer.all %}
+                    <span>&nbsp;</span>
+			        {{ c }}
+                    <span>&nbsp;</span>
+                {% endfor %}
+            </td>
+			<td>{{trainer.instructorinformation_set.first.get_transportation_display}}</td>
+			<td>{{trainer.instructorinformation_set.first.arrival_date}}</td>
+			<td>{{trainer.instructorinformation_set.first.departure_date}}</td>
+			<td>{{trainer.instructorinformation_set.first.additional_information}}</td>
+		</tr>
+	{% endfor %}
+	</tbody>
+</table>
+</div>
+
+{% endblock %}
+
