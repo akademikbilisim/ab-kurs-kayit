@@ -60,6 +60,10 @@
             <th>Üniversite</th>
             <th>Bölüm</th>
             <th>Ek Bilgiler</th>
+            <th>Seçilen Kurslar</th>
+            <th>Onaylanma Bilgileri</th>
+            <th>Not</th>
+            <th>Değerlendirme</th>
           </tr>
         </thead>
         <tbody>
@@ -106,6 +110,35 @@
                   {% endif%}
                 {%endfor%}
               </td>
+              <td>
+                  {% if note_edit_closed != "1" %}
+                      <div class="col-md-1">Not</div>
+                      <div class="col-md-6"> 
+                          <input type="text" class="form-control input-note" value="{{ t.trainess.note_to_profile.first.note }}"/>
+                          <input type="hidden" class="input-username" value="{{ t.trainess.user.username }}"/>
+                      </div>
+                  {% endif%}
+              <td>
+                  {% if note_edit_closed != "1" %}
+                      <div class="col-md-1">Durum</div>
+                      <div class="col-md-6">
+                      <select class="form-control select-score">
+                          {%for t_score in  TRAINESS_SCORE %} 
+                              {%if t.trainess.score == t_score.0%}
+                                  <option selected value="{{t_score.0}}">{{t_score.1}}</option> 
+                              {% else%}
+                                  <option value="{{t_score.0}}">{{t_score.1}}</option> 
+                              {% endif%}
+                          {%endfor%}
+                       </select>
+                      </div>
+                  {% endif%}
+              </td>
+              <td>
+                  {% if note_edit_closed != "1" %}
+                      <div class="col-md-2"><input id="save-score" type="button" value="Kaydet"/></div>
+                  {% endif%}
+              </td>
             </tr>
             {% empty %}
               <tr><td>Goruntulenecek basvuru yok</td></tr>
@@ -131,6 +164,10 @@
             <th>Üniversite</th>
             <th>Bölüm</th>
             <th>Ek Bilgiler</th>
+            <th>Seçilen Kurslar</th>
+            <th>Onaylanma Bilgileri</th>
+            <th>Not</th>
+            <th>Değerlendirme</th>
           </tr>
         </thead>
         <tbody>
@@ -177,6 +214,35 @@
                   {% endif%}
                 {%endfor%}
               </td>
+              <td> 
+                  {% if note_edit_closed != "1" %}
+                      <div class="col-md-1">Not</div>
+                      <div class="col-md-6">
+                          <input type="text" class="form-control input-note" value="{{ t2.trainess.note_to_profile.first.note }}"/>
+                          <input type="hidden" class="input-username" value="{{ t2.trainess.user.username }}"/>
+                      </div>
+                  {% endif%}
+              <td>
+                  {% if note_edit_closed != "1" %}
+                      <div class="col-md-1">Durum</div>
+                      <div class="col-md-6">
+                      <select class="form-control select-score">
+                          {%for t_score in  TRAINESS_SCORE %} 
+                              {%if t2.trainess.score == t_score.0%}
+                                  <option selected value="{{t_score.0}}">{{t_score.1}}</option> 
+                              {% else%}
+                                  <option value="{{t_score.0}}">{{t_score.1}}</option> 
+                              {% endif%}
+                          {%endfor%}
+                       </select>
+                      </div>
+                  {% endif%}
+              </td>
+              <td>
+                  {% if note_edit_closed != "1" %}
+                      <div class="col-md-2"><input id="save-score" type="button" value="Kaydet"/></div>
+                  {% endif%}
+              </td>
             </tr>
           {% endfor %}
         </tbody>
@@ -200,6 +266,10 @@
             <th>Üniversite</th>
             <th>Bölüm</th>
             <th>Ek Bilgiler</th>
+            <th>Seçilen Kurslar</th>
+            <th>Onaylanma Bilgileri</th>
+            <th>Not</th>
+            <th>Değerlendirme</th>
           </tr>
         </thead>
         <tbody>
@@ -245,6 +315,35 @@
                     {% endif%}    
                   {% endif%}
                 {%endfor%}
+              </td>
+              <td> 
+                  {% if note_edit_closed != "1" %}
+                      <div class="col-md-1">Not</div>
+                      <div class="col-md-6">
+                          <input type="text" class="form-control input-note" value="{{ t3.trainess.note_to_profile.first.note }}"/>
+                          <input type="hidden" class="input-username" value="{{ t3.trainess.user.username }}"/>
+                      </div>
+                  {% endif%}
+              <td>
+                  {% if note_edit_closed != "1" %}
+                      <div class="col-md-1">Durum</div>
+                      <div class="col-md-6">
+                      <select class="form-control select-score">
+                          {%for t_score in  TRAINESS_SCORE %} 
+                              {%if t3.trainess.score == t_score.0%}
+                                  <option selected value="{{t_score.0}}">{{t_score.1}}</option> 
+                              {% else%}
+                                  <option value="{{t_score.0}}">{{t_score.1}}</option> 
+                              {% endif%}
+                          {%endfor%}
+                       </select>
+                      </div>
+                  {% endif%}
+              </td>
+              <td>
+                  {% if note_edit_closed != "1" %}
+                      <div class="col-md-2"><input id="save-score" type="button" value="Kaydet"/></div>
+                  {% endif%}
               </td>
             </tr>
           {% endfor %}

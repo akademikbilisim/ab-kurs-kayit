@@ -180,6 +180,7 @@ LOGGING = {
 
     }
 }
+TRAINESS_SCORE=[('0','Gelmedi(Kara Listede)'), ('1','Geldi')]
 GENDER={'E':'Erkek', 'K':'Kadin','H':'Hepsi'}
 TRANSPORTATION={'0':'Uçak','1':'Otobüs','2':'Araba','3':'Diğer'}
 UNIVERSITIES=[('Abant İzzet Baysal Üniversitesi (Bolu)','Abant İzzet Baysal Üniversitesi (Bolu)'),

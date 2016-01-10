@@ -3,7 +3,7 @@ import json
 import logging
 import hashlib
 import random
-
+import datetime
 
 from django.shortcuts import render, render_to_response, redirect
 from django.http.response import HttpResponseRedirect, HttpResponse
@@ -374,6 +374,39 @@ def password_reset_key_done(request, key=None):
     data['note'] = note
     data['user'] = request.user
     return render_to_response("userprofile/change_password.html", data, context_instance=RequestContext(request))
+
+
+@login_required(login_url='/')
+def save_note(request):
+    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
+    data = prepare_template_data(request)
+    jsondata={}
+    if request.method == 'POST':
+        trainess_username = request.POST['trainess_username']
+        trainess_score = request.POST['score']
+        t_note = request.POST['note']
+        if trainess_username and trainess_username != '':
+            try:
+                userprofile = UserProfile.objects.get(user__username=trainess_username)
+                userprofile.score = trainess_score
+                userprofile.save()
+                trainess_note, created = TrainessNote.objects.get_or_create(note_to_profile=userprofile, site=data['site'])
+                trainess_note.note = t_note
+                trainess_note.note_from_profile = request.user.userprofile
+                trainess_note.note_date = datetime.now()
+                trainess_note.save()
+                jsondata['status'] = "0" 
+                jsondata['message'] = "Durum güncellendi!"
+            except Exception as e:
+                jsondata['status'] = "-1" 
+                jsondata['message'] = "Durum güncelleme sırasında hata olustu"
+                log.error(e.message, extra=d)
+        else:
+            jsondata['status'] = "-1" 
+            jsondata['message'] = "Hata: Kullanıcı adı boş olamaz!"
+            log.error("username bos olamaz", extra=d)
+    
+    return HttpResponse(json.dumps(jsondata), content_type="application/json")
 
 
 def logout(request):
