@@ -339,7 +339,7 @@
   var toptencourseText = [];
   var toptencourseValue = [];
   {% for course in topten_by_course %}
-  toptencourseText.push("{{course.course.name}}");
+  toptencourseText.push("{{course.course__name}}");
     toptencourseValue.push({{course.count}});
   {% endfor%}
   $(function () {

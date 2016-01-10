@@ -356,9 +356,9 @@ def statistic(request):
         data['statistic_by_gender'] = statistic_by_gender
         statistic_by_university = UserProfile.objects.filter(is_student=True).values('university').annotate(Count('university')).order_by('university')
         data['statistic_by_university'] = statistic_by_university
-        data['topten_by_course'] = TrainessCourseRecord.objects.filter(preference_order=1).annotate(count=Count('preference_order')).order_by('count')[:10]
-        data['topten_by_city']  = UserProfile.objects.filter(is_student=True).values('city').annotate(count=Count('city')).order_by('count')[:10]
-        data['topten_by_university']  = UserProfile.objects.filter(is_student=True).values('university').annotate(count=Count('university')).order_by('count')[:10]
+        data['topten_by_course'] = TrainessCourseRecord.objects.filter(preference_order=1).values('course__name').annotate(count=Count('course')).order_by('-count')[:10]
+        data['topten_by_city']  = UserProfile.objects.filter(is_student=True).values('city').annotate(count=Count('city')).order_by('-count')[:10]
+        data['topten_by_university']  = UserProfile.objects.filter(is_student=True).filter(~Q(university="")).values('university').annotate(count=Count('university')).order_by('-count')[:10]
         total_profile = len(UserProfile.objects.filter(is_student=True))
         total_preference = len(TrainessCourseRecord.objects.all())
         data['statistic_by_totalsize'] = {'Toplam Profil(Kişi)': total_profile, 'Toplam Tercih': total_preference}
