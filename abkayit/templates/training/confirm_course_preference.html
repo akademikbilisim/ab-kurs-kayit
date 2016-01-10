@@ -1,0 +1,68 @@
+{% extends "dashboard.html" %}
+{% block content %}
+{% load i18n %}
+{% load staticfiles %}
+{% load template_filter %}
+<script src="{% static "/static/js/confirm_course_preference.js" %}"></script>
+    {%if course_exist == "1"%}
+        <div class="col-lg-6 col-md-8 col-md-offset-2">
+          {%if approve_is_open == "0"  and course_exist == "1"%}
+            <div class="panel panel-default course-approved">
+          {%else%}
+            <div class="panel panel-default">
+          {%endif%}
+                <div class="panel-heading">
+                    <center>
+                     <b>{{note}}</b>
+                    </center>
+                </div>
+                <div class="panel-body"> 
+                    <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <b>Kurs Adı</b>
+                        </div>
+                        <div class="col-md-6">
+                            {{trainess_course_record.0.course.name}}
+                        </div>
+                    </div>
+                    </div>
+                    <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <b>Kurs No</b>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="{{trainess_course_record.0.course.url}}">{{trainess_course_record.0.course.no}}</a>
+                        </div>
+                    </div>
+                    </div>
+                    <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <b>Eğitmenler</b>
+                        </div>
+                        <div class="col-md-6">
+                            {% for t in trainess_course_record.0.course.trainer.all %}
+                                {{t.user}} </br>
+                            {% endfor %}
+                            
+                        </div>
+                    </div>
+                    </div>
+                    {%if approve_is_open == "1"%}
+                    <div class="form-group">
+                        <input id="course_record_id" type="hidden" value="{{trainess_course_record.0.id}}"/>
+                        <div class="col-md-2 col-md-offset-10"> 
+                            <input id="confirm_course_record_button_id" class="btn btn-success" type="button" value="Onayla"/>
+                        </div>
+                    </div>
+                    {%endif%}
+                </div>
+            </div>
+         </div>
+    {%else%}
+           <div class="alert alert-info">{{ note }}</div>
+    {%endif%}
+{% endblock %}
+
