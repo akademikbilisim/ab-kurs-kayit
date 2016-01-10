@@ -1,7 +1,7 @@
-Merhaba,<br>
-<br>
-{{ course.no }} numaralı kursta {{ user }} tarafından güncelleme yapılmıştır.<br>
-<br>
-Yapılan değişiklikleri görmek için https://kayit.ab.org.tr/egitim/controlpanel adresini ziyaret ediniz.<br>
-<br>
-Akademik Bilişim 2016<br>
+Merhaba,
+
+{{ course.no }} numaralı kursta {{ user }} tarafından güncelleme yapılmıştır.
+
+Yapılan değişiklikleri görmek için https://kayit.ab.org.tr/egitim/controlpanel adresini ziyaret ediniz.
+
+Akademik Bilişim 2016
