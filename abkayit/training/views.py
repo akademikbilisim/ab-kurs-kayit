@@ -212,6 +212,8 @@ def control_panel(request):
                 log.info("egitmenin " + str(len(courses)) + " tane kursu var", extra=d)
                 trainess = {}
                 now_for_approve = timezone.now()
+                log.debug("now_for_approve : egitmen kendi kursunu listeliyor", extra=d)
+                log.debug(now_for_approve, extra=d)
                 first_pref_approve_start = ApprovalDate.objects.get(site=data['site'], preference_order=1,for_instructor=True ).start_date
                 first_pref_approve_end = ApprovalDate.objects.get(site=data['site'], preference_order=1, for_instructor=True).end_date
                 second_pref_approve_start = ApprovalDate.objects.get(site=data['site'], preference_order=2, for_instructor=True).start_date
@@ -227,69 +229,39 @@ def control_panel(request):
                 note += "  3. Tercihten %s - %s tarihleri arasında seçebilirsiniz" % (
                                      third_pref_approve_start.strftime(DATETIME_FORMAT),
                                      third_pref_approve_end.strftime(DATETIME_FORMAT)) + "  "
+                data['closed_pref_1'] = "1"
+                data['closed_pref_2'] = "1"
+                data['closed_pref_3'] = "1"
+                data['note_edit_closed'] = "1"
+                if (now_for_approve > first_pref_approve_start and now_for_approve < third_pref_approve_end):
+                    if ((now_for_approve > first_pref_approve_start) and (now_for_approve < first_pref_approve_end)):
+                        data['closed_pref_1'] = "0"
+                    if ((now_for_approve > second_pref_approve_start) and (now_for_approve < second_pref_approve_end)):
+                        data['closed_pref_2'] = "0"
+                    if ((now_for_approve > third_pref_approve_start) and (now_for_approve < third_pref_approve_end)):
+                        data['closed_pref_3'] = "0"
+                if (now_for_approve > third_pref_approve_end):
+                    data['note_edit_closed'] = "0"
                 for course in courses:
                     trainess[course] = {}
-                    if now_for_approve < first_pref_approve_start:
-                        trainess[course]['trainess1'] = TrainessCourseRecord.objects.filter(
-                                                                 course=course.pk).filter(
-                                                                 preference_order=1).prefetch_related('course')
-                        trainess[course]['trainess2'] = TrainessCourseRecord.objects.filter(
-                                                                 course=course.pk).filter(
-                                                                 preference_order=2).prefetch_related('course')
-                        trainess[course]['trainess3'] = TrainessCourseRecord.objects.filter(
-                                                                 course=course.pk).filter(
-                                                                 preference_order=3).prefetch_related('course')
-                        note = "  Kurs Seçim İşlemi %s - %s tarihleri arasındadır" % (
-                                                   first_pref_approve_start.strftime(DATETIME_FORMAT),
-                                                   third_pref_approve_end.strftime(DATETIME_FORMAT)) + "  "
-                        data['closed'] = "1"
-                        data['note_edit_closed'] = "1"
-                    elif (now_for_approve > first_pref_approve_start and now_for_approve < third_pref_approve_end):
-                        if ((now_for_approve > first_pref_approve_start) and (now_for_approve < first_pref_approve_end)):
-                            trainess[course]['trainess1'] = TrainessCourseRecord.objects.filter(
+                    trainess[course]['trainess1'] = TrainessCourseRecord.objects.filter(
                                                                      course=course.pk).filter(
                                                                      preference_order=1).exclude(
                                                                      id__in = TrainessCourseRecord.objects.filter(
                                                                     ~Q(course=course.pk)).filter(
                                                                      approved=True)).prefetch_related('course')
-                            data['closed'] = "0"
-                            data['note_edit_closed'] = "1"
-                        if ((now_for_approve > second_pref_approve_start) and (now_for_approve < second_pref_approve_end)):
-                            trainess[course]['trainess2'] = TrainessCourseRecord.objects.filter(
+                    trainess[course]['trainess2'] = TrainessCourseRecord.objects.filter(
                                                                      course=course.pk).filter(
                                                                      preference_order=2).exclude(
                                                                      id__in = TrainessCourseRecord.objects.filter(
                                                                     ~Q(course=course.pk)).filter(
                                                                      approved=True)).prefetch_related('course')
-                            data['closed'] = "0"
-                            data['note_edit_closed'] = "1"
-    
-                        if ((now_for_approve > third_pref_approve_start) and (now_for_approve < third_pref_approve_end)):
-                            trainess[course]['trainess3'] = TrainessCourseRecord.objects.filter(
+                    trainess[course]['trainess3'] = TrainessCourseRecord.objects.filter(
                                                                      course=course.pk).filter(
                                                                      preference_order=3).exclude(
                                                                      id__in = TrainessCourseRecord.objects.filter(
                                                                     ~Q(course=course.pk)).filter(
                                                                      approved=True)).prefetch_related('course')
-                            data['closed'] = "0"
-                            data['note_edit_closed'] = "1"
-                             
-                    else:
-                        trainess[course]['trainess1'] = TrainessCourseRecord.objects.filter(
-                                                                 course=course.pk).filter(
-                                                                 preference_order=1).filter(
-                                                                 approved=True).prefetch_related('course')
-                        trainess[course]['trainess2'] = TrainessCourseRecord.objects.filter(
-                                                                 course=course.pk).filter(
-                                                                 preference_order=2).filter(
-                                                                 approved=True).prefetch_related('course')
-                        trainess[course]['trainess3'] = TrainessCourseRecord.objects.filter(
-                                                                 course=course.pk).filter(
-                                                                 preference_order=3).filter(
-                                                                 approved=True).prefetch_related('course')
-                        note = "Kurs Seçim İşlemi Kapalı"
-                        data['closed'] = "1"
-                        data['note_edit_closed'] = "0"
                 data['trainess'] = trainess
                 #log.info(data, extra = d)
                 if request.POST:

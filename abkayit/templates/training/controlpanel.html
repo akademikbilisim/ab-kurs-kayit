@@ -7,13 +7,6 @@
 <script src="{% static "/static/js/courses.js" %}"></script>
 
 <link href="{% static "/static/css/courses.css" %}" rel="stylesheet" type="text/css"></link>
-<script type="text/javascript">
- $(document).ready(function(){
-   {% if closed == "1"%}
-     $("input:checkbox").attr("disabled",true);
-   {% endif %}  
- });
-</script>
 <div class="container-fluid" style="margin-top:20px;">
   <div class="alert alert-info">{{ note }}</div>
   <form name="select-student{{course.id}}" method="POST">{% csrf_token %}
@@ -54,7 +47,11 @@
             <th>Soyisim</th>
             <th>E-posta</th>
             <th>Sehir</th>
-            <th>Onayla</th>
+            <th>
+                {% if closed_pref_1 == "0"%}
+                    Onayla
+                {% endif %}
+            </th>
             <th>Ünvan</th>
             <th>Kurum</th>
             <th>Üniversite</th>
@@ -78,13 +75,15 @@
               <td>{{ t.trainess.user.email }}</td>
               <td>{{ t.trainess.city }}</td>
               <td>
-                <div class="checkbox">
-                  {%if t.approved%}
-                    <input type="checkbox" checked name="students{{course.id}}" value="{{ t.pk }}"/>
-                  {% else %}
-                    <input type="checkbox" name="students{{course.id}}" value="{{ t.pk }}"/>
-                  {% endif %}
-                </div>
+                {% if closed_pref_1 == "0"%}
+                    <div class="checkbox">
+                      {%if t.approved%}
+                        <input type="checkbox" checked name="students{{course.id}}" value="{{ t.pk }}"/>
+                      {% else %}
+                        <input type="checkbox" name="students{{course.id}}" value="{{ t.pk }}"/>
+                      {% endif %}
+                    </div>
+                {% endif %}
               </td>
               <td>{{ t.trainess.title }}</td>
               <td>{{ t.trainess.organization }}</td>
@@ -103,9 +102,7 @@
                 {% for tcr in t.trainess.trainesscourserecord_set.all%}
                  {% if tcr.course.id != course.id %}
                     {%if tcr.approved %}
-                      {%if closed != "1" %}
                           <div class="checked-for-another-course">Kursiyerin seçtiği {{tcr.course.name}} kursu onaylanmış</br></div>
-                      {%endif%}
                     {% endif%}    
                   {% endif%}
                 {%endfor%}
@@ -158,7 +155,11 @@
             <th>Soyisim</th>
             <th>E-posta</th>
             <th>Sehir</th>
-            <th>Onayla</th>
+            <th>
+                {% if closed_pref_2 == "0"%}
+                    Onayla
+                {% endif %}
+            </th>
             <th>Ünvan</th>
             <th>Kurum</th>
             <th>Üniversite</th>
@@ -182,13 +183,15 @@
               <td>{{ t2.trainess.user.email }}</td>
               <td>{{ t2.trainess.city }}</td>
               <td>
-                <div class="checkbox">
-                  {%if t2.approved %}
-                    <input type="checkbox" checked name="students{{course.id}}" value="{{ t2.pk }}"/>
-                  {% else %}
-                    <input type="checkbox" name="students{{course.id}}" value="{{ t2.pk }}"/>
-                  {% endif %}
-                </div>
+                {% if closed_pref_2 == "0"%}
+                    <div class="checkbox">
+                      {%if t2.approved %}
+                        <input type="checkbox" checked name="students{{course.id}}" value="{{ t2.pk }}"/>
+                      {% else %}
+                        <input type="checkbox" name="students{{course.id}}" value="{{ t2.pk }}"/>
+                      {% endif %}
+                    </div>
+                {% endif %}
               </td>
               <td>{{ t2.trainess.title }}</td>
               <td>{{ t2.trainess.organization }}</td>
@@ -207,9 +210,7 @@
                 {% for tcr in t2.trainess.trainesscourserecord_set.all%}
                  {% if tcr.course.id != course.id %}
                     {%if tcr.approved %}
-                      {%if closed != "1" %}
                           <div class="checked-for-another-course">Kursiyerin seçtiği {{tcr.course.name}} kursu onaylanmış</br></div>
-                      {%endif%}
                     {% endif%}    
                   {% endif%}
                 {%endfor%}
@@ -260,7 +261,11 @@
             <th>Soyisim</th>
             <th>E-posta</th>
             <th>Sehir</th>
-            <th>Onayla</th>
+            <th>
+                {% if closed_pref_3 == "0"%}
+                    Onayla
+                {% endif %}
+            </th>
             <th>Ünvan</th>
             <th>Kurum</th>
             <th>Üniversite</th>
@@ -284,13 +289,15 @@
               <td>{{ t3.trainess.user.email }}</td>
               <td>{{ t3.trainess.city }}</td>
               <td>
-                <div class="checkbox">
-                  {%if t3.approved %}
-                    <input type="checkbox" checked name="students{{course.id}}" value="{{ t3.pk }}"/>
-                  {% else %}
-                    <input type="checkbox" name="students{{course.id}}" value="{{ t3.pk }}"/>
-                  {% endif %}
-                </div>
+                {% if closed_pref_3 == "0"%}
+                    <div class="checkbox">
+                      {%if t3.approved %}
+                        <input type="checkbox" checked name="students{{course.id}}" value="{{ t3.pk }}"/>
+                      {% else %}
+                        <input type="checkbox" name="students{{course.id}}" value="{{ t3.pk }}"/>
+                      {% endif %}
+                    </div>
+                {% endif %}
               </td>
               <td>{{ t3.trainess.title }}</td>
               <td>{{ t3.trainess.organization }}</td>
@@ -309,9 +316,7 @@
                 {% for tcr in t3.trainess.trainesscourserecord_set.all%}
                  {% if tcr.course.id != course.id %}
                     {%if tcr.approved %}
-                      {%if closed != "1" %}
                           <div class="checked-for-another-course">Kursiyerin seçtiği {{tcr.course.name}} kursu onaylanmış</br></div>
-                      {%endif%}
                     {% endif%}    
                   {% endif%}
                 {%endfor%}
