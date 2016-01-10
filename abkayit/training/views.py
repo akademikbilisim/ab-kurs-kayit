@@ -352,13 +352,13 @@ def statistic(request):
         for key, group in itertools.groupby(record_data, lambda item: item["course"]):
             statistic_by_course[Course.objects.get(pk=key)] = {item['preference_order']:item['preference_order__count'] for item in group}
         data['statistic_by_course'] = statistic_by_course
-
         statistic_by_gender = UserProfile.objects.filter(is_student=True).values('gender').annotate(Count('user'))
         data['statistic_by_gender'] = statistic_by_gender
-
         statistic_by_university = UserProfile.objects.filter(is_student=True).values('university').annotate(Count('university')).order_by('university')
         data['statistic_by_university'] = statistic_by_university
-
+        data['topten_by_course'] = TrainessCourseRecord.objects.filter(preference_order=1).values('course__name').annotate(count=Count('course')).order_by('-count')[:10]
+        data['topten_by_city']  = UserProfile.objects.filter(is_student=True).values('city').annotate(count=Count('city')).order_by('-count')[:10]
+        data['topten_by_university']  = UserProfile.objects.filter(is_student=True).filter(~Q(university="")).values('university').annotate(count=Count('university')).order_by('-count')[:10]
         total_profile = len(UserProfile.objects.filter(is_student=True))
         total_preference = len(TrainessCourseRecord.objects.all())
         data['statistic_by_totalsize'] = {'Toplam Profil(Kişi)': total_profile, 'Toplam Tercih': total_preference}
