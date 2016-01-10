@@ -42,6 +42,7 @@ class TrainessCourseRecord(models.Model):
 	course = models.ForeignKey(Course)
 	preference_order = models.SmallIntegerField(default=1)
 	approved = models.BooleanField(default=False)
+	trainess_approved = models.BooleanField(default=False)
 	def __unicode__(self):
 		return self.course.name
 	class Meta:

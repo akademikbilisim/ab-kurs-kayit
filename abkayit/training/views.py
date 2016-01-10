@@ -212,12 +212,12 @@ def control_panel(request):
                 log.info("egitmenin " + str(len(courses)) + " tane kursu var", extra=d)
                 trainess = {}
                 now_for_approve = timezone.now()
-                first_pref_approve_start = ApprovalDate.objects.get(site=data['site'], preference_order=1).start_date
-                first_pref_approve_end = ApprovalDate.objects.get(site=data['site'], preference_order=1).end_date
-                second_pref_approve_start = ApprovalDate.objects.get(site=data['site'], preference_order=2).start_date
-                second_pref_approve_end = ApprovalDate.objects.get(site=data['site'], preference_order=2).end_date
-                third_pref_approve_start = ApprovalDate.objects.get(site=data['site'], preference_order=3).start_date
-                third_pref_approve_end = ApprovalDate.objects.get(site=data['site'], preference_order=3).end_date
+                first_pref_approve_start = ApprovalDate.objects.get(site=data['site'], preference_order=1,for_instructor=True ).start_date
+                first_pref_approve_end = ApprovalDate.objects.get(site=data['site'], preference_order=1, for_instructor=True).end_date
+                second_pref_approve_start = ApprovalDate.objects.get(site=data['site'], preference_order=2, for_instructor=True).start_date
+                second_pref_approve_end = ApprovalDate.objects.get(site=data['site'], preference_order=2, for_instructor=True).end_date
+                third_pref_approve_start = ApprovalDate.objects.get(site=data['site'], preference_order=3, for_instructor=True).start_date
+                third_pref_approve_end = ApprovalDate.objects.get(site=data['site'], preference_order=3, for_instructor=True).end_date
                 note = "  1. Tercihleri %s - %s tarihleri arasında onaylayabilirsiniz" % (
                                      first_pref_approve_start.strftime(DATETIME_FORMAT),
                                      first_pref_approve_end.strftime(DATETIME_FORMAT)) + "  "
@@ -412,6 +412,84 @@ def cancel_all_preference(request):
 #    message = "İşleminiz Sırasında Hata Oluştu"
 #    return HttpResponse(json.dumps({'status':'-1', 'message':message}), content_type="application/json")
 
+
+@login_required
+def approve_course_preference(request):
+    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
+    now_for_approve = timezone.now()
+    if request.POST:
+        try:
+            trainess_course_record = TrainessCourseRecord.objects.get(trainess=request.user.userprofile, 
+                                                                        approved=True, 
+                                                                        id=request.POST.get("courseRecordId"))
+            preference_order = trainess_course_record.preference_order
+            pref_approve_start = ApprovalDate.objects.get(site=data['site'], preference_order=preference_order, for_trainess=True).start_date
+            pref_approve_end = ApprovalDate.objects.get(site=data['site'], preference_order=preference_order, for_trainess=True).end_date
+            if now_for_approve > pref_approve_start and now_for_approve < pref_approve_end:
+                trainess_course_record.trainess_approved = True
+                trainess_course_record.save()
+                message = "İşleminiz başarılı bir şekilde gerçekleştirildi"
+                status = "0"
+            else:
+                message = "Kurs teyit dönemi dışındasınız."
+                status = "-1"
+        except Exception as e:
+            log.error(e.message, extra=d)
+            message = "İşleminiz Sırasında Hata Oluştu"
+            status = "-1"
+        return HttpResponse(json.dumps({'status':status, 'message':message}), content_type="application/json")
+    
+    data=prepare_template_data(request)
+    try:
+        first_pref_approve_start = ApprovalDate.objects.get(site=data['site'], preference_order=1, for_trainess=True).start_date
+        first_pref_approve_end = ApprovalDate.objects.get(site=data['site'], preference_order=1, for_trainess=True).end_date
+        second_pref_approve_start = ApprovalDate.objects.get(site=data['site'], preference_order=2, for_trainess=True).start_date
+        second_pref_approve_end = ApprovalDate.objects.get(site=data['site'], preference_order=2, for_trainess=True).end_date
+        third_pref_approve_start = ApprovalDate.objects.get(site=data['site'], preference_order=3, for_trainess=True).start_date
+        third_pref_approve_end = ApprovalDate.objects.get(site=data['site'], preference_order=3, for_trainess=True).end_date
+        trainess_course_record = None
+        trainess_course_records = TrainessCourseRecord.objects.filter(trainess=request.user.userprofile).order_by('preference_order') 
+        data['course_exist'] = "0"
+        data['approve_is_open'] = "0"
+        note = ""
+        if now_for_approve > first_pref_approve_start and now_for_approve < third_pref_approve_end:
+            if len(trainess_course_records) == len(trainess_course_records.filter(approved=False)):
+                data['course_exist'] = "0"
+                data['approve_is_open'] = "0"
+                note = "Herhangi bir kursa kabul edilemediniz." 
+                if first_pref_approve_start < now_for_approve and now_for_approve < first_pref_approve_end:
+                    note = "Birinci tercihinizden herhangi bir kursa kabul edilemediniz diğer tercihlerinizin sonuçlanmasını bekleyiniz"
+                elif second_pref_approve_start < now_for_approve and now_for_approve < second_pref_approve_end:
+                    trainess_course_record = trainess_course_records.filter(preference_order=2).filter(approved=True)
+                    note = "İkinci tercihinizden herhangi bir kursa kabul edilemediniz diğer tercihlerinizin sonuçlanmasını bekleyiniz"
+            elif len(trainess_course_records) == len(trainess_course_records.filter(trainess_approved=False)):
+                data['course_exist'] = "1"
+                data['approve_is_open'] = "1"
+                if first_pref_approve_start < now_for_approve and now_for_approve < first_pref_approve_end:
+                    trainess_course_record = trainess_course_records.filter(preference_order=1).filter(approved=True)
+                elif second_pref_approve_start < now_for_approve and now_for_approve < second_pref_approve_end:
+                    trainess_course_record = trainess_course_records.filter(preference_order=2).filter(approved=True)
+                elif third_pref_approve_start < now_for_approve and now_for_approve < third_pref_approve_end:
+                    trainess_course_record = trainess_course_records.filter(preference_order=3).filter(approved=True)
+                note = "Kabul edildiğiniz aşağıdaki kursu onaylayabilirsiniz" 
+            else:
+                data['course_exist'] = "1"
+                data['approve_is_open'] = "0"
+                trainess_course_record = trainess_course_records.filter(trainess_approved=True).filter(approved=True)
+                note = "Aşağıdaki Kursa Kabul Edildiniz"
+        else:
+            note = "Kurs teyit dönemi dışındasınız."
+        data['note'] = note
+        data['trainess_course_record'] = trainess_course_record
+    except Exception as e:
+            log.error(e.message, extra=d)
+            data['note'] = "Hata oluştu"
+
+    return render_to_response("training/confirm_course_preference.html", data)
+
+ 
+            
+    
 @login_required
 def get_preferred_courses(request):
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}

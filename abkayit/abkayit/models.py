@@ -70,5 +70,7 @@ class ApprovalDate(models.Model):
     end_date = models.DateTimeField(verbose_name=_("End Date"), default=datetime.now)
     preference_order = models.SmallIntegerField(verbose_name=_("Preference"))
     site = models.ForeignKey(Site)
+    for_instructor = models.BooleanField(verbose_name=_("For Instructor?"), default=True)
+    for_trainess = models.BooleanField(verbose_name=_("For Trainess?"), default=False)
     class Meta:
         verbose_name = _("Approval Date")
