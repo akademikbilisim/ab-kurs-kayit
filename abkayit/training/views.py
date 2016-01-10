@@ -308,6 +308,15 @@ def control_panel(request):
                                     course.trainess.add(p.trainess)
                                 p.save()
                             course.save()
+                            data["user"]=request.user
+                            data["course"]=course
+                            send_email("training/messages/inform_trainers_about_changes_subject.txt",
+                                 "training/messages/inform_trainers_about_changes.html",
+                                 "training/messages/inform_trainers_about_changes.txt",
+                                 data,
+                                 EMAIL_FROM_ADDRESS,
+                                 course.trainer.all().values_list('user__username',flat=True))
+
                             note = "Seçimleriniz başarılı bir şekilde kaydedildi."
                         except Exception as e:
                             note = "Beklenmedik bir hata oluştu!"
