@@ -21,7 +21,7 @@ from abkayit.backend import prepare_template_data
 from abkayit.adaptor import send_email
 from abkayit.models import Site, Menu, ApprovalDate
 from abkayit.decorators import active_required
-from abkayit.settings import PREFERENCE_LIMIT, EMAIL_FROM_ADDRESS
+from abkayit.settings import PREFERENCE_LIMIT, EMAIL_FROM_ADDRESS, TRAINESS_SCORE
 
 from userprofile.models import UserProfile
 from userprofile.forms import InstProfileForm,CreateInstForm
@@ -208,18 +208,27 @@ def control_panel(request):
         if not uprofile:    
             courses = Course.objects.filter(approved=True).filter(trainer__user=request.user)
             log.info(courses, extra = d)
-
             if courses:
+                log.info("egitmenin " + str(len(courses)) + " tane kursu var", extra=d)
                 trainess = {}
+                now_for_approve = timezone.now()
+                first_pref_approve_start = ApprovalDate.objects.get(site=data['site'], preference_order=1).start_date
+                first_pref_approve_end = ApprovalDate.objects.get(site=data['site'], preference_order=1).end_date
+                second_pref_approve_start = ApprovalDate.objects.get(site=data['site'], preference_order=2).start_date
+                second_pref_approve_end = ApprovalDate.objects.get(site=data['site'], preference_order=2).end_date
+                third_pref_approve_start = ApprovalDate.objects.get(site=data['site'], preference_order=3).start_date
+                third_pref_approve_end = ApprovalDate.objects.get(site=data['site'], preference_order=3).end_date
+                note = "  1. Tercihleri %s - %s tarihleri arasında onaylayabilirsiniz" % (
+                                     first_pref_approve_start.strftime(DATETIME_FORMAT),
+                                     first_pref_approve_end.strftime(DATETIME_FORMAT)) + "  "
+                note += "  2. Tercihten %s - %s tarihleri arasında seçebilirsiniz" % (
+                                     second_pref_approve_start.strftime(DATETIME_FORMAT),
+                                     second_pref_approve_end.strftime(DATETIME_FORMAT)) + "  "
+                note += "  3. Tercihten %s - %s tarihleri arasında seçebilirsiniz" % (
+                                     third_pref_approve_start.strftime(DATETIME_FORMAT),
+                                     third_pref_approve_end.strftime(DATETIME_FORMAT)) + "  "
                 for course in courses:
-                    now_for_approve = timezone.now()
                     trainess[course] = {}
-                    first_pref_approve_start = ApprovalDate.objects.get(site=data['site'], preference_order=1).start_date
-                    first_pref_approve_end = ApprovalDate.objects.get(site=data['site'], preference_order=1).end_date
-                    second_pref_approve_start = ApprovalDate.objects.get(site=data['site'], preference_order=2).start_date
-                    second_pref_approve_end = ApprovalDate.objects.get(site=data['site'], preference_order=2).end_date
-                    third_pref_approve_start = ApprovalDate.objects.get(site=data['site'], preference_order=3).start_date
-                    third_pref_approve_end = ApprovalDate.objects.get(site=data['site'], preference_order=3).end_date
                     if now_for_approve < first_pref_approve_start:
                         trainess[course]['trainess1'] = TrainessCourseRecord.objects.filter(
                                                                  course=course.pk).filter(
@@ -234,6 +243,7 @@ def control_panel(request):
                                                    first_pref_approve_start.strftime(DATETIME_FORMAT),
                                                    third_pref_approve_end.strftime(DATETIME_FORMAT)) + "  "
                         data['closed'] = "1"
+                        data['note_edit_closed'] = "1"
                     elif (now_for_approve > first_pref_approve_start and now_for_approve < third_pref_approve_end):
                         if ((now_for_approve > first_pref_approve_start) and (now_for_approve < first_pref_approve_end)):
                             trainess[course]['trainess1'] = TrainessCourseRecord.objects.filter(
@@ -242,10 +252,8 @@ def control_panel(request):
                                                                      id__in = TrainessCourseRecord.objects.filter(
                                                                     ~Q(course=course.pk)).filter(
                                                                      approved=True)).prefetch_related('course')
-                            note = "  1. Tercihten %s - %s tarihleri arasında seçebilirsiniz" % (
-                                                   first_pref_approve_start.strftime(DATETIME_FORMAT),
-                                                   first_pref_approve_end.strftime(DATETIME_FORMAT)) + "  "
                             data['closed'] = "0"
+                            data['note_edit_closed'] = "1"
                         if ((now_for_approve > second_pref_approve_start) and (now_for_approve < second_pref_approve_end)):
                             trainess[course]['trainess2'] = TrainessCourseRecord.objects.filter(
                                                                      course=course.pk).filter(
@@ -253,10 +261,8 @@ def control_panel(request):
                                                                      id__in = TrainessCourseRecord.objects.filter(
                                                                     ~Q(course=course.pk)).filter(
                                                                      approved=True)).prefetch_related('course')
-                            note += "  2. Tercihten %s - %s tarihleri arasında seçebilirsiniz" % (
-                                                   second_pref_approve_start.strftime(DATETIME_FORMAT),
-                                                   second_pref_approve_end.strftime(DATETIME_FORMAT)) + "  "
                             data['closed'] = "0"
+                            data['note_edit_closed'] = "1"
     
                         if ((now_for_approve > third_pref_approve_start) and (now_for_approve < third_pref_approve_end)):
                             trainess[course]['trainess3'] = TrainessCourseRecord.objects.filter(
@@ -265,10 +271,8 @@ def control_panel(request):
                                                                      id__in = TrainessCourseRecord.objects.filter(
                                                                     ~Q(course=course.pk)).filter(
                                                                      approved=True)).prefetch_related('course')
-                            note += "  3. Tercihten %s - %s tarihleri arasında seçebilirsiniz" % (
-                                                   third_pref_approve_start.strftime(DATETIME_FORMAT),
-                                                   third_pref_approve_end.strftime(DATETIME_FORMAT)) + "  "
                             data['closed'] = "0"
+                            data['note_edit_closed'] = "1"
                              
                     else:
                         trainess[course]['trainess1'] = TrainessCourseRecord.objects.filter(
@@ -285,9 +289,11 @@ def control_panel(request):
                                                                  approved=True).prefetch_related('course')
                         note = "Kurs Seçim İşlemi Kapalı"
                         data['closed'] = "1"
+                        data['note_edit_closed'] = "0"
                 data['trainess'] = trainess
                 #log.info(data, extra = d)
                 if request.POST:
+                    log.info("kursiyer onay islemi basladi", extra=d)
                     log.info(request.POST, extra=d)
                     for course in courses:
                         try:
@@ -303,8 +309,10 @@ def control_panel(request):
                                 p.save()
                             course.save()
                             note = "Seçimleriniz başarılı bir şekilde kaydedildi."
-                        except Exception:
+                        except Exception as e:
                             note = "Beklenmedik bir hata oluştu!"
+                            log.error(e.message)
+            data['TRAINESS_SCORE'] = TRAINESS_SCORE
             data['note'] = note
             return render_to_response("training/controlpanel.html", data,context_instance=RequestContext(request))
         else:

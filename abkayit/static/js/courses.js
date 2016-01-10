@@ -10,6 +10,24 @@ function fnFormatDetails ( dTable, nTr )
     sOut += '<tr><td><b>Kursiyerin Seçtiği Diğer Kurslar: </b></td><td>'+aData[12]+'</td></tr>';
     sOut += '<tr><td></td><td>'+aData[13]+'</td></tr>';
     sOut += '</table>';
+    sOut += '</br>';
+    sOut += '<div class="score">';
+    sOut += '<div class="form-group">';
+    sOut += '<div class="row">';
+    sOut += aData[14];
+    sOut += '</div>';
+    sOut += '</div>';
+    sOut += '<div class="form-group">';
+    sOut += '<div class="row">';
+    sOut += aData[15];
+    sOut += '</div>';
+    sOut += '</div>';
+    sOut += '<div class="form-group">';
+    sOut += '<div class="row">';
+    sOut += aData[16];
+    sOut += '</div>';
+    sOut += '</div>';
+    sOut += '</div>';
      
     return sOut;
 }
@@ -65,6 +83,18 @@ $(document).ready(function(){
                {
                 "targets": [ 13 ],
                 "visible": false
+               },
+               {
+                "targets": [ 14 ],
+                "visible": false
+               },
+               {
+                "targets": [ 15 ],
+                "visible": false
+               },
+               {
+                "targets": [ 16 ],
+                "visible": false
                }
             ],
             "searching": false,
@@ -88,6 +118,30 @@ $(document).ready(function(){
           else
           {
               dTable.fnOpen( nTr, fnFormatDetails(dTable, nTr), 'details' );
+              dTable.find("#save-score").click(function(){
+                  var score = $(this).closest(".score").find("select").val();
+                  var note = $(this).closest(".score").find("input[type='text']").val();
+                  var trainess_username = $(this).closest(".score").find("input[class='input-username']").val();
+	              var jsonData = {};
+	              jsonData['score'] = score;
+	              jsonData['note'] = note;
+	              jsonData['trainess_username'] = trainess_username;
+	              jsonData['csrfmiddlewaretoken'] = getCookie('csrftoken');
+	              console.log(JSON.stringify(jsonData));
+	              $.ajax({
+	                  url : "/accounts/savenote", 
+	                  type : "POST",
+	                  dataType: "json", 
+	                  data : jsonData,
+	                  success : function(json) {
+	              		bootbox.alert(json.message, function() {});
+	                  },
+	                  error : function(xhr,errmsg,err) {
+	              		bootbox.alert(errmsg, function() {});
+	                  }
+	              });
+                  
+              });
           }
       });
 
@@ -180,6 +234,8 @@ $(document).ready(function(){
         }
 	});
   });
+
+
 
 /******************************************************/
 /* #52 numarali issue ile kapatildi   

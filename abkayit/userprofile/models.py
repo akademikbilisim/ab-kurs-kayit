@@ -9,7 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 from django_countries.fields import CountryField
 from django_countries.data import COUNTRIES
 
-from abkayit.settings import USER_TYPES, UNIVERSITIES, GENDER, TRANSPORTATION
+from abkayit.settings import USER_TYPES, UNIVERSITIES, GENDER, TRANSPORTATION, TRAINESS_SCORE
 
 from abkayit.models import Site
 
@@ -45,8 +45,19 @@ class UserProfile(models.Model):
     is_participant = models.BooleanField(verbose_name=_("Is Participant"), default=False)
     additional_information = models.TextField(verbose_name=_("Additional Information"), null=True)
     userpassedtest = models.BooleanField(verbose_name=_("Basvuru yapabilir mi?"),blank=True, default=False)
+    score = models.CharField(choices=TRAINESS_SCORE, verbose_name=_("Durum"), max_length=100, default='1')
     def __unicode__(self):
         return self.user.username
+
+class TrainessNote(models.Model):
+    note = models.CharField(verbose_name=_("Note"), max_length=255)
+    note_from_profile = models.ForeignKey(UserProfile, related_name="note_from_profile", null=True) #from whom - trainer
+    note_to_profile = models.ForeignKey(UserProfile, related_name="note_to_profile") #to whom - traiess
+    note_date = models.DateTimeField(default=datetime.datetime.now)
+    site = models.ForeignKey(Site)
+    def __unicode__(self):
+        return self.note_to_profile.user.username
+
 
 class SubscribeNotice(models.Model):
     usertype = models.CharField(choices=USER_TYPES.items(), verbose_name=_("User Type"), max_length=4)

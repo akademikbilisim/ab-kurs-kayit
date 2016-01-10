@@ -128,7 +128,7 @@ class StuProfileForm(ModelForm):
     class Meta:
         dyncf = DynmcFields()
         model = UserProfile
-        exclude = {}
+        exclude = {'score'}
         # fields=['name','surname','username','email','password','password',]
         widgets = {
                     'tckimlikno' : forms.NumberInput(attrs={'placeholder':_('Turkish ID No'), 'class':'form-control'}),
