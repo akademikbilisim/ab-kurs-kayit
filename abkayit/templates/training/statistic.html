@@ -155,8 +155,6 @@
   });
 
 
-
-
   var totalStatText = [];
   var totalStatValue = [];
  
@@ -217,6 +215,191 @@
           }]
       });
   });
+  
+  var toptencityText = [];
+  var toptencityValue = [];
+ 
+  {% for city in topten_by_city%}
+    toptencityText.push("{{city.city}}");
+    toptencityValue.push({{city.count}});
+  {% endfor%}
+  $(function () {
+      $('#top-ten-city').highcharts({
+          chart: {
+              type: 'bar'
+          },
+          title: {
+              text: 'İlk On Şehir'
+          },
+          xAxis: {
+              categories: toptencityText,
+              title: {
+                  text: null
+              }
+          },
+          yAxis: {
+              min: 0,
+              title: {
+                  align: 'high'
+              },
+              labels: {
+                  overflow: 'justify'
+              }
+          },
+          tooltip: {
+              valueSuffix: ' kişi'
+          },
+          plotOptions: {
+              bar: {
+                  dataLabels: {
+                      enabled: true
+                  }
+              }
+          },
+          legend: {
+              layout: 'vertical',
+              align: 'right',
+              verticalAlign: 'top',
+              x: -40,
+              y: 80,
+              floating: true,
+              borderWidth: 1,
+              backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
+              shadow: true
+          },
+          credits: {
+              enabled: false
+          },
+          series: [{
+              name: 'Katılım',
+              data: toptencityValue
+          }]
+      });
+  });
+  var toptenuniversityText = [];
+  var toptenuniversityValue = [];
+ 
+  {% for university in topten_by_university%}
+    toptenuniversityText.push("{{university.university}}");
+    toptenuniversityValue.push({{university.count}});
+  {% endfor%}
+  $(function () {
+      $('#top-ten-university').highcharts({
+          chart: {
+              type: 'bar'
+          },
+          title: {
+              text: 'İlk On Üniversite'
+          },
+          xAxis: {
+              categories: toptenuniversityText,
+              title: {
+                  text: null
+              }
+          },
+          yAxis: {
+              min: 0,
+              title: {
+                  align: 'high'
+              },
+              labels: {
+                  overflow: 'justify'
+              }
+          },
+          tooltip: {
+              valueSuffix: ' kişi'
+          },
+          plotOptions: {
+              bar: {
+                  dataLabels: {
+                      enabled: true
+                  }
+              }
+          },
+          legend: {
+              layout: 'vertical',
+              align: 'right',
+              verticalAlign: 'top',
+              x: -40,
+              y: 80,
+              floating: true,
+              borderWidth: 1,
+              backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
+              shadow: true
+          },
+          credits: {
+              enabled: false
+          },
+          series: [{
+              name: 'Katılım',
+              data: toptenuniversityValue
+          }]
+      });
+  });
+  var toptencourseText = [];
+  var toptencourseValue = [];
+  {% for course in topten_by_course %}
+  toptencourseText.push("{{course.course.name}}");
+    toptencourseValue.push({{course.count}});
+  {% endfor%}
+  $(function () {
+      $('#top-ten-course').highcharts({
+          chart: {
+              type: 'bar'
+          },
+          title: {
+              text: 'İlk On Kurs'
+          },
+          xAxis: {
+              categories: toptencourseText,
+              title: {
+                  text: null
+              }
+          },
+          yAxis: {
+              min: 0,
+              title: {
+                  align: 'high'
+              },
+              labels: {
+                  overflow: 'justify'
+              }
+          },
+          tooltip: {
+              valueSuffix: ' kişi'
+          },
+          plotOptions: {
+              bar: {
+                  dataLabels: {
+                      enabled: true
+                  }
+              }
+          },
+          legend: {
+              layout: 'vertical',
+              align: 'right',
+              verticalAlign: 'top',
+              x: -40,
+              y: 80,
+              floating: true,
+              borderWidth: 1,
+              backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
+              shadow: true
+          },
+          credits: {
+              enabled: false
+          },
+          series: [{
+              name: 'Katılım',
+              data: toptencourseValue
+          }]
+      });
+  });
+
+
+
+
+
 
 
 
@@ -290,4 +473,19 @@
 </br>
 </br>
 <div id="statistic-by-gender" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
+
+</br>
+</br>
+</br>
+<div id="top-ten-course" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
+
+</br>
+</br>
+</br>
+<div id="top-ten-city" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
+</br>
+</br>
+</br>
+<div id="top-ten-university" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
+
 {%endblock%}
