@@ -309,10 +309,11 @@ def control_panel(request):
                                  "training/messages/inform_trainers_about_changes.txt",
                                  data,
                                  EMAIL_FROM_ADDRESS,
-                                 course.trainers.all())
+                                 course.trainer.all().values_list('user__username',flat=True))
 
                             note = "Seçimleriniz başarılı bir şekilde kaydedildi."
-                        except Exception:
+                        except Exception as e:
+                            log.error(e.message, extra=d)
                             note = "Beklenmedik bir hata oluştu!"
             data['note'] = note
             return render_to_response("training/controlpanel.html", data,context_instance=RequestContext(request))
