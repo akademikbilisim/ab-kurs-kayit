@@ -244,38 +244,38 @@ def control_panel(request):
                     data['note_edit_closed'] = "0"
                 for course in courses:
                     trainess[course] = {}
-                   if (now_for_approve < ApprovalDate.objects.get(site=data['site'], preference_order=3, for_trainess=True).end_date):
-                       trainess[course]['trainess1'] = TrainessCourseRecord.objects.filter(
-                                                                        course=course.pk).filter(
-                                                                        preference_order=1).exclude(
-                                                                        id__in = TrainessCourseRecord.objects.filter(
-                                                                       ~Q(course=course.pk)).filter(
-                                                                        approved=True)).prefetch_related('course')
-                       trainess[course]['trainess2'] = TrainessCourseRecord.objects.filter(
-                                                                        course=course.pk).filter(
-                                                                        preference_order=2).exclude(
-                                                                        id__in = TrainessCourseRecord.objects.filter(
-                                                                       ~Q(course=course.pk)).filter(
-                                                                        approved=True)).prefetch_related('course')
-                       trainess[course]['trainess3'] = TrainessCourseRecord.objects.filter(
-                                                                        course=course.pk).filter(
-                                                                        preference_order=3).exclude(
-                                                                        id__in = TrainessCourseRecord.objects.filter(
-                                                                       ~Q(course=course.pk)).filter(
-                                                                        approved=True)).prefetch_related('course')
-                   else:
-                       trainess[course]['trainess1'] = TrainessCourseRecord.objects.filter(
-                                                                course=course.pk).filter(
-                                                                preference_order=1).filter(
-                                                                approved=True).filter(trainess_approved=True).prefetch_related('course')
-                       trainess[course]['trainess2'] = TrainessCourseRecord.objects.filter(
-                                                                course=course.pk).filter(
-                                                                preference_order=2).filter(
-                                                                approved=True).filter(trainess_approved=True).prefetch_related('course')
-                       trainess[course]['trainess3'] = TrainessCourseRecord.objects.filter(
-                                                                course=course.pk).filter(
-                                                                preference_order=3).filter(
-                                                                approved=True).filter(trainess_approved=True).prefetch_related('course')
+                    if (now_for_approve < ApprovalDate.objects.get(site=data['site'], preference_order=3, for_trainess=True).end_date):
+                        trainess[course]['trainess1'] = TrainessCourseRecord.objects.filter(
+                                                                         course=course.pk).filter(
+                                                                         preference_order=1).exclude(
+                                                                         id__in = TrainessCourseRecord.objects.filter(
+                                                                        ~Q(course=course.pk)).filter(
+                                                                         approved=True)).prefetch_related('course')
+                        trainess[course]['trainess2'] = TrainessCourseRecord.objects.filter(
+                                                                         course=course.pk).filter(
+                                                                         preference_order=2).exclude(
+                                                                         id__in = TrainessCourseRecord.objects.filter(
+                                                                        ~Q(course=course.pk)).filter(
+                                                                         approved=True)).prefetch_related('course')
+                        trainess[course]['trainess3'] = TrainessCourseRecord.objects.filter(
+                                                                         course=course.pk).filter(
+                                                                         preference_order=3).exclude(
+                                                                         id__in = TrainessCourseRecord.objects.filter(
+                                                                        ~Q(course=course.pk)).filter(
+                                                                         approved=True)).prefetch_related('course')
+                    else:
+                        trainess[course]['trainess1'] = TrainessCourseRecord.objects.filter(
+                                                                 course=course.pk).filter(
+                                                                 preference_order=1).filter(
+                                                                 approved=True).filter(trainess_approved=True).prefetch_related('course')
+                        trainess[course]['trainess2'] = TrainessCourseRecord.objects.filter(
+                                                                 course=course.pk).filter(
+                                                                 preference_order=2).filter(
+                                                                 approved=True).filter(trainess_approved=True).prefetch_related('course')
+                        trainess[course]['trainess3'] = TrainessCourseRecord.objects.filter(
+                                                                 course=course.pk).filter(
+                                                                 preference_order=3).filter(
+                                                                 approved=True).filter(trainess_approved=True).prefetch_related('course')
                 data['trainess'] = trainess
                 #log.info(data, extra = d)
                 if request.POST:
