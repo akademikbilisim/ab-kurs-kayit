@@ -19,6 +19,7 @@
       <span class="avaliable-trainee label">Seçim Yapabilirsiniz</span>
       <span class="label checked-trainee-for-another-course">Katılımcının Diğer Tercihi Onaylanmış</span>
       <span class="label checked-trainee-course">Katılımcı Bu Kurs İçin Onaylanmış</span>
+      <span class="label approved-trainess-for-this-course">Katılımcı Bu Kursa Geleceğini Teyit Etti</span>
       </h4>
       </br>
       <div>
@@ -75,6 +76,9 @@
               <td>{{ t.trainess.user.email }}</td>
               <td>{{ t.trainess.city }}</td>
               <td>
+                {%if t.trainess_approved %}
+                          <div class="approved-trainess-for-this-course"></div>
+                {% endif%}    
                 {% if closed_pref_1 == "0"%}
                     <div class="checkbox">
                       {%if t.approved%}
@@ -183,6 +187,9 @@
               <td>{{ t2.trainess.user.email }}</td>
               <td>{{ t2.trainess.city }}</td>
               <td>
+                {%if t2.trainess_approved %}
+                          <div class="approved-trainess-for-this-course"></div>
+                {% endif%}    
                 {% if closed_pref_2 == "0"%}
                     <div class="checkbox">
                       {%if t2.approved %}
@@ -289,6 +296,9 @@
               <td>{{ t3.trainess.user.email }}</td>
               <td>{{ t3.trainess.city }}</td>
               <td>
+                {%if t3.trainess_approved %}
+                          <div class="approved-trainess-for-this-course"></div>
+                {% endif%}    
                 {% if closed_pref_3 == "0"%}
                     <div class="checkbox">
                       {%if t3.approved %}
