@@ -9,7 +9,9 @@ $(document).ready(function () {
         if($(this).parent().parent().parent().find(".checked-for-another-course").length){
             $(this).closest('tr').addClass("checked-trainee-for-another-course");
         }
-          
+    });
+    $("table .approved-trainess-for-this-course").each(function(){
+            $(this).closest('tr').addClass("approved-trainess-for-this-course");
     });
     $("table input[type='checkbox']").trigger("change");
 });

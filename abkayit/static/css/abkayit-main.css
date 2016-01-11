@@ -27,12 +27,17 @@ input[type=number]::-webkit-inner-spin-button {
 }
 
 .checked-trainee-course{
-  background-color: #9FFFAA !important;
+  background-color: #C8DEFF !important;
 }
 
 .avaliable-trainee{
   background-color: #DEDEDE !important;
 }
 .course-approved{
+  background-color: #9BBEFC !important;
+}
+
+.approved-trainess-for-this-course{
   background-color: #9BFF9D !important;
 }
+
