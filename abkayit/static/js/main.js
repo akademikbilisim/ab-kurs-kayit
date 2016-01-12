@@ -10,10 +10,19 @@ $(document).ready(function () {
             $(this).closest('tr').addClass("checked-trainee-for-another-course");
         }
     });
+    $("table input[type='checkbox']").trigger("change");
+    $("table .checked-trainee-course").each(function(){
+            $(this).closest('tr').attr("class","");
+            $(this).closest('tr').addClass("checked-trainee-course");
+    });
     $("table .approved-trainess-for-this-course").each(function(){
+            $(this).closest('tr').attr("class","");
             $(this).closest('tr').addClass("approved-trainess-for-this-course");
     });
-    $("table input[type='checkbox']").trigger("change");
+    $("table .checked-for-another-course").each(function(){
+            $(this).closest('tr').attr("class","");
+            $(this).closest('tr').addClass("checked-trainee-for-another-course");
+    });
 });
 
 

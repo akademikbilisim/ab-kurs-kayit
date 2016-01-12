@@ -76,8 +76,18 @@
               <td>{{ t.trainess.user.email }}</td>
               <td>{{ t.trainess.city }}</td>
               <td>
+                {% for tcr in t.trainess.trainesscourserecord_set.all%}
+                 {% if tcr.course.id != course.id %}
+                    {%if tcr.approved %}
+                          <div class="checked-for-another-course"></div>
+                    {% endif%}    
+                  {% endif%}
+                {%endfor%}
                 {%if t.trainess_approved %}
                           <div class="approved-trainess-for-this-course"></div>
+                {% endif%}    
+                {%if t.approved %}
+                          <div class="checked-trainee-course"></div>
                 {% endif%}    
                 {% if closed_pref_1 == "0"%}
                     <div class="checkbox">
@@ -187,8 +197,18 @@
               <td>{{ t2.trainess.user.email }}</td>
               <td>{{ t2.trainess.city }}</td>
               <td>
+                {% for tcr in t2.trainess.trainesscourserecord_set.all%}
+                 {% if tcr.course.id != course.id %}
+                    {%if tcr.approved %}
+                          <div class="checked-for-another-course"></div>
+                    {% endif%}    
+                  {% endif%}
+                {%endfor%}
                 {%if t2.trainess_approved %}
                           <div class="approved-trainess-for-this-course"></div>
+                {% endif%}    
+                {%if t2.approved %}
+                          <div class="checked-trainee-course"></div>
                 {% endif%}    
                 {% if closed_pref_2 == "0"%}
                     <div class="checkbox">
@@ -296,8 +316,18 @@
               <td>{{ t3.trainess.user.email }}</td>
               <td>{{ t3.trainess.city }}</td>
               <td>
+                {% for tcr in t3.trainess.trainesscourserecord_set.all%}
+                 {% if tcr.course.id != course.id %}
+                    {%if tcr.approved %}
+                          <div class="checked-for-another-course"></div>
+                    {% endif%}    
+                  {% endif%}
+                {%endfor%}
                 {%if t3.trainess_approved %}
                           <div class="approved-trainess-for-this-course"></div>
+                {% endif%}    
+                {%if t3.approved %}
+                          <div class="checked-trainee-course"></div>
                 {% endif%}    
                 {% if closed_pref_3 == "0"%}
                     <div class="checkbox">

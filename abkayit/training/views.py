@@ -277,39 +277,56 @@ def control_panel(request):
                                                                  preference_order=3).filter(
                                                                  approved=True).filter(trainess_approved=True).prefetch_related('course')
                 data['trainess'] = trainess
-                #log.info(data, extra = d)
                 if request.POST:
                     log.info("kursiyer onay islemi basladi", extra=d)
                     log.info(request.POST, extra=d)
                     for course in courses:
                         try:
-                            course.trainess.clear()
-                            allprefs=TrainessCourseRecord.objects.filter(course=course.pk)
-                            approvedr = request.POST.getlist('students' + str(course.pk))
-                            for p in allprefs:
-                                if str(p.pk) not in approvedr: 
-                                    p.approved=False
-                                elif str(p.pk) in approvedr:
-                                    p.approved=True
-                                    course.trainess.add(p.trainess)
-                                p.save()
-                            course.save()
-                            data["user"]=request.user
-                            data["course"]=course
-                            send_email("training/messages/inform_trainers_about_changes_subject.txt",
-                                 "training/messages/inform_trainers_about_changes.html",
-                                 "training/messages/inform_trainers_about_changes.txt",
-                                 data,
-                                 EMAIL_FROM_ADDRESS,
-                                 course.trainer.all().values_list('user__username',flat=True))
+                            if (now_for_approve > first_pref_approve_start and now_for_approve < third_pref_approve_end):
+                                allprefs = []
+                                if ((now_for_approve > first_pref_approve_start) and (now_for_approve < first_pref_approve_end)):
+                                    allprefs.extend(TrainessCourseRecord.objects.filter(course=course.pk).filter(preference_order=1))
+                                    log.debug(allprefs, extra=d)
+                                if ((now_for_approve > second_pref_approve_start) and (now_for_approve < second_pref_approve_end)):
+                                    allprefs.extend(TrainessCourseRecord.objects.filter(course=course.pk).filter(preference_order=2))
+                                    log.debug(allprefs, extra=d)
+                                if ((now_for_approve > third_pref_approve_start) and (now_for_approve < third_pref_approve_end)):
+                                    allprefs.extend(TrainessCourseRecord.objects.filter(course=course.pk).filter(preference_order=3))
+                                    log.debug(allprefs, extra=d)
+                                approvedr = request.POST.getlist('students' + str(course.pk))
+                                log.debug(allprefs, extra=d)
+                                for p in allprefs:
+                                    if str(p.pk) not in approvedr: 
+                                        p.approved=False
+                                    elif str(p.pk) in approvedr:
+                                        p.approved=True
+                                    p.save()
+                                    log.debug(p, extra=d)
+                                course.trainess.clear()
+                                allprefs=TrainessCourseRecord.objects.filter(course=course.pk)
+                                for p in allprefs:
+                                    if p.approved == True:
+                                        course.trainess.add(p.trainess)
+                                course.save()
 
-                            note = "Seçimleriniz başarılı bir şekilde kaydedildi."
+                                data["user"]=request.user
+                                data["course"]=course
+                                send_email("training/messages/inform_trainers_about_changes_subject.txt",
+                                     "training/messages/inform_trainers_about_changes.html",
+                                     "training/messages/inform_trainers_about_changes.txt",
+                                     data,
+                                     EMAIL_FROM_ADDRESS,
+                                     course.trainer.all().values_list('user__username',flat=True))
+
+                                note = "Seçimleriniz başarılı bir şekilde kaydedildi."
+                            else:
+                                note = "Onaylama dönemi dışındasınız" 
                         except Exception as e:
                             note = "Beklenmedik bir hata oluştu!"
-                            log.error(e.message)
+                            log.error(e.message, extra=d)
             data['TRAINESS_SCORE'] = TRAINESS_SCORE
             data['note'] = note
-            return render_to_response("training/controlpanel.html", data,context_instance=RequestContext(request))
+            return render_to_response("training/controlpanel.html", data, context_instance=RequestContext(request))
         else:
             return redirect("applytocourse")
     except UserProfile.DoesNotExist:
