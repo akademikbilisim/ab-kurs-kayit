@@ -27,7 +27,7 @@ class UserAccomodationPrefAdmin(admin.ModelAdmin):
 
 @admin.register(UserVerification)
 class UserVerificationAdmin(admin.ModelAdmin):
-	pass
+    search_fields=('user_email',)
 
 @admin.register(InstructorInformation)
 class InstructorInformationAdmin(admin.ModelAdmin):
