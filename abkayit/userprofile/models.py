@@ -48,6 +48,8 @@ class UserProfile(models.Model):
     score = models.CharField(choices=TRAINESS_SCORE, verbose_name=_("Durum"), max_length=100, default='1')
     def __unicode__(self):
         return self.user.username
+    class Meta:
+        ordering = ('user__username',)
 
 class TrainessNote(models.Model):
     note = models.CharField(verbose_name=_("Note"), max_length=255)
