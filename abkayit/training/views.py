@@ -419,6 +419,7 @@ def cancel_all_preference(request):
 @login_required
 def approve_course_preference(request):
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
+    data=prepare_template_data(request)
     now_for_approve = timezone.now()
     if request.POST:
         try:
@@ -433,6 +434,7 @@ def approve_course_preference(request):
                 trainess_course_record.save()
                 message = "İşleminiz başarılı bir şekilde gerçekleştirildi"
                 status = "0"
+                log.debug("kursu onayladi " + trainess_course_record.course.name, extra=d )
             else:
                 message = "Kurs teyit dönemi dışındasınız."
                 status = "-1"
@@ -442,7 +444,6 @@ def approve_course_preference(request):
             status = "-1"
         return HttpResponse(json.dumps({'status':status, 'message':message}), content_type="application/json")
     
-    data=prepare_template_data(request)
     try:
         first_pref_approve_start = ApprovalDate.objects.get(site=data['site'], preference_order=1, for_trainess=True).start_date
         first_pref_approve_end = ApprovalDate.objects.get(site=data['site'], preference_order=1, for_trainess=True).end_date
