@@ -51,6 +51,8 @@
             <th>
                 {% if closed_pref_1 == "0"%}
                     Onayla
+				{% else %}
+					Gelecegini Teyid Etti
                 {% endif %}
             </th>
             <th>Ünvan</th>
@@ -97,6 +99,12 @@
                         <input type="checkbox" name="students{{course.id}}" value="{{ t.pk }}"/>
                       {% endif %}
                     </div>
+				{%else%}
+				   	{% if t.trainess_approved %}
+						Evet
+					{% else %}
+						Hayir
+					{% endif %}
                 {% endif %}
               </td>
               <td>{{ t.trainess.title }}</td>
@@ -172,6 +180,8 @@
             <th>
                 {% if closed_pref_2 == "0"%}
                     Onayla
+				{% else %}
+					Gelecegini Teyid Etti
                 {% endif %}
             </th>
             <th>Ünvan</th>
@@ -218,6 +228,12 @@
                         <input type="checkbox" name="students{{course.id}}" value="{{ t2.pk }}"/>
                       {% endif %}
                     </div>
+				{%else%}
+				   	{% if t2.trainess_approved %}
+						Evet
+					{% else %}
+						Hayir
+					{% endif %}
                 {% endif %}
               </td>
               <td>{{ t2.trainess.title }}</td>
@@ -291,6 +307,8 @@
             <th>
                 {% if closed_pref_3 == "0"%}
                     Onayla
+				{% else %}
+					Gelecegini Teyid Etti
                 {% endif %}
             </th>
             <th>Ünvan</th>
@@ -337,6 +355,12 @@
                         <input type="checkbox" name="students{{course.id}}" value="{{ t3.pk }}"/>
                       {% endif %}
                     </div>
+				{%else%}
+				   	{% if t3.trainess_approved %}
+						Evet
+					{% else %}
+						Hayir
+					{% endif %}
                 {% endif %}
               </td>
               <td>{{ t3.trainess.title }}</td>
