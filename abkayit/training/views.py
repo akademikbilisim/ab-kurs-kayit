@@ -374,9 +374,30 @@ def cancel_all_preference(request):
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
     if request.POST:
         try:
+            data=prepare_template_data(request)
             userprofile = UserProfile.objects.get(user=request.user)
-            TrainessCourseRecord.objects.filter(trainess=userprofile).delete()
+            trainess_course_records = TrainessCourseRecord.objects.filter(trainess=userprofile)
+            context = {}
+            for tcr in trainess_course_records:
+                try:
+                    # x. tercih onaylama donemi baslangic zamani ile x. tercih teyit etme donemi arasinda ise mail atsin.
+                    now_for_approve = timezone.now()
+                    preference_order = tcr.preference_order
+                    check_start = ApprovalDate.objects.get(site=data['site'], preference_order=preference_order, for_instructor=True).start_date
+                    check_end = ApprovalDate.objects.get(site=data['site'], preference_order=preference_order, for_trainess=True).end_date
+                    if ((now_for_approve > check_start and now_for_approve < check_end) or (tcr.trainess_approved == True)):
+                        context['trainess_course_record'] = tcr
+                        send_email("training/messages/notice_for_canceled_courses_subject.html",
+                                       "training/messages/notice_for_canceled_courses.html",
+                                       "training/messages/notice_for_canceled_courses.text",
+                                        context,
+                                        EMAIL_FROM_ADDRESS,
+                                        tcr.course.trainer.all().values_list('user__username',flat=True))
+                except Exception as e:
+                    log.error(e.message, extra=d)
+                trainess_course_records.delete()
             message = "Tüm Başvurularınız Silindi"
+            log.debug(message, extra=d)
         except ObjectDoesNotExist:
             message = "Başvurularınız Silinirken Hata Oluştu"
         except Exception as e:
