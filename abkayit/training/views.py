@@ -385,7 +385,7 @@ def cancel_all_preference(request):
                     preference_order = tcr.preference_order
                     check_start = ApprovalDate.objects.get(site=data['site'], preference_order=preference_order, for_instructor=True).start_date
                     check_end = ApprovalDate.objects.get(site=data['site'], preference_order=preference_order, for_trainess=True).end_date
-                    if now_for_approve > check_start and now_for_approve < check_end:
+                    if ((now_for_approve > check_start and now_for_approve < check_end) or (tcr.trainess_approved == True)):
                         context['trainess_course_record'] = tcr
                         send_email("training/messages/notice_for_canceled_courses_subject.html",
                                        "training/messages/notice_for_canceled_courses.html",
