@@ -13,5 +13,10 @@ def sayilar():
     print "Teyit edenlerin sayisi",len(countT)
     for ct in countT:
         ctas=UserAccomodationPref.objects.filter(user=ct.trainess)
-        for cta in ctas:
-            print cta.user,";",cta.accomodation,";",cta.preference_order
+        yazilacak = ct.trainess.user.first_name + ";" + ct.trainess.user.last_name  + ";" + ct.trainess.user.username + ";"
+        if len(ctas)>0:
+            for cta in ctas:
+                yazilacak += cta.accomodation.name + ";" + str(cta.preference_order)
+        else:
+            yazilacak += ";"
+        print yazilacak
