@@ -15,6 +15,6 @@ class CourseAdmin(admin.ModelAdmin):
 
 @admin.register(TrainessCourseRecord)
 class TrainessCourseRecordAdmin(admin.ModelAdmin):
-    list_display = ['id','course','trainess','preference_order','approved']
+    list_display = ['id','course','trainess','preference_order','approved', 'trainess_approved']
     search_fields = ('id','course__name','trainess__user__username')
     
