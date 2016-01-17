@@ -482,21 +482,25 @@ def approve_course_preference(request):
                 data['course_exist'] = "0"
                 data['approve_is_open'] = "0"
                 note = "Herhangi bir kursa kabul edilemediniz." 
-                if first_pref_approve_start < now_for_approve and now_for_approve < first_pref_approve_end:
-                    note = "Birinci tercihinizden herhangi bir kursa kabul edilemediniz diğer tercihlerinizin sonuçlanmasını bekleyiniz"
-                elif second_pref_approve_start < now_for_approve and now_for_approve < second_pref_approve_end:
-                    trainess_course_record = trainess_course_records.filter(preference_order=2).filter(approved=True)
-                    note = "İkinci tercihinizden herhangi bir kursa kabul edilemediniz diğer tercihlerinizin sonuçlanmasını bekleyiniz"
+                if first_pref_approve_start < now_for_approve and now_for_approve < second_pref_approve_start:
+                    note = "Birinci tercihinizden herhangi bir kursa kabul edilemediniz varsa diğer tercihlerinizin sonuçlanmasını bekleyiniz"
+                elif second_pref_approve_start < now_for_approve and now_for_approve < third_pref_approve_start:
+                    note = "İkinci tercihinizden herhangi bir kursa kabul edilemediniz varsa diğer tercihlerinizin sonuçlanmasını bekleyiniz"
             elif len(trainess_course_records) == len(trainess_course_records.filter(trainess_approved=False)):
                 data['course_exist'] = "1"
                 data['approve_is_open'] = "1"
+                note = "Kabul edildiğiniz aşağıdaki kursu onaylayabilirsiniz"
                 if first_pref_approve_start < now_for_approve and now_for_approve < first_pref_approve_end:
                     trainess_course_record = trainess_course_records.filter(preference_order=1).filter(approved=True)
                 elif second_pref_approve_start < now_for_approve and now_for_approve < second_pref_approve_end:
                     trainess_course_record = trainess_course_records.filter(preference_order=2).filter(approved=True)
                 elif third_pref_approve_start < now_for_approve and now_for_approve < third_pref_approve_end:
                     trainess_course_record = trainess_course_records.filter(preference_order=3).filter(approved=True)
-                note = "Kabul edildiğiniz aşağıdaki kursu onaylayabilirsiniz" 
+                if trainess_course_record == None:
+                    note = "Kurs teyit dönemi dışındasınız veya Teyit ettiğiniz kurs bulunamadı"
+                    data['course_exist'] = "0"
+                    data['approve_is_open'] = "0"
+                 
             else:
                 data['course_exist'] = "1"
                 data['approve_is_open'] = "0"
