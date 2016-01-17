@@ -444,6 +444,7 @@ def approve_course_preference(request):
     now_for_approve = timezone.now()
     if request.POST:
         try:
+            log.debug(request.POST.get("courseRecordId"), extra=d)
             trainess_course_record = TrainessCourseRecord.objects.get(trainess=request.user.userprofile, 
                                                                         approved=True, 
                                                                         id=request.POST.get("courseRecordId"))
@@ -496,8 +497,8 @@ def approve_course_preference(request):
                     trainess_course_record = trainess_course_records.filter(preference_order=2).filter(approved=True)
                 elif third_pref_approve_start < now_for_approve and now_for_approve < third_pref_approve_end:
                     trainess_course_record = trainess_course_records.filter(preference_order=3).filter(approved=True)
-                if trainess_course_record == None:
-                    note = "Kurs teyit dönemi dışındasınız veya Teyit ettiğiniz kurs bulunamadı"
+                if len(trainess_course_record) == 0:
+                    note = "Kabul edildiğiniz veya teyit ettiğiniz kurs bulunamadı"
                     data['course_exist'] = "0"
                     data['approve_is_open'] = "0"
                  
