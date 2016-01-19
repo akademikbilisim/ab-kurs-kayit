@@ -473,7 +473,7 @@ def approve_course_preference(request):
         second_pref_approve_end = ApprovalDate.objects.get(site=data['site'], preference_order=2, for_trainess=True).end_date
         third_pref_approve_start = ApprovalDate.objects.get(site=data['site'], preference_order=3, for_trainess=True).start_date
         third_pref_approve_end = ApprovalDate.objects.get(site=data['site'], preference_order=3, for_trainess=True).end_date
-        trainess_course_record = None
+        trainess_course_record = []
         trainess_course_records = TrainessCourseRecord.objects.filter(trainess=request.user.userprofile).order_by('preference_order') 
         data['course_exist'] = "0"
         data['approve_is_open'] = "0"
