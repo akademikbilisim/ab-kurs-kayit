@@ -33,4 +33,4 @@ class UserVerificationAdmin(admin.ModelAdmin):
 class InstructorInformationAdmin(admin.ModelAdmin):
     list_display = ['id','user','transportation','arrival_date','departure_date']
     list_filter=('transportation','arrival_date','departure_date')
-    search_fields=('user__username',)
+    search_fields=('user__user__username',)

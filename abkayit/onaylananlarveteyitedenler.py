@@ -11,6 +11,7 @@ def sayilar():
     print "Onaylananlarin sayisi",len(countO)
     countT=TrainessCourseRecord.objects.filter(trainess_approved=True)
     print "Teyit edenlerin sayisi",len(countT)
+    target = open("son_sayilar", 'w')
     for ct in countO:
         ctas=UserAccomodationPref.objects.filter(user=ct.trainess)
         yazilacak = ct.trainess.user.first_name + ";" 
@@ -27,4 +28,6 @@ def sayilar():
                 yazilacak += (cta.accomodation.name or "") + ";" + (str(cta.preference_order) or "") + ";"
         else:
             yazilacak += ";"
-        print yazilacak
+        target.write(yazilacak.encode("utf-8"))
+        target.write("\n")
+    target.close()
