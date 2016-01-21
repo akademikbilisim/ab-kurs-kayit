@@ -10,10 +10,10 @@
 <script type="text/javascript">
 
 
-function addPreference(preference_limit){
-  	var container = $("#field-row-container");
+function addPreference(preference_limit, target, form){
+  	var container = target;
 	var selectedCourses =  [];
-	$("#field-row-container").find('select').each(function(){selectedCourses.push($(this).val());})
+	target.find('select').each(function(){selectedCourses.push($(this).val());})
   	if (container.find("[data-id='container']").size() >= preference_limit) {
   		 bootbox.alert("Tercih Hakkınız Doldu", function() {});
          return false;
@@ -42,17 +42,19 @@ function addPreference(preference_limit){
             {% endif %}
 		}
   	{% endfor %}
-    select.val(select.find("option:not([hidden]):first").val());
-	select.change(changeFuntion).change();
-	$("#remove").show();
+    if(preference_limit>"1"){
+        select.val(select.find("option:not([hidden]):first").val());
+	    select.change(changeFuntion).change();
+    }
+	form.find("#remove").show();
 	$("#cancel-all").show();
-	$("#sendPreference").show();
+	form.find("#sendPreference").show();
 
 }
 var changeFuntion = function(){
 		$this = $(this);
 		var baseVal = $this.val();
-		$("select").find("option").prop("hidden",false);
+		$("#field-container-form").find("select").find("option").prop("hidden",false);
 		//console.log(baseVal, $("select").not(this),this);
 		var values = $.map( $("select").not(this), function(item, i ) {
   			return $(item).val();
@@ -60,7 +62,7 @@ var changeFuntion = function(){
 		$(values).each(function(index, val){
 			$this.find("option[value='"+val+"']").prop("hidden",true);
 		});
-		$("select").not($this).each(function(){
+		$("#field-container-form").find("select").not($this).each(function(){
 			var cur = $(this);
 			var val = cur.val();
 			cur.find("option[value='"+baseVal+"']").prop("hidden",true);
@@ -72,19 +74,41 @@ var changeFuntion = function(){
 }
 $(document).ready(function() {
   var PREFERENCE_LIMIT = "{{PREFERENCE_LIMIT}}";
+  var ADDITION_PREFERENCE_LIMIT = "{{ADDITION_PREFERENCE_LIMIT}}";
   $("#add-field").click(function (e) {
   	e.preventDefault();
-	addPreference(PREFERENCE_LIMIT);
-	$("select").change();
+	addPreference(PREFERENCE_LIMIT, $("#field-row-container"), $("#field-container-form"));
+	$("#field-container-form").find("select").change();
 
   });
-  
-  $("#remove").click(function(){
+ 
+
+  $("#add-field-for-addition").click(function (e) {
+  	e.preventDefault();
+	addPreference(ADDITION_PREFERENCE_LIMIT, $("#field-row-for-addition"), $("#field-container-for-addition-form"));
+  });
+
+
+ 
+  $("#field-container-form").find("#remove").click(function(){
 	var container = $("#field-row-container");
 	var id = container.find("[data-id='container']").size();
-	$("select[id='"+ id +"']").parent().parent().parent().remove();
+	$("#field-container-form").find("select[id='"+ id +"']").parent().parent().parent().remove();
 	if(id=="1"){
-		$("#remove").hide();
+		$("#field-container-form").find("#remove").hide();
+	    $("#cancel-all").hide();
+		//$("#sendPreference").hide();
+	}
+	$("select").trigger("change");
+  });
+
+
+  $("#field-container-for-addition-form").find("#remove").click(function(){
+	var container = $("#field-row-for-addition");
+	var id = container.find("[data-id='container']").size();
+	$("#field-container-for-addition-form").find("select[id='"+ id +"']").parent().parent().parent().remove();
+	if(id=="1"){
+		$("#field-container-for-addition-form").find("#remove").hide();
 	    $("#cancel-all").hide();
 		//$("#sendPreference").hide();
 	}
@@ -92,35 +116,68 @@ $(document).ready(function() {
   });
 
 	{% for course_record in course_records %}
-		addPreference(PREFERENCE_LIMIT);
+        if ("{{course_record.preference_order}}".startsWith("-")){
+     		addPreference(ADDITION_PREFERENCE_LIMIT, $("#field-row-for-addition"), $("#field-container-for-addition-form"));
+        }else{
+     		addPreference(PREFERENCE_LIMIT, $("#field-row-container"), $("#field-container-form"));
+        }
 		var container = $("#field-row-container");
+        if ("{{course_record.preference_order}}".startsWith("-")){
+            container = $("#field-row-for-addition");
+        }
 		container.find("[data-id='container']").last().find('select').val("{{course_record.course.id}}")
   	{% endfor %}
   if ({{closed}} == 1){
-    $("form select").each(function(){$(this).attr("disabled","disabled")});
-    $("form button").each(function(){$(this).attr("disabled","disabled")});
+    $("#field-container-form select").each(function(){$(this).attr("disabled","disabled")});
+    $("#field-container-form button").each(function(){$(this).attr("disabled","disabled")});
+    if($("#field-container-form select").length == 0){
+        $("#field-container-form").hide();
+    }
   }
   else{
-    $("form select").each(function(){$(this).removeAttr("disabled")});
-    $("form button").each(function(){$(this).removeAttr("disabled")});
+    $("#field-container-form select").each(function(){$(this).removeAttr("disabled")});
+    $("#field-container-form button").each(function(){$(this).removeAttr("disabled")});
+    $("#field-container-form").show();
+  }
+  if({{additional1_pref_closed}} == 1){
+    $("#field-container-for-addition-form select").each(function(){$(this).attr("disabled","disabled")});
+    $("#field-container-for-addition-form button").each(function(){$(this).attr("disabled","disabled")});
+    if($("#field-container-addition-form select").length == 0){
+    }
+  }
+  else{
+    $("#field-container-for-addition-form select").each(function(){$(this).removeAttr("disabled")});
+    $("#field-container-for-addition-form button").each(function(){$(this).removeAttr("disabled")});
+    $("#field-container-for-addition-form").show();
   }
  
   $("#closed-courses").html("");
+  $("#open-courses").html("");
   $("#closed-courses").hide();
+  $("#open-courses").hide();
   var check=false;
+  var open_check=false;
   var closedCourses = "<strong>Başvurusu Kapanan Kurslar</strong>";
+  var openCourses = "<strong>Başvurusu Açık Kurslar</strong>";
   closedCourses += "<ul>";
+  openCourses += "<ul>";
   {% for course in courses %}
-    {% if not course.application_is_open or closed == "1"%}
+    {% if not course.application_is_open and closed == "1"%}
       check=true;
       closedCourses += "<li>" + "{{course.name}}"+ "</li>";
+    {% else %}
+      open_check=true;
+      openCourses += "<li>" + "{{course.name}}"+ "</li>";
     {% endif %}
   {% endfor %}
   closedCourses += "<ul>";
-  if(check){
+if(check){
     $("#closed-courses").html(closedCourses);
-    $("#closed-courses").show();
- 
+    $("#closed-courses").show(); 
+  }
+if(open_check){
+    $("#open-courses").html(openCourses);
+    $("#open-courses").show(); 
   }
 });
 
@@ -147,6 +204,42 @@ $(document).ready(function() {
 
 <button type="button" class="btn btn-danger" id="cancel-all" style="display:none;">Tüm Başvurularımı İptal Et</button>
 
+
+
+    <div data-id="container" id="open-courses" class="col-xs-8 col-xs-offset-3" style="margin-top:10px;display:none;">
+    </div>
+{%if additional1_pref_closed == "0" %}
+<hr>
+<form id="field-container-for-addition-form" class="form-horizontal">
+  <div class="form-group m-b-5">
+    <label class="col-xs-3 control-label"><strong>Kurs Ek Tercihleri</strong></label>
+    <div class="col-xs-8">
+      <button class="btn btn-primary pull-right" type="button" id="add-field-for-addition"><i class="fa fa-fw fa-plus"></i>
+        {% trans "Ek Tercih Ekle"%}
+      </button>
+    </div>
+  </div>
+  <div class="form-group" id="field-row-for-addition"></div>
+  <div class="form-group m-b-5">
+    <div class="col-xs-8 col-xs-offset-3">
+      <button class="btn btn-success pull-left" type="button" id="sendPreference" style="display: none;">
+        Ek {% trans "Save My Preferences"%}
+      </button>
+      <button class="btn btn-danger pull-right" type="button" id="remove" style="display: none;"><i class="fa fa-fw fa-minus"></i>
+        Ek {% trans "Remove Preference"%}
+      </button>
+    </div>
+  </div>
+</form>
+{% endif %}
+
+
+
+
+</br></br>
+<hr>
+</br> 
+
 <form id="field-container-form" class="form-horizontal">
   <div class="form-group m-b-5">
     <label class="col-xs-3 control-label"><strong>{% trans "Course Preferences" %}</strong></label>
@@ -172,14 +265,12 @@ $(document).ready(function() {
     <div class="col-xs-8 col-xs-offset-3">
     </div>
   </div>
-  <div class="form-group" id="field-row-container">
-
+</form>
+</br>
     <div data-id="container" id="closed-courses" class="col-xs-8 col-xs-offset-3" style="margin-top:10px;display:none;">
     </div>
-  </div>
-</form>
-
 
 </div>
+
 {% endblock %}
 

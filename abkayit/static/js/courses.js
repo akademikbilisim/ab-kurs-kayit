@@ -155,7 +155,7 @@ $(document).ready(function(){
 	});
 
 
-  $("#sendPreference").click(function(){
+  $("#field-container-form").find("#sendPreference").click(function(){
     var selectedCourse = JSON.stringify($("#field-container-form").serializeArray());
 	var jsonData = {};
 	jsonData['course'] = selectedCourse;
@@ -163,6 +163,26 @@ $(document).ready(function(){
 	console.log(JSON.stringify(jsonData));
 		$.ajax({
 		    url : "/egitim/applytocourse", 
+		    type : "POST",
+		    dataType: "json", 
+		    data : jsonData,
+		    success : function(json) {
+				bootbox.alert(json.message, function() {});
+		    },
+		    error : function(xhr,errmsg,err) {
+				bootbox.alert(errmsg, function() {});
+		    }
+		});
+  });
+
+  $("#field-container-for-addition-form").find("#sendPreference").click(function(){
+    var selectedCourse = JSON.stringify($("#field-container-for-addition-form").serializeArray());
+	var jsonData = {};
+	jsonData['course'] = selectedCourse;
+	jsonData['csrfmiddlewaretoken'] = getCookie('csrftoken');
+	console.log(JSON.stringify(jsonData));
+		$.ajax({
+		    url : "/egitim/additionprefapply/", 
 		    type : "POST",
 		    dataType: "json", 
 		    data : jsonData,

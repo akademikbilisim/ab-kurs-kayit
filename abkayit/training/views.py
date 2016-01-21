@@ -21,7 +21,7 @@ from abkayit.backend import prepare_template_data
 from abkayit.adaptor import send_email
 from abkayit.models import Site, Menu, ApprovalDate
 from abkayit.decorators import active_required
-from abkayit.settings import PREFERENCE_LIMIT, EMAIL_FROM_ADDRESS, TRAINESS_SCORE
+from abkayit.settings import PREFERENCE_LIMIT, ADDITION_PREFERENCE_LIMIT, EMAIL_FROM_ADDRESS, TRAINESS_SCORE
 
 from userprofile.models import UserProfile
 from userprofile.forms import InstProfileForm,CreateInstForm
@@ -127,7 +127,9 @@ def apply_to_course(request):
         return redirect("createprofile")
     if userprofile.userpassedtest:
         data['closed'] = "0"
+        data['additional1_pref_closed'] = "1"
         data['PREFERENCE_LIMIT'] = PREFERENCE_LIMIT
+        data['ADDITION_PREFERENCE_LIMIT'] = ADDITION_PREFERENCE_LIMIT
         message = ""
         now = datetime.date(datetime.now())
         note = _("You can choose courses in order of preference.")
@@ -177,8 +179,11 @@ def apply_to_course(request):
  
                 return HttpResponse(json.dumps({'status':'0', 'message':message}), content_type="application/json")
             else:
-                message = "En fazla "+ PREFERENCE_LIMIT + " tane tercih hakkına sahipsiniz"
+                message = "En fazla " + PREFERENCE_LIMIT + " tane tercih hakkına sahipsiniz"
                 return HttpResponse(json.dumps({'status':'-1', 'message':message}), content_type="application/json")
+        
+      
+        additipnal_pref_start_for_trainess = ApprovalDate.objects.get(site=data['site'], preference_order=1, for_instructor=True ).start_date
         courses = Course.objects.filter(approved=True)
         course_records = TrainessCourseRecord.objects.filter(trainess__user=request.user).order_by('preference_order')
         data['courses'] = courses
@@ -191,6 +196,21 @@ def apply_to_course(request):
         elif now > data['site'].application_end_date:
             data['note'] = _("The course choosing process is closed")
             data['closed'] = "1"
+            if len(TrainessCourseRecord.objects.filter(trainess_approved=True).filter(trainess=userprofile)) == 0:
+                try:
+                    additional1_pref_for_trainess = ApprovalDate.objects.get(
+    									                                   site=data['site'],
+                                                                           preference_order=-1,
+                                                                           for_trainess=True)
+                    now_for_pref = timezone.now()
+                    if now_for_pref > additional1_pref_for_trainess.start_date and now_for_pref < additional1_pref_for_trainess.end_date:
+                        data['additional1_pref_closed'] = "0"
+                        log.debug("ek tercih aktif", extra = d)
+                        data['note'] = _("Ek tercih dönemi içindesiniz, ek tercih yapabilirsiniz")
+                except ObjectDoesNotExist:
+                    log.error("ek tercih icin sure bulunamadi", extra = d)
+                except Exception as e:
+                    log.error(e.message, extra = d)
             return render_to_response('training/courserecord.html', data) 
         return render_to_response('training/courserecord.html', data)
     else:
@@ -220,6 +240,8 @@ def control_panel(request):
                 second_pref_approve_end = ApprovalDate.objects.get(site=data['site'], preference_order=2, for_instructor=True).end_date
                 third_pref_approve_start = ApprovalDate.objects.get(site=data['site'], preference_order=3, for_instructor=True).start_date
                 third_pref_approve_end = ApprovalDate.objects.get(site=data['site'], preference_order=3, for_instructor=True).end_date
+                addition1_pref_approve_start = ApprovalDate.objects.get(site=data['site'], preference_order=-1, for_instructor=True).start_date
+                addition1_pref_approve_end = ApprovalDate.objects.get(site=data['site'], preference_order=-1, for_instructor=True).end_date
                 note = "  1. Tercihleri %s - %s tarihleri arasında onaylayabilirsiniz" % (
                                      first_pref_approve_start.strftime(DATETIME_FORMAT),
                                      first_pref_approve_end.strftime(DATETIME_FORMAT)) + "  "
@@ -232,19 +254,22 @@ def control_panel(request):
                 data['closed_pref_1'] = "1"
                 data['closed_pref_2'] = "1"
                 data['closed_pref_3'] = "1"
+                data['closed_pref_addition1'] = "1"
                 data['note_edit_closed'] = "1"
-                if (now_for_approve > first_pref_approve_start and now_for_approve < third_pref_approve_end):
+                if (now_for_approve > first_pref_approve_start and now_for_approve < addition1_pref_approve_end):
                     if ((now_for_approve > first_pref_approve_start) and (now_for_approve < first_pref_approve_end)):
                         data['closed_pref_1'] = "0"
                     if ((now_for_approve > second_pref_approve_start) and (now_for_approve < second_pref_approve_end)):
                         data['closed_pref_2'] = "0"
                     if ((now_for_approve > third_pref_approve_start) and (now_for_approve < third_pref_approve_end)):
                         data['closed_pref_3'] = "0"
-                if (now_for_approve > third_pref_approve_end):
+                    if ((now_for_approve > addition1_pref_approve_start) and (now_for_approve < addition1_pref_approve_end)):
+                        data['closed_pref_addition1'] = "0"
+                if (now_for_approve > addition1_pref_approve_end):
                     data['note_edit_closed'] = "0"
                 for course in courses:
                     trainess[course] = {}
-                    if (now_for_approve < ApprovalDate.objects.get(site=data['site'], preference_order=3, for_trainess=True).end_date):
+                    if (now_for_approve < ApprovalDate.objects.get(site=data['site'], preference_order=-1, for_trainess=True).end_date):
                         trainess[course]['trainess1'] = TrainessCourseRecord.objects.filter(
                                                                          course=course.pk).filter(
                                                                          preference_order=1).exclude(
@@ -263,6 +288,12 @@ def control_panel(request):
                                                                          trainess__in = TrainessCourseRecord.objects.values_list('trainess').filter(
                                                                         ~Q(course=course.pk)).filter(
                                                                          trainess_approved=True)).prefetch_related('course')
+                        trainess[course]['trainess_addition_1'] = TrainessCourseRecord.objects.filter(
+                                                                         course=course.pk).filter(
+                                                                         preference_order=-1).exclude(
+                                                                         trainess__in = TrainessCourseRecord.objects.values_list('trainess').filter(
+                                                                        ~Q(course=course.pk)).filter(
+                                                                         trainess_approved=True)).prefetch_related('course')
                     else:
                         trainess[course]['trainess1'] = TrainessCourseRecord.objects.filter(
                                                                  course=course.pk).filter(
@@ -275,6 +306,10 @@ def control_panel(request):
                         trainess[course]['trainess3'] = TrainessCourseRecord.objects.filter(
                                                                  course=course.pk).filter(
                                                                  preference_order=3).filter(
+                                                                 approved=True).filter(trainess_approved=True).prefetch_related('course')
+                        trainess[course]['trainess_addition_1'] = TrainessCourseRecord.objects.filter(
+                                                                 course=course.pk).filter(
+                                                                 preference_order=-1).filter(
                                                                  approved=True).filter(trainess_approved=True).prefetch_related('course')
                 data['trainess'] = trainess
                 if request.POST:
@@ -320,7 +355,38 @@ def control_panel(request):
 
                                 note = "Seçimleriniz başarılı bir şekilde kaydedildi."
                             else:
-                                note = "Onaylama dönemi dışındasınız" 
+                                if(now_for_approve > addition1_pref_approve_start) and (now_for_approve < addition1_pref_approve_end):
+                                    allprefs = []
+                                    allprefs.extend(TrainessCourseRecord.objects.filter(course=course.pk).filter(preference_order=-1))
+                                    approvedr = request.POST.getlist('students' + str(course.pk))
+                                    log.debug(allprefs, extra=d)
+                                    for p in allprefs:
+                                        if str(p.pk) not in approvedr: 
+                                            p.approved = False
+                                        elif str(p.pk) in approvedr:
+                                            p.approved = True
+                                            p.trainess_approved = True
+                                        p.save()
+                                        log.debug(p, extra=d)
+                                    course.trainess.clear()
+                                    allprefs = TrainessCourseRecord.objects.filter(course=course.pk)
+                                    for p in allprefs:
+                                        if p.approved == True:
+                                            course.trainess.add(p.trainess)
+                                    course.save()
+
+                                    data["user"]=request.user
+                                    data["course"]=course
+                                    send_email("training/messages/inform_trainers_about_changes_subject.txt",
+                                         "training/messages/inform_trainers_about_changes.html",
+                                         "training/messages/inform_trainers_about_changes.txt",
+                                         data,
+                                         EMAIL_FROM_ADDRESS,
+                                         course.trainer.all().values_list('user__username',flat=True))
+
+                                    note = "Seçimleriniz başarılı bir şekilde kaydedildi."
+                                else:    
+                                    note = "Onaylama dönemi dışındasınız" 
                         except Exception as e:
                             note = "Beklenmedik bir hata oluştu!"
                             log.error(e.message, extra=d)
@@ -538,3 +604,38 @@ def get_preferred_courses(request):
         return HttpResponse(json.dumps({'status':status, 'preferred_courses': preferred_courses}), content_type="application/json")
     message = "İşleminiz Sırasında Hata Oluştu"
     return HttpResponse(json.dumps({'status':'-1'}), content_type="application/json")
+
+
+def apply_course_in_addition(request):
+    log.debug( request)
+    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
+    if request.method == "POST":
+        userprofile=None
+        try:
+            userprofile = UserProfile.objects.get(user=request.user)
+        except ObjectDoesNotExist:
+            return redirect("createprofile")
+        if len(TrainessCourseRecord.objects.filter(trainess_approved=True).filter(trainess=userprofile)) == 0:
+            TrainessCourseRecord.objects.filter(trainess=userprofile).filter(preference_order__lte=0).delete()
+            course_prefs = json.loads(request.POST.get('course'))
+            if len(course_prefs) <= ADDITION_PREFERENCE_LIMIT:
+                if len(set([i['value'] for i in course_prefs])) == len([i['value'] for i in course_prefs]):
+                    for course_pre in course_prefs:
+                        try:
+                            course_object = Course.objects.get(id=course_pre['value'])
+                            if course_object.application_is_open:
+                                course_record = TrainessCourseRecord(trainess=userprofile,
+                                                  course=course_object,
+                                                  preference_order=(-1)*int(course_pre['name']))
+                                course_record.save()
+                            else:
+                                 message = "Kurs basvurulara kapali"
+                                 log.error(message + " " + str(course_pre['value']), extra = d)
+                        except Exception as e:
+                            log.error(e.message, extra = d)
+                            message = "Tercihleriniz kaydedilirken hata oluştu"
+                            return HttpResponse(json.dumps({'status':'-1', 'message':message}), content_type="application/json")
+                    message = "Tercihleriniz başarılı bir şekilde güncellendi"
+                    return HttpResponse(json.dumps({'status':'0', 'message':message}), content_type="application/json")
+    message = "Tercih işlemi yapmanıza izin verilmiyor"
+    return HttpResponse(json.dumps({'status':'-1', 'message':message}), content_type="application/json")

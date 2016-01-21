@@ -23,6 +23,7 @@ MEDIA_ROOT = "/home/ozge/web/abkayit/" #os.path.join(BASE_DIR, '/')
 MEDIA_URL = '/'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
+ADDITION_PREFERENCE_LIMIT=3
 PREFERENCE_LIMIT=3
 EMAIL_FROM_ADDRESS="kayit@ab.org.tr"
 
