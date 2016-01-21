@@ -628,9 +628,10 @@ def apply_course_in_addition(request):
                                                   course=course_object,
                                                   preference_order=(-1)*int(course_pre['name']))
                                 course_record.save()
+                                log.debug("ek tercih kaydedildi " + str(course_pre['value']), extra = d)
                             else:
-                                 message = "Kurs basvurulara kapali"
-                                 log.error(message + " " + str(course_pre['value']), extra = d)
+                                message = "Kurs basvurulara kapali"
+                                log.error(message + " " + str(course_pre['value']), extra = d)
                         except Exception as e:
                             log.error(e.message, extra = d)
                             message = "Tercihleriniz kaydedilirken hata oluştu"
