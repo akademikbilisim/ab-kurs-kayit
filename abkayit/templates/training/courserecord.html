@@ -116,13 +116,13 @@ $(document).ready(function() {
   });
 
 	{% for course_record in course_records %}
-        if ("{{course_record.preference_order}}".startsWith("-")){
+        if ("{{course_record.preference_order}}".charAt(0)=="-"){
      		addPreference(ADDITION_PREFERENCE_LIMIT, $("#field-row-for-addition"), $("#field-container-for-addition-form"));
         }else{
      		addPreference(PREFERENCE_LIMIT, $("#field-row-container"), $("#field-container-form"));
         }
 		var container = $("#field-row-container");
-        if ("{{course_record.preference_order}}".startsWith("-")){
+        if ("{{course_record.preference_order}}".charAt(0)=="-"){
             container = $("#field-row-for-addition");
         }
 		container.find("[data-id='container']").last().find('select').val("{{course_record.course.id}}")
