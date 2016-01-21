@@ -10,6 +10,7 @@
 	    <tr>
 	        <th>{% trans "Ad Soyad" %}</th>
 	        <th>{% trans "E-posta" %}</th>
+	        <th>{% trans "Tc Kimlik" %}</th>
 	        <th>{% trans "Kurs Adı" %}</th>
 	        <th>{% trans "Ulaşım Türü" %}</th>
 	        <th>{% trans "Varış Tarihi" %}</th>
@@ -22,6 +23,7 @@
 		<tr>
 			<td>{{trainer.user.first_name}} {{trainer.user.last_name}}</td>
 			<td>{{trainer.user.email}}</td>
+            <td>{{trainer.tckimlikno}}</td>
             <td>
                 {% for c in trainer.trainer.all %}
                     <span>&nbsp;</span>
