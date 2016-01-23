@@ -11,11 +11,12 @@
   coursePreference1 = [];
   coursePreference2 = [];
   coursePreference3 = [];
+  coursePreference4 = [];
   {% for course,course_stat_detail in statistic_by_course.items%}
     courseList.push("{{course}}");
-    var courseStatisticDetail = {{course_stat_detail}};
-    if(courseStatisticDetail[1]){
-       coursePreference1.push(courseStatisticDetail[1])
+    var courseStatisticDetail = JSON.parse("{{course_stat_detail}}".replace(/&#39;/g,'"'));
+    if(courseStatisticDetail["1"]){
+       coursePreference1.push(courseStatisticDetail["1"])
     }else{
        coursePreference1.push(0);
     }
@@ -28,6 +29,11 @@
        coursePreference3.push(courseStatisticDetail[3])
     }else{
        coursePreference3.push(0);
+    }
+    if(courseStatisticDetail[-1]){
+       coursePreference4.push(courseStatisticDetail[-1])
+    }else{
+       coursePreference4.push(0);
     }
   {% endfor%}
 
@@ -87,9 +93,77 @@
           }, {
               name: '3. Tercih',
               data: coursePreference3
+          }, {
+              name: '4. Tercih',
+              data: coursePreference4
           }]
       });
   });
+
+
+
+
+
+  var appliedCourseText = [];
+  var appliedCourseValue = [];
+  {% for course in statistic_by_course_for_apply %}
+  appliedCourseText.push("{{course.course__name}}");
+  appliedCourseValue.push({{course.count}});
+  {% endfor%}
+  $(function () {
+      $('#statistic-by-course-for-apply').highcharts({
+          chart: {
+              type: 'bar'
+          },
+          title: {
+              text: 'Teyit Edenler'
+          },
+          xAxis: {
+              categories: appliedCourseText,
+              title: {
+                  text: null
+              }
+          },
+          yAxis: {
+              min: 0,
+              title: {
+                  align: 'high'
+              },
+              labels: {
+                  overflow: 'justify'
+              }
+          },
+          tooltip: {
+              valueSuffix: ' kişi'
+          },
+          plotOptions: {
+              bar: {
+                  dataLabels: {
+                      enabled: true
+                  }
+              }
+          },
+          legend: {
+              layout: 'vertical',
+              align: 'right',
+              verticalAlign: 'top',
+              x: -40,
+              y: 80,
+              floating: true,
+              borderWidth: 1,
+              backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
+              shadow: true
+          },
+          credits: {
+              enabled: false
+          },
+          series: [{
+              name: 'Katılım',
+              data: appliedCourseValue
+          }]
+      });
+  });
+
 
 
 
@@ -216,200 +290,13 @@
       });
   });
   
-  var toptencityText = [];
-  var toptencityValue = [];
- 
-  {% for city in topten_by_city%}
-    toptencityText.push("{{city.city}}");
-    toptencityValue.push({{city.count}});
-  {% endfor%}
-  $(function () {
-      $('#top-ten-city').highcharts({
-          chart: {
-              type: 'bar'
-          },
-          title: {
-              text: 'İlk On Şehir'
-          },
-          xAxis: {
-              categories: toptencityText,
-              title: {
-                  text: null
-              }
-          },
-          yAxis: {
-              min: 0,
-              title: {
-                  align: 'high'
-              },
-              labels: {
-                  overflow: 'justify'
-              }
-          },
-          tooltip: {
-              valueSuffix: ' kişi'
-          },
-          plotOptions: {
-              bar: {
-                  dataLabels: {
-                      enabled: true
-                  }
-              }
-          },
-          legend: {
-              layout: 'vertical',
-              align: 'right',
-              verticalAlign: 'top',
-              x: -40,
-              y: 80,
-              floating: true,
-              borderWidth: 1,
-              backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
-              shadow: true
-          },
-          credits: {
-              enabled: false
-          },
-          series: [{
-              name: 'Katılım',
-              data: toptencityValue
-          }]
-      });
-  });
-  var toptenuniversityText = [];
-  var toptenuniversityValue = [];
- 
-  {% for university in topten_by_university%}
-    toptenuniversityText.push("{{university.university}}");
-    toptenuniversityValue.push({{university.count}});
-  {% endfor%}
-  $(function () {
-      $('#top-ten-university').highcharts({
-          chart: {
-              type: 'bar'
-          },
-          title: {
-              text: 'İlk On Üniversite'
-          },
-          xAxis: {
-              categories: toptenuniversityText,
-              title: {
-                  text: null
-              }
-          },
-          yAxis: {
-              min: 0,
-              title: {
-                  align: 'high'
-              },
-              labels: {
-                  overflow: 'justify'
-              }
-          },
-          tooltip: {
-              valueSuffix: ' kişi'
-          },
-          plotOptions: {
-              bar: {
-                  dataLabels: {
-                      enabled: true
-                  }
-              }
-          },
-          legend: {
-              layout: 'vertical',
-              align: 'right',
-              verticalAlign: 'top',
-              x: -40,
-              y: 80,
-              floating: true,
-              borderWidth: 1,
-              backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
-              shadow: true
-          },
-          credits: {
-              enabled: false
-          },
-          series: [{
-              name: 'Katılım',
-              data: toptenuniversityValue
-          }]
-      });
-  });
-  var toptencourseText = [];
-  var toptencourseValue = [];
-  {% for course in topten_by_course %}
-  toptencourseText.push("{{course.course__name}}");
-    toptencourseValue.push({{course.count}});
-  {% endfor%}
-  $(function () {
-      $('#top-ten-course').highcharts({
-          chart: {
-              type: 'bar'
-          },
-          title: {
-              text: 'İlk On Kurs'
-          },
-          xAxis: {
-              categories: toptencourseText,
-              title: {
-                  text: null
-              }
-          },
-          yAxis: {
-              min: 0,
-              title: {
-                  align: 'high'
-              },
-              labels: {
-                  overflow: 'justify'
-              }
-          },
-          tooltip: {
-              valueSuffix: ' kişi'
-          },
-          plotOptions: {
-              bar: {
-                  dataLabels: {
-                      enabled: true
-                  }
-              }
-          },
-          legend: {
-              layout: 'vertical',
-              align: 'right',
-              verticalAlign: 'top',
-              x: -40,
-              y: 80,
-              floating: true,
-              borderWidth: 1,
-              backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
-              shadow: true
-          },
-          credits: {
-              enabled: false
-          },
-          series: [{
-              name: 'Katılım',
-              data: toptencourseValue
-          }]
-      });
-  });
-
-
-
-
-
-
-
-
 
 
 
 
    var genderStatistic = [];
 
-  {% for gender_stat in statistic_by_gender%}
+  {% for gender_stat in statistic_by_gender %}
     var temp = {};
     {%for key,value in gender_stat.items%} 
        if("{{key}}" == "gender"){
@@ -457,7 +344,12 @@
   
 </script>
 
-<div id="statistic-by-course" style="min-width: 360px; max-width: 800px; height: 1600px; margin: 0 auto"></div>
+<div id="statistic-by-course" style="min-width: 360px; max-width: 800px; height: 2000px; margin: 0 auto"></div>
+
+</br>
+</br>
+</br>
+<div id="statistic-by-course-for-apply" style="min-width: 360px; max-width: 800px; height: 1000px; margin: 0 auto"></div>
 
 </br>
 </br>
@@ -474,18 +366,5 @@
 </br>
 <div id="statistic-by-gender" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
 
-</br>
-</br>
-</br>
-<div id="top-ten-course" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
-
-</br>
-</br>
-</br>
-<div id="top-ten-city" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
-</br>
-</br>
-</br>
-<div id="top-ten-university" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
 
 {%endblock%}

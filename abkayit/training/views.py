@@ -419,15 +419,15 @@ def statistic(request):
                                                'course','preference_order')
         statistic_by_course = {}
         for key, group in itertools.groupby(record_data, lambda item: item["course"]):
-            statistic_by_course[Course.objects.get(pk=key)] = {item['preference_order']:item['preference_order__count'] for item in group}
+            statistic_by_course[Course.objects.get(pk=key)] = {str(item['preference_order']):item['preference_order__count'] for item in group}
         data['statistic_by_course'] = statistic_by_course
-        statistic_by_gender = UserProfile.objects.filter(is_student=True).values('gender').annotate(Count('user'))
+        statistic_by_gender = UserProfile.objects.filter(is_student=True).values('gender').annotate(Count('gender')).order_by('gender')
         data['statistic_by_gender'] = statistic_by_gender
-        statistic_by_university = UserProfile.objects.filter(is_student=True).values('university').annotate(Count('university')).order_by('university')
+        log.debug(statistic_by_gender,extra=d) 
+        statistic_by_university = UserProfile.objects.filter(is_student=True).values('university').annotate(Count('university')).order_by('-university__count')
         data['statistic_by_university'] = statistic_by_university
-        data['topten_by_course'] = TrainessCourseRecord.objects.filter(preference_order=1).values('course__name').annotate(count=Count('course')).order_by('-count')[:10]
-        data['topten_by_city']  = UserProfile.objects.filter(is_student=True).values('city').annotate(count=Count('city')).order_by('-count')[:10]
-        data['topten_by_university']  = UserProfile.objects.filter(is_student=True).filter(~Q(university="")).values('university').annotate(count=Count('university')).order_by('-count')[:10]
+        
+        data['statistic_by_course_for_apply'] = TrainessCourseRecord.objects.filter(trainess_approved=True).values('course__name').annotate(count=Count('course')).order_by('-count')
         total_profile = len(UserProfile.objects.filter(is_student=True))
         total_preference = len(TrainessCourseRecord.objects.all())
         data['statistic_by_totalsize'] = {'Toplam Profil(Kişi)': total_profile, 'Toplam Tercih': total_preference}
