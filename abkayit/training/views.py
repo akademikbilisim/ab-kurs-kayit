@@ -574,7 +574,13 @@ def approve_course_preference(request):
                 trainess_course_record = trainess_course_records.filter(trainess_approved=True).filter(approved=True)
                 note = "Aşağıdaki Kursa Kabul Edildiniz"
         else:
-            note = "Kurs teyit dönemi dışındasınız."
+            trainess_course_record = trainess_course_records.filter(trainess_approved=True).filter(approved=True)
+            if len(trainess_course_record) == 1:
+                data['course_exist'] = "1"
+                data['approve_is_open'] = "0"
+                note = "Aşağıdaki Kursa Kabul Edildiniz"
+            else:
+                note = "Kurs teyit dönemi dışındasınız veya kabul edildiğiniz kurs yok"
         data['note'] = note
         data['trainess_course_record'] = trainess_course_record
     except Exception as e:
