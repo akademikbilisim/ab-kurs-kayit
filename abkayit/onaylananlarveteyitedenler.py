@@ -18,6 +18,7 @@ def sayilar():
         yazilacak  += ct.trainess.user.last_name  + ";" 
         yazilacak += ct.trainess.user.username + ";"
         yazilacak += (str(ct.trainess.gender) or "") + ";"
+        yazilacak += (str(ct.trainess.tckimlikno) or "") + ";"
         yazilacak += (ct.trainess.university or "") + ";"
         yazilacak += (ct.trainess.organization or "") + ";"
         yazilacak += (ct.course.name or  "") + ";"
