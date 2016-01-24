@@ -621,28 +621,27 @@ def apply_course_in_addition(request):
             userprofile = UserProfile.objects.get(user=request.user)
         except ObjectDoesNotExist:
             return redirect("createprofile")
-        if len(TrainessCourseRecord.objects.filter(trainess_approved=True).filter(trainess=userprofile)) == 0:
-            TrainessCourseRecord.objects.filter(trainess=userprofile).filter(preference_order__lte=0).delete()
-            course_prefs = json.loads(request.POST.get('course'))
-            if len(course_prefs) <= ADDITION_PREFERENCE_LIMIT:
-                if len(set([i['value'] for i in course_prefs])) == len([i['value'] for i in course_prefs]):
-                    for course_pre in course_prefs:
-                        try:
-                            course_object = Course.objects.get(id=course_pre['value'])
-                            if course_object.application_is_open:
-                                course_record = TrainessCourseRecord(trainess=userprofile,
-                                                  course=course_object,
-                                                  preference_order=(-1)*int(course_pre['name']))
-                                course_record.save()
-                                log.debug("ek tercih kaydedildi " + str(course_pre['value']), extra = d)
-                            else:
-                                message = "Kurs basvurulara kapali"
-                                log.error(message + " " + str(course_pre['value']), extra = d)
-                        except Exception as e:
-                            log.error(e.message, extra = d)
-                            message = "Tercihleriniz kaydedilirken hata oluştu"
-                            return HttpResponse(json.dumps({'status':'-1', 'message':message}), content_type="application/json")
-                    message = "Tercihleriniz başarılı bir şekilde güncellendi"
-                    return HttpResponse(json.dumps({'status':'0', 'message':message}), content_type="application/json")
+        TrainessCourseRecord.objects.filter(trainess=userprofile).delete()
+        course_prefs = json.loads(request.POST.get('course'))
+        if len(course_prefs) <= ADDITION_PREFERENCE_LIMIT:
+            if len(set([i['value'] for i in course_prefs])) == len([i['value'] for i in course_prefs]):
+                for course_pre in course_prefs:
+                    try:
+                        course_object = Course.objects.get(id=course_pre['value'])
+                        if course_object.application_is_open:
+                            course_record = TrainessCourseRecord(trainess=userprofile,
+                                              course=course_object,
+                                              preference_order=(-1)*int(course_pre['name']))
+                            course_record.save()
+                            log.debug("ek tercih kaydedildi " + str(course_pre['value']), extra = d)
+                        else:
+                            message = "Kurs basvurulara kapali"
+                            log.error(message + " " + str(course_pre['value']), extra = d)
+                    except Exception as e:
+                        log.error(e.message, extra = d)
+                        message = "Tercihleriniz kaydedilirken hata oluştu"
+                        return HttpResponse(json.dumps({'status':'-1', 'message':message}), content_type="application/json")
+                message = "Tercihleriniz başarılı bir şekilde güncellendi"
+                return HttpResponse(json.dumps({'status':'0', 'message':message}), content_type="application/json")
     message = "Tercih işlemi yapmanıza izin verilmiyor"
     return HttpResponse(json.dumps({'status':'-1', 'message':message}), content_type="application/json")
