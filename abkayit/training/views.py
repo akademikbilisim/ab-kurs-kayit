@@ -196,7 +196,7 @@ def apply_to_course(request):
         elif now > data['site'].application_end_date:
             data['note'] = _("The course choosing process is closed")
             data['closed'] = "1"
-            if len(TrainessCourseRecord.objects.filter(trainess_approved=True).filter(trainess=userprofile)) == 0:
+            if len(TrainessCourseRecord.objects.filter(trainess_approved=True).filter(preference_order__gte=0).filter(trainess=userprofile)) == 0:
                 try:
                     additional1_pref_for_trainess = ApprovalDate.objects.get(
     									                                   site=data['site'],
@@ -580,6 +580,8 @@ def approve_course_preference(request):
                 data['approve_is_open'] = "0"
                 note = "Aşağıdaki Kursa Kabul Edildiniz"
             else:
+                if len(trainess_course_record) > 1:
+                    log.debug("kursiyerin teyit edilen 1'den fazla kursu var!!", extra=d)
                 note = "Kurs teyit dönemi dışındasınız veya kabul edildiğiniz kurs yok"
         data['note'] = note
         data['trainess_course_record'] = trainess_course_record
