@@ -116,7 +116,7 @@
               type: 'bar'
           },
           title: {
-              text: 'Teyit Edenler'
+              text: 'Kurs Dağılımı - Teyit Edenler'
           },
           xAxis: {
               categories: appliedCourseText,
@@ -229,6 +229,77 @@
   });
 
 
+
+
+
+
+
+  universityListForApproved = [];
+  userSizeForApproved = [];
+  {% for item in statistic_by_university_for_approved%}
+    universityListForApproved.push("{{item.university}}");
+    userSizeForApproved.push({{item.university__count}});
+  {% endfor%}
+  $(function () {
+      $('#statistic-by-university-for-approved').highcharts({
+          chart: {
+              type: 'bar'
+          },
+          title: {
+              text: 'Üniversite/Katılım(Teyit Edenler)'
+          },
+          xAxis: {
+              categories: universityListForApproved,
+              title: {
+                  text: null
+              }
+          },
+          yAxis: {
+              min: 0,
+              title: {
+                  align: 'high'
+              },
+              labels: {
+                  overflow: 'justify'
+              }
+          },
+          tooltip: {
+              valueSuffix: ' kişi'
+          },
+          plotOptions: {
+              bar: {
+                  dataLabels: {
+                      enabled: true
+                  }
+              }
+          },
+          legend: {
+              layout: 'vertical',
+              align: 'right',
+              verticalAlign: 'top',
+              x: -40,
+              y: 80,
+              floating: true,
+              borderWidth: 1,
+              backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
+              shadow: true
+          },
+          credits: {
+              enabled: false
+          },
+          series: [{
+              name: 'Katılım',
+              data: userSizeForApproved
+          }]
+      });
+  });
+
+
+
+
+
+
+
   var totalStatText = [];
   var totalStatValue = [];
  
@@ -315,7 +386,7 @@
                 type: 'pie'
             },
             title: {
-                text: 'Kadın/Erkek Dağılımı'
+                text: 'Kadın/Erkek Dağılımı(Başvuranlar)'
             },
             tooltip: {
                 pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -340,6 +411,60 @@
 
 
 
+
+
+
+
+
+   var genderStatisticForApproved = [];
+
+  {% for gender_stat in statistic_by_gender_for_approved %}
+    var temp = {};
+    {%for key,value in gender_stat.items%} 
+       if("{{key}}" == "gender"){
+         temp['name'] = "{{value}}";
+       }else{
+         temp['y'] = parseInt("{{value}}");
+       }
+    {%endfor%}
+       genderStatisticForApproved.push(temp);
+  {% endfor%}
+   $('#statistic-by-gender-for-approved').highcharts({
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+                type: 'pie'
+            },
+            title: {
+                text: 'Kadın/Erkek Dağılımı(Teyit Edenler)'
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: false
+                    },
+                    showInLegend: true
+                }
+            },
+            series: [{
+                name: 'Gender',
+                colorByPoint: true,
+                data: genderStatisticForApproved
+            }]
+        });
+
+
+
+
+
+
+
 });
   
 </script>
@@ -354,8 +479,10 @@
 </br>
 </br>
 </br>
-<div id="statistic-by-university" style="min-width: 360px; max-width: 800px; height: 2000px; margin: 0 auto"></div>
-
+<div class="row">
+<div id="statistic-by-university" class="pull-left" style="min-width: 360px; max-width: 500px; height: 2000px; margin: 0 auto"></div>
+<div id="statistic-by-university-for-approved" class="pull-right" style="min-width: 360px; max-width: 500px; height: 2000px; margin: 0 auto"></div>
+</div>
 </br>
 </br>
 </br>
@@ -364,7 +491,9 @@
 </br>
 </br>
 </br>
-<div id="statistic-by-gender" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
-
+<div class="row">
+<div id="statistic-by-gender" class="pull-left" style="min-width: 310px; height: 400px; max-width: 400px; margin: 0 auto"></div>
+<div id="statistic-by-gender-for-approved" class="pull-right" style="min-width: 310px; height: 400px; max-width: 400px; margin: 0 auto"></div>
+</div>
 
 {%endblock%}

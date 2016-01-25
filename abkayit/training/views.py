@@ -416,21 +416,30 @@ def statistic(request):
         record_data = TrainessCourseRecord.objects.filter().values(
                                             'course','preference_order').annotate(
                                               Count('preference_order')).order_by(
-                                               'course','preference_order')
+                                               'course','-preference_order')
         statistic_by_course = {}
         for key, group in itertools.groupby(record_data, lambda item: item["course"]):
             statistic_by_course[Course.objects.get(pk=key)] = {str(item['preference_order']):item['preference_order__count'] for item in group}
         data['statistic_by_course'] = statistic_by_course
         statistic_by_gender = UserProfile.objects.filter(is_student=True).values('gender').annotate(Count('gender')).order_by('gender')
         data['statistic_by_gender'] = statistic_by_gender
+        statistic_by_gender_for_approved = UserProfile.objects.filter(is_student=True).filter(
+                                                              trainesscourserecord__approved__in=[True]).filter(
+                                                              trainesscourserecord__trainess_approved__in=[True]).values('gender').annotate(Count('gender')).order_by('gender')
+        data['statistic_by_gender_for_approved'] = statistic_by_gender_for_approved
         log.debug(statistic_by_gender,extra=d) 
         statistic_by_university = UserProfile.objects.filter(is_student=True).values('university').annotate(Count('university')).order_by('-university__count')
         data['statistic_by_university'] = statistic_by_university
         
+        statistic_by_university_for_approved = UserProfile.objects.filter(is_student=True).values('university').filter(
+                                                              trainesscourserecord__approved__in=[True]).filter(
+                                                              trainesscourserecord__trainess_approved__in=[True]).annotate(Count('university')).order_by('-university__count')
+        data['statistic_by_university_for_approved'] = statistic_by_university_for_approved
         data['statistic_by_course_for_apply'] = TrainessCourseRecord.objects.filter(trainess_approved=True).values('course__name').annotate(count=Count('course')).order_by('-count')
         total_profile = len(UserProfile.objects.filter(is_student=True))
         total_preference = len(TrainessCourseRecord.objects.all())
-        data['statistic_by_totalsize'] = {'Toplam Profil(Kişi)': total_profile, 'Toplam Tercih': total_preference}
+        total_preference_for_approved = len(TrainessCourseRecord.objects.filter(approved=True).filter(trainess_approved=True))
+        data['statistic_by_totalsize'] = {'Toplam Profil(Kişi)': total_profile, 'Toplam Tercih': total_preference, 'Toplam Teyit Eden': total_preference_for_approved}
     except Exception as e:
         log.error(e.message, extra=d)
     return render_to_response("training/statistic.html", data)
