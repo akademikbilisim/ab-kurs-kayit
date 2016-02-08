@@ -15,6 +15,8 @@
   coursePreferenceTotalApply = [];
   coursePreferenceTotalApplyByTrainer = [];
   coursePreferenceTotalApplyByTrainess = [];
+  coursePreferenceTotalAttended = [];
+
   {% for course,course_stat_detail in statistic_by_course.items%}
     courseList.push("{{course}}");
     var courseStatisticDetail = JSON.parse("{{course_stat_detail}}".replace(/&#39;/g,'"'));
@@ -52,6 +54,11 @@
         coursePreferenceTotalApplyByTrainess.push(courseStatisticDetail['total_apply_by_trainess'])
     }else{
        coursePreferenceTotalApplyByTrainer.push(0);
+    }
+    if(courseStatisticDetail['total_attended']){
+        coursePreferenceTotalAttended.push(courseStatisticDetail['total_attended'])
+    }else{
+       coursePreferenceTotalAttended.push(0);
     }
   {% endfor%}
 
@@ -110,20 +117,27 @@
               name: 'Toplam Kabul',
               data: coursePreferenceTotalApplyByTrainer
           }, {
-              name: 'Toplam Teyit(Gelenler)',
+              name: 'Toplam Teyit',
               data: coursePreferenceTotalApplyByTrainess
+          }, {
+              name: 'Gelenler',
+              data: coursePreferenceTotalAttended
           },{
               name: '1. Tercih',
-              data: coursePreference1
+              data: coursePreference1,
+              visible: false
           }, {
               name: '2. Tercih',
-              data: coursePreference2
+              data: coursePreference2,
+              visible: false
           }, {
               name: '3. Tercih',
-              data: coursePreference3
+              data: coursePreference3,
+              visible: false
           }, {
               name: '4. Tercih',
-              data: coursePreference4
+              data: coursePreference4,
+              visible: false
           }]
       });
   });
@@ -497,7 +511,7 @@
   
 </script>
 
-<div id="statistic-by-course" style="min-width: 360px; max-width: 800px; height: 2900px; margin: 0 auto"></div>
+<div id="statistic-by-course" style="min-width: 360px; max-width: 800px; height: 3500px; margin: 0 auto"></div>
 
 </br>
 </br>

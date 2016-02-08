@@ -430,6 +430,12 @@ def statistic(request):
                                                                                   course=course_object).filter(
                                                                                   approved=True).filter(
                                                                                   trainess_approved=True))
+            statistic_by_course[course_object]['total_attended'] = len(TrainessCourseRecord.objects.filter(
+                                                                                  course=course_object).filter(
+                                                                                  approved=True).filter(
+                                                                                  trainess_approved=True).filter(
+                                                                                  trainess__in=UserProfile.objects.filter(
+                                                                                      is_student=True).filter(score='1')))
             
             
         data['statistic_by_course'] = statistic_by_course
