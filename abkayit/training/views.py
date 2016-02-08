@@ -419,7 +419,19 @@ def statistic(request):
                                                'course','-preference_order')
         statistic_by_course = {}
         for key, group in itertools.groupby(record_data, lambda item: item["course"]):
-            statistic_by_course[Course.objects.get(pk=key)] = {str(item['preference_order']):item['preference_order__count'] for item in group}
+            course_object = Course.objects.get(pk=key)
+            statistic_by_course[course_object] = {str(item['preference_order']):item['preference_order__count'] for item in group}
+            statistic_by_course[course_object]['total_apply'] = len(TrainessCourseRecord.objects.filter(
+                                                                                  course=course_object))
+            statistic_by_course[course_object]['total_apply_by_trainer'] = len(TrainessCourseRecord.objects.filter(
+                                                                                  course=course_object).filter(
+                                                                                  approved=True))
+            statistic_by_course[course_object]['total_apply_by_trainess'] = len(TrainessCourseRecord.objects.filter(
+                                                                                  course=course_object).filter(
+                                                                                  approved=True).filter(
+                                                                                  trainess_approved=True))
+            
+            
         data['statistic_by_course'] = statistic_by_course
         statistic_by_gender = UserProfile.objects.filter(is_student=True).values('gender').annotate(Count('gender')).order_by('gender')
         data['statistic_by_gender'] = statistic_by_gender
@@ -435,6 +447,8 @@ def statistic(request):
                                                               trainesscourserecord__approved__in=[True]).filter(
                                                               trainesscourserecord__trainess_approved__in=[True]).annotate(Count('university')).order_by('-university__count')
         data['statistic_by_university_for_approved'] = statistic_by_university_for_approved
+
+        #kurs bazinda toplam teyitli olanlar
         data['statistic_by_course_for_apply'] = TrainessCourseRecord.objects.filter(trainess_approved=True).values('course__name').annotate(count=Count('course')).order_by('-count')
         total_profile = len(UserProfile.objects.filter(is_student=True))
         total_preference = len(TrainessCourseRecord.objects.all())
