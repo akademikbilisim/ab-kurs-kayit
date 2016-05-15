@@ -1,0 +1,47 @@
+{% extends "homepagedashboard.html" %}
+
+{% block content %}
+    <div class="container-fluid">
+        {% if create_user_form.non_field_errors %}
+            <div class="alert alert-danger">{{ create_user_form.non_field_errors.as_text }}</div>
+        {% endif %}
+        {% if create_user_form %}
+            <form name="form-control" class="span4 signup-form" method="POST">{% csrf_token %}
+                {% for field in create_user_form.hidden_fields %}
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="row">
+                            <div class="col-md-6 col-md-offset-2">
+                                <span class="label label-danger">{{ field.label }}: {{ field.errors|striptags }}</span>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+
+                {% for field in create_user_form.visible_fields %}
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <b>{{ field.label }}</b>
+                            </div>
+                            <div class="col-md-6">
+                                {{ field }}
+                            </div>
+                        </div>
+                        {% if field.errors %}
+                            <div class="row">
+                                <div class="col-md-6 col-md-offset-2">
+                                    <span class="label label-danger">{{ field.label }}: {{ field.errors|striptags }}</span>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                <div class="col-md-8">
+                    <input type="submit" name="save" class="btn btn-primary pull-right" value="Kaydet">
+                </div>
+            </form>
+        {% endif %}
+    </div>
+
+{% endblock %}

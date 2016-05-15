@@ -1,0 +1,36 @@
+{% extends "dashboard.html" %}
+{% load i18n %}
+{% block content %}
+    <div class="container-fluid">
+        <form name="form-control" class="span4 signup-form" method="POST">{% csrf_token %}
+            {% for field in form.visible_fields %}
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <b>{{ field.label }}</b>
+                            {% if field.field.required %}
+                                <span class="required"></span>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            {{ field }}
+                        </div>
+                    </div>
+                    {% if field.help_text %}
+                        <span class="helptext">{{ field.help_text }}</span>
+                    {% endif %}
+                    {% if field.errors %}
+                        <div class="row">
+                            <div class="col-md-6 col-md-offset-2">
+                                <span class="label label-danger">{{ field.label }}: {{ field.errors|striptags }}</span>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            <div class="col-md-8 col-sm-8">
+                <input type="submit" name="save" id="save" class="btn btn-primary pull-right" value="Kaydet">
+            </div>
+        </form>
+    </div>
+{% endblock %}

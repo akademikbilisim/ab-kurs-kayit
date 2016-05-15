@@ -1,0 +1,20 @@
+<!-- START LOGIN FORM -->
+<ul class="nav navbar-top-links navbar-right">
+    <form class="form-inline" action="{% url 'index' %}" method="POST" style="margin-top:10px; margin-right:10px;">
+        <div class="form-group">
+            <label class="sr-only">E-posta Adres,</label>
+            <input name="username" class="form-control" placeholder="E-posta">
+        </div>
+        <div class="form-group">
+            <label class="sr-only">Parola</label>
+            <input type="password" name="password" class="form-control" placeholder="Parola">
+        </div>
+        <div class="form-group">
+            <button type="submit" id="btn-login" name="login" class="btn col-md-12 col-sm-12 col-xs-12">Giriş</button>
+        </div>
+        <div>
+            <a class="pull-right" href="{% url 'account_reset_password_key' %}"><span style="color:white;">Parolamı Unuttum?</span></a>
+        </div>
+    </form>
+</UL>
+<!-- END LOGIN FORM -->

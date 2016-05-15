@@ -1,178 +1,99 @@
+<!DOCTYPE html>
+<!--[if IE 8]>
+<html lang="en" class="ie8">
+    <![endif]-->
+<!--[if IE 9]>
+    <html lang="en" class="ie9">
+        <![endif]-->
+<!--[if !IE]><!-->
+<html lang="en">
+<!--<![endif]-->
 {% load staticfiles %}
 {% load i18n %}
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <title>{% block title %}{{ site.name }}{% endblock %}</title>
-  
-    <!-- Bootstrap Core CSS -->
-    <link href="{% static "/static/theme/bower_components/bootstrap/dist/css/bootstrap.min.css" %}" rel="stylesheet">
-  
-    <!-- MetisMenu CSS -->
-    <link href="{% static "/static/theme/bower_components/metisMenu/dist/metisMenu.min.css" %}" rel="stylesheet">
-  
-    <!-- Timeline CSS -->
-    <link href="{% static "/static/theme/dist/css/timeline.css" %}" rel="stylesheet">
-  
-    <!-- Custom CSS -->
-    <link href="{% static "/static/theme/dist/css/sb-admin-2.css" %}" rel="stylesheet">
-  
-    <!-- Morris Charts CSS -->
-    <link href="{% static "/static/theme/bower_components/morrisjs/morris.css" %}" rel="stylesheet">
-  
-    <!-- Custom Fonts -->
-    <link href="{% static "/static/theme/bower_components/font-awesome/css/font-awesome.min.css" %}" rel="stylesheet" type="text/css">
-    
-  
-    <link href="{% static "/static/css/dataTables.min.css" %}" rel="stylesheet" type="text/css">
-    <link href="{% static "/static/css/buttons.dataTables.min.css" %}" rel="stylesheet" type="text/css">
-    <link href="{% static "/static/css/dataTables.tableTools.css" %}" rel="stylesheet" type="text/css">
-    
-	<link href="{% static "/static/css/abkayit-main.css" %}" rel="stylesheet" type="text/css">
-  
-  
-  
-    <!-- jQuery -->
-    <script src="{% static "/static/theme/bower_components/jquery/dist/jquery.min.js" %}"></script>
-  
-    <!-- Bootstrap Core JavaScript -->
-    <script src="{% static "/static/theme/bower_components/bootstrap/dist/js/bootstrap.min.js" %}"></script>
-  
-    <!-- Metis Menu Plugin JavaScript -->
-    <script src="{% static "/static/theme/bower_components/metisMenu/dist/metisMenu.min.js" %}"></script>
-    
-	<script src="{% static "/static/js/bootbox.min.js" %}"></script>
-  
-    <!-- Morris Charts JavaScript -->
-    <script src="{% static "/static/theme/bower_components/raphael/raphael-min.js" %}"></script>
-    <script src="{% static "/static/theme/bower_components/morrisjs/morris.min.js" %}"></script>
-    <script src="{% static "/static/theme/js/morris-data.js" %}"></script>
-    <script src="{% static "/static/js/jquery.js" %}"></script>
-    <script src="{% static "/static/js/dataTables.min.js" %}"></script>
-    <script src="{% static "/static/js/dataTables.buttons.min.js" %}"></script>
-    <script src="{% static "/static/js/buttons.bootstrap.min.js" %}"></script>
-    <script src="{% static "/static/js/dataTables.tableTools.js" %}"></script>
-    <script src="{% static "/static/js/jszip.js" %}"></script>
+<head>
+    <meta charset="UTF-8"/>
+    <title>{{ site.name }}</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta content="" name="description"/>
+    <meta content="" name="author"/>
 
-
-    <script type="text/javascript" language="javascript" src="//cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js">
-    </script>
-    <script type="text/javascript" language="javascript" src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/pdfmake.min.js">
-    </script>
-    <script type="text/javascript" language="javascript" src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js">
-    </script>
-    <script type="text/javascript" language="javascript" src="//cdn.datatables.net/buttons/1.1.0/js/buttons.html5.min.js">
-    </script>
-
-    
-    <script src="{% static "/static/js/main.js" %}"></script>
-    
-    {% block head %}{% endblock %}
-  </head>
-  
-  <body>
-	{% if state %}
-	<div class="alert {{ alerttype }}" role="alert">
-	<button type="button" class="close" data-dismiss="alert">×</button>
-	<strong>{{ state }}</strong>
-	</div>
-	{%endif%}
-    <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-      <div class="navbar-header">
-        <a  href="/">
-          <img style="margin-left:20px; height: 50px;" src="/{{site.logo}}">
-          <span style="margin-left:20px"> {{ site.name }} {{ site.year }}</span>
-        </a>
-      </div>
-      <ul class="nav navbar-top-links navbar-right">
-        <!-- START AUTHENTICATED USER --> 
-        {% if user.is_authenticated %}
-          {% block dashboard %} {% endblock %}
-          <li class="dropdown">
-            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-              <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+    <link rel="shortcut icon" type="image/x-icon" href="/{{ site.logo }}"/>
+    <!--[if IE]>
+                <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+                <![endif]-->
+    <link rel="stylesheet"
+          href="{% static "/static/theme/bs-admin-bcore/template/assets/plugins/bootstrap/css/bootstrap.css" %}"/>
+    <link rel="stylesheet" href="{% static "/static/theme/bs-admin-bcore/template/assets/css/main.css" %}"/>
+    <link rel="stylesheet" href="{% static "/static/theme/bs-admin-bcore/template/assets/css/theme.css" %}"/>
+    <link rel="stylesheet" href="{% static "/static/theme/bs-admin-bcore/template/assets/css/MoneAdmin.css" %}"/>
+    <link rel="stylesheet"
+          href="{% static "/static/theme/bs-admin-bcore/template/assets/plugins/Font-Awesome/css/font-awesome.css" %}"/>
+    <link rel="stylesheet" href="{% static "/static/theme/bs-admin-bcore/template/assets/css/layout2.css" %}"/>
+    <link rel="stylesheet"
+          href="{% static "/static/theme/bs-admin-bcore/template/assets/plugins/flot/examples/examples.css" %}"/>
+    <link rel="stylesheet"
+          href="{% static "/static/theme/bs-admin-bcore/template/assets/plugins/timeline/timeline.css" %}"/>
+    <link rel="stylesheet" href="{% static "/static/css/abkayit-main.css" %}"/>
+    <!--[if lt IE 9]>
+                <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+                <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+                <![endif]-->
+</head>
+<body>
+<div id="wrap">
+    <div id="top">
+        <nav class="navbar navbar-inverse">
+            <a data-original-title="Show/Hide Menu"
+               data-placement="bottom"
+               data-tooltip="tooltip"
+               class="accordion-toggle btn btn-primary btn-sm visible-xs"
+               data-toggle="collapse"
+               href="#menu"
+               id="menu-toggle">
+                <i class="icon-align-justify"></i>
             </a>
-            <ul class="dropdown-menu dropdown-user">
-              <li>
-				<center>{{user.first_name}} {{user.last_name}}</center>
-              </li>
-   			  <li class="divider"></li>
-			  </hr>
-              <li>
-                <a href="{%url "createprofile"%}"><i class="fa fa-user fa-fw"></i> {% trans "User Profile" %}</a>
-              </li>
-              {% if user.userprofile %}
-                {% if user.userprofile.is_instructor %}
-                  <li>
-                    <a href="{%url "instructor_information" %}"><i class="fa-info-circle fa-fw"></i> {% trans "Instructor Information" %}</a>
-                  </li>
-                {% endif %}
-              {% endif %}
-              <li>
-                <a href="{%url "account_reset_password" %}"><i class="fa fa-key fa-fw"></i> {% trans "Change Password" %}</a>
-              </li>
-			  <li class="divider"></li>
-              <li>
-                <a href="{% url "logout" %}">
-                <i class="fa fa-sign-out fa-fw"></i> {% trans "Log out"%}</a>
-              </li>
-            </ul>
-          </li>
-        <!-- END AUTHENTICATED USER --> 
-   
-        <!-- START ANONYMOUS USER --> 
-        {% else %}
-         
-          <!-- START LOGIN FORM --> 
-          <form class="form-inline" action="{% url 'index' %}" method="POST" style="margin-top:10px; margin-right:10px;">
-            <div class="form-group">
-              <label class="sr-only">{% trans "Email adress" %}</label>
-              <input name="username" class="form-control" placeholder="{% trans "Email" %}">
-            </div>
-            <div class="form-group">
-              <label class="sr-only">{% trans "Password" %}</label>
-              <input type="password" name="password" class="form-control" placeholder="{% trans "Password" %}">
-            </div>
-            <div class="form-group">
-              <button type="submit" id="btn-login" name="login" class="btn col-md-12 col-sm-12 col-xs-12">{% trans "Log in" %}</button>
-            </div>
-          </form>
-          <!-- END LOGIN FORM -->
-          <div class="pull-right">
-            <a href="{% url 'account_reset_password_key' %}">{% trans "Forgot password" %}?</a>
-          </div>
-        {% endif %}
-        <!-- END ANONYMOUS USER -->
-      </ul>
-     
-      <!-- START MENU -->
-      <div class="navbar-default sidebar" role="navigation" style="margin-top:65px;">
-        <div class="sidebar-nav navbar-collapse">
-          <ul class="nav" id="side-menu">
-            {% for menu in menus %}
-              <li>
-                <a href="/?menu_id={{menu.id}}">{{menu.name}}</a>
-              </li>
-            {% endfor %}
-          </ul>
-        </div>
-      </div>
-      <!-- END MENU -->
-    </nav>
- 
-    <!-- START MENU CONTENT --> 
-    <div id="content" class="body-content">
-      <div id="page-wrapper">
-        {% block content %}{% endblock %}
-      </div>
+            <header class="navbar-header">
+                <a href="{% url "index" %}" class="navbar-brand">
+                    <img style="margin-left:20px; height: 65px;"
+                         src="https://kamp.linux.org.tr/2016/wp-content/themes/lkd_kamp/images/logo.png"/>
+                </a>
+            </header>
+            {% if user.is_authenticated %}
+                {% include 'authenticated_user.html' %}
+            {% else %}
+                {% include 'anonymous_user.html' %}
+            {% endif %}
+        </nav>
     </div>
-    <!-- END MENU CONTENT -->
-  
-  </body>
+    <div id="left">
+        <ul id="menu" class="in">
+            {% for menu in menus %}
+                <li class="">
+                    <a href="/?menu_id={{ menu.id }}">{{ menu.name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div id="content">
+        {% if state %}
+            <div class="alert {{ alert_type }}" style="margin-top:15px;" role="alert">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                <strong>{{ state }}</strong>
+            </div>
+        {% endif %}
+        <hr>
+        {% block content %}{% endblock %}
+    </div>
+</div>
+<script src="{% static "/static/theme/bs-admin-bcore/template/assets/plugins/jquery-2.0.3.min.js" %}"></script>
+<script src="{% static "/static/theme/bs-admin-bcore/template/assets/plugins/bootstrap/js/bootstrap.min.js" %}"></script>
+<script src="{% static "/static/theme/bs-admin-bcore/template/assets/plugins/modernizr-2.6.2-respond-1.1.0.min.js" %}"></script>
+<script src="{% static "/static/theme/bs-admin-bcore/template/assets/plugins/flot/jquery.flot.js" %}"></script>
+<script src="{% static "/static/theme/bs-admin-bcore/template/assets/plugins/flot/jquery.flot.resize.js" %}"></script>
+<script src="{% static "/static/theme/bs-admin-bcore/template/assets/plugins/flot/jquery.flot.time.js" %}"></script>
+<script src="{% static "/static/theme/bs-admin-bcore/template/assets/plugins/flot/jquery.flot.stack.js" %}"></script>
+<script src="{% static "/static/theme/bs-admin-bcore/template/assets/js/for_index.js" %}"></script>
+<script src="{% static "/static/js/bootbox.min.js" %}"></script>
+<script src="{% static "/static/js/abkayit-main.js" %}"></script>
+</body>
 </html>
-

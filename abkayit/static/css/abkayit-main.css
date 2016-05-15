@@ -1,10 +1,10 @@
 /*.login-form {
-	background-color: #FAFAFA;
-	padding: 15px 45px 45px;
+        background-color: #FAFAFA;
+        padding: 15px 45px 45px;
 }
 .main-topbar {
-	background-color: #EEEEEE;
-	height: 60px;	
+        background-color: #EEEEEE;
+        height: 60px;
 }
 */
 .form-group .required:after {
@@ -41,3 +41,32 @@ input[type=number]::-webkit-inner-spin-button {
   background-color: #9BFF9D !important;
 }
 
+.navbar{
+  background-color: #5bc0de !important;
+}
+
+.list-group-item
+{
+  overflow:hidden;
+  position: relative;
+  display: block;
+  padding: 10px 15px;
+  margin-bottom: -1px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+}
+
+#left ul
+{
+  padding-left:0px;
+}
+
+#left
+{
+  border-right:1px solid #e7e7e7;
+}
+
+#content
+{
+  margin-left:10px !important;
+}

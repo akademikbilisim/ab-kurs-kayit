@@ -1,0 +1,49 @@
+{% extends "dashboard.html" %}
+{% load i18n %}
+{% block content %}
+    {% load staticfiles %}
+    <script src="{% static "/static/js/allusers.js" %}"></script>
+
+    <div class="container-fluid">
+        <table id="list_table" class="table table-hover table-striped">
+            <thead>
+            <tr>
+                <th>Kullanıcı Türü</th>
+                <th>İsim</th>
+                <th>Soyisim</th>
+                <th>TC Kimlik/Yabancı Kimlik No</th>
+                <th>Kurs Adı</th>
+                <th>Konaklama Tercihleri</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for data in datalist %}
+                <tr>
+                    <th>{{ data.usertype }}</th>
+                    <th>{{ data.firstname }}</th>
+                    <th>{{ data.lastname }}</th>
+                    <th>{{ data.tcino }}</th>
+                    <th>
+                        {% if data.usertype == 'instructor' %}
+                            {% for c in data.coursename %}
+                                <span>&nbsp;</span>
+                                {{ c }}
+                                <span>&nbsp;</span>
+                            {% endfor %}
+                        {% endif %}
+                    </th>
+                    <th>
+                        {% for a in data.accomodation %}
+                            <span>&nbsp;</span>
+                            {{ a.preference_order }},{{ a.accomodation.name }}
+                            <span>&nbsp;</span>
+                        {% endfor %}
+                        </ul>
+                    </th>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}

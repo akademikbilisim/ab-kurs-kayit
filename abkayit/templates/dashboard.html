@@ -1,55 +1,8 @@
 {% extends "homepagedashboard.html" %}
 {% block content %}
-    {% if content%}
+    {% if content %}
         {% autoescape off %}
-            {{content.content}}
+            {{ content.content }}
         {% endautoescape %}
     {% endif %}
-{% endblock %}
-
-{% block dashboard %}
-            <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                    <i class="fa fa-tachometer"></i>  İşlemler <i class="fa fa-caret-down"></i>
-                </a>
-                <ul class="dropdown-menu" style>
-                    <li>
-                         <a href="{% url "listcourses" %}"><i class="fa fa-list fa-fw"></i> Mevcut Kurslar</a>
-                    </li>
-			{% if user.is_staff %}
-				<li>
-                                     <a href="{% url "alluser" %}"><i class="fa fa-users fa-fw"></i>Tüm Kullanıcılar</a>
-                                </li>
-				<li>
-                                     <a href="{% url "alltrainers" %}"><i class="fa fa-paperclip fa-fw"></i>Tüm Eğitmenler</a>
-                                </li>
-				<li>
-                                     <a href="{% url "allcoursepref" %}"><i class="fa fa-list-alt fa-fw"></i>Tüm Kurs Başvuruları</a>
-                                </li>
-				<li>
-                                     <a href="{% url "statistic" %}"><i class="fa fa-pie-chart fa-fw"></i>İstatistik</a>
-                                </li>
-			{% else %}
-					{%if user.userprofile %}
-						{% if user.userprofile.is_student %}
-                    		<li>
-                    		     <a href="{% url "applytocourse" %}"><i class="fa fa-check-square-o fa-fw"></i> Kurs Başvurusu</a>
-                    		</li>
-                    		<li>
-                    		     <a href="{% url "approve_course_preference" %}"><i class="fa fa-thumbs-o-up fa-fw"></i> Başvuru Durum/Onayla</a>
-                    		</li>
-						{% endif %}
-						{% if user.userprofile.is_instructor %}
-                    		<li>
-                    		     <a href="{% url "controlpanel" %}"><i class="fa fa-book fa-fw"></i> Kursum</a>
-                    		</li>
-
-						{% endif %}
-					{% endif%}
-			{% endif %}
-                    <li class="divider"></li>
-                </ul>
-                <!-- /.dropdown-user -->
-            </li>
-
 {% endblock %}

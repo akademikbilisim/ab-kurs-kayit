@@ -1,0 +1,70 @@
+{% extends "dashboard.html" %}
+{% load i18n %}
+
+{% block content %}
+    <form name="form-control" class="span4" method="POST">
+        {% csrf_token %}
+
+        {% if user_form %}
+            {% for field in user_form.visible_fields %}
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <b>{{ field.label }}</b>
+                            {% if field.field.required %}
+                                <span class="required"></span>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">{{ field }}</div>
+                    </div>
+                    {% if field.help_text %}
+                        <span class="helptext">{{ field.help_text }}</span>
+                    {% endif %}
+                    {% if field.errors %}
+                        <div class="row">
+                            <div class="col-md-6 col-md-offset-2">
+									<span class="label label-danger">
+										{{ field.label }}: {{ field.errors|striptags }}
+									</span>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+
+        {% if userprofile_form %}
+            {% for field in userprofile_form.visible_fields %}
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <b>{{ field.label }}</b>
+                            {% if field.field.required %}
+                                <span class="required"></span>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">{{ field }}</div>
+                    </div>
+                    {% if field.help_text %}
+                        <span class="helptext">{{ field.help_text }}</span>
+                    {% endif %}
+                    {% if field.errors %}
+                        <div class="row">
+                            <div class="col-md-6 col-md-offset-2">
+									<span class="label label-danger">
+										{{ field.label }}: {{ field.errors|striptags }}
+									</span>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% endif %}
+        <div class="row">
+            <div class="col-md-6 col-md-offset-2">
+                <input type="submit" class="btn btn-success pull-right" value="Kaydet"/>
+            </div>
+        </div>
+    </form>
+{% endblock %}

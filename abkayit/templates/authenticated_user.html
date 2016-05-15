@@ -1,0 +1,75 @@
+<!-- start check user is authenticated-->
+<ul class="nav navbar-top-links navbar-right">
+    <li class="dropdown" style="padding:15px;">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+            <i class="fa icon-th"></i> İşlemler <i class="fa fa-caret-down"></i>
+        </a>
+        <ul class="dropdown-menu" style>
+            <li>
+                <a href="{% url "list_courses" %}"><i class="icon-list-ul"></i> Mevcut Kurslar</a>
+            </li>
+            {% if user.is_staff %}
+                <li>
+                    <a href="{% url "all_users" %}"><i class="icon-group"></i>Tüm Kullanıcılar</a>
+                </li>
+                <li>
+                    <a href="{% url "all_trainers" %}"><i class="icon-paper-clip"></i>Tüm Eğitmenler</a>
+                </li>
+                <li>
+                    <a href="{% url "all_course_pref" %}"><i class="icon-list-ol"></i>Tüm Kurs Başvuruları</a>
+                </li>
+                <li>
+                    <a href="{% url "statistic" %}"><i class="icon-bar-chart"></i>İstatistik</a>
+                </li>
+            {% else %}
+                {% if user.userprofile %}
+                    {% if user.userprofile.is_student %}
+                        <li>
+                            <a href="{% url "apply_to_course" %}"><i class="icon-check"></i> Kurs Başvurusu</a>
+                        </li>
+                        <li>
+                            <a href="{% url "approve_course_preference" %}"><i class="icon-thumbs-up-alt"></i>
+                                Başvuru Durum/Onayla</a>
+                        </li>
+                    {% endif %}
+                    {% if user.userprofile.is_instructor %}
+                        <li>
+                            <a href="{% url "control_panel" %}"><i class="icon-book"></i> Kursum</a>
+                        </li>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+            <li class="divider"></li>
+        </ul>
+    </li>
+
+    <li class="dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#"
+           style="background-color:transparent !important; color:black !important;">
+            <i class="icon-user "></i>&nbsp; <i class="icon-chevron-down "></i>
+        </a>
+        <ul class="dropdown-menu dropdown-user">
+            <li style="text-align:center;">
+                <span><b>{{ user.first_name }} {{ user.last_name }}</b></span>
+            </li>
+            <li><a href="{% url 'profile' %}"><i class="icon-user "></i> Profil</a></li>
+            <li class="divider"></li>
+            {% if user.userprofile %}
+                {% if user.userprofile.is_instructor %}
+                    <li>
+                        <a href="{% url "trainer_information" %}"><i class="icon-bookmark-empty"></i> Eğitmen Ek bilgiler</a>
+                    </li>
+                    <li class="divider"></li>
+                {% endif %}
+            {% endif %}
+            <li>
+                <a href="{% url "account_reset_password" %}"><i class="icon-key"></i> Parola Değiştir</a>
+            </li>
+            <li class="divider"></li>
+            <li>
+                <a href="{% url 'logout' %}"><i class="icon-off"></i> Çıkış</a>
+            </li>
+        </ul>
+    </li>
+</ul>
+<!-- end check user is authenticated-->

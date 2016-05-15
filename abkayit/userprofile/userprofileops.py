@@ -1,22 +1,31 @@
 # -*- coding:utf-8  -*-
-
+import logging
 import random
+import string
+from abkayit.settings import TCKIMLIK_SORGULAMA_WS
 from pysimplesoap.client import SoapClient
 
 '''
     General operations that are used in userprofile app.
 '''
 
+logger = logging.getLogger(__name__)
+
+
 class UserProfileOPS():
-	def generatenewpass(self,plen):
-		chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789abcdefghijkmnpqrstuvwxyz'
-		password=''.join(random.choice(chars) for i in range(plen))
-		return password
-	@staticmethod
-	def validateTCKimlikNo(tckimlikno, name, surname, year):
-		try:
-			client = SoapClient(wsdl="https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL", trace=False)
-			response = client.TCKimlikNoDogrula(TCKimlikNo=tckimlikno, Ad=name.replace('i', 'İ').decode('utf-8').upper(), Soyad=surname.replace('i', 'İ').decode('utf-8').upper(), DogumYili=year)
-			return response['TCKimlikNoDogrulaResult']
-		except:
-			return -1
+    def generate_new_pass(self, plen):
+        return ''.join(
+            random.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for _ in range(plen))
+
+
+    @staticmethod
+    def validate_tckimlik_no(tckimlikno, name, surname, year):
+        try:
+            client = SoapClient(wsdl=TCKIMLIK_SORGULAMA_WS, trace=False)
+            response = client.TCKimlikNoDogrula(TCKimlikNo=tckimlikno,
+                                                Ad=name.replace('i', 'İ').decode('utf-8').upper(),
+                                                Soyad=surname.replace('i', 'İ').decode('utf-8').upper(), DogumYili=year)
+            return response['TCKimlikNoDogrulaResult']
+        except Exception as e:
+            logger.error("it couldn't validated", e.message)
+            return -1
