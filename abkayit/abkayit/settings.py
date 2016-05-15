@@ -124,9 +124,9 @@ LANGUAGE_CODE = 'tr'
 
 TIME_ZONE = 'UTC'
 
-USE_I18N =
+USE_I18N = True
 
-USE_L10N = False
+USE_L10N = True
 
 USE_TZ = False
 
@@ -135,13 +135,12 @@ DATE_FORMAT = 'dMY'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
-# STATIC_ROOT = 'C:\\Users\\AhmetCan\\PycharmProjects\\ab-kurs-kayit\\abkayit\\static\\'
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static/'),
 )
 
-MEDIA_ROOT = 'C:\\Users\\AhmetCan\\PycharmProjects\\ab-kurs-kayit\\abkayit'
+MEDIA_ROOT = 'ab-kurs-kayit/abkayit'
 MEDIA_URL = '/'
 
 LOGGING = {
