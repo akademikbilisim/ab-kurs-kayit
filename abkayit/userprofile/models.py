@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#-*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
 
 import datetime
 
@@ -15,7 +15,7 @@ from abkayit.models import Site
 
 
 class UserVerification(models.Model):
-    user_email = models.CharField(max_length=40) 
+    user_email = models.CharField(max_length=40)
     activation_key = models.CharField(max_length=40, null=True)
     password_reset_key = models.CharField(max_length=40, null=True)
     activation_key_expires = models.DateTimeField(null=True)
@@ -27,24 +27,24 @@ class UserVerification(models.Model):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
-    birthdate = models.DateField(verbose_name="Doğum Tarihi", default=datetime.date(1970,1,1))
+    birthdate = models.DateField(verbose_name="Doğum Tarihi", default=datetime.date(1970, 1, 1))
     tckimlikno = models.CharField(verbose_name="TC Kimlik Numarası", max_length=11, blank=True)
     ykimlikno = models.CharField(verbose_name="Yabancı Kimlik Numarası", max_length=11, blank=True)
-    gender = models.CharField(choices={'E':"Erkek", 'K':"Kadın"}.items(), verbose_name="Cinsiyet", max_length=1)
+    gender = models.CharField(choices={'E': "Erkek", 'K': "Kadın"}.items(), verbose_name="Cinsiyet", max_length=1)
     mobilephonenumber = models.CharField(verbose_name="Cep Telefonu Numarası", max_length=14)
     address = models.TextField(verbose_name="Adres")
     job = models.CharField(verbose_name="İş", max_length=40)
     city = models.CharField(verbose_name="Şehir", max_length=40)
-    country = CountryField(verbose_name="Ülke", choices=COUNTRIES,default='TR')
-    title =  models.CharField(verbose_name="Ünvan", max_length=40)
+    country = CountryField(verbose_name="Ülke", choices=COUNTRIES, default='TR')
+    title = models.CharField(verbose_name="Ünvan", max_length=40)
     organization = models.CharField(verbose_name="Kurum", max_length=200)
-    university = models.CharField(choices=UNIVERSITIES, verbose_name="Üniversite", max_length=300,blank=True)
+    university = models.CharField(choices=UNIVERSITIES, verbose_name="Üniversite", max_length=300, blank=True)
     department = models.CharField(verbose_name="Bölüm", max_length=50)
     is_instructor = models.BooleanField(verbose_name="Eğitmen Mi", default=False)
     is_student = models.BooleanField(verbose_name="Öğrenci Mi", default=False)
     is_participant = models.BooleanField(verbose_name="Katılımcı Mı", default=False)
     additional_information = models.TextField(verbose_name="Ek Bilgiler", null=True)
-    userpassedtest = models.BooleanField(verbose_name="Basvuru yapabilir mi?",blank=True, default=False)
+    userpassedtest = models.BooleanField(verbose_name="Basvuru yapabilir mi?", blank=True, default=False)
     score = models.CharField(choices=TRAINESS_SCORE, verbose_name="Durum", max_length=100, default='1')
 
     def __unicode__(self):
@@ -56,8 +56,9 @@ class UserProfile(models.Model):
 
 class TrainessNote(models.Model):
     note = models.CharField(verbose_name=_("Note"), max_length=255)
-    note_from_profile = models.ForeignKey(UserProfile, related_name="note_from_profile", null=True) #from whom - trainer
-    note_to_profile = models.ForeignKey(UserProfile, related_name="note_to_profile") #to whom - traiess
+    note_from_profile = models.ForeignKey(UserProfile, related_name="note_from_profile",
+                                          null=True)  # from whom - trainer
+    note_to_profile = models.ForeignKey(UserProfile, related_name="note_to_profile")  # to whom - traiess
     note_date = models.DateTimeField(default=datetime.datetime.now)
     site = models.ForeignKey(Site)
 
@@ -75,7 +76,7 @@ class SubscribeNotice(models.Model):
 
 class Accommodation(models.Model):
     gender = models.CharField(choices=GENDER.items(), verbose_name=_("Gender"), max_length=1)
-    usertype = models.CharField(choices=USER_TYPES.items(),verbose_name=_("User Type"),max_length=15)
+    usertype = models.CharField(choices=USER_TYPES.items(), verbose_name=_("User Type"), max_length=15)
     name = models.CharField(verbose_name=_("Name"), max_length=100)
     address = models.CharField(verbose_name=_("Address"), max_length=300)
     website = models.CharField(verbose_name=_("Website"), max_length=300)
@@ -87,7 +88,7 @@ class Accommodation(models.Model):
     class Meta:
         verbose_name = _("Accommodation")
         verbose_name_plural = _("Accommodations")
-            
+
 
 class UserAccomodationPref(models.Model):
     user = models.ForeignKey(UserProfile)

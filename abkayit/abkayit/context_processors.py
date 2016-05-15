@@ -4,7 +4,7 @@ import logging
 from django.core.exceptions import *
 from abkayit.models import Site
 
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def template_data(request):
@@ -14,7 +14,9 @@ def template_data(request):
     user = request.user
     try:
         site = Site.objects.get(is_active=True)
+        print "aaaa"
         menus = site.menu_set.order_by('order')
+        print menus
     except ObjectDoesNotExist:
-        log.error("active site not found", extra=d)
+        logger.error("active site not found", extra=d)
     return {'menus': menus, 'site': site, 'user': user}

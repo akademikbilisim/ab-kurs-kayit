@@ -12,7 +12,7 @@ from abkayit.settings import EMAIL_FROM_ADDRESS
 from abkayit.backend import create_verification_link
 from userprofile.models import UserVerification
 
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def send_confirm_link(sender, instance, created, **kwargs):
@@ -37,8 +37,8 @@ def send_confirm_link(sender, instance, created, **kwargs):
                            EMAIL_FROM_ADDRESS,
                            [instance.username])
             except Exception as e:
-                log.error(
-                    "%s account has been created but has been failed send email verification link" % instance.username, e.message)
+                logger.error(e)
+                raise Exception("Doğrulama linki gönderme sırasında hata oluştu")
 
 
 signals.post_save.connect(send_confirm_link, sender=User)

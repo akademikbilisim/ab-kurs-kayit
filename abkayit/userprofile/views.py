@@ -2,23 +2,22 @@
 import json
 import logging
 
-from django.shortcuts import render, render_to_response, redirect
+from django.shortcuts import render, redirect
 from django.http.response import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import login
 from django.contrib.auth import logout as logout_user
-from django.template import RequestContext
 from django.contrib.auth.decorators import user_passes_test, login_required
-from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django.core.urlresolvers import reverse_lazy
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib import messages
 
 from userprofile.forms import *
 from userprofile.models import *
 
 from abkayit.models import *
-from abkayit.backend import prepare_template_data, create_verification_link
+from abkayit.backend import create_verification_link
 from abkayit.adaptor import send_email
 from abkayit.decorators import active_required
 
@@ -30,7 +29,7 @@ logger = logging.getLogger(__name__)
 
 def subscribe(request):
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
-    data = prepare_template_data(request)
+    data = dict()
     if not request.user.is_authenticated():
         state = "Katılımcı olmak için sisteme kaydolunuz!"
         alert_type = "alert-info"
@@ -79,7 +78,8 @@ def profile(request):
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
     if request.POST:
         try:
-            userprofile_form = UserProfileForm(request.POST, prefix='userprofile_form', instance=request.user.userprofile)
+            userprofile_form = UserProfileForm(request.POST, prefix='userprofile_form',
+                                               instance=request.user.userprofile)
         except ObjectDoesNotExist:
             userprofile_form = UserProfileForm(request.POST, prefix='userprofile_form')
         user_form = UpdateUserForm(request.POST, prefix='user_form', instance=request.user)
@@ -171,7 +171,7 @@ def trainer_information(request):
 @staff_member_required
 def all_users(request):
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
-    data = prepare_template_data(request)
+    data = dict()
     user_list = []
     alluser = UserProfile.objects.all()
     if alluser:
@@ -191,7 +191,7 @@ def all_users(request):
 @staff_member_required
 def all_trainers(request):
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
-    data = prepare_template_data(request)
+    data = dict()
     try:
         trainers = UserProfile.objects.filter(is_instructor=True)
         data['trainers'] = trainers
@@ -208,21 +208,24 @@ def active(request, key):
         user.is_active = True
         user.save()
         backend_login(request, user)
+        user_verification.delete()
     except ObjectDoesNotExist as e:
         logger.error(e.message, extra=d)
     except Exception as e:
         logger.error(e.message, extra=d)
-    return redirect("createprofile")
+    return redirect("profile")
 
 
 def active_resend(request):
-    data = prepare_template_data(request)
-    note = _("Please activate your account.  If you want to re-send an activation email, please click following button")
+    data = dict()
+    state = "Lütfen hesabınızı aktifleştirin, eğer aktifleştirme linkini tekrar almak istiyorsanız " \
+            "lütfen aşağıdaki düğmeye tıklayınız!"
+    alert_type = "alert-info"
     if request.POST:
         user = request.user
-        user_verification, created = UserVerification.objects.get_or_create(user_email=user.username)
-        context = {}
+        context = dict()
         context['user'] = user
+
         domain = Site.objects.get(is_active=True).home_url
         if domain.endswith('/'):
             domain = domain.rstrip('/')
@@ -240,10 +243,12 @@ def active_resend(request):
                        settings.EMAIL_FROM_ADDRESS,
                        [user.username])
 
-            note = _("Your activation link has been sent to your email address")
+            state = "Aktifleştirme linki e-posta adresinize gönderildi!"
+            alert_type = "alert-success"
         except Exception as e:
-            note = e.message
-    data['note'] = note
+            state = e.message
+    data['state'] = state
+    data['alert_type'] = alert_type
     return render(request, "activate_resend.html", data)
 
 
@@ -261,7 +266,8 @@ def password_reset(request):
                 request.user.save()
                 backend_login(request, request.user)
                 state = "Parolanız değiştirildi"
-                alert_type = "alert-success"
+                messages.add_message(request, messages.SUCCESS, state)
+                request.user.message_
             except Exception as e:
                 logger.error("Parola değiştirme sırasında hata olustu", e.message, extra=d)
                 state = "Parolanız değiştirilirken hata oluştu!"
@@ -280,47 +286,52 @@ def password_reset(request):
 
 def password_reset_key(request):
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
-    data = prepare_template_data(request)
-    note = _("Please enter your registered email")
+    data = dict()
+    state = "Lütfen kayıtlı e-posta adresinizi giriniz"
+    alert_type = "alert-info"
     if request.method == 'POST':
         email = request.POST['email']
-        if email and email != "":
+        if email:
             try:
                 user = User.objects.get(username=request.POST['email'])
                 user_verification, created = UserVerification.objects.get_or_create(user_email=user.username)
                 user_verification.password_reset_key = create_verification_link(user)
                 user_verification.save()
-                context = {}
+                context = dict()
                 context['user'] = user
                 context['activation_key'] = user_verification.password_reset_key
                 domain = Site.objects.get(is_active=True).home_url
                 if domain.endswith('/'):
                     domain = domain.rstrip('/')
                 context['domain'] = domain
-                send_email("userprofile/messages/send_reset_password_key_subject.html",
-                           "userprofile/messages/send_reset_password_key.html",
-                           "userprofile/messages/send_reset_password_key.text",
+                send_email("messages/send_reset_password_key_subject.html",
+                           "messages/send_reset_password_key.html",
+                           "messages/send_reset_password_key.text",
                            context,
                            settings.EMAIL_FROM_ADDRESS,
                            [user.username])
-                note = _("""Password reset key has been sent""")
-            except ObjectDoesNotExist:
-                note = _("""There isn't any user record with this e-mail on the system""")
-                log.error(note, extra=d)
+                state = "Parola sıfırlama linki e-posta adresinize gönderildi!"
+                alert_type = "alert-success"
+            except ObjectDoesNotExist as e:
+                state = "Sistemde bu e-posta adresiyle herhangi bir kullanıcı bulunamadı"
+                alert_type = "alert-danger"
+                logger.error(e.message, extra=d)
             except Exception as e:
-                note = _("""Password reset operation failed""")
-                log.error(note, extra=d)
-                log.error(e.message, extra=d)
+                state = "Parola sıfırlama işleminde hata oluştu!"
+                alert_type = "alert-danger"
+                logger.error(e.message, extra=d)
         else:
-            note = _("""Email field can not be empty""")
-            log.error(note, extra=d)
-    data['note'] = note
-    return render_to_response("change_password_key_request.html", data, context_instance=RequestContext(request))
+            state = "E-posta alanı boş olamaz!"
+            alert_type = "alert-danger"
+            logger.error(state, extra=d)
+    data['state'] = state
+    data['alert_type'] = alert_type
+    return render(request, "change_password_key_request.html", data)
 
 
 def password_reset_key_done(request, key=None):
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
-    data = prepare_template_data(request)
+    data = dict()
     state = "Parolanızı değiştirin"
     alert_type = "alert-info"
     form = ChangePasswordForm()
@@ -342,22 +353,24 @@ def password_reset_key_done(request, key=None):
                 request.user.save()
                 state = "Paronız değiştirildi"
                 alert_type = "alert-success"
-                redirect("index")
+                data['state'] = state
+                data['alert_type'] = alert_type
+                return redirect("index")
             except Exception as e:
                 state = "Parolanız değiştirilemedi!"
                 alert_type = "alert-danger"
                 logger.error(e.message, extra=d)
-    data['changepasswordform'] = form
+    data['change_password_form'] = form
     data['state'] = state
     data['alert_type'] = alert_type
     data['user'] = request.user
-    return render_to_response("change_password.html", data, context_instance=RequestContext(request))
+    return render(request, "change_password.html", data)
 
 
 @login_required(login_url='/')
 def save_note(request):
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
-    data = prepare_template_data(request)
+    data = dict()
     jsondata = {}
     if request.method == 'POST':
         trainess_username = request.POST['trainess_username']

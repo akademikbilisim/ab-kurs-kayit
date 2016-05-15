@@ -1,0 +1,34 @@
+{% extends "dashboard.html" %}
+{% load i18n %}
+{% block content %}
+    {% load staticfiles %}
+    <script src="{% static "/static/js/courses.js" %}"></script>
+
+    <div class="container-fluid">
+        <table data-id="course_table" id="course_table" class="table table-hover table-striped">
+            <thead>
+            <tr>
+                <th>{% trans "Course Name" %}</th>
+                <th>{% trans "Description" %}</th>
+                <th>{% trans "Trainers" %}</th>
+                <th>{% trans "Submission ID" %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for course in courses %}
+                <tr href="{{ course.url }}" class="clickableRow">
+                    <th>{{ course.name }}</th>
+                    <th>{{ course.description }}</th>
+                    <th>
+                        {% for t in course.trainer.all %}
+                            {{ t.user }} </br>
+                        {% endfor %}
+                    </th>
+                    <th>{{ course.no }}</th>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+

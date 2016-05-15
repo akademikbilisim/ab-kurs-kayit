@@ -81,6 +81,13 @@
                 <strong>{{ state }}</strong>
             </div>
         {% endif %}
+        {% if messages %}
+            <div class="notice">
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            </div>
+        {% endif %}
         <hr>
         {% block content %}{% endblock %}
     </div>
