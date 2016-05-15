@@ -15,6 +15,7 @@ kurs kayıt ve izleme araçları
 
 
 **Sanal Ortama Kurulum**
+
 Sanal ortam oluşturma ve aktifleştirme:
 
     virtualenv env
@@ -26,13 +27,15 @@ Gerekli paketlerin sanal ortama kurulması:
     pip install django-settings-context-processor
     pip install psycopg2
     pip install django-ckeditor
-    pip install django-country
+    pip install django-countries
     pip install pysimplesoap
     pip install django-longerusernameandemail
+    pip install Pillow
 
 
 
 **Yapılandırma**
+
 Uygulama yapılandırma dosyası abkayit/settings.py dosyasında yer almaktadır. Ancak veritabanı bağlantı bilgileri ile django *SECRET_KEY* bilgisi abkayit/abkayit.config.example dosyasındaki formata benzer bir formatta ayrı bir yapılandırma dosyasında tutulmalıdır. Bu ayrı yapılandırma dosyasındaki bilgileri kullanabilmek için içeriğini doğru bir şekilde doldurulmalıdır ve bu yapılandırma dosyasının sistemdeki yolunu abkayit/settings.py dosyasında *COMMON_CONFIG_FILE* değişkeninde belirtilmelidir.
 
 
