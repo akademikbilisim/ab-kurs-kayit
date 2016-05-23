@@ -35,7 +35,7 @@ TRAINESS_SCORE = [('0', 'Gelmedi'), ('1', 'Geldi')]
 GENDER = {'E': 'Erkek', 'K': 'Kadin', 'H': 'Hepsi'}
 TRANSPORTATION = {'0': 'Uçak', '1': 'Otobüs', '2': 'Araba', '3': 'Diğer'}
 
-COMMON_CONFIG_FILE = 'abkayit.config'
+COMMON_CONFIG_FILE = '/opt/kampyazilim.conf'
 
 from readconf import *
 
@@ -136,9 +136,10 @@ DATE_FORMAT = 'dMY'
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static/'),
-)
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+#STATICFILES_DIRS = (
+#    os.path.join(BASE_DIR, 'static/'),
+#)
 
 MEDIA_ROOT = 'ab-kurs-kayit/abkayit'
 MEDIA_URL = '/'
