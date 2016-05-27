@@ -4,9 +4,11 @@
 {% load i18n %}
 {% load template_filter %}
 
-<script src="{% static "/static/js/courses.js" %}"></script>
+<script src="{% static '/static/js/courses.js' %}"></script>
 
-<link href="{% static "/static/css/courses.css" %}" rel="stylesheet" type="text/css"></link>
+<link href="{% static '/static/css/courses.css' %}" rel="stylesheet" type="text/css">
+
+</link>
 <div class="container-fluid" style="margin-top:20px;">
   <div class="alert alert-info">{{ note }}</div>
   <form name="select-student{{course.id}}" method="POST">{% csrf_token %}

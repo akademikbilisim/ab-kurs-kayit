@@ -7,6 +7,9 @@ local_settings.py
 db.sqlite3
 media
 abkayit/venv/
+venv/
+abkayit/abkayit/settings.py
+abkayit/documents/
 ### Python ###
 # Byte-compiled / optimized / DLL files
 __pycache__/

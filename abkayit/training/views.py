@@ -87,7 +87,7 @@ def submitandregister(request):
             note = "Egitim oneriniz basari ile alindi."
         else:
             note = "Olusturulamadi"
-    return render_to_response("training/submitandregister.html",
+    return render_to_response("submitandregister.html",
                               {'site': site, 'pages': pages, 'note': note, 'form': form,
                                'curinstprofform': curinstprofform, 'forms': forms},
                               context_instance=RequestContext(request))
@@ -105,7 +105,7 @@ def show_course(request, course_id):
         data = dict()
         course = Course.objects.get(id=course_id)
         data['course'] = course
-        return render_to_response('training/course_detail.html', data)
+        return render_to_response('course_detail.html', data)
     except ObjectDoesNotExist:
         return HttpResponse("Kurs Bulunamadi")
 
@@ -182,9 +182,9 @@ def apply_to_course(request):
                         domain = domain.rstrip('/')
                     context['domain'] = domain
 
-                    send_email("training/messages/preference_saved_subject.html",
-                               "training/messages/preference_saved.html",
-                               "training/messages/preference_saved.text",
+                    send_email("messages/preference_saved_subject.html",
+                               "messages/preference_saved.html",
+                               "messages/preference_saved.text",
                                context,
                                EMAIL_FROM_ADDRESS,
                                [request.user.username])
@@ -206,7 +206,7 @@ def apply_to_course(request):
         if now < data['site'].application_start_date:
             data['note'] = _("You can choose courses in future")
             data['closed'] = "1"
-            return render_to_response('training/courserecord.html', data)
+            return render_to_response('courserecord.html', data)
         elif now > data['site'].application_end_date:
             data['note'] = _("The course choosing process is closed")
             data['closed'] = "1"
@@ -226,8 +226,8 @@ def apply_to_course(request):
                     logger.error("ek tercih icin sure bulunamadi", extra=d)
                 except Exception as e:
                     logger.error(e.message, extra=d)
-            return render_to_response('training/courserecord.html', data)
-        return render_to_response('training/courserecord.html', data)
+            return render_to_response('courserecord.html', data)
+        return render_to_response('courserecord.html', data)
     else:
         return redirect("testbeforeapply")
 
@@ -236,11 +236,12 @@ def apply_to_course(request):
 def control_panel(request):
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
     data = dict()
+    data['site'] = Site.objects.get(is_active=True)
     note = _("You can accept trainees")
     try:
-        uprofile = UserProfile.objects.get(user=request.user).is_student
+        uprofile = UserProfile.objects.get(user=request.user).is_instructor
         logger.info(uprofile, extra=d)
-        if not uprofile:
+        if uprofile:
             courses = Course.objects.filter(approved=True).filter(trainer__user=request.user)
             logger.info(courses, extra=d)
             if courses:
@@ -249,6 +250,7 @@ def control_panel(request):
                 now_for_approve = timezone.now()
                 logger.debug("now_for_approve : egitmen kendi kursunu listeliyor", extra=d)
                 logger.debug(now_for_approve, extra=d)
+
                 first_pref_approve_start = ApprovalDate.objects.get(site=data['site'], preference_order=1,
                                                                     for_instructor=True).start_date
                 first_pref_approve_end = ApprovalDate.objects.get(site=data['site'], preference_order=1,
@@ -426,7 +428,7 @@ def control_panel(request):
                             logger.error(e.message, extra=d)
             data['TRAINESS_SCORE'] = TRAINESS_SCORE
             data['note'] = note
-            return render_to_response("training/controlpanel.html", data, context_instance=RequestContext(request))
+            return render_to_response("controlpanel.html", data, context_instance=RequestContext(request))
         else:
             return redirect("applytocourse")
     except UserProfile.DoesNotExist:
@@ -438,7 +440,7 @@ def allcourseprefview(request):
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
     data = dict()
     data['datalist'] = TrainessCourseRecord.objects.all()
-    return render_to_response("training/allcourseprefs.html", data, context_instance=RequestContext(request))
+    return render_to_response("allcourseprefs.html", data, context_instance=RequestContext(request))
 
 
 @staff_member_required
@@ -503,7 +505,7 @@ def statistic(request):
                                           'Toplam Teyit Eden': total_preference_for_approved}
     except Exception as e:
         logger.error(e.message, extra=d)
-    return render_to_response("training/statistic.html", data)
+    return render_to_response("statistic.html", data)
 
 
 @login_required
@@ -673,7 +675,7 @@ def approve_course_preference(request):
         logger.error(e.message, extra=d)
         data['note'] = "Hata oluştu"
 
-    return render_to_response("training/confirm_course_preference.html", data)
+    return render_to_response("confirm_course_preference.html", data)
 
 
 @login_required
