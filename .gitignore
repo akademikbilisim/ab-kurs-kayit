@@ -13,3 +13,5 @@ abkayit/static/images/*
 abkayit/abkayit/settings.py
 abkayit/egitmenler
 abkayit/kurslar
+venv
+.idea
