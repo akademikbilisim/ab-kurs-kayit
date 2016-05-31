@@ -2,12 +2,12 @@
 
 import logging
 
-from django.core.mail import EmailMultiAlternatives
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
-log=logging.getLogger(__name__)
+log = logging.getLogger(__name__)
+
 
 def send_email(subject_template, content_template, content_text, data, from_email, to_addresses):
     d = {'clientip': '', 'user': ''}

@@ -1,5 +1,4 @@
 $(document).ready(function () {
-
     $("table input[type='checkbox']").change(function (e) {
         if ($(this).is(":checked")) {
             $(this).closest('tr').addClass("checked-trainee-course");

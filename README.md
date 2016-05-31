@@ -4,7 +4,7 @@ ab-kurs-kayit
 Akademik Bilişim Konferansı Öncesi kurs kayıt ve izleme araçları
 
 Gereksinimler:
-- Django 1.7
+- Django 1.8.13
 
 - Python 2.7
 
@@ -27,11 +27,3 @@ Gereksinimler:
 - pysimplesoap
 
 - longerusernameandemail
-
-Apache ile kullanmak icin gereksinimler:
-
--- apache2
-
--- mod_wsgi
-
--- mod_ssl

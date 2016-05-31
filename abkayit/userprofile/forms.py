@@ -3,9 +3,9 @@ import logging
 
 from django import forms
 
-from django.forms.models import ModelForm, ModelChoiceField
+from django.forms.models import ModelForm
 from django.contrib.auth.models import User
-from django.contrib.admin import widgets                                       
+
 from django.utils.translation import ugettext_lazy as _
 from django.forms.extras.widgets import SelectDateWidget
 from django.forms.widgets import TextInput
@@ -13,25 +13,29 @@ from django.forms.widgets import TextInput
 from django_countries.widgets import CountrySelectWidget
 
 from userprofile.models import *
-from userprofile.dynamicfields import DynmcFields 
+from userprofile.dynamicfields import DynmcFields
 from userprofile.userprofileops import UserProfileOPS
 
-log=logging.getLogger(__name__)
+log = logging.getLogger(__name__)
+
 
 class CreateUserForm(ModelForm):
     passwordre = forms.CharField(label=_("Confirm Password"),
-                                    max_length=30,
-                                    widget=forms.PasswordInput(attrs={'placeholder':_('Confirm Password'), 'class':'form-control'})) 
+                                 max_length=30,
+                                 widget=forms.PasswordInput(
+                                     attrs={'placeholder': _('Confirm Password'), 'class': 'form-control'}))
+
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'email', 'password', 'username']
         widgets = {
-                    'first_name': forms.TextInput(attrs={'placeholder':_('First Name'), 'class':'form-control'}),
-                    'last_name': forms.TextInput(attrs={'placeholder':_('Last Name'), 'class':'form-control'}),
-                    'email': forms.EmailInput(attrs={'placeholder':_('Email Address'), 'class':'form-control'}),
-                    'password': forms.PasswordInput(attrs={'placeholder':_('Password'), 'class':'form-control'}),
-                    'username': forms.HiddenInput()
-                  }
+            'first_name': forms.TextInput(attrs={'placeholder': _('First Name'), 'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'placeholder': _('Last Name'), 'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'placeholder': _('Email Address'), 'class': 'form-control'}),
+            'password': forms.PasswordInput(attrs={'placeholder': _('Password'), 'class': 'form-control'}),
+            'username': forms.HiddenInput()
+        }
+
     def __init__(self, *args, **kwargs):
         super(CreateUserForm, self).__init__(*args, **kwargs)
         for field in self.fields:
@@ -52,38 +56,42 @@ class CreateUserForm(ModelForm):
         if password != passwordre:
             raise forms.ValidationError(_("Your passwords do not match"))
         return passwordre
-    
+
     def clean_username(self):
         username = self.cleaned_data.get('email')
-        return username    
+        return username
+
 
 class UpdateUserForm(ModelForm):
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'email', 'username']
         widgets = {
-                    'first_name': forms.TextInput(attrs={'placeholder':_('First Name'), 'class':'form-control'}),
-                    'last_name': forms.TextInput(attrs={'placeholder':_('Last Name'), 'class':'form-control'}),
-                    'email': TextInput(attrs={'readonly':'readonly', 'class':'form-control'}),
-                    'username': forms.HiddenInput()
-                  }
+            'first_name': forms.TextInput(attrs={'placeholder': _('First Name'), 'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'placeholder': _('Last Name'), 'class': 'form-control'}),
+            'email': TextInput(attrs={'readonly': 'readonly', 'class': 'form-control'}),
+            'username': forms.HiddenInput()
+        }
+
     def __init__(self, *args, **kwargs):
         super(UpdateUserForm, self).__init__(*args, **kwargs)
         for field in self.fields:
             self.fields[field].required = False
         self.fields['username'].required = False
 
+
 class CreateInstForm(ModelForm):
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'email', 'password', 'username']
         widgets = {
-                    'first_name': forms.TextInput(attrs={'placeholder':_("First Name")}),
-                    'last_name': forms.TextInput(attrs={'placeholder':_("Last Name")}),
-                    'email': forms.EmailInput(attrs={'placeholder':_("Email")}),
-                    'password': forms.HiddenInput(),
-                    'username': forms.HiddenInput()
-                 }
+            'first_name': forms.TextInput(attrs={'placeholder': _("First Name")}),
+            'last_name': forms.TextInput(attrs={'placeholder': _("Last Name")}),
+            'email': forms.EmailInput(attrs={'placeholder': _("Email")}),
+            'password': forms.HiddenInput(),
+            'username': forms.HiddenInput()
+        }
+
     def __init__(self, *args, **kwargs):
         super(CreateInstForm, self).__init__(*args, **kwargs)
         for field in self.fields:
@@ -97,23 +105,27 @@ class CreateInstForm(ModelForm):
         if len(users) > 0:
             raise forms.ValidationError(_("This email address already exists in this system"))
         return email
+
     def clean_username(self):
         username = self.cleaned_data.get('email')
         return username
+
 
 class InstProfileForm(ModelForm):
     # TODO: egitimci icin form
     class Meta:
         model = UserProfile
         exclude = {}
-        fields = ['job', 'title', 'organization', 'country', 'is_instructor', 'is_student', 'is_speaker', 'is_participant', 'user']
+        fields = ['job', 'title', 'organization', 'country', 'is_instructor', 'is_student', 'is_speaker',
+                  'is_participant', 'user']
         widgets = {
-                    'is_instructor':forms.HiddenInput(),
-                    'is_student':forms.HiddenInput(),
-                    'is_speaker':forms.HiddenInput(),
-                    'is_participant':forms.HiddenInput(),
-                    'user':forms.HiddenInput(),
-                  }
+            'is_instructor': forms.HiddenInput(),
+            'is_student': forms.HiddenInput(),
+            'is_speaker': forms.HiddenInput(),
+            'is_participant': forms.HiddenInput(),
+            'user': forms.HiddenInput(),
+        }
+
     def __init__(self, *args, **kwargs):
         super(InstProfileForm, self).__init__(*args, **kwargs)
         for field in self.fields:
@@ -124,6 +136,7 @@ class InstProfileForm(ModelForm):
         self.fields['is_participant'].required = False
         self.fields['user'].required = False
 
+
 class StuProfileForm(ModelForm):
     class Meta:
         dyncf = DynmcFields()
@@ -131,38 +144,41 @@ class StuProfileForm(ModelForm):
         exclude = {'score'}
         # fields=['name','surname','username','email','password','password',]
         widgets = {
-                    'tckimlikno' : forms.NumberInput(attrs={'placeholder':_('Turkish ID No'), 'class':'form-control'}),
-                    'ykimlikno' : forms.NumberInput(attrs={'placeholder':_('Foreigner ID No'), 'class':'form-control'}),
-                    'gender' : forms.Select(attrs={'placeholder':_('Gender'), 'class':'form-control'}),
-                    'mobilephonenumber' : forms.TextInput(attrs={'placeholder':_('Mobile Phone Number'), 'class':'form-control'}),
-                    'address' : forms.Textarea(attrs={'placeholder':_('Address'), 'class':'form-control'}),
-                    'job' : forms.TextInput(attrs={'placeholder':_('Job'), 'class':'form-control'}),
-                    'city' : forms.TextInput(attrs={'placeholder':_('City'), 'class':'form-control'}),
-                    'country' : CountrySelectWidget(attrs={'placeholder':_('Country')}),
-                    'title' : forms.TextInput(attrs={'placeholder':_('Title'), 'class':'form-control'}),
-                    'organization' : forms.TextInput(attrs={'placeholder':_('Organization'), 'class':'form-control'}),
-                    'university' : forms.Select(attrs={'placeholder':_('University'), 'class':'form-control'}),
-                    'department' : forms.TextInput(attrs={'placeholder':_('Department'), 'class':'form-control'}),
-                    'additional_information' : forms.Textarea(attrs={'placeholder':_('Additional Information'), 'class':'form-control'}),
-                    'is_instructor':forms.HiddenInput(),
-                    'is_student':forms.HiddenInput(),
-                    'is_speaker':forms.HiddenInput(),
-                    'is_participant':forms.HiddenInput(),
-                    'userpassedtest':forms.HiddenInput(),
-                    'user':forms.HiddenInput(),
-                    'birthdate': SelectDateWidget(years=dyncf.BirthDateYears),
-                 }
+            'tckimlikno': forms.NumberInput(attrs={'placeholder': _('Turkish ID No'), 'class': 'form-control'}),
+            'ykimlikno': forms.NumberInput(attrs={'placeholder': _('Foreigner ID No'), 'class': 'form-control'}),
+            'gender': forms.Select(attrs={'placeholder': _('Gender'), 'class': 'form-control'}),
+            'mobilephonenumber': forms.TextInput(
+                attrs={'placeholder': _('Mobile Phone Number'), 'class': 'form-control'}),
+            'address': forms.Textarea(attrs={'placeholder': _('Address'), 'class': 'form-control'}),
+            'job': forms.TextInput(attrs={'placeholder': _('Job'), 'class': 'form-control'}),
+            'city': forms.TextInput(attrs={'placeholder': _('City'), 'class': 'form-control'}),
+            'country': CountrySelectWidget(attrs={'placeholder': _('Country')}),
+            'title': forms.TextInput(attrs={'placeholder': _('Title'), 'class': 'form-control'}),
+            'organization': forms.TextInput(attrs={'placeholder': _('Organization'), 'class': 'form-control'}),
+            'university': forms.Select(attrs={'placeholder': _('University'), 'class': 'form-control'}),
+            'department': forms.TextInput(attrs={'placeholder': _('Department'), 'class': 'form-control'}),
+            'additional_information': forms.Textarea(
+                attrs={'placeholder': _('Additional Information'), 'class': 'form-control'}),
+            'is_instructor': forms.HiddenInput(),
+            'is_student': forms.HiddenInput(),
+            'is_speaker': forms.HiddenInput(),
+            'is_participant': forms.HiddenInput(),
+            'userpassedtest': forms.HiddenInput(),
+            'user': forms.HiddenInput(),
+            'birthdate': SelectDateWidget(years=dyncf.BirthDateYears),
+        }
         help_texts = {
             'organization': 'Kurum Bilgisi; okuyorsanız okuduğunuz kurum, çalışıyorsanız çalıştığınız kurum bilgisidir',
-        } 
-    def __init__(self,user=None, *args, **kwargs):
-        #User.objects.get(email=request.user)
-        self.ruser=kwargs.pop('ruser', None)
+        }
+
+    def __init__(self, user=None, *args, **kwargs):
+        # User.objects.get(email=request.user)
+        self.ruser = kwargs.pop('ruser', None)
         super(StuProfileForm, self).__init__(*args, **kwargs)
         for field in self.fields:
             self.fields[field].required = True
-        self.fields['tckimlikno'].required=False
-        self.fields['ykimlikno'].required=False
+        self.fields['tckimlikno'].required = False
+        self.fields['ykimlikno'].required = False
         self.fields['is_instructor'].required = False
         self.fields['is_student'].required = False
         self.fields['is_speaker'].required = False
@@ -173,9 +189,10 @@ class StuProfileForm(ModelForm):
         self.fields['additional_information'].required = False
         if user:
             try:
-                self.fields['user'].initial=user
+                self.fields['user'].initial = user
             except:
-                self.fields['user']='1'
+                self.fields['user'] = '1'
+
     def clean(self):
         cleaned_data = super(StuProfileForm, self).clean()
         ruser = self.ruser
@@ -190,7 +207,8 @@ class StuProfileForm(ModelForm):
             elif not cleaned_data['ykimlikno'] and cleaned_data['country'] != 'TR':
                 raise forms.ValidationError(_("Foreigner identifier no can not be blank for non Turkish citizens"))
             elif cleaned_data['tckimlikno'] and cleaned_data['country'] == 'TR':
-                tckisvalid=UserProfileOPS.validateTCKimlikNo(cleaned_data['tckimlikno'].rstrip().lstrip(), first_name, last_name, byear)
+                tckisvalid = UserProfileOPS.validateTCKimlikNo(cleaned_data['tckimlikno'].rstrip().lstrip(), first_name,
+                                                               last_name, byear)
                 if tckisvalid == -1:
                     raise forms.ValidationError(_("Error occured during verify your TC identifier no"))
                 elif not tckisvalid:
@@ -201,14 +219,18 @@ class StuProfileForm(ModelForm):
             raise forms.ValidationError(_("User not found"))
         return cleaned_data
 
+
 class ChangePasswordForm(ModelForm):
     passwordre = forms.CharField(label=_("Confirm Password"),
-                                    max_length=30,
-                                    widget=forms.PasswordInput(attrs={'placeholder':_('Confirm Password'), 'class':'form-control'})) 
+                                 max_length=30,
+                                 widget=forms.PasswordInput(
+                                     attrs={'placeholder': _('Confirm Password'), 'class': 'form-control'}))
+
     class Meta:
         model = User
         fields = ['password']
-        widgets = {'password': forms.PasswordInput(attrs={'placeholder':_('Password'), 'class':'form-control'})}
+        widgets = {'password': forms.PasswordInput(attrs={'placeholder': _('Password'), 'class': 'form-control'})}
+
     def __init__(self, *args, **kwargs):
         super(ChangePasswordForm, self).__init__(*args, **kwargs)
         for field in self.fields:
@@ -222,22 +244,27 @@ class ChangePasswordForm(ModelForm):
             raise forms.ValidationError(_("Your passwords do not match"))
         return passwordre
 
+
 class InstructorInformationForm(ModelForm):
     class Meta:
         model = InstructorInformation
         fields = ['transportation', 'additional_information', 'arrival_date', 'departure_date']
         widgets = {
-                    'transportation' : forms.Select(attrs={'placeholder':_('Transportation'), 'class':'form-control'}),
-                    'additional_information': forms.TextInput(attrs={'placeholder':_('Additional Information'), 'class':'form-control'}),
-                    'arrival_date': SelectDateWidget(attrs={'placeholder':_('Arrival Date')}),
-                    'departure_date': SelectDateWidget(attrs={'placeholder':_('Departure Date')}),
-                  }
+            'transportation': forms.Select(attrs={'placeholder': _('Transportation'), 'class': 'form-control'}),
+            'additional_information': forms.TextInput(
+                attrs={'placeholder': _('Additional Information'), 'class': 'form-control'}),
+            'arrival_date': SelectDateWidget(attrs={'placeholder': _('Arrival Date')}),
+            'departure_date': SelectDateWidget(attrs={'placeholder': _('Departure Date')}),
+        }
         help_texts = {
             'transportation': _('Select your transportation to go Akademik Bilisim'),
-            'additional_information' : _('If you want to add additional information, please enter to here'),
-            'arrival_date' : _('Arrival Date (Example: If your first day is 1st February(for accommodation), please select 1st February'),
-            'departure_date': _('Departure Date (Example: If you will be stay at 3rd february(for accommodation), please select 3rd February)')
-        } 
+            'additional_information': _('If you want to add additional information, please enter to here'),
+            'arrival_date': _(
+                'Arrival Date (Example: If your first day is 1st February(for accommodation), please select 1st February'),
+            'departure_date': _(
+                'Departure Date (Example: If you will be stay at 3rd february(for accommodation), please select 3rd February)')
+        }
+
     def __init__(self, *args, **kwargs):
         super(InstructorInformationForm, self).__init__(*args, **kwargs)
         for field in self.fields:

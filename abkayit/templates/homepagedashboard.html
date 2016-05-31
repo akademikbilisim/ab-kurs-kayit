@@ -11,53 +11,53 @@
     <title>{% block title %}{{ site.name }}{% endblock %}</title>
   
     <!-- Bootstrap Core CSS -->
-    <link href="{% static "/static/theme/bower_components/bootstrap/dist/css/bootstrap.min.css" %}" rel="stylesheet">
+    <link href="{% static '/static/theme/bower_components/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
   
     <!-- MetisMenu CSS -->
-    <link href="{% static "/static/theme/bower_components/metisMenu/dist/metisMenu.min.css" %}" rel="stylesheet">
+    <link href="{% static '/static/theme/bower_components/metisMenu/dist/metisMenu.min.css' %}" rel="stylesheet">
   
     <!-- Timeline CSS -->
-    <link href="{% static "/static/theme/dist/css/timeline.css" %}" rel="stylesheet">
+    <link href="{% static '/static/theme/dist/css/timeline.css' %}" rel="stylesheet">
   
     <!-- Custom CSS -->
-    <link href="{% static "/static/theme/dist/css/sb-admin-2.css" %}" rel="stylesheet">
+    <link href="{% static '/static/theme/dist/css/sb-admin-2.css' %}" rel="stylesheet">
   
     <!-- Morris Charts CSS -->
-    <link href="{% static "/static/theme/bower_components/morrisjs/morris.css" %}" rel="stylesheet">
+    <link href="{% static '/static/theme/bower_components/morrisjs/morris.css' %}" rel="stylesheet">
   
     <!-- Custom Fonts -->
-    <link href="{% static "/static/theme/bower_components/font-awesome/css/font-awesome.min.css" %}" rel="stylesheet" type="text/css">
+    <link href="{% static '/static/theme/bower_components/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
     
   
-    <link href="{% static "/static/css/dataTables.min.css" %}" rel="stylesheet" type="text/css">
-    <link href="{% static "/static/css/buttons.dataTables.min.css" %}" rel="stylesheet" type="text/css">
-    <link href="{% static "/static/css/dataTables.tableTools.css" %}" rel="stylesheet" type="text/css">
+    <link href="{% static '/static/css/dataTables.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static '/static/css/buttons.dataTables.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static '/static/css/dataTables.tableTools.css' %}" rel="stylesheet" type="text/css">
     
-	<link href="{% static "/static/css/abkayit-main.css" %}" rel="stylesheet" type="text/css">
+	<link href="{% static '/static/css/abkayit-main.css' %}" rel="stylesheet" type="text/css">
   
   
   
     <!-- jQuery -->
-    <script src="{% static "/static/theme/bower_components/jquery/dist/jquery.min.js" %}"></script>
+    <script src="{% static '/static/theme/bower_components/jquery/dist/jquery.min.js' %}"></script>
   
     <!-- Bootstrap Core JavaScript -->
-    <script src="{% static "/static/theme/bower_components/bootstrap/dist/js/bootstrap.min.js" %}"></script>
+    <script src="{% static '/static/theme/bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
   
     <!-- Metis Menu Plugin JavaScript -->
-    <script src="{% static "/static/theme/bower_components/metisMenu/dist/metisMenu.min.js" %}"></script>
+    <script src="{% static '/static/theme/bower_components/metisMenu/dist/metisMenu.min.js' %}"></script>
     
-	<script src="{% static "/static/js/bootbox.min.js" %}"></script>
-  
+	<script src="{% static '/static/js/bootbox.min.js' %}"></script>
+
     <!-- Morris Charts JavaScript -->
-    <script src="{% static "/static/theme/bower_components/raphael/raphael-min.js" %}"></script>
-    <script src="{% static "/static/theme/bower_components/morrisjs/morris.min.js" %}"></script>
-    <script src="{% static "/static/theme/js/morris-data.js" %}"></script>
-    <script src="{% static "/static/js/jquery.js" %}"></script>
-    <script src="{% static "/static/js/dataTables.min.js" %}"></script>
-    <script src="{% static "/static/js/dataTables.buttons.min.js" %}"></script>
-    <script src="{% static "/static/js/buttons.bootstrap.min.js" %}"></script>
-    <script src="{% static "/static/js/dataTables.tableTools.js" %}"></script>
-    <script src="{% static "/static/js/jszip.js" %}"></script>
+    <script src="{% static '/static/theme/bower_components/raphael/raphael-min.js' %}"></script>
+    <script src="{% static '/static/theme/bower_components/morrisjs/morris.min.js' %}"></script>
+    <script src="{% static '/static/theme/js/morris-data.js' %}"></script>
+    <script src="{% static '/static/js/jquery.js' %}"></script>
+    <script src="{% static '/static/js/dataTables.min.js' %}"></script>
+    <script src="{% static '/static/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static '/static/js/buttons.bootstrap.min.js' %}"></script>
+    <script src="{% static '/static/js/dataTables.tableTools.js' %}"></script>
+    <script src="{% static '/static/js/jszip.js' %}"></script>
 
 
     <script type="text/javascript" language="javascript" src="//cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js">
@@ -69,8 +69,8 @@
     <script type="text/javascript" language="javascript" src="//cdn.datatables.net/buttons/1.1.0/js/buttons.html5.min.js">
     </script>
 
-    
-    <script src="{% static "/static/js/main.js" %}"></script>
+
+    <script src="{% static '/static/js/main.js' %}"></script>
     
     {% block head %}{% endblock %}
   </head>
@@ -104,22 +104,22 @@
    			  <li class="divider"></li>
 			  </hr>
               <li>
-                <a href="{%url "createprofile"%}"><i class="fa fa-user fa-fw"></i> {% trans "User Profile" %}</a>
+                <a href="{%url 'createprofile'%}"><i class="fa fa-user fa-fw"></i> {% trans "User Profile" %}</a>
               </li>
               {% if user.userprofile %}
                 {% if user.userprofile.is_instructor %}
                   <li>
-                    <a href="{%url "instructor_information" %}"><i class="fa-info-circle fa-fw"></i> {% trans "Instructor Information" %}</a>
+                    <a href="{%url 'instructor_information' %}"><i class="fa-info-circle fa-fw"></i> {% trans "Instructor Information" %}</a>
                   </li>
                 {% endif %}
               {% endif %}
               <li>
-                <a href="{%url "account_reset_password" %}"><i class="fa fa-key fa-fw"></i> {% trans "Change Password" %}</a>
+                <a href="{%url 'account_reset_password' %}"><i class="fa fa-key fa-fw"></i> {% trans "Change Password" %}</a>
               </li>
 			  <li class="divider"></li>
               <li>
-                <a href="{% url "logout" %}">
-                <i class="fa fa-sign-out fa-fw"></i> {% trans "Log out"%}</a>
+                <a href="{% url 'logout' %}">
+                <i class="fa fa-sign-out fa-fw"></i> {% trans 'Log out'%}</a>
               </li>
             </ul>
           </li>
@@ -132,11 +132,11 @@
           <form class="form-inline" action="{% url 'index' %}" method="POST" style="margin-top:10px; margin-right:10px;">
             <div class="form-group">
               <label class="sr-only">{% trans "Email adress" %}</label>
-              <input name="username" class="form-control" placeholder="{% trans "Email" %}">
+              <input name="username" class="form-control" placeholder="{% trans 'Email' %}">
             </div>
             <div class="form-group">
               <label class="sr-only">{% trans "Password" %}</label>
-              <input type="password" name="password" class="form-control" placeholder="{% trans "Password" %}">
+              <input type="password" name="password" class="form-control" placeholder="{% trans 'Password' %}">
             </div>
             <div class="form-group">
               <button type="submit" id="btn-login" name="login" class="btn col-md-12 col-sm-12 col-xs-12">{% trans "Log in" %}</button>

@@ -5,7 +5,7 @@
 {% load template_filter %}
 
 
-<script src="{% static "/static/js/courses.js" %}"></script>
+<script src="{% static '/static/js/courses.js' %}"></script>
 
 <script type="text/javascript">
 
@@ -127,29 +127,29 @@ $(document).ready(function() {
         }
 		container.find("[data-id='container']").last().find('select').val("{{course_record.course.id}}")
   	{% endfor %}
-  if ({{closed}} == 1){
+  {% if closed %}
     $("#field-container-form select").each(function(){$(this).attr("disabled","disabled")});
     $("#field-container-form button").each(function(){$(this).attr("disabled","disabled")});
     if($("#field-container-form select").length == 0){
         $("#field-container-form").hide();
     }
-  }
-  else{
+  {% else %}
     $("#field-container-form select").each(function(){$(this).removeAttr("disabled")});
     $("#field-container-form button").each(function(){$(this).removeAttr("disabled")});
     $("#field-container-form").show();
-  }
-  if({{additional1_pref_closed}} == 1){
+  {% endif %}
+  {% if additional1_pref_closed %}
     $("#field-container-for-addition-form select").each(function(){$(this).attr("disabled","disabled")});
     $("#field-container-for-addition-form button").each(function(){$(this).attr("disabled","disabled")});
     if($("#field-container-addition-form select").length == 0){
+      $("#field-container-for-addition-form").hide();
     }
-  }
-  else{
+
+  {% else %}
     $("#field-container-for-addition-form select").each(function(){$(this).removeAttr("disabled")});
     $("#field-container-for-addition-form button").each(function(){$(this).removeAttr("disabled")});
     $("#field-container-for-addition-form").show();
-  }
+  {%endif %}
  
   $("#closed-courses").html("");
   $("#open-courses").html("");

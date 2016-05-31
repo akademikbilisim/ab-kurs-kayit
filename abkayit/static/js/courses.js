@@ -50,6 +50,7 @@ $(document).ready(function(){
                         ],
     });
     $('[data-id="course_table_control_panel"]').each(function(){
+
        var dTable = $(this).dataTable({
             "dom": 'Bfrtip',
             "language": {
@@ -117,6 +118,7 @@ $(document).ready(function(){
          1 }
           else
           {
+              console.log("detail is clicked")
               dTable.fnOpen( nTr, fnFormatDetails(dTable, nTr), 'details' );
               dTable.find("#save-score").click(function(){
                   var score = $(this).closest(".score").find("select").val();
