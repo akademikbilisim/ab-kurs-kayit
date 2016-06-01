@@ -78,6 +78,16 @@ def get_approve_start_end_dates_for_inst(site, d):
     return dates
 
 
+def get_approve_start_end_dates_for_tra(site, d):
+    """
+        :param site: aktif etkinliğin sitesi
+        :param d: log icin gerekli detaylar
+        :return: kursiyerler için tercih onaylama tarihlerinin start_date'i en yakin olan ile end_date'i en son olani doner.
+    """
+    dates = ApprovalDate.objects.filter(site=site, for_trainess=True)
+    return dates.order_by("start_date").first(), dates.latest("end_date")
+
+
 def get_additional_pref_start_end_dates_for_trainess(site, d):
     """
 
@@ -125,7 +135,7 @@ def get_trainess_by_course(course, d):
         #        'trainess'))
         trainess[i] = TrainessCourseRecord.objects.filter(course=course.pk, preference_order=i).prefetch_related(
             'course')
-    for i in range(1, ADDITION_PREFERENCE_LIMIT+1):
+    for i in range(1, ADDITION_PREFERENCE_LIMIT + 1):
         # trainess[course][-i] = TrainessCourseRecord.objects.filter(course=course.pk, preference_order=-i).exclude(
         #    trainess__in=TrainessCourseRecord.objects.filter(~Q(course=course.pk), trainess_approved=True).values_list(
         #        'trainess'))
