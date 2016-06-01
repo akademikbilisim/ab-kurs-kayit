@@ -30,15 +30,15 @@ function addPreference(preference_limit, target, form){
 	{% for course in courses %}
 		if(selectedCourses.indexOf("{{course.id}}")!=-1){
             {% if course.application_is_open%}
-     			select.append("<option value='"+ "{{course.id}}"+ "' hidden >"+"{{course.name}}"+"</option>");
+     			select.append("<option value='{{course.id}}' hidden >{{course.name}}</option>");
             {% else %}
-     			select.append("<option value='"+ "{{course.id}}"+ "' hidden disabled>"+"{{course.name}}"+"</option>");
+     			select.append("<option value='{{course.id}}' hidden disabled>{{course.name}}</option>");
             {% endif %}
 		}else{
             {% if course.application_is_open%}
-  			    select.append("<option value='"+ "{{course.id}}"+ "' >"+"{{course.name}}"+"</option>");
+  			    select.append("<option value='{{course.id}}' >{{course.name}}</option>");
             {% else %}
-  			    select.append("<option value='"+ "{{course.id}}"+ "' disabled>"+"{{course.name}}"+"</option>");
+  			    select.append("<option value='{{course.id}}' disabled>{{course.name}}</option>");
             {% endif %}
 		}
   	{% endfor %}
@@ -155,30 +155,34 @@ $(document).ready(function() {
   $("#open-courses").html("");
   $("#closed-courses").hide();
   $("#open-courses").hide();
-  var check=false;
-  var open_check=false;
-  var closedCourses = "<strong>Başvurusu Kapanan Kurslar</strong>";
-  var openCourses = "<strong>Başvurusu Alınacak Kurslar</strong>";
-  closedCourses += "<ul>";
-  openCourses += "<ul>";
-  {% for course in courses %}
-    {% if not course.application_is_open and closed == "1"%}
-      check=true;
-      closedCourses += "<li>" + "{{course.name}}"+ "</li>";
-    {% else %}
-      open_check=true;
-      openCourses += "<li>" + "{{course.name}}"+ "</li>";
-    {% endif %}
-  {% endfor %}
-  closedCourses += "<ul>";
-if(check){
-    $("#closed-courses").html(closedCourses);
-    $("#closed-courses").show(); 
-  }
-if(open_check){
-    $("#open-courses").html(openCourses);
-    $("#open-courses").show(); 
-  }
+
+  {% if closed%}
+      var closedCourses = "<strong>Başvurusu Kapanan Kurslar</strong><ul>";
+      var openCourses = "<strong>Başvurularınız:</strong><ul>";
+      {% for course in courses %}
+        closedCourses += "<li>{{course.name}}</li>";
+      {% endfor %}
+      console.log("{{course_records}}")
+      {% for record in course_records%}
+        openCourses += "<li>{{record.course.name}}</li>";
+      {% empty %}
+        openCourses += "<li>Başvurunuz bulunmamaktadır</li>"
+      {% endfor %}
+      closedCourses += "</ul>";
+      openCourses += "</ul>";
+      $("#closed-courses").html(closedCourses);
+      $("#closed-courses").show();
+  {% else %}
+      var openCourses = "<strong>Başvurusu Alınacak Kurslar</strong><ul>";
+      {% for course in courses %}
+        openCourses += "<li>{{course.name}}</li>";
+      {% endfor %}
+      openCourses += "</ul>";
+
+  {% endif %}
+  $("#open-courses").html(openCourses);
+  $("#open-courses").show();
+
 });
 
 
@@ -201,11 +205,7 @@ if(open_check){
   <div class="container-fluid">
 
     <div class="alert alert-info">{{ note }}</div>
-
-<button type="button" class="btn btn-danger" id="cancel-all" style="display:none;">Tüm Başvurularımı İptal Et</button>
-
-
-
+    <button type="button" class="btn btn-danger" id="cancel-all" style="display:none;">Tüm Başvurularımı İptal Et</button>
     <div data-id="container" id="open-courses" class="col-xs-8 col-xs-offset-3" style="margin-top:10px;display:none;">
     </div>
 <hr>
@@ -267,6 +267,7 @@ if(open_check){
 </br>
     <div data-id="container" id="closed-courses" class="col-xs-8 col-xs-offset-3" style="margin-top:10px;display:none;">
     </div>
+
 
 </div>
 

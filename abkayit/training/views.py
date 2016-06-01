@@ -106,7 +106,9 @@ def apply_to_course(request):
             data['note'] = "Tercih dönemi %s tarihinde açılacaktır" % data['site'].application_start_date
         elif datetime.date(now) > data['site'].application_end_date:
             log.info("after application end date", extra=d)
-            data['note'] = "Tercih dönemi %s tarihinde kapanmıştır" % data['site'].application_end_date
+            data[
+                'note'] = "Tercih dönemi %s tarihinde kapanmıştır. Başvuru durumunuzu İşlemler> Başvuru Durum/Onayla " \
+                          "adımından görüntüleyebilirsiniz " % data['site'].application_end_date
             """
              Bu kod parcasi ek tercihler icindir. Eger kullanıcının kabul ettigi ve edildigi bir kurs yoksa ve
              ek tercih aktifse bu kod blogu calisir.
