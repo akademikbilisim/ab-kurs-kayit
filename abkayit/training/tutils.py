@@ -115,7 +115,7 @@ def get_approved_trainess(course, d):
     for i in range(1, PREFERENCE_LIMIT + 1):
         trainess[i] = TrainessCourseRecord.objects.filter(course=course.pk, preference_order=i, approved=True,
                                                           trainess_approved=True).prefetch_related('course')
-    for i in range(1, ADDITION_PREFERENCE_LIMIT):
+    for i in range(1, ADDITION_PREFERENCE_LIMIT + 1):
         trainess[-i] = TrainessCourseRecord.objects.filter(course=course.pk, preference_order=-i, approved=True,
                                                            trainess_approved=True).prefetch_related('course')
     return trainess

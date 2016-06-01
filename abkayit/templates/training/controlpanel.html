@@ -5,9 +5,8 @@
 {% load template_filter %}
 {% load trainingtags %}
 
-<script src="{% static "/static/js/courses.js" %}"></script>
-
-<link href="{% static "/static/css/courses.css" %}" rel="stylesheet" type="text/css"></link>
+<script src="{% static '/static/js/courses.js' %}"></script>
+<link href="{% static '/static/css/courses.css' %}" rel="stylesheet" type="text/css"/>
 <div class="container-fluid" style="margin-top:20px;">
   <div class="alert alert-info">{{ note }}</div>
   <form name="select-student{{course.id}}" method="POST">{% csrf_token %}
@@ -45,24 +44,25 @@
           <table data-id="course_table_control_panel" id="course_table{{course.id}}{{pref}}" class="table table-hover table-striped" >
             <thead>
               <tr>
-                <th>#</th>
-                <th>Basvuru No</th>
-                <th>İsim</th>
-                <th>Soyisim</th>
-                <th>E-posta</th>
-                <th>Sehir</th>
-                <th>
-                    {% isdategtnow_head dates pref %}
-                </th>
-                <th>Ünvan</th>
-                <th>Kurum</th>
-                <th>Üniversite</th>
-                <th>Bölüm</th>
-                <th>Ek Bilgiler</th>
-                <th>Seçilen Kurslar</th>
-                <th>Onaylanma Bilgileri</th>
-                <th>Not</th>
-                <th>Değerlendirme</th>
+                  <th>#</th>
+                  <th>Basvuru No</th>
+                  <th>İsim</th>
+                  <th>Soyisim</th>
+                  <th>E-posta</th>
+                  <th>Sehir</th>
+                  <th>
+                      {% isdategtnow_head dates pref %}
+                  </th>
+                  <th>Ünvan</th>
+                  <th>Kurum</th>
+                  <th>Üniversite</th>
+                  <th>Bölüm</th>
+                  <th>Ek Bilgiler</th>
+                  <th>Seçilen Kurslar</th>
+                  <th>Onaylanma Bilgileri</th>
+                  <th>Etkinlik Geçmişi</th>
+                  <th>Not</th>
+                  <th>Değerlendirme</th>
               </tr>
             </thead>
             <tbody>
@@ -114,34 +114,38 @@
                       {% endif%}
                     {%endfor%}
                   </td>
+                    <td>
+                        {% for journal in t.trainess.note_to_profile.all %}
+                        <section>
+                            <p><b>Etkinlik:</b> {{ journal.site.name }} - {{ journal.site.year }}</p>
+                            <ul>
+                                <li> <b>Notu ekleyen:</b> {{ journal.note_from_profile.user.first_name }} {{ journal.note_from_profile.user.last_name }} {{ journal.note_from_profile.user.username }}</li>
+                                <li> <b>Not:</b><p>{{ journal.note}}</p></li>
+                                <li> <b>Durum:</b><p>{% if t.trainess.score  %}Etkinlige katildi{% else %}Katilmadi{% endif %}</p></li>
+                            </ul>
+                        </section>
+                        {% empty %}
+                        <p>Bu kullanıcı ile ilgili not girilmemiş</p>
+                        {% endfor%}
+                    </td>
                   <td>
-                      {% if note_edit_closed == "0" %}
-                          <div class="col-md-1">Not</div>
-                          <div class="col-md-6">
-                              <input type="text" class="form-control input-note" value="{{ t.trainess.note_to_profile.first.note }}"/>
-                              <input type="hidden" class="input-username" value="{{ t.trainess.user.username }}"/>
-                          </div>
-                      {% endif%}
+                     <div class="col-md-1">Not</div>
+                     <div class="col-md-6">
+                         <input type="text" class="form-control input-note" value=""/>
+                         <input type="hidden" class="input-username" value="{{ t.trainess.user.username }}"/>
+                     </div>
                   <td>
-                      {% if note_edit_closed == "0" %}
-                          <div class="col-md-1">Durum</div>
-                          <div class="col-md-6">
-                          <select class="form-control select-score">
-                              {%for t_score in  TRAINESS_SCORE %}
-                                  {%if t.trainess.score == t_score.0%}
-                                      <option selected value="{{t_score.0}}">{{t_score.1}}</option>
-                                  {% else%}
-                                      <option value="{{t_score.0}}">{{t_score.1}}</option>
-                                  {% endif%}
-                              {%endfor%}
-                           </select>
-                          </div>
-                      {% endif%}
+                     <div class="col-md-1">Durum</div>
+                     <div class="col-md-6">
+                     <select class="form-control select-score">
+                         {%for t_score in  TRAINESS_SCORE %}
+                             <option value="{{t_score.0}}">{{t_score.1}}</option>
+                         {%endfor%}
+                      </select>
+                     </div>
                   </td>
                   <td>
-                      {% if note_edit_closed == "0" %}
-                          <div class="col-md-2"><input id="save-score" type="button" value="Kaydet"/></div>
-                      {% endif%}
+                      <div class="col-md-2"><input id="save-score" type="button" value="Kaydet"/></div>
                   </td>
                 </tr>
                 {% empty %}

@@ -384,8 +384,7 @@ def save_note(request):
                 userprofile = UserProfile.objects.get(user__username=trainess_username)
                 userprofile.score = trainess_score
                 userprofile.save()
-                trainess_note, created = TrainessNote.objects.get_or_create(note_to_profile=userprofile,
-                                                                            site=data['site'])
+                trainess_note = TrainessNote.objects.create(note_to_profile=userprofile, site=data['site'])
                 trainess_note.note = t_note
                 trainess_note.note_from_profile = request.user.userprofile
                 trainess_note.note_date = datetime.now()

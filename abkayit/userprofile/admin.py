@@ -2,7 +2,7 @@
 
 from django.contrib import admin
 from userprofile.models import InstructorInformation, SubscribeNotice, UserProfile, Accommodation, UserAccomodationPref, \
-    UserVerification
+    UserVerification, TrainessNote
 
 
 # Register your models here.
@@ -42,3 +42,9 @@ class InstructorInformationAdmin(admin.ModelAdmin):
     list_display = ['id', 'user', 'transportation', 'arrival_date', 'departure_date']
     list_filter = ('transportation', 'arrival_date', 'departure_date')
     search_fields = ('user__user__username',)
+
+@admin.register(TrainessNote)
+class TrainessNoteAdmin(admin.ModelAdmin):
+    list_display = ['note_to_profile', 'note_from_profile', 'site', 'note']
+    search_fields = ('note_from_profile__user__username', 'note_to_profile__user__username')
+
