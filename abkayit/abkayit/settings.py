@@ -64,6 +64,12 @@ CKEDITOR_JQUERY_URL = '//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.j
    TC Kimlik numarasını dogrularken kullanilan web servis
 '''
 TCKIMLIK_SORGULAMA_WS = "https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL"
+'''
+   REQUIRE_TRAINESS_APPROVE: Akademik Bilisimde katilimci kursa kabul edildikten sonra yeniden katılıp katılmayacağına
+                            dair teyit alıyoruz. (True)
+                            Kamp'ta öyle bir durum yok.(False)
+'''
+REQUIRE_TRAINESS_APPROVE = False
 
 MEDIA_ROOT = os.path.join(BASE_DIR, '/')
 
