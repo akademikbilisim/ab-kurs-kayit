@@ -24,6 +24,8 @@ class Site(models.Model):
     home_url = models.CharField(verbose_name=_("Home Url"), max_length="128", null=True)
     application_start_date = models.DateField(verbose_name=_("Course Application Start Date"), default=datetime.now)
     application_end_date = models.DateField(verbose_name=_("Course Application End Date"), default=datetime.now)
+    event_start_date = models.DateField(verbose_name=_("Event Start Date"), default=datetime.now)
+    event_end_date = models.DateField(verbose_name=_("Event End Date"), default=datetime.now)
 
     def __unicode__(self):
         return self.name

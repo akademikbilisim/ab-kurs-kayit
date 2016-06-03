@@ -1,6 +1,7 @@
 #!-*- coding:utf-8 -*-
 
 import logging
+from datetime import datetime, timedelta
 
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
@@ -11,6 +12,7 @@ from abkayit.settings import EMAIL_FROM_ADDRESS, PREFERENCE_LIMIT, ADDITION_PREF
 from abkayit.models import ApprovalDate
 
 from training.models import Course, TrainessCourseRecord
+from training.forms import ParticipationForm
 
 log = logging.getLogger(__name__)
 
@@ -187,3 +189,23 @@ def save_course_prefferences(userprofile, course_prefs, d):
     else:
         res['message'] = "En fazla " + PREFERENCE_LIMIT + " tane tercih hakkına sahipsiniz"
     return res
+
+
+def daterange(start_date, end_date):
+    """
+    Verilen iki tarih aralığında bir 'iterable' nesne oluşturur. for ... in yapisinin icerisinde kullanilmak uzere
+    :param start_date: baslangic tarihi
+    :param end_date: bitis tarihi
+    """
+    for n in range(int((end_date - start_date).days)):
+        yield start_date + timedelta(n)
+
+
+def getparticipationforms(site, courserecord):
+    now = datetime.date(datetime.now())
+    rows = []
+    if site.event_start_date <= now <= site.event_end_date:
+        for date in daterange(site.event_start_date, site.event_end_date):
+            rows.append(ParticipationForm(initial={'courserecord': courserecord.pk, 'day': str(date)},
+                                           prefix="participation" + str(date.day)))
+    return rows

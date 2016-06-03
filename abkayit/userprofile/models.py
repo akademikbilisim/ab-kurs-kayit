@@ -9,7 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 from django_countries.fields import CountryField
 from django_countries.data import COUNTRIES
 
-from abkayit.settings import USER_TYPES, UNIVERSITIES, GENDER, TRANSPORTATION, TRAINESS_SCORE
+from abkayit.settings import USER_TYPES, UNIVERSITIES, GENDER, TRANSPORTATION
 
 from abkayit.models import Site
 
@@ -47,7 +47,6 @@ class UserProfile(models.Model):
     is_participant = models.BooleanField(verbose_name=_("Is Participant"), default=False)
     additional_information = models.TextField(verbose_name=_("Additional Information"), null=True)
     userpassedtest = models.BooleanField(verbose_name=_("Basvuru yapabilir mi?"), blank=True, default=False)
-    score = models.CharField(choices=TRAINESS_SCORE, verbose_name=_("Durum"), max_length=100, default='1')
 
     def __unicode__(self):
         return self.user.username

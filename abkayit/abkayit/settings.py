@@ -43,9 +43,9 @@ ADDITION_PREFERENCE_LIMIT = 1
 USER_TYPES = {"inst": "instructor", "stu": "student", "hepsi": "hepsi"}
 
 '''
-   TRAINESS_SCORE: Kursiyerin kursa katilip katilmadigi 
+    TRAINESS_PARTICIPATION_STATE: Kursiyerin kursa katilip katilmadigi
 '''
-TRAINESS_SCORE = [('0', 'Gelmedi'), ('1', 'Geldi')]
+TRAINESS_PARTICIPATION_STATE = [('-1', 'Kurs Yapılmadı'), ('0', 'Katılmadı'), ('1', 'Yarısına Katıldı'), ('2','Katıldı')]
 
 '''
    GENDER: Profilde kullaniliyor

@@ -20,6 +20,7 @@ urlpatterns = patterns('userprofile.views',
 
                        # for instructor
                        url(r'^egitmen/bilgi', 'instructor_information', name="instructor_information"),
+                       url(r'^showuser/(?P<userid>[0-9]+)/(?P<courserecordid>[0-9]+)', 'showuserprofile', name="showuserprofile"),
 
                        # instructor for trainess
                        url(r'^savenote', 'save_note', name="save_note"),

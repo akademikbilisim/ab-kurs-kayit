@@ -6,6 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from userprofile.models import UserProfile
 from abkayit.models import Site
+from abkayit.settings import TRAINESS_PARTICIPATION_STATE
 
 
 def make_choices(choices):
@@ -20,20 +21,14 @@ class Keyword(models.Model):
 
 
 class Course(models.Model):
-    # TODO(later): simdilik sadece asagidaki alanlara ihtiyacimiz var
-    # 	gerisini tum portal yapilirken kullanacagiz
     no = models.CharField(verbose_name=_("Course No"), max_length="4")
     name = models.CharField(verbose_name=_("Course Name"), max_length="255")
     description = models.TextField(verbose_name=_("Description"))
-    # keyword = models.ManyToManyField(Keyword, required=False)
-    # goal = models.TextField(verbose_name=_("Hedef"))
-    # partipation_rules = models.TextField(verbose_name=_("Kursa katilacaklardan beklenenler"))
     trainess = models.ManyToManyField(UserProfile, related_name="trainess", blank=True)
     trainer = models.ManyToManyField(UserProfile, related_name="trainer")
     approved = models.BooleanField(default=False)
     application_is_open = models.BooleanField(default=True)
     site = models.ForeignKey(Site)
-    # fulltext = models.FileField(upload_to='documents/%Y/%m/%d',null=True)
     url = models.CharField(verbose_name=_("URL"), max_length="350")
 
     def __unicode__(self):
@@ -57,3 +52,12 @@ class TrainessCourseRecord(models.Model):
     class Meta:
         verbose_name = 'Kursiyer Kurs Tercihi'
         verbose_name_plural = 'Kursiyer Kurs Tercihleri'
+
+
+class TrainessParticipation(models.Model):
+    courserecord = models.ForeignKey(TrainessCourseRecord)
+    morning = models.CharField(choices=TRAINESS_PARTICIPATION_STATE, verbose_name=_("Sabah"), max_length=3, default='0')
+    afternoon = models.CharField(choices=TRAINESS_PARTICIPATION_STATE, verbose_name=_("Ogleden Sonra"), max_length=3,
+                                 default='0')
+    evening = models.CharField(choices=TRAINESS_PARTICIPATION_STATE, verbose_name=_("Aksam"), max_length=3, default='0')
+    day = models.CharField(verbose_name=_("Gun"), max_length=20, default='1')

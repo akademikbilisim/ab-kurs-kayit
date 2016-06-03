@@ -20,8 +20,7 @@ from abkayit.backend import getsiteandmenus
 from abkayit.adaptor import send_email
 from abkayit.models import Site, Menu, ApprovalDate
 from abkayit.decorators import active_required
-from abkayit.settings import PREFERENCE_LIMIT, ADDITION_PREFERENCE_LIMIT, EMAIL_FROM_ADDRESS, TRAINESS_SCORE, \
-    REQUIRE_TRAINESS_APPROVE
+from abkayit.settings import PREFERENCE_LIMIT, ADDITION_PREFERENCE_LIMIT, EMAIL_FROM_ADDRESS, REQUIRE_TRAINESS_APPROVE
 
 from userprofile.models import UserProfile
 from userprofile.forms import InstProfileForm, CreateInstForm
@@ -254,7 +253,6 @@ def control_panel(request):
                         except Exception as e:
                             note = "Beklenmedik bir hata oluştu!"
                             log.error(e.message, extra=d)
-            data['TRAINESS_SCORE'] = TRAINESS_SCORE
             data['note'] = note
             return render_to_response("training/controlpanel.html", data, context_instance=RequestContext(request))
         else:

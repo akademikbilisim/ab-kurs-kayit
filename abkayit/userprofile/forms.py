@@ -270,3 +270,6 @@ class InstructorInformationForm(ModelForm):
         for field in self.fields:
             self.fields[field].required = True
         self.fields['additional_information'].required = False
+
+
+

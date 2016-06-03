@@ -18,16 +18,19 @@ from django.core.urlresolvers import reverse_lazy
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.admin.views.decorators import staff_member_required
 
-from userprofile.forms import CreateUserForm, UpdateUserForm, StuProfileForm, InstructorInformationForm,ChangePasswordForm
-from userprofile.models import Accommodation, UserProfile, UserAccomodationPref, InstructorInformation, UserVerification, TrainessNote
+from userprofile.forms import CreateUserForm, UpdateUserForm, StuProfileForm, InstructorInformationForm, \
+    ChangePasswordForm
+from userprofile.models import Accommodation, UserProfile, UserAccomodationPref, InstructorInformation, \
+    UserVerification, TrainessNote
+from training.tutils import getparticipationforms
+from training.forms import ParticipationForm
+from training.models import Course, TrainessCourseRecord
 
 from abkayit.models import *
 from abkayit.backend import getsiteandmenus, create_verification_link
 from abkayit.adaptor import send_email
 
 from abkayit.decorators import active_required
-
-from training.models import Course
 
 log = logging.getLogger(__name__)
 
@@ -227,7 +230,7 @@ def get_all_trainers_view(request):
         trainers = UserProfile.objects.filter(is_instructor=True)
         data['trainers'] = trainers
     except Exception as e:
-        log.error(e.message,extra=d)
+        log.error(e.message, extra=d)
     return render_to_response("userprofile/alltrainess.html", data, context_instance=RequestContext(request))
 
 
@@ -411,3 +414,39 @@ def logout(request):
 def backend_login(request, user):
     user.backend = 'django.contrib.auth.backends.ModelBackend'
     login(request, user)
+
+
+@login_required(login_url='/')
+def showuserprofile(request, userid, courserecordid):
+    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
+    data = getsiteandmenus(request)
+    user = UserProfile.objects.get(pk=userid)
+    courserecord = TrainessCourseRecord.objects.get(pk=courserecordid)
+    if user:
+        if request.user.userprofile in courserecord.course.trainer.all():
+            data['note'] = "Detaylı kullanıcı bilgileri"
+            data['user'] = user
+            data['forms'] = getparticipationforms(data['site'], courserecord)
+            if request.POST:
+                formsarevalid = []
+                frms = []
+                for f in data['forms']:
+                    frm = ParticipationForm(request.POST,  prefix="participation" + str(f.day))
+                    #frm.day = str(f)
+                    frm.courserecord = courserecord.pk
+                    formsarevalid.append(frm.is_valid())
+                    frms.append(frm)
+                print formsarevalid
+                if all(formsarevalid):
+                    for f in frms:
+                        f.save()
+                    print "herşey çok iyi"
+                else:
+                    for f in frms:
+                        print f._errors
+        else:
+            data['note'] = "Bu kullanıcıyı görüntülemeye yetkiniz yoktur"
+    else:
+        data['note'] = "Böyle Bir kullanıcı yoktur."
+
+    return render_to_response("userprofile/showuserprofile.html", data, context_instance=RequestContext(request))

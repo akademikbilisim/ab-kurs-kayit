@@ -60,9 +60,7 @@
                   <th>Ek Bilgiler</th>
                   <th>Seçilen Kurslar</th>
                   <th>Onaylanma Bilgileri</th>
-                  <th>Etkinlik Geçmişi</th>
-                  <th>Not</th>
-                  <th>Değerlendirme</th>
+                  <th></th>
               </tr>
             </thead>
             <tbody>
@@ -115,38 +113,8 @@
                     {%endfor%}
                   </td>
                     <td>
-                        {% for journal in t.trainess.note_to_profile.all %}
-                        <section>
-                            <p><b>Etkinlik:</b> {{ journal.site.name }} - {{ journal.site.year }}</p>
-                            <ul>
-                                <li> <b>Notu ekleyen:</b> {{ journal.note_from_profile.user.first_name }} {{ journal.note_from_profile.user.last_name }} {{ journal.note_from_profile.user.username }}</li>
-                                <li> <b>Not:</b><p>{{ journal.note}}</p></li>
-                                <li> <b>Durum:</b><p>{% if t.trainess.score  %}Etkinlige katildi{% else %}Katilmadi{% endif %}</p></li>
-                            </ul>
-                        </section>
-                        {% empty %}
-                        <p>Bu kullanıcı ile ilgili not girilmemiş</p>
-                        {% endfor%}
+                        <a class="btn btn-primary" href="{%url 'showuserprofile' t.trainess.pk t.pk %}">Kullanıcı profilini goruntule</a>
                     </td>
-                  <td>
-                     <div class="col-md-1">Not</div>
-                     <div class="col-md-6">
-                         <input type="text" class="form-control input-note" value=""/>
-                         <input type="hidden" class="input-username" value="{{ t.trainess.user.username }}"/>
-                     </div>
-                  <td>
-                     <div class="col-md-1">Durum</div>
-                     <div class="col-md-6">
-                     <select class="form-control select-score">
-                         {%for t_score in  TRAINESS_SCORE %}
-                             <option value="{{t_score.0}}">{{t_score.1}}</option>
-                         {%endfor%}
-                      </select>
-                     </div>
-                  </td>
-                  <td>
-                      <div class="col-md-2"><input id="save-score" type="button" value="Kaydet"/></div>
-                  </td>
                 </tr>
                 {% empty %}
                   <tr><td>Goruntulenecek basvuru yok</td></tr>

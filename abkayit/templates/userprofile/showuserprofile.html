@@ -1,0 +1,72 @@
+{% extends "dashboard.html" %}
+{% load i18n %}
+{% block head %}
+{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="alert alert-info">{{ note }}</div>
+    {% if user %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="box box-solid">
+                <div class="box-header width-border">
+                    <h3 class=box-title">Kullanıcı Bilgileri</h3>
+                </div>
+                <div class="box-body">
+                    <dl class="dl-horizontal">
+                        <dt>Adı Soyadı:</dt><dd>{{ user.user.first_name }} {{ user.user.last_name }}</dd>
+                        <dt>E-posta:</dt><dd>{{ user.user.username }}</dd>
+                        <dt>Şehir:</dt><dd>{{ user.city }}</dd>
+                        <dt>Ünvan:</dt><dd>{{ user.title }}</dd>
+                        <dt>Kurum:</dt><dd>{{ user.organization }}</dd>
+                        <dt>Üniversite:</dt><dd>{{ user.university }}</dd>
+                        <dt>Bölüm:</dt><dd>{{ user.department }}</dd>
+                        <dt>Ek Bilgiler:</dt><dd>{{ user.additional_information }}</dd>
+                        <dt>Seçtiği kurslar:</dt>
+                        <dd>
+                            {% for tcr in user.trainesscourserecord_set.all%}
+                            {% if tcr.approved %}
+                             <div> - {{tcr.course.name}} ({{tcr.course.no}}) Onaylanmış </br></div>
+                            {% else %}
+                              <div> - {{tcr.course.name}} ({{tcr.course.no}})</br></div>
+                            {% endif %}
+                            {%endfor%}
+                        </dd>
+                        <dt>Etkinlik geçmişi</dt>
+                        <dd>
+                            {% for journal in user.note_to_profile.all %}
+                            <section>
+                                <p>{{ journal.site.name }} - {{ journal.site.year }}</p>
+                                <ul>
+                                    <li> <b>Notu ekleyen:</b> {{ journal.note_from_profile.user.first_name }} {{ journal.note_from_profile.user.last_name }} {{ journal.note_from_profile.user.username }}</li>
+                                    <li> <b>Not:</b><p>{{ journal.note}}</p></li>
+                                    <li> <b>Durum:</b><p>Buraya hesaplama sonucu gelecek</p></li>
+                                </ul>
+                            </section>
+                            {% empty %}
+                                <p>Bu kullanıcı ile ilgili not girilmemiş</p>
+                            {% endfor%}
+                        </dd>
+
+                    </dl>
+                    {% if forms %}
+                    <form name="form-control" class="span4 signup-form" method="POST">{% csrf_token %}
+                        <dl class="dl-horizontal">
+                            {% for form in forms %}
+                                <dt>{{form.initial.day}}: </dt><dd>{{ form.as_table }}</dd>
+                            {% endfor %}
+                        </dl>
+                        <input type="submit" name="save" id="save" class="btn btn-primary" value="{% trans 'Save' %}">
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+    {% endif %}
+
+</div>
+
+
+{% endblock %}
