@@ -539,7 +539,7 @@ msgstr ""
 
 #: userprofile/views.py:45
 msgid "Register to system to participate in courses before the conferences"
-msgstr "Konferans öncesi kurslara katılmak için sisteme kaydolun"
+msgstr "Kurslara katılabilmek için sisteme kaydolun"
 
 #: userprofile/views.py:55
 msgid ""

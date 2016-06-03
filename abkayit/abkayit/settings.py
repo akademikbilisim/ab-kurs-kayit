@@ -71,7 +71,7 @@ TCKIMLIK_SORGULAMA_WS = "https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL
 '''
 REQUIRE_TRAINESS_APPROVE = False
 
-MEDIA_ROOT = os.path.join(BASE_DIR, '/')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_URL = '/'
 # Quick-start development settings - unsuitable for production

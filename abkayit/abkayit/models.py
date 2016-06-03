@@ -19,7 +19,7 @@ def make_choices(choices):
 class Site(models.Model):
     name = models.CharField(verbose_name=_("Site Name"), max_length="255")
     year = models.CharField(verbose_name=_("Year"), max_length="4")
-    logo = models.ImageField(verbose_name=_("Logo"), upload_to="static/imagstatic/images")
+    logo = models.ImageField(verbose_name=_("Logo"), upload_to="images/")
     is_active = models.BooleanField(verbose_name=_("Is Active"), default=False)
     home_url = models.CharField(verbose_name=_("Home Url"), max_length="128", null=True)
     application_start_date = models.DateField(verbose_name=_("Course Application Start Date"), default=datetime.now)
