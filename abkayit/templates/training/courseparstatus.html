@@ -1,0 +1,45 @@
+{% extends "dashboard.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% block head %}
+<script src="{% static '/static/js/courses.js' %}"></script>
+<link href="{% static '/static/css/courses.css' %}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="alert alert-info">{{ note }}</div>
+    {% if user %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="box box-solid">
+                <div class="box-header width-border">
+                    <h3 class=box-title">Yoklama Bilgilerini Düzenle</h3>
+                </div>
+
+                    <div class="box-body">
+                             <table data-id="courseparstatus" id="courseparstatus" class="table table-hover table-striped" >
+                                 <thead>
+                                    <th>Adı Soyadı</th>
+                                    <th>E-posta</th>
+                                    <th></th>
+                                </thead>
+                                <tbody>
+                                    {% for cr in courserecords %}
+                                    <tr>
+                                        <td>{{ cr.trainess.user.first_name }} {{ cr.trainess.user.last_name }}</td>
+                                        <td>{{ cr.trainess.user.username }}</td>
+                                        <td><a class="btn btn-primary" href="{%url 'showuserprofile' cr.trainess.pk cr.pk %}">Kullanıcı profilini goruntule</a></td>
+                                    </tr>
+                                    {% empty %}
+                                    <div class="box-body">
+                                        <p>Kurs için kayıt bulunamadı.</p>
+                                    </div>
+                                    {% endfor %}
+                             </table>
+                    </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

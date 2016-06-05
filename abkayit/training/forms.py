@@ -55,5 +55,11 @@ class ParticipationForm(ModelForm):
         fields = ['courserecord', 'day', 'morning', 'afternoon', 'evening']
         widgets = {
             'courserecord': forms.HiddenInput(),
-            'day': forms.HiddenInput,
+            'day': forms.HiddenInput(),
         }
+    #def __init__(self, *args, **kwargs):
+    #    courserecord = kwargs.pop('courserecord', None)
+    #    day = kwargs.pop('day', None)
+    #    super(ModelForm, self).__init__(*args, **kwargs)
+    #    self.fields['courserecord'].initial = courserecord
+    #    self.fields['day'].initial = day

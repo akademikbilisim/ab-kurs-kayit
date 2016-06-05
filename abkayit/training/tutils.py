@@ -11,7 +11,7 @@ from abkayit.adaptor import send_email
 from abkayit.settings import EMAIL_FROM_ADDRESS, PREFERENCE_LIMIT, ADDITION_PREFERENCE_LIMIT
 from abkayit.models import ApprovalDate
 
-from training.models import Course, TrainessCourseRecord
+from training.models import Course, TrainessCourseRecord, TrainessParticipation
 from training.forms import ParticipationForm
 
 log = logging.getLogger(__name__)
@@ -202,10 +202,12 @@ def daterange(start_date, end_date):
 
 
 def getparticipationforms(site, courserecord):
-    now = datetime.date(datetime.now())
     rows = []
-    if site.event_start_date <= now <= site.event_end_date:
-        for date in daterange(site.event_start_date, site.event_end_date):
+    for date in daterange(site.event_start_date, site.event_end_date):
+        try:
+            tp = TrainessParticipation.objects.get(courserecord=courserecord.pk, day=str(date))
+            rows.append(ParticipationForm(instance=tp, prefix="participation" + str(date.day)))
+        except:
             rows.append(ParticipationForm(initial={'courserecord': courserecord.pk, 'day': str(date)},
-                                           prefix="participation" + str(date.day)))
+                                               prefix="participation" + str(date.day)))
     return rows

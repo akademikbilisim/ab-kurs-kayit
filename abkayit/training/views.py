@@ -27,7 +27,7 @@ from userprofile.forms import InstProfileForm, CreateInstForm
 from userprofile.userprofileops import UserProfileOPS
 
 from training.models import Course, TrainessCourseRecord
-from training.forms import CreateCourseForm
+from training.forms import CreateCourseForm, ParticipationForm
 from training.tutils import *
 
 log = logging.getLogger(__name__)
@@ -423,6 +423,7 @@ def get_preferred_courses(request):
     return HttpResponse(json.dumps({'status': '-1'}), content_type="application/json")
 
 
+@login_required
 def apply_course_in_addition(request):
     log.debug(request)
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
@@ -458,8 +459,31 @@ def apply_course_in_addition(request):
     return HttpResponse(json.dumps({'status': '-1', 'message': message}), content_type="application/json")
 
 
+@staff_member_required
+def participationstatuses(request):
+    """
+    Admin veya is_staff yetkisi verilmiş başka bir kullanıcı ile buraya view ile yoklama kaydı girilecek.
+    :param request: HttpRequest
+    """
+    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
+    data = getsiteandmenus(request)
+    data['allcourses'] = Course.objects.filter(site=data['site'].pk)
+    data['note'] = "İşlem yapmak istediğiniz kursu seçiniz."
+    return render_to_response('training/participationstatuses.html', data, context_instance=RequestContext(request))
+
+
+@staff_member_required
+def editparticipationstatusebycourse(request, courseid):
+    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
+    data = getsiteandmenus(request)
+    data['courserecords'] = TrainessCourseRecord.objects.filter(course=courseid, approved=True, trainess_approved=True)
+    data['note'] = "Yoklama bilgilerini girmek için kullanıcı profiline gidiniz."
+    return render_to_response('training/courseparstatus.html', data, context_instance=RequestContext(request))
+
 #  submitandregister, new_course, edit_course viewlari kullanılmıyor.
-@login_required(login_url='/')
+
+
+@login_required
 @user_passes_test(active_required, login_url=reverse_lazy("active_resend"))
 def submitandregister(request):
     """
@@ -518,13 +542,3 @@ def submitandregister(request):
     return render_to_response("training/submitandregister.html",
                               data,
                               context_instance=RequestContext(request))
-
-
-@login_required
-def new_course(request):
-    return HttpResponse("Yeni kurs kaydi")
-
-
-@login_required
-def edit_course(request):
-    return HttpResponse("Yeni kurs kaydi")

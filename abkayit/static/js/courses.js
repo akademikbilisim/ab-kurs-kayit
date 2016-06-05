@@ -9,12 +9,20 @@ function fnFormatDetails ( dTable, nTr )
     sOut += '<tr><td><b>Ek Bilgiler:</b></td><td>'+aData[11]+'</td></tr>';
     sOut += '<tr><td><b>Kursiyerin Seçtiği Diğer Kurslar: </b></td><td>'+aData[12]+'</td></tr>';
     sOut += '<tr><td></td><td>'+aData[13]+'</td></tr>';
+    sOut += '<tr><td></td><td>'+aData[14]+'</td></tr>';
     sOut += '</table>';
     sOut += '</br>';
     sOut += '<div class="score">';
     sOut += '<div class="form-group">';
     sOut += '<div class="row">';
-    sOut += aData[14];
+    sOut += aData[15];
+    sOut += '</div>';
+    sOut += '</div>';
+    sOut += '</br>';
+    sOut += '<div class="score">';
+    sOut += '<div class="form-group">';
+    sOut += '<div class="row">';
+    sOut += aData[16];
     sOut += '</div>';
     sOut += '</div>';
     return sOut;
@@ -76,7 +84,16 @@ $(document).ready(function(){
                {
                 "targets": [ 14 ],
                 "visible": false
-               }
+               },
+               {
+                "targets": [ 15 ],
+                "visible": false
+               },
+               {
+                "targets": [ 16 ],
+                "visible": false
+               },
+
             ],
             "searching": false,
             "bJQueryUI": false,

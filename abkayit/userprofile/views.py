@@ -380,13 +380,10 @@ def save_note(request):
     jsondata = {}
     if request.method == 'POST':
         trainess_username = request.POST['trainess_username']
-        trainess_score = request.POST['score']
         t_note = request.POST['note']
         if trainess_username and trainess_username != '':
             try:
                 userprofile = UserProfile.objects.get(user__username=trainess_username)
-                userprofile.score = trainess_score
-                userprofile.save()
                 trainess_note = TrainessNote.objects.create(note_to_profile=userprofile, site=data['site'])
                 trainess_note.note = t_note
                 trainess_note.note_from_profile = request.user.userprofile
@@ -416,36 +413,36 @@ def backend_login(request, user):
     login(request, user)
 
 
-@login_required(login_url='/')
+@staff_member_required
 def showuserprofile(request, userid, courserecordid):
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
     data = getsiteandmenus(request)
     user = UserProfile.objects.get(pk=userid)
     courserecord = TrainessCourseRecord.objects.get(pk=courserecordid)
     if user:
-        if request.user.userprofile in courserecord.course.trainer.all():
-            data['note'] = "Detaylı kullanıcı bilgileri"
-            data['user'] = user
-            data['forms'] = getparticipationforms(data['site'], courserecord)
-            if request.POST:
-                formsarevalid = []
-                frms = []
-                for f in data['forms']:
-                    frm = ParticipationForm(request.POST,  prefix="participation" + str(f.day))
-                    #frm.day = str(f)
-                    frm.courserecord = courserecord.pk
-                    formsarevalid.append(frm.is_valid())
-                    frms.append(frm)
-                print formsarevalid
-                if all(formsarevalid):
-                    for f in frms:
-                        f.save()
-                    print "herşey çok iyi"
-                else:
-                    for f in frms:
-                        print f._errors
-        else:
-            data['note'] = "Bu kullanıcıyı görüntülemeye yetkiniz yoktur"
+        data['note'] = "Detaylı kullanıcı bilgileri"
+        data['user'] = user
+        data['forms'] = getparticipationforms(data['site'], courserecord)
+        if request.POST:
+            formsarevalid = []
+            frms = []
+            for f in data['forms']:
+                frm = ParticipationForm(request.POST,
+                                        prefix="participation" + str(
+                                            datetime.strptime(f.initial['day'], '%Y-%m-%d').day))
+                frm.courserecord = courserecord.pk
+                frm.day = f.initial['day']
+                formsarevalid.append(frm.is_valid())
+                frms.append(frm)
+            print formsarevalid
+            if all(formsarevalid):
+                for f in frms:
+                    f.save()
+                data['note'] = 'Seçimleriniz başarıyla kaydedildi.'
+                log.info("%s nolu kurs kaydinin yoklama kaydi girişi başarılı" % courserecord.pk, extra=d)
+            else:
+                data['note'] = 'Hata oluştu!'
+                log.info("%s nolu kurs kaydinin yoklama kaydi girişi hatalı" % courserecord.pk, extra=d)
     else:
         data['note'] = "Böyle Bir kullanıcı yoktur."
 
