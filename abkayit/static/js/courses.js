@@ -115,7 +115,6 @@ $(document).ready(function(){
          1 }
           else
           {
-              console.log("detail is clicked")
               dTable.fnOpen( nTr, fnFormatDetails(dTable, nTr), 'details' );
               dTable.find("#save-score").click(function(){
                   var score = $(this).closest(".score").find("select").val();
@@ -126,7 +125,6 @@ $(document).ready(function(){
 	              jsonData['note'] = note;
 	              jsonData['trainess_username'] = trainess_username;
 	              jsonData['csrfmiddlewaretoken'] = getCookie('csrftoken');
-	              console.log(JSON.stringify(jsonData));
 	              $.ajax({
 	                  url : "/accounts/savenote", 
 	                  type : "POST",
@@ -159,7 +157,7 @@ $(document).ready(function(){
 	var jsonData = {};
 	jsonData['course'] = selectedCourse;
 	jsonData['csrfmiddlewaretoken'] = getCookie('csrftoken');
-	console.log(JSON.stringify(jsonData));
+
 		$.ajax({
 		    url : "/egitim/applytocourse", 
 		    type : "POST",
@@ -179,7 +177,6 @@ $(document).ready(function(){
 	var jsonData = {};
 	jsonData['course'] = selectedCourse;
 	jsonData['csrfmiddlewaretoken'] = getCookie('csrftoken');
-	console.log(JSON.stringify(jsonData));
 		$.ajax({
 		    url : "/egitim/additionprefapply/", 
 		    type : "POST",
@@ -195,8 +192,8 @@ $(document).ready(function(){
   });
 
   $("#cancel-all").click(function(){
-    var selectedCourse = "Başvurduğunuz Kurslar İptal Edilecektir</br></br>";
-	
+    var selectedCourse = "Başvurduğunuz Kurslar İptal Edilecektir. Kabul edildiğiniz kursları iptal etmeniz durumunda profilinize bu bilgi kaydedilecektir.</br></br>";
+    selectedCourse += "<label for=\"cancelnote\">Neden?</label><input type=\"text\" class=\"form-control\" id=\"cancelnote\"/>"
     var jsonData = {};
 	jsonData['csrfmiddlewaretoken'] = getCookie('csrftoken');
 	$.ajax({
@@ -225,6 +222,8 @@ $(document).ready(function(){
                     label: "Evet!",
                     className: "btn-success",
                     callback: function() {
+                        jsonData['cancelnote'] = $('#cancelnote').val();
+                        console.log($('#cancelnote').val());
             	        $.ajax({
             	            url : "/egitim/cancelallpreference/", 
             	            type : "POST",

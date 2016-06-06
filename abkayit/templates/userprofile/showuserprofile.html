@@ -5,7 +5,7 @@
 {% block content %}
 <div class="container-fluid">
     <div class="alert alert-info">{{ note }}</div>
-    {% if user %}
+    {% if tuser %}
     <div class="row">
         <div class="col-md-6">
             <div class="box box-solid">
@@ -14,17 +14,17 @@
                 </div>
                 <div class="box-body">
                     <dl class="dl-horizontal">
-                        <dt>Adı Soyadı:</dt><dd>{{ user.user.first_name }} {{ user.user.last_name }}</dd>
-                        <dt>E-posta:</dt><dd>{{ user.user.username }}</dd>
-                        <dt>Şehir:</dt><dd>{{ user.city }}</dd>
-                        <dt>Ünvan:</dt><dd>{{ user.title }}</dd>
-                        <dt>Kurum:</dt><dd>{{ user.organization }}</dd>
-                        <dt>Üniversite:</dt><dd>{{ user.university }}</dd>
-                        <dt>Bölüm:</dt><dd>{{ user.department }}</dd>
-                        <dt>Ek Bilgiler:</dt><dd>{{ user.additional_information }}</dd>
+                        <dt>Adı Soyadı:</dt><dd>{{ tuser.user.first_name }} {{ tuser.user.last_name }}</dd>
+                        <dt>E-posta:</dt><dd>{{ tuser.user.username }}</dd>
+                        <dt>Şehir:</dt><dd>{{ tuser.city }}</dd>
+                        <dt>Ünvan:</dt><dd>{{ tuser.title }}</dd>
+                        <dt>Kurum:</dt><dd>{{ tuser.organization }}</dd>
+                        <dt>Üniversite:</dt><dd>{{ tuser.university }}</dd>
+                        <dt>Bölüm:</dt><dd>{{ tuser.department }}</dd>
+                        <dt>Ek Bilgiler:</dt><dd>{{ tuser.additional_information }}</dd>
                         <dt>Seçtiği kurslar:</dt>
                         <dd>
-                            {% for tcr in user.trainesscourserecord_set.all%}
+                            {% for tcr in tuser.trainesscourserecord_set.all%}
                             {% if tcr.approved %}
                              <div> - {{tcr.course.name}} ({{tcr.course.no}}) Onaylanmış </br></div>
                             {% else %}
@@ -34,7 +34,7 @@
                         </dd>
                         <dt>Etkinlik geçmişi</dt>
                         <dd>
-                            {% for journal in user.note_to_profile.all %}
+                            {% for journal in tuser.note_to_profile.all %}
                             <section>
                                 <p>{{ journal.site.name }} - {{ journal.site.year }}</p>
                                 <ul>

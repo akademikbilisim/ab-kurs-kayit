@@ -3,7 +3,7 @@
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-
+from django.utils.timezone import now
 from userprofile.models import UserProfile
 from abkayit.models import Site
 from abkayit.settings import TRAINESS_PARTICIPATION_STATE
@@ -45,6 +45,7 @@ class TrainessCourseRecord(models.Model):
     preference_order = models.SmallIntegerField(default=1)
     approved = models.BooleanField(default=False)
     trainess_approved = models.BooleanField(default=False)
+    instapprovedate = models.DateField(default=now(), blank=True, null=True)
 
     def __unicode__(self):
         return self.course.name

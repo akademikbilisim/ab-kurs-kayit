@@ -56,7 +56,7 @@ class UserProfile(models.Model):
 
 
 class TrainessNote(models.Model):
-    note = models.CharField(verbose_name=_("Note"), max_length=255)
+    note = models.CharField(verbose_name=_("Note"), max_length=500)
     note_from_profile = models.ForeignKey(UserProfile, related_name="note_from_profile",
                                           null=True)  # from whom - trainer
     note_to_profile = models.ForeignKey(UserProfile, related_name="note_to_profile")  # to whom - traiess

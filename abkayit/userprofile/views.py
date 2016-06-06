@@ -421,7 +421,7 @@ def showuserprofile(request, userid, courserecordid):
     courserecord = TrainessCourseRecord.objects.get(pk=courserecordid)
     if user:
         data['note'] = "Detaylı kullanıcı bilgileri"
-        data['user'] = user
+        data['tuser'] = user
         data['forms'] = getparticipationforms(data['site'], courserecord)
         if request.POST:
             formsarevalid = []

@@ -22,7 +22,7 @@ from abkayit.models import Site, Menu, ApprovalDate
 from abkayit.decorators import active_required
 from abkayit.settings import PREFERENCE_LIMIT, ADDITION_PREFERENCE_LIMIT, EMAIL_FROM_ADDRESS, REQUIRE_TRAINESS_APPROVE
 
-from userprofile.models import UserProfile
+from userprofile.models import UserProfile, TrainessNote
 from userprofile.forms import InstProfileForm, CreateInstForm
 from userprofile.userprofileops import UserProfileOPS
 
@@ -72,6 +72,8 @@ def apply_to_course(request):
     data['additional1_pref_closed'] = True
     data['PREFERENCE_LIMIT'] = PREFERENCE_LIMIT
     data['ADDITION_PREFERENCE_LIMIT'] = ADDITION_PREFERENCE_LIMIT
+    now = datetime.now()
+    data['may_cancel_all'] = True if data['site'].event_start_date > datetime.date(now) else False
     """
     courses: mevcut etkinte onaylanmis ve basvuruya acik kurslar
     """
@@ -81,7 +83,6 @@ def apply_to_course(request):
     """
     data['course_records'] = TrainessCourseRecord.objects.filter(trainess__user=request.user,
                                                                  course__site=data['site']).order_by('preference_order')
-    now = datetime.now()
     userprofile = request.user.userprofile
     if not userprofile:
         log.info("userprofile not found", extra=d)
@@ -203,13 +204,13 @@ def control_panel(request):
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
     data = getsiteandmenus(request)
     note = _("You can accept trainees")
+    now = timezone.now()
     try:
         if not request.user.userprofile.is_student:
             courses = Course.objects.filter(site=data['site'], approved=True, trainer__user=request.user)
             log.info(courses, extra=d)
             if courses:
                 log.info("egitmenin " + str(len(courses)) + " tane kursu var", extra=d)
-                now = timezone.now()
                 data['now'] = now
                 data['dates'] = get_approve_start_end_dates_for_inst(data['site'], d)
                 data['trainess'] = {}
@@ -237,6 +238,7 @@ def control_panel(request):
                                     p.approved = False
                                 elif str(p.pk) in approvedr:
                                     p.approved = True
+                                    p.instapprovedate = now
                                     if not REQUIRE_TRAINESS_APPROVE:
                                         p.trainess_approved = True
                                 p.save()
@@ -337,32 +339,47 @@ def statistic(request):
 @login_required
 def cancel_all_preference(request):
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
+    data = getsiteandmenus(request)
+    userprofile = UserProfile.objects.get(user=request.user)
+    now_for_approve = timezone.now()
     if request.POST:
         try:
-            data = getsiteandmenus(request)
-            userprofile = UserProfile.objects.get(user=request.user)
+            cancelnote = request.POST.get('cancelnote', '')
             trainess_course_records = TrainessCourseRecord.objects.filter(trainess=userprofile)
             context = {}
+            approvedpref = None
             for tcr in trainess_course_records:
                 try:
                     # x. tercih onaylama donemi baslangic zamani ile x. tercih teyit etme donemi arasinda ise mail atsin.
-                    now_for_approve = timezone.now()
-                    preference_order = tcr.preference_order
-                    check_start = ApprovalDate.objects.get(site=data['site'], preference_order=preference_order,
-                                                           for_instructor=True).start_date
-                    check_end = ApprovalDate.objects.get(site=data['site'], preference_order=preference_order,
-                                                         for_trainess=True).end_date
-                    if check_start < now_for_approve < check_end or tcr.trainess_approved == True:
-                        context['trainess_course_record'] = tcr
-                        send_email("training/messages/notice_for_canceled_courses_subject.html",
-                                   "training/messages/notice_for_canceled_courses.html",
-                                   "training/messages/notice_for_canceled_courses.text",
-                                   context,
-                                   EMAIL_FROM_ADDRESS,
-                                   tcr.course.trainer.all().values_list('user__username', flat=True))
+                    if tcr.approved:
+                        approvedpref = tcr
+                    if data['site'].application_end_date < now_for_approve < data['site'].event_start_date:
+                        if tcr.trainess_approved:
+                            context['trainess_course_record'] = tcr
+                            send_email("training/messages/notice_for_canceled_courses_subject.html",
+                                       "training/messages/notice_for_canceled_courses.html",
+                                       "training/messages/notice_for_canceled_courses.text",
+                                       context,
+                                       EMAIL_FROM_ADDRESS,
+                                       tcr.course.trainer.all().values_list('user__username', flat=True))
                 except Exception as e:
                     log.error(e.message, extra=d)
                 trainess_course_records.delete()
+            if data['site'].application_end_date < datetime.date(now_for_approve):
+                remaining_days = int((data['site'].event_start_date - datetime.date(now_for_approve)).days)
+                notestr = "Kursların başlamasına %d gun kala tüm başvurularını iptal etti." % remaining_days
+                if approvedpref:
+                    # Kullanicinin tercihi kursa kaç gün kala kabul görmüş
+                    daysbetweenapproveandevent = int((data['site'].event_start_date - approvedpref.instapprovedate).days)
+                    notestr += "\nTercihi kursun başlamasına %d gün kala kabul edilmiş." % daysbetweenapproveandevent
+            else:
+                notestr = "Kullanici tercihlerini iptal etti"
+            if cancelnote:
+                notestr += "\nİptal Sebebi:%s" % cancelnote
+            if notestr:
+                note = TrainessNote(note=notestr, note_from_profile=userprofile, note_to_profile=userprofile,
+                                    site=data['site'], note_date=now_for_approve)
+                note.save()
             message = "Tüm Başvurularınız Silindi"
             log.debug(message, extra=d)
         except ObjectDoesNotExist:
@@ -479,6 +496,7 @@ def editparticipationstatusebycourse(request, courseid):
     data['courserecords'] = TrainessCourseRecord.objects.filter(course=courseid, approved=True, trainess_approved=True)
     data['note'] = "Yoklama bilgilerini girmek için kullanıcı profiline gidiniz."
     return render_to_response('training/courseparstatus.html', data, context_instance=RequestContext(request))
+
 
 #  submitandregister, new_course, edit_course viewlari kullanılmıyor.
 

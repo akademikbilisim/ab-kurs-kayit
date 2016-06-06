@@ -80,6 +80,27 @@ def get_approve_start_end_dates_for_inst(site, d):
     return dates
 
 
+def get_all_approve_start_end_dates_for_inst(site, d):
+    """
+
+    :param site: aktif etkinliğin sitesi
+    :param d: log icin gerekli detaylar
+    :return: egitmenin tercih onaylama tarihlerini barındıran bir dictionary geri dondurur.
+    """
+    dates = {}
+    for i in range(1, PREFERENCE_LIMIT + 1):
+        try:
+            dates[i] = ApprovalDate.objects.get(site=site, preference_order=i, for_trainess=True)
+        except:
+            log.info("%d tercih sirasina sahip bir ApprovalDate yok" % i, extra=d)
+    for i in range(1, ADDITION_PREFERENCE_LIMIT + 1):
+        try:
+            dates[-i] = ApprovalDate.objects.get(site=site, preference_order=-i, for_trainess=True)
+        except:
+            log.info("%d tercih sirasina sahip bir ApprovalDate yok" % -i, extra=d)
+    return dates
+
+
 def get_approve_start_end_dates_for_tra(site, d):
     """
         :param site: aktif etkinliğin sitesi
