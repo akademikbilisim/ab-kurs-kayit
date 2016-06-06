@@ -207,16 +207,24 @@ def instructor_information(request):
 
 @staff_member_required
 def alluserview(request):
+
+    """
+    Kabul edilen tüm kullanıcıların konaklama bilgileri
+    :param request:
+    :return:
+    """
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
     data = getsiteandmenus(request)
     userlist = []
-    alluser = UserProfile.objects.all()
-    if alluser:
-        for u in alluser:
-            usr = {"usertype": "instructor" if u.is_instructor else "student", "firstname": u.user.first_name,
-                   "lastname": u.user.last_name, "tcino": u.tckimlikno if u.tckimlikno != '' else u.ykimlikno,
-                   "coursename": Course.objects.filter(trainer=u).values_list('name', flat=True),
-                   "accomodation": UserAccomodationPref.objects.filter(user=u)}
+    allcourserecord = TrainessCourseRecord.objects.filter(course__site=data['site'], approved=True)
+    if allcourserecord:
+        for r in allcourserecord:
+            usr = {"usertype": "student", "firstname": r.trainess.user.first_name,
+                   "email": r.trainess.user.username, "lastname": r.trainess.user.last_name,
+                   "tcino": r.trainess.tckimlikno if r.trainess.tckimlikno != '' else r.trainess.ykimlikno,
+                   "coursename": r.course.name,
+                   "gender": r.trainess.gender,
+                   "accomodation": UserAccomodationPref.objects.filter(user=r.trainess)}
             userlist.append(usr)
     data["datalist"] = userlist
     return render_to_response("userprofile/allusers.html", data, context_instance=RequestContext(request))

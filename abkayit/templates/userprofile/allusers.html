@@ -11,8 +11,10 @@
 	        <th>{% trans "User Type" %}</th>
 	        <th>{% trans "First Name" %}</th>
 	        <th>{% trans "Last Name" %}</th>
+	        <th>{% trans "E-mail" %}</th>
 	        <th>{% trans "TC Identity No / Foreign Identity No" %}</th>
 	        <th>{% trans "Course Name" %}</th>
+	        <th>{% trans "Gender" %}</th>
 	        <th>{% trans "Accomodation Preference Seq." %}</th>
 	    </tr>
 	</thead>
@@ -22,16 +24,10 @@
 			<th>{{data.usertype}}</th>
 			<th>{{data.firstname}}</th>
 			<th>{{data.lastname}}</th>
+			<th>{{data.email}}</th>
 			<th>{{data.tcino}}</th>
-            <th>
-            {% if data.usertype == 'instructor' %}
-                {% for c in data.coursename %}
-                    <span>&nbsp;</span>
-			        {{ c }}
-                    <span>&nbsp;</span>
-                {% endfor %}
-            {% endif %}
-            </th>
+            <th>{{data.coursename}}</th>
+            <th>{{data.gender}}</th>
 			<th>
 				{% for a in data.accomodation %}
                     <span>&nbsp;</span>

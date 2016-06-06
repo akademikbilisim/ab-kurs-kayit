@@ -267,7 +267,7 @@ def control_panel(request):
 def allcourseprefview(request):
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
     data = getsiteandmenus(request)
-    data['datalist'] = TrainessCourseRecord.objects.all()
+    data['datalist'] = TrainessCourseRecord.objects.filter(course__site=data['site'])
     return render_to_response("training/allcourseprefs.html", data, context_instance=RequestContext(request))
 
 
