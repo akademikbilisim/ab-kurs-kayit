@@ -1,9 +1,8 @@
 #!-*- coding:utf-8 -*-
 
 import logging
-from datetime import datetime, timedelta
+from datetime import timedelta
 
-from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 
 from abkayit.models import Site

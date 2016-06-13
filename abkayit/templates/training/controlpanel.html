@@ -108,7 +108,7 @@
                     {% for tcr in t.trainess.trainesscourserecord_set.all%}
                      {% if tcr.course.id != course.id %}
                         {%if tcr.approved %}
-                              <div class="checked-for-another-course">Kursiyerin seçtiği {{tcr.course.name}} kursu onaylanmış</br></div>
+                              <div class="checked-for-another-course">Kursiyer {{tcr.preference_order}}. tercihi olan {{tcr.course.name}} kursuna kabul edilmiş</br></div>
                         {% endif%}
                       {% endif%}
                     {%endfor%}
