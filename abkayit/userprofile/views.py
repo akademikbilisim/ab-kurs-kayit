@@ -32,6 +32,8 @@ from abkayit.adaptor import send_email
 
 from abkayit.decorators import active_required
 
+from abkayit.settings import ACCOMODATION_PREFERENCE_LIMIT
+
 log = logging.getLogger(__name__)
 
 
@@ -90,56 +92,39 @@ def createprofile(request):
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
     data = getsiteandmenus(request)
     log.info("create profile form", extra=d)
-    user = User.objects.get(username=request.user)
-    data['update_user_form'] = UpdateUserForm(instance=user)
+    data['update_user_form'] = UpdateUserForm(instance=request.user)
+    data['accomodations_preference_count'] = range(ACCOMODATION_PREFERENCE_LIMIT)
     data['form'] = None
     try:
-        user_profile = UserProfile.objects.get(user=user)
+        user_profile = request.user.userprofile
         note = _("You can update your profile below")
-        action = "update"
         data['form'] = StuProfileForm(instance=user_profile)
         if not user_profile.is_instructor:
             log.debug("egitmen olmayan kullanici icin isleme devam ediliyor", extra=d)
             data['accomodations'] = Accommodation.objects.filter(
-                usertype__in=['stu', 'hepsi']).filter(
-                gender__in=[user_profile.gender, 'H']).filter(
-                site=data['site']).order_by('name')
-            data['accomodation_records'] = UserAccomodationPref.objects.filter(
-                user=user_profile).order_by('preference_order')
-    except ObjectDoesNotExist:
-        log.debug("Kullanıcı profili bulunamadi, yeni profil olusturmak icin isleme devam ediliyor", extra=d)
+                usertype__in=['stu', 'hepsi'], gender__in=[user_profile.gender, 'H'], site=data['site']).order_by(
+                'name')
+            data['accomodation_records'] = UserAccomodationPref.objects.filter(user=user_profile).order_by(
+                'preference_order')
+    except UserProfile.DoesNotExist:
         note = _("If you want to continue please complete your profile.")
-        action = "create"
         data['form'] = StuProfileForm()
-        data['accomodations'] = Accommodation.objects.filter(
-            usertype__in=['stu', 'hepsi']).filter(
-            gender__in=['K', 'E', 'H']).filter(
-            site=data['site']).order_by('name')
+        data['accomodations'] = Accommodation.objects.filter(usertype__in=['stu', 'hepsi'], gender__in=['K', 'E', 'H'],
+                                                             site=data['site']).order_by('name')
     if 'register' in request.POST:
-        first_name = request.POST.get('first_name', '')
-        last_name = request.POST.get('last_name', '')
-        request.user.first_name = first_name
-        request.user.last_name = last_name
-        data['form'] = StuProfileForm(request.user, request.POST, ruser=request.user)
-        if action == "update":
-            data['form'].instance = UserProfile.objects.get(user=user)
-        if data['form'].is_valid():
-            if first_name or last_name:
-                log.info("firstlast", extra=d)
-                user = User.objects.get(username=request.user.username)
-                user.first_name = first_name
-                user.last_name = last_name
-                user.save()
+        data['update_user_form'] = UpdateUserForm(data=request.POST, instance=request.user)
+        try:
+            data['form'] = StuProfileForm(data=request.POST, instance=request.user.userprofile, ruser=request.user)
+        except UserProfile.DoesNotExist:
+            data['form'] = StuProfileForm(request.POST, ruser=request.user)
+        if data['update_user_form'].is_valid() and data['form'].is_valid():
             log.info("formvalid", extra=d)
-            profile = data['form'].save(commit=False)
-            if action == "create":
-                profile.is_student = True
-                log.info("create", extra=d)
-                profile.user = User.objects.get(username=request.user)
             try:
+                profile = data['form'].save(commit=False)
+                profile.user = request.user
                 profile.save()
-                if profile.is_student:
-                    prefs = UserAccomodationPref.objects.filter(user=UserProfile.objects.get(user=user))
+                if not request.user.userprofile.is_instructor and ACCOMODATION_PREFERENCE_LIMIT:
+                    prefs = UserAccomodationPref.objects.filter(user=request.user.userprofile)
                     if prefs:
                         prefs.delete()
                     for pref in range(0, len(data['accomodations'])):
@@ -150,10 +135,15 @@ def createprofile(request):
                                                                     pk=request.POST['tercih' + str(pref + 1)]),
                                                                 usertype="stu", preference_order=pref + 1)
                                 uaccpref.save()
-                                note = "Profiliniz başarılı bir şekilde kaydedildi. Kurs tercihleri adımından devam edebilirsiniz"
+                                note = "Profiliniz başarılı bir şekilde kaydedildi. Kurs tercihleri adımından" \
+                                       " devam edebilirsiniz"
                             except Exception as e:
                                 log.error(e.message, extra=d)
-                                note = "Profiliniz kaydedildi ancak konaklama tercihleriniz kaydedilemedi. Sistem yöneticisi ile görüşün!"
+                                note = "Profiliniz kaydedildi ancak konaklama tercihleriniz kaydedilemedi." \
+                                       " Sistem yöneticisi ile görüşün!"
+                else:
+                    note = "Profiliniz başarılı bir şekilde kaydedildi. Kurs tercihleri adımından" \
+                       " devam edebilirsiniz"
             except Exception as e:
                 log.error(e.message, extra=d)
                 note = "Profiliniz kaydedilirken hata oluştu lütfen sayfayı yeniden yükleyip tekrar deneyin"
@@ -207,7 +197,6 @@ def instructor_information(request):
 
 @staff_member_required
 def alluserview(request):
-
     """
     Kabul edilen tüm kullanıcıların konaklama bilgileri
     :param request:

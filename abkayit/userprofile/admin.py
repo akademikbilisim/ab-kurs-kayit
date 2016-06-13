@@ -10,7 +10,7 @@ from userprofile.models import InstructorInformation, SubscribeNotice, UserProfi
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ['user', 'is_instructor', 'tckimlikno', 'gender', 'mobilephonenumber']
-    list_filter = ('is_instructor', 'is_student')
+    list_filter = ('is_instructor',)
     search_fields = ('user__username',)
 
 

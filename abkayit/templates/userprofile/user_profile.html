@@ -24,7 +24,7 @@ function addPreference(selectedPreference){
          success : function(data) {
                    accomodations=data;
                    $.each(accomodations,function(key,value){
-                     selectOptions += "<option value='" + key + "'>" + value + "</option>" 
+                     selectOptions += "<option value='" + key + "'>" + value + "</option>"
                    });
                    body.find('select').append(selectOptions);
                    if(selectedPreference){
@@ -42,22 +42,14 @@ $(document).ready(function(){
       addPreference();
      }
   });
-  $("#add-field").click(function (e) {
-    e.preventDefault();
-    addPreference();
-  });
-
-  $("#remove").click(function(){
-    var container = $("#field-row-container");
-    var id = container.find("[data-id='container']").size();
-    $("select[id='tercih"+ id +"']").parent().parent().parent().remove();
-    if(id=="1"){
-        $("#remove").hide();
-    }
-  });
 
   {% for accomodation_record in accomodation_records %}
       addPreference({{accomodation_record.accomodation.id}});
+  {% empty %}
+      {% for i in accomodations_preference_count%}
+         //e.preventDefault();
+         addPreference();
+      {% endfor %}
   {% endfor %}
  
    $("#id_tckimlikno").parent().parent().find('div').first().append("<span class='required'></span>");
@@ -179,51 +171,23 @@ $(document).ready(function(){
                 {% endif %}
   		    </div>
         {% endfor %}
-        {% if accomodations %}
-            <!--div id="accomodations_pref"-->
-                <div class="form-group">
-                    <div class="row col-xs-8 col-md-12 col-sm-12 control-label">
-                        <label>
-    		                <div class="alert alert-info">
-                                {% trans "Please, click 'Add Preference' button for making multiple selection" %}
-                            </div>
-    	                </label>
-                    </div>
-                </div>
+        {% if accomodations and accomodations_preference_count %}
                 <div class="form-group">
                     <div class="row col-xs-8 col-md-12 col-sm-12 control-label">
     		            <strong>{% trans "Accomodation Preferences" %}</strong>
                     </div> 
                 </div>
-                <div class="form-group">
-                    <div class="row col-xs-8 control-label">
-                        <button class="btn btn-primary pull-right" type="button" id="add-field"><i class="fa fa-fw fa-plus"></i>
-                            {% trans "Add Preference"%}
-                        </button>
-                    </div>
-                </div>
                 <div class="form-group col-xs-8 accomodations_pref_div" id="field-row-container"></div>
-                <div class="form-group">
-                    <div class="row col-xs-8 control-label">
-                        <!--button class="btn btn-success pull-left" type="button" id="sendPreference" style="display: none;">
-                            {% trans "Save My Preferences"%}
-                        </button-->
-                        <button class="btn btn-danger pull-right" type="button" id="remove" style="display: none;">
-                            <i class="fa fa-fw fa-minus"></i>
-                            {% trans "Remove Preference"%}
-                        </button>
-
-                    </div>
-                </div>
-                </div>
-                    <!--div class="form-group m-b-5">
-                        <div class="col-xs-8 col-xs-offset-3">
-                        </div>
-                    </div-->
-            <!--/div--><br><br>
+                <br/><br/>
         {%endif%}
-        <input type="submit" name="register" id="register" class="btn btn-primary" value="{% trans "Register" %}">
-        <input type="submit" name="cancel" class="btn btn-primary" value="{% trans "Cancel"%}">
+           <div class="form-group">
+               <div class="row">
+                   <div class="col-xs-10" style="margin-top:10px;">
+                       <input type="submit" name="register" id="register" class="btn btn-primary" value="{% trans 'Register' %}">
+                       <input type="submit" name="cancel" class="btn btn-primary" value="{% trans 'Cancel'%}">
+                   </div>
+               </div>
+           </div>
       </form>
     {%endif%}
 {% endblock %}

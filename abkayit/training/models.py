@@ -45,7 +45,7 @@ class TrainessCourseRecord(models.Model):
     preference_order = models.SmallIntegerField(default=1)
     approved = models.BooleanField(default=False)
     trainess_approved = models.BooleanField(default=False)
-    instapprovedate = models.DateField(default=now(), blank=True, null=True)
+    instapprovedate = models.DateField(default=now, blank=True, null=True)
 
     def __unicode__(self):
         return self.course.name

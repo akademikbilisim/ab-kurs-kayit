@@ -206,7 +206,7 @@ def control_panel(request):
     note = _("You can accept trainees")
     now = timezone.now()
     try:
-        if not request.user.userprofile.is_student:
+        if request.user.userprofile.is_instructor:
             courses = Course.objects.filter(site=data['site'], approved=True, trainer__user=request.user)
             log.info(courses, extra=d)
             if courses:
@@ -300,23 +300,23 @@ def statistic(request):
                 approved=True).filter(
                 trainess_approved=True).filter(
                 trainess__in=UserProfile.objects.filter(
-                    is_student=True).filter(score='1')))
+                    is_instructor=False).filter(score='1')))
 
         data['statistic_by_course'] = statistic_by_course
-        statistic_by_gender = UserProfile.objects.filter(is_student=True).values('gender').annotate(
+        statistic_by_gender = UserProfile.objects.filter(is_instructor=False).values('gender').annotate(
             Count('gender')).order_by('gender')
         data['statistic_by_gender'] = statistic_by_gender
-        statistic_by_gender_for_approved = UserProfile.objects.filter(is_student=True).filter(
+        statistic_by_gender_for_approved = UserProfile.objects.filter(is_instructor=False).filter(
             trainesscourserecord__approved__in=[True]).filter(
             trainesscourserecord__trainess_approved__in=[True]).values('gender').annotate(Count('gender')).order_by(
             'gender')
         data['statistic_by_gender_for_approved'] = statistic_by_gender_for_approved
         log.debug(statistic_by_gender, extra=d)
-        statistic_by_university = UserProfile.objects.filter(is_student=True).values('university').annotate(
+        statistic_by_university = UserProfile.objects.filter(is_instructor=False).values('university').annotate(
             Count('university')).order_by('-university__count')
         data['statistic_by_university'] = statistic_by_university
 
-        statistic_by_university_for_approved = UserProfile.objects.filter(is_student=True).values('university').filter(
+        statistic_by_university_for_approved = UserProfile.objects.filter(is_instructor=False).values('university').filter(
             trainesscourserecord__approved__in=[True]).filter(
             trainesscourserecord__trainess_approved__in=[True]).annotate(Count('university')).order_by(
             '-university__count')
@@ -325,7 +325,7 @@ def statistic(request):
         # kurs bazinda toplam teyitli olanlar
         data['statistic_by_course_for_apply'] = TrainessCourseRecord.objects.filter(trainess_approved=True).values(
             'course__name').annotate(count=Count('course')).order_by('-count')
-        total_profile = len(UserProfile.objects.filter(is_student=True))
+        total_profile = len(UserProfile.objects.filter(is_instructor=False))
         total_preference = len(TrainessCourseRecord.objects.all())
         total_preference_for_approved = len(
             TrainessCourseRecord.objects.filter(approved=True).filter(trainess_approved=True))

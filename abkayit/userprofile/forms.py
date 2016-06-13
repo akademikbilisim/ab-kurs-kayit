@@ -116,13 +116,9 @@ class InstProfileForm(ModelForm):
     class Meta:
         model = UserProfile
         exclude = {}
-        fields = ['job', 'title', 'organization', 'country', 'is_instructor', 'is_student', 'is_speaker',
-                  'is_participant', 'user']
+        fields = ['job', 'title', 'organization', 'country', 'is_instructor', 'user']
         widgets = {
             'is_instructor': forms.HiddenInput(),
-            'is_student': forms.HiddenInput(),
-            'is_speaker': forms.HiddenInput(),
-            'is_participant': forms.HiddenInput(),
             'user': forms.HiddenInput(),
         }
 
@@ -131,9 +127,6 @@ class InstProfileForm(ModelForm):
         for field in self.fields:
             self.fields[field].required = True
         self.fields['is_instructor'].required = False
-        self.fields['is_student'].required = False
-        self.fields['is_speaker'].required = False
-        self.fields['is_participant'].required = False
         self.fields['user'].required = False
 
 
@@ -160,9 +153,6 @@ class StuProfileForm(ModelForm):
             'additional_information': forms.Textarea(
                 attrs={'placeholder': _('Additional Information'), 'class': 'form-control'}),
             'is_instructor': forms.HiddenInput(),
-            'is_student': forms.HiddenInput(),
-            'is_speaker': forms.HiddenInput(),
-            'is_participant': forms.HiddenInput(),
             'userpassedtest': forms.HiddenInput(),
             'user': forms.HiddenInput(),
             'birthdate': SelectDateWidget(years=dyncf.BirthDateYears),
@@ -171,8 +161,12 @@ class StuProfileForm(ModelForm):
             'organization': 'Kurum Bilgisi; okuyorsanız okuduğunuz kurum, çalışıyorsanız çalıştığınız kurum bilgisidir',
         }
 
-    def __init__(self, user=None, *args, **kwargs):
-        # User.objects.get(email=request.user)
+    def __init__(self, *args, **kwargs):
+        '''
+
+        :param args:
+        :param kwargs: ruser: profili olusturulacak kullanıcı tckimlik no dogrulamada kullanılacak.
+        '''
         self.ruser = kwargs.pop('ruser', None)
         super(StuProfileForm, self).__init__(*args, **kwargs)
         for field in self.fields:
@@ -180,18 +174,10 @@ class StuProfileForm(ModelForm):
         self.fields['tckimlikno'].required = False
         self.fields['ykimlikno'].required = False
         self.fields['is_instructor'].required = False
-        self.fields['is_student'].required = False
-        self.fields['is_speaker'].required = False
-        self.fields['is_participant'].required = False
         self.fields['university'].required = False
         self.fields['userpassedtest'].required = False
         self.fields['user'].required = False
         self.fields['additional_information'].required = False
-        if user:
-            try:
-                self.fields['user'].initial = user
-            except:
-                self.fields['user'] = '1'
 
     def clean(self):
         cleaned_data = super(StuProfileForm, self).clean()

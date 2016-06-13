@@ -38,6 +38,11 @@ PREFERENCE_LIMIT = 2
 ADDITION_PREFERENCE_LIMIT = 1
 
 '''
+    ACCOMODATION_PREFERENCE_LIMIT: Konaklama tercih limiti
+'''
+ACCOMODATION_PREFERENCE_LIMIT = 1
+
+'''
     USER_TYPES: Sistemden olusturulacak kullanicilarin turleri
 '''
 USER_TYPES = {"inst": "instructor", "stu": "student", "hepsi": "hepsi"}
@@ -71,9 +76,9 @@ TCKIMLIK_SORGULAMA_WS = "https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL
 '''
 REQUIRE_TRAINESS_APPROVE = False
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'static')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-MEDIA_URL = '/'
+MEDIA_URL = '/media/'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 

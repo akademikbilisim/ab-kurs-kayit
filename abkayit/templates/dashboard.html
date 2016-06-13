@@ -34,7 +34,11 @@
         </li>
         {% else %}
         {%if user.userprofile %}
-        {% if user.userprofile.is_student %}
+        {% if user.userprofile.is_instructor %}
+        <li>
+            <a href="{% url 'controlpanel' %}"><i class="fa fa-book fa-fw"></i> Kursum</a>
+        </li>
+        {% else %}
         <li>
             <a href="{% url 'applytocourse' %}"><i class="fa fa-check-square-o fa-fw"></i> Kurs Başvurusu</a>
         </li>
@@ -42,11 +46,7 @@
             <a href="{% url 'approve_course_preference' %}"><i class="fa fa-thumbs-o-up fa-fw"></i> Başvuru Durum/Onayla</a>
         </li>
         {% endif %}
-        {% if user.userprofile.is_instructor %}
-        <li>
-            <a href="{% url 'controlpanel' %}"><i class="fa fa-book fa-fw"></i> Kursum</a>
-        </li>
-        {% endif %}
+
         {% endif%}
         {% endif %}
         <li class="divider"></li>
