@@ -2,6 +2,7 @@ Merhaba,
 
 {{ course.no }} numaralı kursta {{ user }} tarafından güncelleme yapılmıştır.
 
-Yapılan değişiklikleri görmek için https://kayit.ab.org.tr/egitim/controlpanel adresini ziyaret ediniz.
+Yapılan değişiklikleri görmek için https://{{ site.url }}/egitim/controlpanel adresini ziyaret ediniz.
 
-Akademik Bilişim 2016
+{{ site.name }} - {{ site.year }}
+

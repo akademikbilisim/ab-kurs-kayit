@@ -16,7 +16,7 @@ from training.forms import ParticipationForm
 log = logging.getLogger(__name__)
 
 
-def send_pref_saved_email(requestuser, d):
+def send_pref_saved_email(requestuser, course_prefs, site,d):
     """
     kursiyer tercih yaptiktan sonra tercih bilgilerinin gonderildiği e-posta
     :param requestuser:
@@ -24,7 +24,7 @@ def send_pref_saved_email(requestuser, d):
 
     """
     try:
-        context = {'user': requestuser}
+        context = {'user': requestuser, 'course_prefs':course_prefs, 'site': site}
         domain = Site.objects.get(is_active=True).home_url
         if domain.endswith('/'):
             domain = domain.rstrip('/')
@@ -54,6 +54,26 @@ def send_email_to_inform_trainer(data, d):
                    data,
                    EMAIL_FROM_ADDRESS,
                    data['course'].trainer.all().values_list('user__username', flat=True))
+    except Exception as e:
+        log.error(e.message, extra=d)
+
+
+def inform_about_changes(changedpref, approvedpref ,data, d):
+    """
+    TODO:
+    :param changedpref: mail iceriginde kullanilacak veriler
+    :param d: logda kullanilacak veriler
+    Kurs onaylama sayfasinda yapilan degisiklikler ile ilgili kursun egitmenlerine uyarı e-postası gönderilir.
+    """
+    try:
+        data['changedpref'] = changedpref
+        data['approvedpref'] = approvedpref
+        send_email("training/messages/inform_trainers_about_changes_subject.txt",
+                   "training/messages/inform_trainers_about_changes.html",
+                   "training/messages/inform_trainers_about_changes.txt",
+                   data,
+                   EMAIL_FROM_ADDRESS,
+                   changedpref.course.trainer.all().values_list('user__username', flat=True))
     except Exception as e:
         log.error(e.message, extra=d)
 
@@ -152,15 +172,9 @@ def get_trainess_by_course(course, d):
     """
     trainess = {}
     for i in range(1, PREFERENCE_LIMIT + 1):
-        # trainess[course][i] = TrainessCourseRecord.objects.filter(course=course.pk, preference_order=i).exclude(
-        #    trainess__in=TrainessCourseRecord.objects.filter(~Q(course=course.pk), trainess_approved=True).values_list(
-        #        'trainess'))
         trainess[i] = TrainessCourseRecord.objects.filter(course=course.pk, preference_order=i).prefetch_related(
             'course')
     for i in range(1, ADDITION_PREFERENCE_LIMIT + 1):
-        # trainess[course][-i] = TrainessCourseRecord.objects.filter(course=course.pk, preference_order=-i).exclude(
-        #    trainess__in=TrainessCourseRecord.objects.filter(~Q(course=course.pk), trainess_approved=True).values_list(
-        #        'trainess'))
         trainess[-i] = TrainessCourseRecord.objects.filter(course=course.pk, preference_order=-i).prefetch_related(
             'course')
     return trainess
@@ -192,15 +206,16 @@ def save_course_prefferences(userprofile, course_prefs, d):
     res = {'status': '-1', 'message': 'error'}
     if len(course_prefs) <= PREFERENCE_LIMIT:
         if len(set([i['value'] for i in course_prefs])) == len([i['value'] for i in course_prefs]):
-            for course_pre in course_prefs:
+
                 try:
-                    course_record = TrainessCourseRecord(trainess=userprofile,
-                                                         course=Course.objects.get(id=course_pre['value']),
-                                                         preference_order=course_pre['name'])
-                    course_record.save()
+                    for course_pre in course_prefs:
+                        course_record = TrainessCourseRecord(trainess=userprofile,
+                                                             course=Course.objects.get(id=course_pre['value']),
+                                                             preference_order=course_pre['name'])
+                        course_record.save()
                     res['status'] = 0
                     res['message'] = "Tercihleriniz başarılı bir şekilde güncellendi"
-                    send_pref_saved_email(userprofile.user, d)
+                    send_pref_saved_email(userprofile.user, course_prefs, d)
                 except Exception as e:
                     log.error(e.message, extra=d)
                     res['message'] = "Tercihleriniz kaydedilirken hata oluştu"

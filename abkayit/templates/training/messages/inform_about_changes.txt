@@ -1,0 +1,8 @@
+Merhaba,
+
+{{ changedpref.course.no }} numaralı {{ changedpref.course.name }} kursunuza kabul ettiğiniz {{ changedpref.trainess.user }} kullanıcısı
+{{ approvedpref.preference_order }}. tercihi olan {{ approvedpref.course.name }} kursuna kabul edilmiştir.
+
+Yapılan değişiklikleri görmek için https://{{ site.url }}/egitim/controlpanel adresini ziyaret ediniz.
+
+{{ site.name }} - {{ site.year }}

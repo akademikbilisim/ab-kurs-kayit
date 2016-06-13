@@ -156,7 +156,7 @@ def approve_course_preference(request):
                     for record in recordapprovedbyinst:
                         pref_order = record.preference_order
                         approvedate = ApprovalDate.objects.get(preference_order=pref_order)
-                        if approvedate.start_date < now < approvedate.end_date:
+                        if approvedate.start_date <= now <= approvedate.end_date:
                             data["approve_is_open"] = True
                             trainess_course_record = record
                 elif recordapprovedbytra:
@@ -226,32 +226,35 @@ def control_panel(request):
                     log.info(request.POST, extra=d)
                     for course in courses:
                         try:
-                            approvedr = request.POST.getlist('students' + str(course.pk))
-                            allprefs = []
-                            for pref in data['dates']:
-                                if data['dates'][pref].start_date < now < data['dates'][pref].end_date:
-                                    allprefs.extend(TrainessCourseRecord.objects.filter(course=course.pk).filter(
-                                        preference_order=pref))
-                                    log.debug(allprefs, extra=d)
-                            for p in allprefs:
-                                if str(p.pk) not in approvedr:
-                                    p.approved = False
-                                elif str(p.pk) in approvedr:
-                                    p.approved = True
-                                    p.instapprovedate = now
-                                    if not REQUIRE_TRAINESS_APPROVE:
-                                        p.trainess_approved = True
-                                p.save()
-                                log.debug(p, extra=d)
-                            course.trainess.clear()
-                            allprefs = TrainessCourseRecord.objects.filter(course=course.pk)
-                            for p in allprefs:
-                                if p.approved:
-                                    course.trainess.add(p.trainess)
-                            course.save()
                             data["user"] = request.user
                             data["course"] = course
+                            approvedr = request.POST.getlist('students' + str(course.pk))
+                            for pref in data['dates']:
+                                if data['dates'][pref].start_date < now < data['dates'][pref].end_date:
+                                    allprefs = TrainessCourseRecord.objects.filter(course=course.pk, preference_order=pref)
+                                    for p in allprefs:
+                                        if str(p.pk) not in approvedr:
+                                            p.approved = False
+                                            p.trainess_approved = False
+                                        elif str(p.pk) in approvedr:
+                                            trainessapprovedprefs = p.trainess.trainesscourserecord_set.all().filter(approved=True)
+                                            if trainessapprovedprefs:
+                                                p.approved = True
+                                                p.instapprovedate = now
+                                                course.trainess.add(p.trainess)
+                                                course.save()
+                                                if not REQUIRE_TRAINESS_APPROVE:
+                                                    p.trainess_approved = True
+                                                for tp in trainessapprovedprefs:
+                                                    if pref < tp.preference_order:
+                                                        tp.approved = False
+                                                        tp.trainess_approved = False
+                                                        tp.save()
+                                                        inform_about_changes(tp, p, data, d)
+                                        p.save()
+                                        log.debug(p, extra=d)
                             note = "Seçimleriniz başarılı bir şekilde kaydedildi."
+                            send_email_to_inform_trainer(data, d)
                         except Exception as e:
                             note = "Beklenmedik bir hata oluştu!"
                             log.error(e.message, extra=d)

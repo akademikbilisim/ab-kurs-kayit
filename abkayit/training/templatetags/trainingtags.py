@@ -28,13 +28,23 @@ def isdategtnow_body(datedict, key, t, course):
     adate = datedict.get(key)
     if adate:
         if adate.end_date > now:
-            dom = "<div class=\"checkbox\">"
-            if t.approved:
-                dom += "<input type=\"checkbox\" checked name=\"students%s\" value=\"%s\"/>" % (course.id, t.pk)
+            approvedprefs = t.trainess.trainesscourserecord_set.all().filter(approved=True)
+            is_selectable = True
+            priviliged_pref = None
+            for approvedpref in approvedprefs:
+                if t.preference_order > approvedpref.preference_order:
+                    is_selectable = False
+                    priviliged_pref = approvedpref
+            if is_selectable:
+                dom = "<div class=\"checkbox\">"
+                if t.approved:
+                    dom += "<input type=\"checkbox\" checked name=\"students%s\" value=\"%s\"/>" % (course.id, t.pk)
+                else:
+                    dom += "<input type=\"checkbox\" name=\"students%s\" value=\"%s\"/>" % (course.id, t.pk)
+                dom += "</div>"
+                return dom
             else:
-                dom += "<input type=\"checkbox\" name=\"students%s\" value=\"%s\"/>" % (course.id, t.pk)
-            dom += "</div>"
-            return dom
+                return "%d. tercihi kabul edilmis." % priviliged_pref.preference_order
         else:
             if t.trainess_approved:
                 return "Evet"

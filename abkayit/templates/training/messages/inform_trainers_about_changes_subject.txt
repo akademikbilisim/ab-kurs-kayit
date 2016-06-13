@@ -1,1 +1,1 @@
-Akademik Bilisim - Güncelleme Bilgilendirmesi
+{{ site.name }} {{ site.year }} - Güncelleme Bilgilendirmesi
