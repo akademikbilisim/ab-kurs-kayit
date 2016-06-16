@@ -113,6 +113,7 @@ INSTALLED_APPS = (
     'ckeditor',
     'ckeditor_uploader',
     'django_countries',
+    'mailing',
 )
 
 MIDDLEWARE_CLASSES = (

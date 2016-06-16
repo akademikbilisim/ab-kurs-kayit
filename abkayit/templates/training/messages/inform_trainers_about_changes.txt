@@ -1,8 +1,0 @@
-Merhaba,
-
-{{ course.no }} numaralı kursta {{ user }} tarafından güncelleme yapılmıştır.
-
-Yapılan değişiklikleri görmek için https://{{ site.url }}/egitim/controlpanel adresini ziyaret ediniz.
-
-{{ site.name }} - {{ site.year }}
-

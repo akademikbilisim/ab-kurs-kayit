@@ -9,73 +9,11 @@ from abkayit.models import Site
 from abkayit.adaptor import send_email
 from abkayit.settings import EMAIL_FROM_ADDRESS, PREFERENCE_LIMIT, ADDITION_PREFERENCE_LIMIT
 from abkayit.models import ApprovalDate
-
+from abkayit.backend import send_email_by_operation_name
 from training.models import Course, TrainessCourseRecord, TrainessParticipation
 from training.forms import ParticipationForm
 
 log = logging.getLogger(__name__)
-
-
-def send_pref_saved_email(requestuser, course_prefs, site,d):
-    """
-    kursiyer tercih yaptiktan sonra tercih bilgilerinin gonderildiği e-posta
-    :param requestuser:
-    :param d: loga yazılacak ayrıntılar
-
-    """
-    try:
-        context = {'user': requestuser, 'course_prefs':course_prefs, 'site': site}
-        domain = Site.objects.get(is_active=True).home_url
-        if domain.endswith('/'):
-            domain = domain.rstrip('/')
-        context['domain'] = domain
-
-        send_email("training/messages/preference_saved_subject.html",
-                   "training/messages/preference_saved.html",
-                   "training/messages/preference_saved.text",
-                   context,
-                   EMAIL_FROM_ADDRESS,
-                   [requestuser.username])
-    except Exception as e:
-        log.error(e.message, extra=d)
-
-
-def send_email_to_inform_trainer(data, d):
-    """
-
-    :param data: mail iceriginde kullanilacak veriler
-    :param d: logda kullanilacak veriler
-    Kurs onaylama sayfasinda yapilan degisiklikler ile ilgili kursun egitmenlerine uyarı e-postası gönderilir.
-    """
-    try:
-        send_email("training/messages/inform_trainers_about_changes_subject.txt",
-                   "training/messages/inform_trainers_about_changes.html",
-                   "training/messages/inform_trainers_about_changes.txt",
-                   data,
-                   EMAIL_FROM_ADDRESS,
-                   data['course'].trainer.all().values_list('user__username', flat=True))
-    except Exception as e:
-        log.error(e.message, extra=d)
-
-
-def inform_about_changes(changedpref, approvedpref ,data, d):
-    """
-    TODO:
-    :param changedpref: mail iceriginde kullanilacak veriler
-    :param d: logda kullanilacak veriler
-    Kurs onaylama sayfasinda yapilan degisiklikler ile ilgili kursun egitmenlerine uyarı e-postası gönderilir.
-    """
-    try:
-        data['changedpref'] = changedpref
-        data['approvedpref'] = approvedpref
-        send_email("training/messages/inform_trainers_about_changes_subject.txt",
-                   "training/messages/inform_trainers_about_changes.html",
-                   "training/messages/inform_trainers_about_changes.txt",
-                   data,
-                   EMAIL_FROM_ADDRESS,
-                   changedpref.course.trainer.all().values_list('user__username', flat=True))
-    except Exception as e:
-        log.error(e.message, extra=d)
 
 
 def get_approve_start_end_dates_for_inst(site, d):
@@ -202,7 +140,7 @@ def is_trainess_approved_any_course(userprofile, site, d):
         return False
 
 
-def save_course_prefferences(userprofile, course_prefs, d):
+def save_course_prefferences(userprofile, course_prefs, site, d):
     res = {'status': '-1', 'message': 'error'}
     if len(course_prefs) <= PREFERENCE_LIMIT:
         if len(set([i['value'] for i in course_prefs])) == len([i['value'] for i in course_prefs]):
@@ -215,7 +153,11 @@ def save_course_prefferences(userprofile, course_prefs, d):
                         course_record.save()
                     res['status'] = 0
                     res['message'] = "Tercihleriniz başarılı bir şekilde güncellendi"
-                    send_pref_saved_email(userprofile.user, course_prefs, d)
+                    context = {'user': userprofile.user, 'course_prefs': course_prefs, 'site': site}
+                    domain = site.home_url
+                    context['domain'] = domain.rstrip('/')
+                    context['recipientlist'] = userprofile.user.username
+                    send_email_by_operation_name(context, "preference_saved")
                 except Exception as e:
                     log.error(e.message, extra=d)
                     res['message'] = "Tercihleriniz kaydedilirken hata oluştu"

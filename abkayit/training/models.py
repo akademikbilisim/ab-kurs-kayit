@@ -46,6 +46,7 @@ class TrainessCourseRecord(models.Model):
     approved = models.BooleanField(default=False)
     trainess_approved = models.BooleanField(default=False)
     instapprovedate = models.DateField(default=now, blank=True, null=True)
+    consentemailsent = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.course.name

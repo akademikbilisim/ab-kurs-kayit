@@ -27,8 +27,7 @@ from training.forms import ParticipationForm
 from training.models import Course, TrainessCourseRecord
 
 from abkayit.models import *
-from abkayit.backend import getsiteandmenus, create_verification_link
-from abkayit.adaptor import send_email
+from abkayit.backend import getsiteandmenus, create_verification_link, send_email_by_operation_name
 
 from abkayit.decorators import active_required
 
@@ -250,28 +249,14 @@ def active_resend(request):
     data = getsiteandmenus(request)
     note = _("Please activate your account.  If you want to re-send an activation email, please click following button")
     if request.POST:
-        user = request.user
-        context = {'user': user}
         domain = data['site'].home_url
-        if domain.endswith('/'):
-            domain = domain.rstrip('/')
-        context['domain'] = domain
-
-        user_verification, created = UserVerification.objects.get_or_create(user_email=user.username)
-        user_verification.activation_key = create_verification_link(user)
+        data['domain'] = domain.rstrip('/')
+        user_verification, created = UserVerification.objects.get_or_create(user_email=request.user.username)
+        user_verification.activation_key = create_verification_link(request.user)
         user_verification.save()
-        context['activation_key'] = user_verification.activation_key
-        try:
-            send_email("userprofile/messages/send_confirm_subject.html",
-                       "userprofile/messages/send_confirm.html",
-                       "userprofile/messages/send_confirm.text",
-                       context,
-                       settings.EMAIL_FROM_ADDRESS,
-                       [user.username])
-
-            note = _("Your activation link has been sent to your email address")
-        except Exception as e:
-            note = e.message
+        data['activation_key'] = user_verification.activation_key
+        data['recipientlist'] = [request.user.username]
+        note = send_email_by_operation_name(data, "send_confirm")
     data['note'] = note
     return render_to_response("userprofile/activate_resend.html", data, context_instance=RequestContext(request))
 
@@ -311,18 +296,11 @@ def password_reset_key(request):
                 user_verification, created = UserVerification.objects.get_or_create(user_email=user.username)
                 user_verification.password_reset_key = create_verification_link(user)
                 user_verification.save()
-                context = {'user': user, 'activation_key': user_verification.password_reset_key}
+                data['user'] = user
+                data['activation_key'] = user_verification.password_reset_key
                 domain = data['site'].home_url
-                if domain.endswith('/'):
-                    domain = domain.rstrip('/')
-                context['domain'] = domain
-                send_email("userprofile/messages/send_reset_password_key_subject.html",
-                           "userprofile/messages/send_reset_password_key.html",
-                           "userprofile/messages/send_reset_password_key.text",
-                           context,
-                           settings.EMAIL_FROM_ADDRESS,
-                           [user.username])
-                note = _("""Password reset key has been sent""")
+                data['domain'] = domain.rstrip('/')
+                note = send_email_by_operation_name(data, "send_reset_password_key")
             except ObjectDoesNotExist:
                 note = _("""There isn't any user record with this e-mail on the system""")
                 log.error(note, extra=d)

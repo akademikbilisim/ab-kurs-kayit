@@ -96,7 +96,7 @@ def apply_to_course(request):
                 if request.method == "POST":
                     TrainessCourseRecord.objects.filter(trainess=userprofile).delete()
                     course_prefs = json.loads(request.POST.get('course'))
-                    res = save_course_prefferences(userprofile, course_prefs, d)
+                    res = save_course_prefferences(userprofile, course_prefs, data['site'], d)
                     return HttpResponse(json.dumps(res), content_type="application/json")
                 data['note'] = note
             else:
@@ -231,13 +231,15 @@ def control_panel(request):
                             approvedr = request.POST.getlist('students' + str(course.pk))
                             for pref in data['dates']:
                                 if data['dates'][pref].start_date < now < data['dates'][pref].end_date:
-                                    allprefs = TrainessCourseRecord.objects.filter(course=course.pk, preference_order=pref)
+                                    allprefs = TrainessCourseRecord.objects.filter(course=course.pk,
+                                                                                   preference_order=pref)
                                     for p in allprefs:
                                         if str(p.pk) not in approvedr:
                                             p.approved = False
                                             p.trainess_approved = False
                                         elif str(p.pk) in approvedr:
-                                            trainessapprovedprefs = p.trainess.trainesscourserecord_set.all().filter(approved=True)
+                                            trainessapprovedprefs = p.trainess.trainesscourserecord_set.all().filter(
+                                                approved=True)
                                             if trainessapprovedprefs:
                                                 p.approved = True
                                                 p.instapprovedate = now
@@ -250,11 +252,18 @@ def control_panel(request):
                                                         tp.approved = False
                                                         tp.trainess_approved = False
                                                         tp.save()
-                                                        inform_about_changes(tp, p, data, d)
+                                                        data['changedpref'] = tp
+                                                        data['approvedpref'] = p
+                                                        data["recipientlist"] = tp.course.trainer.all().values_list(
+                                                            'user__username', flat=True)
+                                                        send_email_by_operation_name(data,
+                                                                                     "inform_trainers_about_changes")
                                         p.save()
                                         log.debug(p, extra=d)
                             note = "Seçimleriniz başarılı bir şekilde kaydedildi."
-                            send_email_to_inform_trainer(data, d)
+                            data["recipientlist"] = data['course'].trainer.all().values_list('user__username',
+                                                                                             flat=True)
+                            send_email_by_operation_name(data, "inform_about_changes")
                         except Exception as e:
                             note = "Beklenmedik bir hata oluştu!"
                             log.error(e.message, extra=d)
@@ -319,7 +328,8 @@ def statistic(request):
             Count('university')).order_by('-university__count')
         data['statistic_by_university'] = statistic_by_university
 
-        statistic_by_university_for_approved = UserProfile.objects.filter(is_instructor=False).values('university').filter(
+        statistic_by_university_for_approved = UserProfile.objects.filter(is_instructor=False).values(
+            'university').filter(
             trainesscourserecord__approved__in=[True]).filter(
             trainesscourserecord__trainess_approved__in=[True]).annotate(Count('university')).order_by(
             '-university__count')
@@ -359,12 +369,8 @@ def cancel_all_preference(request):
                     if data['site'].application_end_date < now_for_approve < data['site'].event_start_date:
                         if tcr.trainess_approved:
                             context['trainess_course_record'] = tcr
-                            send_email("training/messages/notice_for_canceled_courses_subject.html",
-                                       "training/messages/notice_for_canceled_courses.html",
-                                       "training/messages/notice_for_canceled_courses.text",
-                                       context,
-                                       EMAIL_FROM_ADDRESS,
-                                       tcr.course.trainer.all().values_list('user__username', flat=True))
+                            context['recipientlist'] = tcr.course.trainer.all().values_list('user__username', flat=True)
+                            send_email_by_operation_name(context, "notice_for_canceled_courses")
                 except Exception as e:
                     log.error(e.message, extra=d)
                 trainess_course_records.delete()
@@ -373,7 +379,8 @@ def cancel_all_preference(request):
                 notestr = "Kursların başlamasına %d gun kala tüm başvurularını iptal etti." % remaining_days
                 if approvedpref:
                     # Kullanicinin tercihi kursa kaç gün kala kabul görmüş
-                    daysbetweenapproveandevent = int((data['site'].event_start_date - approvedpref.instapprovedate).days)
+                    daysbetweenapproveandevent = int(
+                        (data['site'].event_start_date - approvedpref.instapprovedate).days)
                     notestr += "\nTercihi kursun başlamasına %d gün kala kabul edilmiş." % daysbetweenapproveandevent
             else:
                 notestr = "Kullanici tercihlerini iptal etti"

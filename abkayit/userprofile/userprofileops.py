@@ -3,7 +3,9 @@
 import random
 from pysimplesoap.client import SoapClient
 
-from abkayit.settings import TCKIMLIK_SORGULAMA_WS
+from abkayit.settings import TCKIMLIK_SORGULAMA_WS, EMAIL_FROM_ADDRESS
+
+
 
 '''
     General operations that are used in userprofile app.
@@ -30,3 +32,5 @@ class UserProfileOPS:
             return response['TCKimlikNoDogrulaResult']
         except:
             return -1
+
+

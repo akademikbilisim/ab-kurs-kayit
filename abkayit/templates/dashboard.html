@@ -18,19 +18,19 @@
         </li>
         {% if user.is_staff %}
         <li>
-            <a href="{% url 'alluser' %}"><i class="fa fa-users fa-fw"></i>Tüm Kullanıcılar</a>
+            <a href="{% url 'alluser' %}"><i class="fa fa-users fa-fw"></i> Tüm Kullanıcılar</a>
         </li>
         <li>
-            <a href="{% url 'alltrainers' %}"><i class="fa fa-paperclip fa-fw"></i>Tüm Eğitmenler</a>
+            <a href="{% url 'alltrainers' %}"><i class="fa fa-paperclip fa-fw"></i> Tüm Eğitmenler</a>
         </li>
         <li>
-            <a href="{% url 'allcoursepref' %}"><i class="fa fa-list-alt fa-fw"></i>Tüm Kurs Başvuruları</a>
+            <a href="{% url 'allcoursepref' %}"><i class="fa fa-list-alt fa-fw"></i> Tüm Kurs Başvuruları</a>
         </li>
         <li>
-            <a href="{% url 'statistic' %}"><i class="fa fa-pie-chart fa-fw"></i>İstatistik</a>
+            <a href="{% url 'statistic' %}"><i class="fa fa-pie-chart fa-fw"></i> İstatistik</a>
         </li>
         <li>
-            <a href="{% url 'participationstatuses' %}"><i class="fa fa-pie-chart fa-fw"></i>Yoklama</a>
+            <a href="{% url 'participationstatuses' %}"><i class="glyphicon glyphicon-check"></i>  Yoklama</a>
         </li>
         {% else %}
         {%if user.userprofile %}

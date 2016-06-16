@@ -3,8 +3,14 @@
 import hashlib
 import logging
 import random
+
 from django.core.exceptions import *
+from django.utils.translation import ugettext_lazy as _
+
 from abkayit.models import Site, Menu
+from abkayit.settings import EMAIL_FROM_ADDRESS
+
+from mailing.models import EmailTemplate
 
 log = logging.getLogger(__name__)
 
@@ -24,3 +30,17 @@ def getsiteandmenus(request):
 def create_verification_link(user):
     salt = hashlib.sha1(str(random.random())).hexdigest()[:5]
     return hashlib.sha1(salt + user.username).hexdigest()
+
+
+def send_email_by_operation_name(context, operation_name):
+    try:
+        emailtemplate = EmailTemplate.objects.get(operation_name=operation_name)
+        send_email(emailtemplate.subject,
+                   emailtemplate.body_html,
+                   context,
+                   settings.EMAIL_FROM_ADDRESS,
+                   context['recipientlist'])
+        note = _("Please check your e-mail")
+    except Exception as e:
+        note = e.message
+    return note
