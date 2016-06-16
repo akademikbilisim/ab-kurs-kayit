@@ -256,7 +256,7 @@ def active_resend(request):
         user_verification.save()
         data['activation_key'] = user_verification.activation_key
         data['recipientlist'] = [request.user.username]
-        note = send_email_by_operation_name(data, "send_confirm")
+        note = send_email_by_operation_name(data, "send_activation_key")
     data['note'] = note
     return render_to_response("userprofile/activate_resend.html", data, context_instance=RequestContext(request))
 

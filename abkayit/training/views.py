@@ -370,7 +370,7 @@ def cancel_all_preference(request):
                         if tcr.trainess_approved:
                             context['trainess_course_record'] = tcr
                             context['recipientlist'] = tcr.course.trainer.all().values_list('user__username', flat=True)
-                            send_email_by_operation_name(context, "notice_for_canceled_courses")
+                            send_email_by_operation_name(context, "notice_for_canceled_prefs")
                 except Exception as e:
                     log.error(e.message, extra=d)
                 trainess_course_records.delete()

@@ -24,7 +24,7 @@ def send_confirm_link(instance, created, **kwargs):
             context = {'user': instance, 'activation_key': user_verification.activation_key,
                        'site': Site.objects.get(is_active=True), 'recipientlist': [instance.username]}
             context['domain'] = context['site'].home_url.rstrip('/')
-            send_email_by_operation_name(context, "send_confirm")
+            send_email_by_operation_name(context, "send_activation_key")
 
 
 signals.post_save.connect(send_confirm_link, sender=User)
