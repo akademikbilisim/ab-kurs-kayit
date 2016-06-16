@@ -42,6 +42,7 @@ class UserProfile(models.Model):
     university = models.CharField(choices=UNIVERSITIES, verbose_name=_("University"), max_length=300, blank=True)
     department = models.CharField(verbose_name=_("Department"), max_length=50)
     is_instructor = models.BooleanField(verbose_name=_("Is Instructor"), default=False)
+    can_elect = models.BooleanField(verbose_name=_("Can Elect"), default=False)
     additional_information = models.TextField(verbose_name=_("Additional Information"), null=True)
     userpassedtest = models.BooleanField(verbose_name=_("Basvuru yapabilir mi?"), blank=True, default=False)
 

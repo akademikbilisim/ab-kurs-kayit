@@ -89,7 +89,7 @@
                     {%if t.approved %}
                               <div class="checked-trainee-course"></div>
                     {% endif%}
-                    {% isdategtnow_body  dates pref t course %}
+                    {% isdategtnow_body  dates pref t course user %}
                   </td>
                   <td>{{ t.trainess.title }}</td>
                   <td>{{ t.trainess.organization }}</td>
@@ -145,7 +145,9 @@
 {%endif%}
 {% endfor %}
   {% endfor %}
-      <button type="submit" class="btn btn-default">Gonder</button>
+      {% if user.can_elect%}
+        <button type="submit" class="btn btn-default">Gonder</button>
+      {% endif %}
   </div>
   </form>
   </br>

@@ -17,17 +17,15 @@ def isdategtnow_head(datedict, key):
     if adate:
         if adate.end_date > now:
             return "Onayla"
-        else:
-            return "Gelecegini Teyit Etti"
-    return ""
+    return  "Gelecegini Teyit Etti"
 
 
 @register.simple_tag(name="isdategtnow_body")
-def isdategtnow_body(datedict, key, t, course):
+def isdategtnow_body(datedict, key, t, course, user):
     now = datetime.now()
     adate = datedict.get(key)
     if adate:
-        if adate.end_date > now:
+        if adate.end_date > now and user.can_elect:
             approvedprefs = t.trainess.trainesscourserecord_set.all().filter(approved=True)
             is_selectable = True
             priviliged_pref = None
@@ -45,9 +43,7 @@ def isdategtnow_body(datedict, key, t, course):
                 return dom
             else:
                 return "%d. tercihi kabul edilmis." % priviliged_pref.preference_order
-        else:
-            if t.trainess_approved:
-                return "Evet"
-            else:
-                return "Hayir"
-    return ""
+    if t.trainess_approved:
+        return "Evet"
+    else:
+        return "Hayir"
