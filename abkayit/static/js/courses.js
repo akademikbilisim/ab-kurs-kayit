@@ -2,27 +2,27 @@ function fnFormatDetails ( dTable, nTr )
 {
     var aData = dTable.fnGetData( nTr );
     var sOut = '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
-    sOut += '<tr><td><b>Ünvan:</b></td><td>'+aData[7]+'</td></tr>';
-    sOut += '<tr><td><b>Kurum:</b></td><td>'+aData[8]+'</td></tr>';
-    sOut += '<tr><td><b>Üniversite:</b></td><td>'+aData[9]+'</td></tr>';
-    sOut += '<tr><td><b>Bölüm:</b></td><td>'+aData[10]+'</td></tr>';
-    sOut += '<tr><td><b>Ek Bilgiler:</b></td><td>'+aData[11]+'</td></tr>';
-    sOut += '<tr><td><b>Kursiyerin Seçtiği Diğer Kurslar: </b></td><td>'+aData[12]+'</td></tr>';
-    sOut += '<tr><td></td><td>'+aData[13]+'</td></tr>';
+    sOut += '<tr><td><b>Ünvan:</b></td><td>'+aData[8]+'</td></tr>';
+    sOut += '<tr><td><b>Kurum:</b></td><td>'+aData[9]+'</td></tr>';
+    sOut += '<tr><td><b>Üniversite:</b></td><td>'+aData[10]+'</td></tr>';
+    sOut += '<tr><td><b>Bölüm:</b></td><td>'+aData[11]+'</td></tr>';
+    sOut += '<tr><td><b>Ek Bilgiler:</b></td><td>'+aData[12]+'</td></tr>';
+    sOut += '<tr><td><b>Kursiyerin Seçtiği Diğer Kurslar: </b></td><td>'+aData[13]+'</td></tr>';
     sOut += '<tr><td></td><td>'+aData[14]+'</td></tr>';
+    sOut += '<tr><td></td><td>'+aData[15]+'</td></tr>';
     sOut += '</table>';
     sOut += '</br>';
     sOut += '<div class="score">';
     sOut += '<div class="form-group">';
     sOut += '<div class="row">';
-    sOut += aData[15];
+    sOut += aData[16];
     sOut += '</div>';
     sOut += '</div>';
     sOut += '</br>';
     sOut += '<div class="score">';
     sOut += '<div class="form-group">';
     sOut += '<div class="row">';
-    sOut += aData[16];
+    sOut += aData[17];
     sOut += '</div>';
     sOut += '</div>';
     return sOut;
@@ -53,10 +53,6 @@ $(document).ready(function(){
               "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Turkish.json"
             },
             "columnDefs": [
-               {
-                "targets": [ 7 ],
-                "visible": false
-               },
                {
                 "targets": [ 8 ],
                 "visible": false
@@ -91,6 +87,10 @@ $(document).ready(function(){
                },
                {
                 "targets": [ 16 ],
+                "visible": false
+               },
+               {
+                "targets": [ 17 ],
                 "visible": false
                },
 

@@ -25,7 +25,7 @@ def isdategtnow_body(datedict, key, t, course, user):
     now = datetime.now()
     adate = datedict.get(key)
     if adate:
-        if adate.end_date > now and user.can_elect:
+        if adate.end_date > now and user.userprofile.can_elect:
             approvedprefs = t.trainess.trainesscourserecord_set.all().filter(approved=True)
             is_selectable = True
             priviliged_pref = None
