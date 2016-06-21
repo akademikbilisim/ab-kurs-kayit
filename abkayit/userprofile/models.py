@@ -24,6 +24,10 @@ class UserVerification(models.Model):
     def __unicode__(self):
         return self.user_email
 
+    class Meta:
+        verbose_name = _('User Verification')
+        verbose_name_plural = _('User Verifications')
+
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
@@ -51,6 +55,8 @@ class UserProfile(models.Model):
 
     class Meta:
         ordering = ('user__username',)
+        verbose_name = _('User Profile')
+        verbose_name_plural = _('User Profiles')
 
 
 class TrainessNote(models.Model):
@@ -63,6 +69,10 @@ class TrainessNote(models.Model):
 
     def __unicode__(self):
         return self.note_to_profile.user.username
+
+    class Meta:
+        verbose_name = _('Trainess Note')
+        verbose_name_plural = _('Trainess Notes')
 
 
 class SubscribeNotice(models.Model):

@@ -63,3 +63,10 @@ class TrainessParticipation(models.Model):
                                  default='0')
     evening = models.CharField(choices=TRAINESS_PARTICIPATION_STATE, verbose_name=_("Aksam"), max_length=3, default='0')
     day = models.CharField(verbose_name=_("Gun"), max_length=20, default='1')
+
+    def __unicode__(self):
+        return self.courserecord.trainess.user.username
+
+    class Meta:
+        verbose_name = 'Yoklama Bilgisi'
+        verbose_name_plural = 'Yoklama Bilgileri'

@@ -51,6 +51,10 @@ class Content(models.Model):
     def __unicode__(self):
         return self.name
 
+    class Meta:
+        verbose_name = _('Content')
+        verbose_name_plural = _('Contents')
+
 
 class Answer(models.Model):
     detail = models.CharField(verbose_name=_("Detail"), max_length="500")
@@ -87,4 +91,5 @@ class ApprovalDate(models.Model):
     for_trainess = models.BooleanField(verbose_name=_("For Trainess?"), default=False)
 
     class Meta:
+        verbose_name = _("Approval Date")
         verbose_name = _("Approval Date")
