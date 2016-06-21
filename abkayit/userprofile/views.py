@@ -223,8 +223,11 @@ def get_all_trainers_view(request):
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
     data = getsiteandmenus(request)
     try:
-        trainers = UserProfile.objects.filter(is_instructor=True)
-        data['trainers'] = trainers
+        trainers = []
+        courses = Course.objects.filter(site=2)
+        for course in courses:
+            trainers.extend(course.trainer.all())
+        data['trainers'] = set(trainers)
     except Exception as e:
         log.error(e.message, extra=d)
     return render_to_response("userprofile/alltrainess.html", data, context_instance=RequestContext(request))
