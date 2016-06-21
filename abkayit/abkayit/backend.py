@@ -9,6 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from abkayit.models import Site, Menu
 from abkayit.settings import EMAIL_FROM_ADDRESS
+from abkayit.adaptor import send_email
 
 from mailing.models import EmailTemplate
 
@@ -38,9 +39,9 @@ def send_email_by_operation_name(context, operation_name):
         send_email(emailtemplate.subject,
                    emailtemplate.body_html,
                    context,
-                   settings.EMAIL_FROM_ADDRESS,
+                   EMAIL_FROM_ADDRESS,
                    context['recipientlist'])
-        note = _("Please check your e-mail")
+        return 1
     except Exception as e:
-        note = e.message
-    return note
+        log.error(e.message, extra={'clientip': context.get('clientip', ''), 'user': context.get('user', '')})
+        return 0

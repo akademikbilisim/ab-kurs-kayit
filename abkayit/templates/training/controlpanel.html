@@ -154,7 +154,12 @@
 {% endfor %}
   {% endfor %}
       {% if user.userprofile.can_elect%}
-        <button type="submit" class="btn btn-default">Gonder</button>
+        <div class="alert alert-danger">
+            Uyarı: Kabul e-postaları onayladığınız katılımcılara gönderilir. Kabul e-postası gönderilen kullanıcıların onayını kaldıramazsınız!
+        </div>
+        <p><input type="checkbox" name="send_consent_email"/>  Kabul e-postaları gönderilsin</p>
+        <button type="submit" class="btn btn-success pull-left">Gönder</button>
+
       {% endif %}
   </div>
   </form>

@@ -217,7 +217,7 @@ def control_panel(request):
                 data['trainess'] = {}
                 if data['dates']:
                     for course in courses:
-                        if now < data['dates'].get(1).end_date:
+                        if now <= data['dates'].get(1).end_date:
                             data['trainess'][course] = get_trainess_by_course(course, d)
                         else:
                             note = _("Kursiyer kabul dönemi kapanmıştır")
@@ -225,52 +225,7 @@ def control_panel(request):
                 if request.POST:
                     log.info("kursiyer onay islemi basladi", extra=d)
                     log.info(request.POST, extra=d)
-                    if data["user"].can_elect:
-                        for course in courses:
-                            try:
-
-                                data["course"] = course
-                                approvedr = request.POST.getlist('students' + str(course.pk))
-                                for pref in data['dates']:
-                                    if data['dates'][pref].start_date < now < data['dates'][pref].end_date:
-                                        allprefs = TrainessCourseRecord.objects.filter(course=course.pk,
-                                                                                       preference_order=pref)
-                                        for p in allprefs:
-                                            if str(p.pk) not in approvedr:
-                                                p.approved = False
-                                                p.trainess_approved = False
-                                            elif str(p.pk) in approvedr:
-                                                trainessapprovedprefs = p.trainess.trainesscourserecord_set.all().filter(
-                                                    approved=True)
-                                                if trainessapprovedprefs:
-                                                    p.approved = True
-                                                    p.instapprovedate = now
-                                                    course.trainess.add(p.trainess)
-                                                    course.save()
-                                                    if not REQUIRE_TRAINESS_APPROVE:
-                                                        p.trainess_approved = True
-                                                    for tp in trainessapprovedprefs:
-                                                        if pref < tp.preference_order:
-                                                            tp.approved = False
-                                                            tp.trainess_approved = False
-                                                            tp.save()
-                                                            data['changedpref'] = tp
-                                                            data['approvedpref'] = p
-                                                            data["recipientlist"] = tp.course.trainer.filter(can_elect=True).values_list(
-                                                                'user__username', flat=True)
-                                                            send_email_by_operation_name(data,
-                                                                                         "inform_trainers_about_changes")
-                                            p.save()
-                                            log.debug(p, extra=d)
-                                note = "Seçimleriniz başarılı bir şekilde kaydedildi."
-                                data["recipientlist"] = data['course'].trainer.filter(can_elect=True).values_list('user__username',
-                                                                                                 flat=True)
-                                send_email_by_operation_name(data, "inform_about_changes")
-                            except Exception as e:
-                                note = "Beklenmedik bir hata oluştu!"
-                                log.error(e.message, extra=d)
-                    else:
-                        note = "Bu işlemi yapmaya yetkiniz yok!"
+                    note = applytrainerselections(request.POST, courses, data, d)
             data['note'] = note
             return render_to_response("training/controlpanel.html", data, context_instance=RequestContext(request))
         else:

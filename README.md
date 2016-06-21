@@ -173,3 +173,12 @@ Tercih Sırası: {{trainess_course_record.preference_order}}<br>
 subject:
 {{ site.name }} {{ site.year }} - Kurs Tercih İptal Bilgilendirmesi
 
+*** send_consent_email *** training.tutils.py
+
+Merhaba,<br><br>
+
+{{ approvedpref.preference_order }}. tercihiniz olan {{ approvedpref.course.no }} nolu {{ approvedpref.course.name }}<br>
+kursuna başvurunuz kabul edilmiştir.
+
+subject:
+{{ site.name }} {{ site.year }} - Kabul Edilen Tercihiniz
