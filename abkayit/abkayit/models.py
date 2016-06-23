@@ -90,6 +90,9 @@ class ApprovalDate(models.Model):
     for_instructor = models.BooleanField(verbose_name=_("For Instructor?"), default=True)
     for_trainess = models.BooleanField(verbose_name=_("For Trainess?"), default=False)
 
+    def __unicode__(self):
+        return self.end_date.strftime("%Y-%m-%d %H:%M:%S")
+
     class Meta:
         verbose_name = _("Approval Date")
         verbose_name_plural = _("Approval Dates")
