@@ -163,9 +163,9 @@ def instructor_information(request):
         return redirect("createprofile")
     data = getsiteandmenus(request)
     if not request.user.userprofile.is_instructor:
-        note = _("You don't have permission to access to here")
+        note = _("You are not authorized to access here")
     else:
-        note = _("Please enter your transformation, arrival date, departure date informations")
+        note = _("Please enter your transformation, arrival date, departure date information")
         instructorinformation = None
         try:
             instructorinformation = InstructorInformation.objects.get(user=request.user.userprofile)
@@ -185,9 +185,9 @@ def instructor_information(request):
                     instructor_info = form.save(commit=True)
                     instructor_info.user = request.user.userprofile
                     instructor_info.save()
-                    note = _("Your informations saved successfully")
+                    note = _("Your information saved successfully")
                 except Exception as e:
-                    note = _("Error occured during save your informations")
+                    note = _("An error occurred while saving your information")
                     log.error(e.message, extra=d)
         data['form'] = form
     data['note'] = note

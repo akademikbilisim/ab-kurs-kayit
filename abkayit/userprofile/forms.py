@@ -189,18 +189,18 @@ class StuProfileForm(ModelForm):
             if cleaned_data['tckimlikno'] and cleaned_data['ykimlikno']:
                 raise forms.ValidationError(_("Please fill only one of them:tckimlikno,ykimlikno"))
             elif not cleaned_data['tckimlikno'] and cleaned_data['country'] == 'TR':
-                raise forms.ValidationError(_("TC identifier no can not be empty for Turkish citizens"))
+                raise forms.ValidationError(_("TC identity number can not be empty for Turkish citizens"))
             elif not cleaned_data['ykimlikno'] and cleaned_data['country'] != 'TR':
-                raise forms.ValidationError(_("Foreigner identifier no can not be blank for non Turkish citizens"))
+                raise forms.ValidationError(_("Foreign identity number can not be empty for non Turkish citizens"))
             elif cleaned_data['tckimlikno'] and cleaned_data['country'] == 'TR':
                 tckisvalid = UserProfileOPS.validateTCKimlikNo(cleaned_data['tckimlikno'].rstrip().lstrip(), first_name,
                                                                last_name, byear)
                 if tckisvalid == -1:
-                    raise forms.ValidationError(_("Error occured during verify your TC identifier no"))
+                    raise forms.ValidationError(_("An error occured while verifing your TC identity number"))
                 elif not tckisvalid:
-                    raise forms.ValidationError(_("Your identification informations couldn't be verified, Please enter \
-                                                     your TC identifier no, your name, your last name (with Turkish character) \
-                                                     and your bird date completely"))
+                    raise forms.ValidationError(_("Your identity information can not be verified, Please enter \
+                                                     your TC identity number, your name, your last name (with Turkish characters if exist) \
+                                                     and your birth date precisely"))
         else:
             raise forms.ValidationError(_("User not found"))
         return cleaned_data
@@ -243,12 +243,12 @@ class InstructorInformationForm(ModelForm):
             'departure_date': SelectDateWidget(attrs={'placeholder': _('Departure Date')}),
         }
         help_texts = {
-            'transportation': _('Select your transportation to go Akademik Bilisim'),
-            'additional_information': _('If you want to add additional information, please enter to here'),
+            'transportation': _('Select your transportation type'),
+            'additional_information': _('If you want to add additional information, please enter here'),
             'arrival_date': _(
-                'Arrival Date (Example: If your first day is 1st February(for accommodation), please select 1st February'),
+                'Arrival Date (Example: If your first day at event will be 1st February, please select 1st February'),
             'departure_date': _(
-                'Departure Date (Example: If you will be stay at 3rd february(for accommodation), please select 3rd February)')
+                'Departure Date (Example: If you will stay at 3rd February, please select 3rd February)')
         }
 
     def __init__(self, *args, **kwargs):

@@ -92,4 +92,4 @@ class ApprovalDate(models.Model):
 
     class Meta:
         verbose_name = _("Approval Date")
-        verbose_name = _("Approval Date")
+        verbose_name_plural = _("Approval Dates")

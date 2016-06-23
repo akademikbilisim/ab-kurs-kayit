@@ -121,9 +121,9 @@ def apply_to_course(request):
                             if is_trainess_approved_any_course(userprofile, data['site'], d):
                                 data['additional1_pref_closed'] = False
                                 log.info("ek tercih aktif", extra=d)
-                                data['note'] = _("Ek tercih dönemi içindesiniz, ek tercih yapabilirsiniz")
+                                data['note'] = _("You can make additional preference.")
     else:
-        data['note'] = _("Etkinlikte henüz kurs yok.")
+        data['note'] = _("There isn't any course in this event.")
     return render_to_response('training/applytocourse.html', data)
 
 
@@ -220,7 +220,7 @@ def control_panel(request):
                         if now <= data['dates'].get(1).end_date:
                             data['trainess'][course] = get_trainess_by_course(course, d)
                         else:
-                            note = _("Kursiyer kabul dönemi kapanmıştır")
+                            note = _("Consent period is closed")
                             data['trainess'][course] = get_approved_trainess(course, d)
                 if request.POST:
                     log.info("kursiyer onay islemi basladi", extra=d)

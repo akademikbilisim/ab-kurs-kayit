@@ -14,10 +14,14 @@ def make_choices(choices):
 
 
 class Keyword(models.Model):
-    name = models.CharField(verbose_name=_("Anahtar Kelimeler"), max_length="64")
+    name = models.CharField(verbose_name=_("Keyword Name"), max_length="64")
 
     def __unicode__(self):
         return self.name
+
+    class Meta:
+        verbose_name = _('Keyword')
+        verbose_name_plural = _('Keywords')
 
 
 class Course(models.Model):
@@ -35,8 +39,8 @@ class Course(models.Model):
         return self.name
 
     class Meta:
-        verbose_name = 'Kurs'
-        verbose_name_plural = 'Kurslar'
+        verbose_name = _('Course')
+        verbose_name_plural = _('Courses')
 
 
 class TrainessCourseRecord(models.Model):
@@ -52,21 +56,21 @@ class TrainessCourseRecord(models.Model):
         return self.course.name
 
     class Meta:
-        verbose_name = 'Kursiyer Kurs Tercihi'
-        verbose_name_plural = 'Kursiyer Kurs Tercihleri'
+        verbose_name = _('Trainess Course Record')
+        verbose_name_plural = _('Trainess Course Records')
 
 
 class TrainessParticipation(models.Model):
     courserecord = models.ForeignKey(TrainessCourseRecord)
-    morning = models.CharField(choices=TRAINESS_PARTICIPATION_STATE, verbose_name=_("Sabah"), max_length=3, default='0')
-    afternoon = models.CharField(choices=TRAINESS_PARTICIPATION_STATE, verbose_name=_("Ogleden Sonra"), max_length=3,
+    morning = models.CharField(choices=TRAINESS_PARTICIPATION_STATE, verbose_name=_("Morning"), max_length=3, default='0')
+    afternoon = models.CharField(choices=TRAINESS_PARTICIPATION_STATE, verbose_name=_("Afternoon"), max_length=3,
                                  default='0')
-    evening = models.CharField(choices=TRAINESS_PARTICIPATION_STATE, verbose_name=_("Aksam"), max_length=3, default='0')
-    day = models.CharField(verbose_name=_("Gun"), max_length=20, default='1')
+    evening = models.CharField(choices=TRAINESS_PARTICIPATION_STATE, verbose_name=_("Evening"), max_length=3, default='0')
+    day = models.CharField(verbose_name=_("Day"), max_length=20, default='1')
 
     def __unicode__(self):
         return self.courserecord.trainess.user.username
 
     class Meta:
-        verbose_name = 'Yoklama Bilgisi'
-        verbose_name_plural = 'Yoklama Bilgileri'
+        verbose_name = _('Trainess Participation Information')
+        verbose_name_plural = _('Trainess Participation Information')

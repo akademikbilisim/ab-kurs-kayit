@@ -31,9 +31,9 @@ class UserVerification(models.Model):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
-    birthdate = models.DateField(verbose_name=_("Bird Date"), default=datetime.date(1970, 1, 1))
-    tckimlikno = models.CharField(verbose_name=_("Turkish ID No"), max_length=11, blank=True)
-    ykimlikno = models.CharField(verbose_name=_("Foreigner ID No"), max_length=11, blank=True)
+    birthdate = models.DateField(verbose_name=_("Birth Date"), default=datetime.date(1970, 1, 1))
+    tckimlikno = models.CharField(verbose_name=_("TC Identity Number"), max_length=11, blank=True)
+    ykimlikno = models.CharField(verbose_name=_("Foreign Identity Number"), max_length=11, blank=True)
     gender = models.CharField(choices={'E': _("Male"), 'K': _("Female")}.items(), verbose_name=_("Gender"),
                               max_length=1)
     mobilephonenumber = models.CharField(verbose_name=_("Mobile Phone Number"), max_length=14)
@@ -48,7 +48,7 @@ class UserProfile(models.Model):
     is_instructor = models.BooleanField(verbose_name=_("Is Instructor"), default=False)
     can_elect = models.BooleanField(verbose_name=_("Can Elect"), default=False)
     additional_information = models.TextField(verbose_name=_("Additional Information"), null=True)
-    userpassedtest = models.BooleanField(verbose_name=_("Basvuru yapabilir mi?"), blank=True, default=False)
+    userpassedtest = models.BooleanField(verbose_name=_("Can Apply"), blank=True, default=False)
 
     def __unicode__(self):
         return self.user.username
@@ -125,5 +125,5 @@ class InstructorInformation(models.Model):
         return self.user.user.username
 
     class Meta:
-        verbose_name = _("Egitmen Ek Bilgiler")
-        verbose_name_plural = _("Egitmen Ek Bilgiler")
+        verbose_name = _("Instructor Additional Information")
+        verbose_name_plural = _("Instructor Additional Information")
