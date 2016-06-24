@@ -34,7 +34,6 @@ def deleteoldjobs(command):
 
 
 def define_consentmailtab(consentmailcommand, allapprovedate):
-    print allapprovedate
     consentmailtab = CronTab(user=True)
     consentmailjob = consentmailtab.new(command=consentmailcommand)
     consentmailjob.setall(allapprovedate)

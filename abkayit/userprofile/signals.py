@@ -8,7 +8,7 @@ from django.db.models import signals
 
 from abkayit.adaptor import send_email, define_consentmailtab, deleteoldjobs
 from abkayit.models import Site, ApprovalDate
-from abkayit.settings import EMAIL_FROM_ADDRESS, BASE_DIR, VIRTUAL_ENV_PATH
+from abkayit.settings import EMAIL_FROM_ADDRESS, PROJECT_HOME_DIR, VIRTUAL_ENV_PATH
 from abkayit.backend import create_verification_link, send_email_by_operation_name
 from userprofile.models import UserVerification
 
@@ -44,7 +44,7 @@ def definecronjob_signal(instance, created, **kwargs):
         eventstartdate = instance.event_start_date
         date_list = daterange(datetime.date(allapprovedates[0].end_date), eventstartdate)
         consentmailcommand = "cd %s && bash_scripts/consentmailtotrainess_cronjob.sh -w %s -pv %s" % (
-        BASE_DIR, BASE_DIR, VIRTUAL_ENV_PATH)
+        PROJECT_HOME_DIR, PROJECT_HOME_DIR, VIRTUAL_ENV_PATH)
         deleteoldjobs(consentmailcommand)
         for d in date_list:
             define_consentmailtab(consentmailcommand, d)
