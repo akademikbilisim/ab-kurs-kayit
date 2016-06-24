@@ -1,17 +1,20 @@
 # -*- coding: utf-8 -*-
 import os
 import logging
+from datetime import datetime
 
 from django.contrib.auth.models import User
 from django.db.models import signals
 
-from abkayit.adaptor import send_email, define_consentmailtab
+from abkayit.adaptor import send_email, define_consentmailtab, deleteoldjobs
 from abkayit.models import Site, ApprovalDate
 from abkayit.settings import EMAIL_FROM_ADDRESS, BASE_DIR, VIRTUAL_ENV_PATH
 from abkayit.backend import create_verification_link, send_email_by_operation_name
 from userprofile.models import UserVerification
 
 from mailing.models import EmailTemplate
+
+from training.tutils import daterange
 
 log = logging.getLogger(__name__)
 
@@ -36,13 +39,17 @@ def definecronjob_signal(instance, created, **kwargs):
         :param courseid: hangi kurs i
         :return:
     '''
-    allapprovedates = ApprovalDate.objects.filter(for_instructor=True).order_by('-end_date')
+    allapprovedates = ApprovalDate.objects.filter(site=instance, for_instructor=True).order_by('-end_date')
     if allapprovedates:
+        eventstartdate = instance.event_start_date
+        date_list = daterange(datetime.date(allapprovedates[0].end_date), eventstartdate)
         consentmailcommand = "cd %s && bash_scripts/consentmailtotrainess_cronjob.sh -w %s -pv %s" % (
         BASE_DIR, BASE_DIR, VIRTUAL_ENV_PATH)
-        define_consentmailtab(consentmailcommand, allapprovedates[0])
-        log.info("consentmailtotrainess_cronjob defined for date %s" % allapprovedates[0].end_date.strftime(
-            "%Y-%m-%d %H:%M:%S"), extra={'clientip': '', 'user': ''})
+        deleteoldjobs(consentmailcommand)
+        for d in date_list:
+            define_consentmailtab(consentmailcommand, d)
+            log.info("consentmailtotrainess_cronjob defined for date %s" % d.strftime(
+                "%Y-%m-%d %H:%M:%S"), extra={'clientip': '', 'user': ''})
 
 
 signals.post_save.connect(send_confirm_link, sender=User)

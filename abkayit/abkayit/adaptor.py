@@ -25,12 +25,18 @@ def send_email(subject_template, content_template, data, from_email, to_addresse
         raise Exception(_("Mail could not be sent"))
 
 
-def define_consentmailtab(consentmailcommand, allapprovedate):
-    consentmailtab = CronTab()
-    old_jobs = consentmailtab.find_command(consentmailcommand)
+def deleteoldjobs(command):
+    consentmailtab = CronTab(user=True)
+    old_jobs = consentmailtab.find_command(command)
     if len(list(old_jobs)) > 0:
-        consentmailtab.remove_all(command=consentmailcommand)
+        consentmailtab.remove_all(command=command)
+    consentmailtab.write_to_user()
+
+
+def define_consentmailtab(consentmailcommand, allapprovedate):
+    print allapprovedate
+    consentmailtab = CronTab(user=True)
     consentmailjob = consentmailtab.new(command=consentmailcommand)
-    consentmailjob.setall(allapprovedate.end_date)
+    consentmailjob.setall(allapprovedate)
     consentmailjob.enable()
     consentmailtab.write_to_user()
