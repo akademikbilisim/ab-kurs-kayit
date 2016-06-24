@@ -263,12 +263,3 @@ def applytrainerselections(postrequest, courses, data, d):
     else:
         note = "Bu işlemi yapmaya yetkiniz yok!"
     return note
-
-
-def define_consentmailtotrainess_cronjob(approvaldate):
-    '''
-    Kabul e-postalarının onaylama tarihi bitiminde  e-postası gönderilmemis kullanicilara e-posta gonderilebilmesi icin
-     cronjob tanimi eklenecek
-    :param courseid: hangi kurs i
-    :return:
-    '''

@@ -75,7 +75,10 @@ TCKIMLIK_SORGULAMA_WS = "https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?WSDL
                             Kamp'ta öyle bir durum yok.(False)
 '''
 REQUIRE_TRAINESS_APPROVE = False
-
+'''
+    VIRTUAL_ENV_PATH: Uygulamanın Python virtualenv'nin kurulu oldugu dizinin yolu
+'''
+VIRTUAL_ENV_PATH = "../venv"
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 MEDIA_URL = '/media/'
