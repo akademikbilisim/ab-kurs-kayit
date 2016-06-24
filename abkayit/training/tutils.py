@@ -246,10 +246,11 @@ def applytrainerselections(postrequest, courses, data, d):
                                         if not REQUIRE_TRAINESS_APPROVE:
                                             p.trainess_approved = True
                                         if sendconsentemail == "on":
-                                            data["recipientlist"] = [p.trainess.user.username]
-                                            res = send_email_by_operation_name(data, "send_consent_email")
-                                            if res == 1:
-                                                p.consentemailsent = True
+                                            if p.preference_order == 1:
+                                                data["recipientlist"] = [p.trainess.user.username]
+                                                res = send_email_by_operation_name(data, "send_consent_email")
+                                                if res == 1:
+                                                    p.consentemailsent = True
 
                                 p.save()
                                 log.debug(p, extra=d)

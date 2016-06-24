@@ -8,3 +8,4 @@ pip install django-countries
 pip install pysimplesoap
 pip install django-longerusernameandemail
 pip install Pillow
+pip install python-cronjob
