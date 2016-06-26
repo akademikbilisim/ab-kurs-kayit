@@ -175,7 +175,7 @@ Tercih Sırası: {{trainess_course_record.preference_order}}<br>
 subject:
 {{ site.name }} {{ site.year }} - Kurs Tercih İptal Bilgilendirmesi
 
-*** send_consent_email *** training.tutils.py
+*** send_consent_email ***
 
 Merhaba,<br><br>
 
@@ -184,3 +184,25 @@ kursuna başvurunuz kabul edilmiştir.
 
 subject:
 {{ site.name }} {{ site.year }} - Kabul Edilen Tercihiniz
+
+*** not_approved_trainess_after_approval_period_ends ***
+
+Merhaba,<br><br>
+
+Kurslara kabul dönemi bitmiş olup başvurularınıza kabul edilmediniz ancak kurs başlangıç tarihine kadar kabul edilme şansınız hala devam ediyor.<br><br>
+Takip etmeye devam edin.<br><br>
+
+Bilginize,<br>
+
+subject:
+{{ site.name }} {{ site.year }} - Tercihleriniz Hakkında
+
+*** not_approved_trainess_eventstardate ***
+
+Merhaba,<br><br>
+
+Başvurularınız kabul edilmemiştir. Bir sonraki etkinlikte görüşmek dileğiyle<br><br>
+
+
+subject:
+{{ site.name }} {{ site.year }} - Tercihleriniz Hakkında

@@ -6,8 +6,6 @@ from datetime import timedelta
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 
-from abkayit.models import Site
-from abkayit.adaptor import send_email
 from abkayit.settings import EMAIL_FROM_ADDRESS, PREFERENCE_LIMIT, ADDITION_PREFERENCE_LIMIT, REQUIRE_TRAINESS_APPROVE
 
 from abkayit.models import ApprovalDate

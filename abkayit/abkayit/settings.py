@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 import sys
-import datetime
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 sys.path.insert(0, os.path.join(BASE_DIR, "abkayit"))

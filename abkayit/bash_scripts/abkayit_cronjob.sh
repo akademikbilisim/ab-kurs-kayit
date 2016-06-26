@@ -13,11 +13,16 @@ case $key in
     PVIRTUALENVDIR="$2"
     shift # past argument
     ;;
+    -f|--function)
+    FUNCTION="$2"
+    shift # past argument
+    ;;
     -h|--help)
     echo "
 	HELP:
 	    -w: --workingdir: Project's base directory
 	    -pv: --pvirtualenvdir: Python virtualenv directory
+	    -f: --file: Python file that will be executed
 	" 
     shift # past argument
     ;;
@@ -28,8 +33,9 @@ if [ ! -z "${WORKINGDIR}" ]
 then
 echo WORKING DIR  = "${WORKINGDIR}"
 echo PVIRTUALENVDIR = "${PVIRTUALENVDIR}"
+echo FUNCTION = "${FUNCTION}"
 source ${PVIRTUALENVDIR}/bin/activate
-python ${WORKINGDIR}/abkayit/send_consent_email.py ${WORKINGDIR} 
+python ${WORKINGDIR}/abkayit/send_scheduled_email.py ${WORKINGDIR} ${FUNCTION}
 else
 echo !!!Some parameters missing!!!
 echo "
