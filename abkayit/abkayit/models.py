@@ -28,7 +28,7 @@ class Site(models.Model):
     event_end_date = models.DateField(verbose_name=_("Event End Date"), default=datetime.now)
 
     def __unicode__(self):
-        return self.name
+        return "%s %s" % (self.name, self.year)
 
 
 class Menu(models.Model):
