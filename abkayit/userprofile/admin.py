@@ -20,7 +20,7 @@ class UserProfileInline(admin.StackedInline):
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ['username', 'is_instructor', 'tckimlikno', 'gender']
+    list_display = ['username', 'first_name', 'last_name', 'is_instructor', 'tckimlikno', 'gender']
     list_filter = ('userprofile__is_instructor', )
     search_fields = ('username', 'first_name', 'last_name', 'userprofile__tckimlikno')
     inlines = [
