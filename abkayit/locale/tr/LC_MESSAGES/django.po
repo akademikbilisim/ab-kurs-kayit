@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-23 11:46+0300\n"
+"POT-Creation-Date: 2016-06-27 11:35+0300\n"
 "PO-Revision-Date: 2016-06-23 11:45+0300\n"
 "Last-Translator: Özge Barbaros <ozgebarbaros@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: abkayit/adaptor.py:23
+#: abkayit/adaptor.py:25
 msgid "Mail could not be sent"
 msgstr "E-posta gönderilemedi"
 
@@ -57,7 +57,7 @@ msgstr "Etkinlik Başlangıç Tarihi"
 msgid "Event End Date"
 msgstr "Etkinlik Bitiş Tarihi"
 
-#: abkayit/models.py:35 userprofile/models.py:89
+#: abkayit/models.py:35 userprofile/models.py:81
 msgid "Name"
 msgstr "İsim"
 
@@ -122,11 +122,11 @@ msgstr "Eğitmenler için"
 msgid "For Trainess?"
 msgstr "Katılımcılar için"
 
-#: abkayit/models.py:94
+#: abkayit/models.py:97
 msgid "Approval Date"
 msgstr "Kabul Tarihi"
 
-#: abkayit/models.py:95
+#: abkayit/models.py:98
 msgid "Approval Dates"
 msgstr "Kabul Tarihleri"
 
@@ -211,7 +211,7 @@ msgstr "E-posta"
 
 #: templates/training/allcourseprefs.html:16
 #: templates/userprofile/allusers.html:17 userprofile/forms.py:142
-#: userprofile/models.py:37 userprofile/models.py:87
+#: userprofile/models.py:37 userprofile/models.py:79
 msgid "Gender"
 msgstr "Cinsiyet"
 
@@ -236,7 +236,7 @@ msgstr "Tercih sırası"
 #: templates/training/courses.html:11
 #: templates/training/participationstatuses.html:12
 #: templates/userprofile/alltrainess.html:14
-#: templates/userprofile/allusers.html:16 training/models.py:29
+#: templates/userprofile/allusers.html:16 training/models.py:18
 msgid "Course Name"
 msgstr "Kurs Adı"
 
@@ -266,7 +266,7 @@ msgstr "Kurs Tercihleri"
 msgid "Add Preference"
 msgstr "Tercih Ekle"
 
-#: templates/training/courses.html:12 training/models.py:30
+#: templates/training/courses.html:12 training/models.py:19
 msgid "Description"
 msgstr "Açıklama"
 
@@ -297,12 +297,12 @@ msgid "Transportation Type"
 msgstr "Ulaşım Türü"
 
 #: templates/userprofile/alltrainess.html:16 userprofile/forms.py:242
-#: userprofile/models.py:121
+#: userprofile/models.py:113
 msgid "Arrival Date"
 msgstr "Varış Tarihi"
 
 #: templates/userprofile/alltrainess.html:17 userprofile/forms.py:243
-#: userprofile/models.py:122
+#: userprofile/models.py:114
 msgid "Departure Date"
 msgstr "Ayrılış Tarihi"
 
@@ -310,8 +310,8 @@ msgstr "Ayrılış Tarihi"
 msgid "Additional Info"
 msgstr "Ek Bilgiler"
 
-#: templates/userprofile/allusers.html:11 userprofile/models.py:79
-#: userprofile/models.py:88 userprofile/models.py:105
+#: templates/userprofile/allusers.html:11 userprofile/models.py:80
+#: userprofile/models.py:97
 msgid "User Type"
 msgstr "Kullanıcı Tipi"
 
@@ -349,58 +349,46 @@ msgid "Cancel"
 msgstr "İptal"
 
 #: training/models.py:17
-msgid "Keyword Name"
-msgstr "Anahtar Kelime"
-
-#: training/models.py:23
-msgid "Keyword"
-msgstr "Anahtar Kelime"
-
-#: training/models.py:24
-msgid "Keywords"
-msgstr "Anahtar Kelimeler"
-
-#: training/models.py:28
 msgid "Course No"
 msgstr "Kurs No"
 
-#: training/models.py:36
+#: training/models.py:25
 msgid "URL"
 msgstr "URL"
 
-#: training/models.py:42
+#: training/models.py:31
 msgid "Course"
 msgstr "Kurs"
 
-#: training/models.py:43
+#: training/models.py:32
 msgid "Courses"
 msgstr "Kurslar"
 
-#: training/models.py:59
+#: training/models.py:48
 msgid "Trainess Course Record"
 msgstr "Katilimci Tercih Kaydı"
 
-#: training/models.py:60
+#: training/models.py:49
 msgid "Trainess Course Records"
 msgstr "Katılımcı Tercih Kayıtları"
 
-#: training/models.py:65
+#: training/models.py:54
 msgid "Morning"
 msgstr "Sabah"
 
-#: training/models.py:66
+#: training/models.py:55
 msgid "Afternoon"
 msgstr "Öğleden Sonra"
 
-#: training/models.py:68
+#: training/models.py:57
 msgid "Evening"
 msgstr "Akşam"
 
-#: training/models.py:69
+#: training/models.py:58
 msgid "Day"
 msgstr "Gün"
 
-#: training/models.py:75 training/models.py:76
+#: training/models.py:64 training/models.py:65
 msgid "Trainess Participation Information"
 msgstr "Katılımcı Yoklama Bilgisi"
 
@@ -453,7 +441,7 @@ msgstr "Yabancı Kimlik No"
 msgid "Mobile Phone Number"
 msgstr "Cep Telefonu Numarası"
 
-#: userprofile/forms.py:145 userprofile/models.py:90
+#: userprofile/forms.py:145 userprofile/models.py:82
 msgid "Address"
 msgstr "Adres"
 
@@ -478,7 +466,7 @@ msgid "Department"
 msgstr "Bölüm"
 
 #: userprofile/forms.py:154 userprofile/forms.py:241 userprofile/models.py:50
-#: userprofile/models.py:120
+#: userprofile/models.py:112
 msgid "Additional Information"
 msgstr "Ek Bilgiler"
 
@@ -514,7 +502,7 @@ msgstr ""
 msgid "User not found"
 msgstr "Kullanıcı bulunamadı"
 
-#: userprofile/forms.py:239 userprofile/models.py:119
+#: userprofile/forms.py:239 userprofile/models.py:111
 msgid "Transportation"
 msgstr "Ulaşım Türü"
 
@@ -610,31 +598,27 @@ msgstr "Katılımcı Notu"
 msgid "Trainess Notes"
 msgstr "Katılımcı Notları"
 
-#: userprofile/models.py:80
-msgid "Subscription Notice"
-msgstr "Abonelik Uyarısı"
-
-#: userprofile/models.py:91
+#: userprofile/models.py:83
 msgid "Website"
 msgstr "Website"
 
-#: userprofile/models.py:98
+#: userprofile/models.py:90
 msgid "Accommodation"
 msgstr "Konaklama Seçeneği"
 
-#: userprofile/models.py:99
+#: userprofile/models.py:91
 msgid "Accommodations"
 msgstr "Konaklama Seçenekleri"
 
-#: userprofile/models.py:113
+#: userprofile/models.py:105
 msgid "Participant Accommodation Preference"
 msgstr "Katılımcı Konaklama Tercihi"
 
-#: userprofile/models.py:114
+#: userprofile/models.py:106
 msgid "Participant Accommodation Preferences"
 msgstr "Katılımcı Konaklama Tercihleri"
 
-#: userprofile/models.py:128 userprofile/models.py:129
+#: userprofile/models.py:120 userprofile/models.py:121
 msgid "Instructor Additional Information"
 msgstr "Eğitmen Ek Bilgileri"
 
@@ -717,5 +701,3 @@ msgstr "Parola sıfırlama işlemi başarısız"
 msgid "Email field can not be empty"
 msgstr "E-posta alanı boş olamaz"
 
-#~ msgid "Error occured during verify your TC identifier no"
-#~ msgstr "TC Kimlik no doğrulaması sırasında hata oluştu"
