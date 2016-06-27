@@ -237,7 +237,7 @@ def active(request, key):
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
     try:
         user_verification = UserVerification.objects.get(activation_key=key)
-        user = User.objects.get(username=user_verification.user_email)
+        user = user_verification.user
         user.is_active = True
         user.save()
         backend_login(request, user)
@@ -254,7 +254,7 @@ def active_resend(request):
     if request.POST:
         domain = data['site'].home_url
         data['domain'] = domain.rstrip('/')
-        user_verification, created = UserVerification.objects.get_or_create(user_email=request.user.username)
+        user_verification, created = UserVerification.objects.get_or_create(user=request.user)
         user_verification.activation_key = create_verification_link(request.user)
         user_verification.save()
         data['activation_key'] = user_verification.activation_key

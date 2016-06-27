@@ -15,14 +15,14 @@ from abkayit.models import Site
 
 
 class UserVerification(models.Model):
-    user_email = models.CharField(max_length=40)
+    user = models.ForeignKey(User)
     activation_key = models.CharField(max_length=40, null=True)
     password_reset_key = models.CharField(max_length=40, null=True)
     activation_key_expires = models.DateTimeField(null=True)
     password_reset_key_expires = models.DateTimeField(null=True)
 
     def __unicode__(self):
-        return self.user_email
+        return self.user.username
 
     class Meta:
         verbose_name = _('User Verification')
