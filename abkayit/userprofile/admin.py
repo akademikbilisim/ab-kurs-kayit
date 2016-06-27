@@ -1,7 +1,7 @@
 #!-*- coding:utf-8 -*-
 
 from django.contrib import admin
-from userprofile.models import InstructorInformation, SubscribeNotice, UserProfile, Accommodation, UserAccomodationPref, \
+from userprofile.models import InstructorInformation, UserProfile, Accommodation, UserAccomodationPref, \
     UserVerification, TrainessNote
 
 
@@ -12,11 +12,6 @@ class UserProfileAdmin(admin.ModelAdmin):
     list_display = ['user', 'is_instructor', 'tckimlikno', 'gender', 'mobilephonenumber']
     list_filter = ('is_instructor',)
     search_fields = ('user__username',)
-
-
-@admin.register(SubscribeNotice)
-class SubscribeNoticeAdmin(admin.ModelAdmin):
-    list_display = ['usertype', 'subnotice', ]
 
 
 @admin.register(Accommodation)

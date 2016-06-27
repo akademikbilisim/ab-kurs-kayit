@@ -1,11 +1,6 @@
 #!-*- coding:utf-8 -*-
 from django.contrib import admin
-from training.models import Keyword, Course, TrainessCourseRecord, TrainessParticipation
-
-
-@admin.register(Keyword)
-class KeywordAdmin(admin.ModelAdmin):
-    search_fields = ('name',)
+from training.models import Course, TrainessCourseRecord, TrainessParticipation
 
 
 @admin.register(Course)

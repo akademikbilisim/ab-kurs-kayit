@@ -75,14 +75,6 @@ class TrainessNote(models.Model):
         verbose_name_plural = _('Trainess Notes')
 
 
-class SubscribeNotice(models.Model):
-    usertype = models.CharField(choices=USER_TYPES.items(), verbose_name=_("User Type"), max_length=4)
-    subnotice = models.TextField(verbose_name=_("Subscription Notice"))
-
-    def __unicode__(self):
-        return self.usertype
-
-
 class Accommodation(models.Model):
     gender = models.CharField(choices=GENDER.items(), verbose_name=_("Gender"), max_length=1)
     usertype = models.CharField(choices=USER_TYPES.items(), verbose_name=_("User Type"), max_length=15)

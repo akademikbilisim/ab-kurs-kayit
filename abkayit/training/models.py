@@ -13,17 +13,6 @@ def make_choices(choices):
     return tuple([(k, _(v)) for k, v in choices.items()])
 
 
-class Keyword(models.Model):
-    name = models.CharField(verbose_name=_("Keyword Name"), max_length="64")
-
-    def __unicode__(self):
-        return self.name
-
-    class Meta:
-        verbose_name = _('Keyword')
-        verbose_name_plural = _('Keywords')
-
-
 class Course(models.Model):
     no = models.CharField(verbose_name=_("Course No"), max_length="4")
     name = models.CharField(verbose_name=_("Course Name"), max_length="255")
