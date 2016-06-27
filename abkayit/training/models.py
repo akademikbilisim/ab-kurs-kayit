@@ -4,7 +4,11 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now
+
+from django.contrib.auth.models import User
+
 from userprofile.models import UserProfile
+
 from abkayit.models import Site
 from abkayit.settings import TRAINESS_PARTICIPATION_STATE
 
@@ -40,6 +44,10 @@ class TrainessCourseRecord(models.Model):
     trainess_approved = models.BooleanField(default=False)
     instapprovedate = models.DateField(default=now, blank=True, null=True)
     consentemailsent = models.BooleanField(default=False)
+    createdby = models.ForeignKey(User, related_name="createdby")
+    createtimestamp = models.DateField(default=now, blank=True, null=True, verbose_name="Creation Timestamp")
+    modifiedby = models.ForeignKey(User, related_name="modifiedby")
+    modifytimestamp = models.DateField(default=now, blank=True, null=True, verbose_name="Modification Timestamp")
 
     def __unicode__(self):
         return self.course.name

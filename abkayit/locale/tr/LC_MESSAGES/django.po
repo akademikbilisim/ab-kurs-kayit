@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-27 11:35+0300\n"
+"POT-Creation-Date: 2016-06-27 12:04+0300\n"
 "PO-Revision-Date: 2016-06-23 11:45+0300\n"
 "Last-Translator: Özge Barbaros <ozgebarbaros@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -236,7 +236,7 @@ msgstr "Tercih sırası"
 #: templates/training/courses.html:11
 #: templates/training/participationstatuses.html:12
 #: templates/userprofile/alltrainess.html:14
-#: templates/userprofile/allusers.html:16 training/models.py:18
+#: templates/userprofile/allusers.html:16 training/models.py:22
 msgid "Course Name"
 msgstr "Kurs Adı"
 
@@ -266,7 +266,7 @@ msgstr "Kurs Tercihleri"
 msgid "Add Preference"
 msgstr "Tercih Ekle"
 
-#: templates/training/courses.html:12 training/models.py:19
+#: templates/training/courses.html:12 training/models.py:23
 msgid "Description"
 msgstr "Açıklama"
 
@@ -348,47 +348,47 @@ msgstr "Kayıt"
 msgid "Cancel"
 msgstr "İptal"
 
-#: training/models.py:17
+#: training/models.py:21
 msgid "Course No"
 msgstr "Kurs No"
 
-#: training/models.py:25
+#: training/models.py:29
 msgid "URL"
 msgstr "URL"
 
-#: training/models.py:31
+#: training/models.py:35
 msgid "Course"
 msgstr "Kurs"
 
-#: training/models.py:32
+#: training/models.py:36
 msgid "Courses"
 msgstr "Kurslar"
 
-#: training/models.py:48
+#: training/models.py:56
 msgid "Trainess Course Record"
 msgstr "Katilimci Tercih Kaydı"
 
-#: training/models.py:49
+#: training/models.py:57
 msgid "Trainess Course Records"
 msgstr "Katılımcı Tercih Kayıtları"
 
-#: training/models.py:54
+#: training/models.py:62
 msgid "Morning"
 msgstr "Sabah"
 
-#: training/models.py:55
+#: training/models.py:63
 msgid "Afternoon"
 msgstr "Öğleden Sonra"
 
-#: training/models.py:57
+#: training/models.py:65
 msgid "Evening"
 msgstr "Akşam"
 
-#: training/models.py:58
+#: training/models.py:66
 msgid "Day"
 msgstr "Gün"
 
-#: training/models.py:64 training/models.py:65
+#: training/models.py:72 training/models.py:73
 msgid "Trainess Participation Information"
 msgstr "Katılımcı Yoklama Bilgisi"
 
@@ -700,4 +700,3 @@ msgstr "Parola sıfırlama işlemi başarısız"
 #: userprofile/views.py:315
 msgid "Email field can not be empty"
 msgstr "E-posta alanı boş olamaz"
-
