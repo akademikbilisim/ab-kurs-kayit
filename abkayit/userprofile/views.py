@@ -12,7 +12,6 @@ from django.template import RequestContext
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.utils.translation import ugettext_lazy as _
-from django.conf import settings
 
 from django.core.urlresolvers import reverse_lazy
 from django.core.exceptions import ObjectDoesNotExist
@@ -363,6 +362,7 @@ def save_note(request):
             try:
                 userprofile = UserProfile.objects.get(user__username=trainess_username)
                 trainess_note = TrainessNote.objects.create(note_to_profile=userprofile, site=data['site'])
+                trainess_note.label = "kurs"
                 trainess_note.note = t_note
                 trainess_note.note_from_profile = request.user.userprofile
                 trainess_note.note_date = datetime.now()

@@ -150,7 +150,7 @@ def save_course_prefferences(userprofile, course_prefs, site, d):
                     course_record = TrainessCourseRecord(trainess=userprofile,
                                                          course=Course.objects.get(id=course_pre['value']),
                                                          preference_order=course_pre['name'],
-                                                         createdby=userprofile.user,)
+                                                         )
                     course_record.save()
                 res['status'] = 0
                 res['message'] = "Tercihleriniz başarılı bir şekilde güncellendi"
@@ -225,7 +225,6 @@ def applytrainerselections(postrequest, courses, data, d):
                                 if str(p.pk) not in approvedr:
                                     p.approved = False
                                     p.trainess_approved = False
-                                    p.approvedby = None
                                 elif str(p.pk) in approvedr:
                                     trainess_approved_pref = is_trainess_approved_anothercourse(p.trainess, pref)
                                     if trainess_approved_pref:
@@ -239,7 +238,6 @@ def applytrainerselections(postrequest, courses, data, d):
                                             Daha öncelikli bir kursa kabul edilmemişse kabul işlemine devam et.
                                         '''
                                         p.approved = True
-                                        p.approvedby = data['user']
                                         p.instapprovedate = now
                                         course.trainess.add(p.trainess)
                                         course.save()

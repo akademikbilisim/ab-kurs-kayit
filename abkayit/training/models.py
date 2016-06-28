@@ -44,9 +44,6 @@ class TrainessCourseRecord(models.Model):
     trainess_approved = models.BooleanField(default=False)
     instapprovedate = models.DateField(default=now, blank=True, null=True)
     consentemailsent = models.BooleanField(default=False)
-    createdby = models.ForeignKey(User, related_name="createdby", null=True, blank=True)
-    createtimestamp = models.DateField(default=now, blank=True, null=True, verbose_name="Creation Timestamp")
-    approvedby = models.ForeignKey(User, related_name="approvedby", null=True, blank=True)
 
     def __unicode__(self):
         return self.course.name

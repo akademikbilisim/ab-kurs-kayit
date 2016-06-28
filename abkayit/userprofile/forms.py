@@ -134,7 +134,7 @@ class StuProfileForm(ModelForm):
     class Meta:
         dyncf = DynmcFields()
         model = UserProfile
-        exclude = {'score'}
+        exclude = {''}
         # fields=['name','surname','username','email','password','password',]
         widgets = {
             'tckimlikno': forms.NumberInput(attrs={'placeholder': _('Turkish ID No'), 'class': 'form-control'}),
@@ -153,6 +153,7 @@ class StuProfileForm(ModelForm):
             'additional_information': forms.Textarea(
                 attrs={'placeholder': _('Additional Information'), 'class': 'form-control'}),
             'is_instructor': forms.HiddenInput(),
+            'can_elect': forms.HiddenInput(),
             'userpassedtest': forms.HiddenInput(),
             'user': forms.HiddenInput(),
             'birthdate': SelectDateWidget(years=dyncf.BirthDateYears),
@@ -174,6 +175,7 @@ class StuProfileForm(ModelForm):
         self.fields['tckimlikno'].required = False
         self.fields['ykimlikno'].required = False
         self.fields['is_instructor'].required = False
+        self.fields['can_elect'].required = False
         self.fields['university'].required = False
         self.fields['userpassedtest'].required = False
         self.fields['user'].required = False

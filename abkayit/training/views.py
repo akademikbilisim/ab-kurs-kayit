@@ -17,7 +17,6 @@ from django.db.models import Count
 from django.utils import timezone
 
 from abkayit.backend import getsiteandmenus
-from abkayit.adaptor import send_email
 from abkayit.models import Site, Menu, ApprovalDate
 from abkayit.decorators import active_required
 from abkayit.settings import PREFERENCE_LIMIT, ADDITION_PREFERENCE_LIMIT, EMAIL_FROM_ADDRESS, REQUIRE_TRAINESS_APPROVE
@@ -228,8 +227,9 @@ def control_panel(request):
                     note = applytrainerselections(request.POST, courses, data, d)
             data['note'] = note
             return render_to_response("training/controlpanel.html", data, context_instance=RequestContext(request))
-        else:
+        elif not request.user.is_staff:
             return redirect("applytocourse")
+        return redirect("statistic")
     except UserProfile.DoesNotExist:
         return redirect("createprofile")
 
@@ -266,12 +266,6 @@ def statistic(request):
                 course=course_object).filter(
                 approved=True).filter(
                 trainess_approved=True))
-            statistic_by_course[course_object]['total_attended'] = len(TrainessCourseRecord.objects.filter(
-                course=course_object).filter(
-                approved=True).filter(
-                trainess_approved=True).filter(
-                trainess__in=UserProfile.objects.filter(
-                    is_instructor=False).filter(score='1')))
 
         data['statistic_by_course'] = statistic_by_course
         statistic_by_gender = UserProfile.objects.filter(is_instructor=False).values('gender').annotate(
@@ -347,7 +341,7 @@ def cancel_all_preference(request):
                 notestr += "\nİptal Sebebi:%s" % cancelnote
             if notestr:
                 note = TrainessNote(note=notestr, note_from_profile=userprofile, note_to_profile=userprofile,
-                                    site=data['site'], note_date=now_for_approve)
+                                    site=data['site'], note_date=now_for_approve, label="sistem")
                 note.save()
             message = "Tüm Başvurularınız Silindi"
             log.debug(message, extra=d)

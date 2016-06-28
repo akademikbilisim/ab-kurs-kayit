@@ -63,5 +63,6 @@ class InstructorInformationAdmin(admin.ModelAdmin):
 
 @admin.register(TrainessNote)
 class TrainessNoteAdmin(admin.ModelAdmin):
-    list_display = ['note_to_profile', 'note_from_profile', 'site', 'note']
+    list_display = ['note_to_profile', 'note_from_profile', 'site', 'note', 'label']
+    list_filter = ('label',)
     search_fields = ('note_from_profile__user__username', 'note_to_profile__user__username')

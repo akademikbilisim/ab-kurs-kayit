@@ -1,5 +1,8 @@
 #!-*- coding:utf-8 -*-
+
+from django.utils import timezone
 from django.contrib import admin
+
 from training.models import Course, TrainessCourseRecord, TrainessParticipation
 from userprofile.models import TrainessNote
 
@@ -17,14 +20,18 @@ class TrainessCourseRecordAdmin(admin.ModelAdmin):
     search_fields = ('id', 'course__name', 'trainess__user__username')
 
     def save_model(self, request, obj, form, change):
+        notestr = ""
         if not change:
-            obj.createdby = request.user
-        if 'approved' in form.changed_data:
-            if form.cleaned_data.get('approved'):
-                obj.approvedby = request.user
-            else:
-                obj.approvedby = None
-        obj.save()
+            notestr = "Bu kullanicinin, %s kursu olan %s. tercihi yönetici tarafindan eklendi." % (obj.course.name,
+                                                                                                   obj.preference_order)
+        if "approved" in form.changed_data:
+            if form.cleaned_data['approved']:
+                notestr = "Bu kullanicinin, %s kursu olan %s. tercihi yönetici tarafindan onaylandi." % (obj.course.name,
+                                                                                                   obj.preference_order)
+        if notestr and not TrainessNote.objects.filter(note=notestr):
+            note = TrainessNote(note=notestr, note_from_profile=request.user.userprofile, note_to_profile=obj.trainess,
+                                            site=obj.course.site, note_date=timezone.now(), label="tercih")
+            note.save()
         super(TrainessCourseRecordAdmin, self).save_model(request, obj, form, change)
 
 

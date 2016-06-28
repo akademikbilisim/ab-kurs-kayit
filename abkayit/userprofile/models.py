@@ -66,6 +66,7 @@ class TrainessNote(models.Model):
     note_to_profile = models.ForeignKey(UserProfile, related_name="note_to_profile")  # to whom - traiess
     note_date = models.DateTimeField(default=datetime.datetime.now)
     site = models.ForeignKey(Site)
+    label = models.CharField(max_length=50, verbose_name=_("Label"))
 
     def __unicode__(self):
         return self.note_to_profile.user.username
