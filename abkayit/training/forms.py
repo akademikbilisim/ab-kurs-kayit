@@ -2,7 +2,7 @@
 from django import forms
 import datetime
 from django.forms.models import ModelForm
-from training.models import Course, TrainessParticipation
+from training.models import Course, TrainessParticipation, TrainessCourseRecord
 from django.forms.extras.widgets import SelectDateWidget
 
 
@@ -57,3 +57,7 @@ class ParticipationForm(ModelForm):
             'courserecord': forms.HiddenInput(),
             'day': forms.HiddenInput(),
         }
+
+class AddTrainess(ModelForm):
+    class Meta:
+        model = TrainessCourseRecord

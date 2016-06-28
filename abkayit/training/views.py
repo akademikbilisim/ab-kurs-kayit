@@ -405,7 +405,6 @@ def get_preferred_courses(request):
 
 @login_required
 def apply_course_in_addition(request):
-    log.debug(request)
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
     if request.method == "POST":
         try:
@@ -437,6 +436,14 @@ def apply_course_in_addition(request):
                 return HttpResponse(json.dumps({'status': '0', 'message': message}), content_type="application/json")
     message = "Tercih işlemi yapmanıza izin verilmiyor"
     return HttpResponse(json.dumps({'status': '-1', 'message': message}), content_type="application/json")
+
+@login_required
+def addtrainess(request):
+    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
+    data = getsiteandmenus(request)
+    if request.user.userprofile.can_elect:
+        data['form'] = AddTrainess()
+    return render_to_response('training/addtrainess.html', data, context_instance=RequestContext(request))
 
 
 @staff_member_required
@@ -523,3 +530,4 @@ def submitandregister(request):
     return render_to_response("training/submitandregister.html",
                               data,
                               context_instance=RequestContext(request))
+

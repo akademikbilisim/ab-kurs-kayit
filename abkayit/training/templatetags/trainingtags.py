@@ -1,6 +1,9 @@
 #!-*- coding-utf8 -*-
+# coding=utf-8
 from datetime import datetime
 from django import template
+
+from abkayit.models import ApprovalDate
 
 register = template.Library()
 
@@ -18,6 +21,18 @@ def isdategtnow_head(datedict, key):
         if adate.end_date >= now >= adate.start_date:
             return "Onayla"
     return "Gelecegini Teyit Etti"
+
+
+@register.simple_tag(name="manuallyaddtrainess")
+def manuallyaddtrainess(site):
+    now = datetime.date(datetime.now())
+    if now > site.application_end_date:
+        return """
+        <div class="alert alert-info">Sistemde profili tanimli olup başvuruyu kaçırmış kullanıcıları "Kursiyer Ekle"
+         butonuna tıklayarak kursunuza ekleyebilirsiniz</div>
+        <a href="#addprefpopup" class="btn btn-primary pull-right" type="button" data-toggle="modal"><i class="fa fa-fw fa-plus"></i>
+        Kursiyer Ekle
+      </a>"""
 
 
 @register.simple_tag(name="isdategtnow_body")

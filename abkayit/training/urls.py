@@ -10,6 +10,7 @@ urlpatterns = patterns('training.views',
                        url(r'^additionprefapply/$', 'apply_course_in_addition', name="applytocourseinaddition"),
                        url(r'^basvurular', 'allcourseprefview', name="allcoursepref"),
                        url(r'^istatistik/$', 'statistic', name="statistic"),
+                       url(r'^katilimciekle/$', 'addtrainess', name="addtrainess"),
                        url(r'^cancelallpreference/$', 'cancel_all_preference', name="cancel_all_preference"),
                        # url(r'^cancelcourseapplication/$', 'cancel_course_application', name="cancel_course_application"),  ## 52 numarali issue ile kapatildi
                        url(r'^getpreferredcourses/$', 'get_preferred_courses', name="get_preferred_courses"),

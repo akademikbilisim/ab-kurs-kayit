@@ -253,8 +253,6 @@ $(document).ready(function(){
 	});
   });
 
-
-
 /******************************************************/
 /* #52 numarali issue ile kapatildi   
 
