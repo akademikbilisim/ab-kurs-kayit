@@ -295,7 +295,7 @@ def password_reset_key(request):
         if email and email != "":
             try:
                 user = User.objects.get(username=request.POST['email'])
-                user_verification, created = UserVerification.objects.get_or_create(user_email=user.username)
+                user_verification, created = UserVerification.objects.get_or_create(user=user)
                 user_verification.password_reset_key = create_verification_link(user)
                 user_verification.save()
                 data['user'] = user
@@ -325,7 +325,7 @@ def password_reset_key_done(request, key=None):
     note = _("Change your password")
     try:
         user_verification = UserVerification.objects.get(password_reset_key=key)
-        user = User.objects.get(username=user_verification.user_email)
+        user = user_verification.user
         user.is_authenticated = False
         user.save()
         request.user = user

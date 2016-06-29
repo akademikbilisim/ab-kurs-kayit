@@ -25,7 +25,8 @@ COMMON_CONFIG_FILE = '/opt/kampyazilim.conf'
     EMAIL_FROM_ADDRESS: Sistemden gonderilecek maillerin from adresi
 '''
 EMAIL_FROM_ADDRESS = "kayit@linux.org.tr"
-
+EMAIL_HOST = "postaci.linux.org.tr"
+EMAIL_PORT = 25
 '''
     PREFERENCE_LIMIT: Kurs tercih limiti
 '''
