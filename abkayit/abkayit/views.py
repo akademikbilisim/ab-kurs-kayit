@@ -10,7 +10,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 
-from abkayit.models import Menu, Content, Question
+from abkayit.models import Menu, Content, Question, Answer
 from abkayit.backend import getsiteandmenus
 
 from userprofile.models import UserProfile
@@ -60,25 +60,26 @@ def testbeforeapply(request):
     data = getsiteandmenus(request)
     data["note"] = "Kurs tercihi yapabilmek için aşağıdaki sorulara doğru yanıt vermelisiniz!"
     try:
-        uprof = UserProfile.objects.get(user=request.user)
-        if not uprof.userpassedtest:
-            questions = Question.objects.filter(active=True).order_by('no')
+        if not request.user.userprofile.userpassedtest:
+            questions = Question.objects.filter(active=True, is_faq=True).order_by('no')
             if questions:
                 data['questions'] = questions
                 if request.POST:
                     userpasstest = True
                     for q in questions:
                         uansw = request.POST[str(q.no)][0]
-                        if q.rightanswer.id != int(uansw):
+                        ranswer = Answer.objects.get(pk=int(uansw))
+                        if not ranswer.is_right:
                             data["note"] = "Tüm sorulara doğru cevap veriniz"
                             userpasstest = False
                     if userpasstest:
-                        uprof.userpassedtest = True
-                        uprof.save()
+                        request.user.userprofile.userpassedtest = True
+                        request.user.userprofile.save()
+                        return redirect("applytocourse")
                 return render_to_response('abkayit/faqtest.html', data)
             else:
-                uprof.userpassedtest = True
-                uprof.save()
+                request.user.userprofile.userpassedtest = True
+                request.user.userprofile.save()
         return redirect("applytocourse")
     except ObjectDoesNotExist:
         return redirect('createprofile')

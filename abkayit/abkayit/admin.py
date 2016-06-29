@@ -30,12 +30,15 @@ class MenuAdmin(admin.ModelAdmin):
     ]
 
 
+class AnswerInline(admin.StackedInline):
+    model = Answer
+    extra = 0
+
+
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ['id', 'no', 'detail', 'rightanswer', 'active']
+    list_display = ['id', 'no', 'detail', 'active']
     list_filter = ['no', 'active']
-
-
-@admin.register(Answer)
-class AnswerAdmin(admin.ModelAdmin):
-    list_display = ['id', 'detail']
+    inlines = [
+        AnswerInline,
+    ]

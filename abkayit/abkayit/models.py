@@ -56,27 +56,28 @@ class Content(models.Model):
         verbose_name_plural = _('Contents')
 
 
-class Answer(models.Model):
-    detail = models.CharField(verbose_name=_("Detail"), max_length="500")
+class Question(models.Model):
+    no = models.IntegerField()
+    detail = models.CharField(verbose_name=_("Question"), max_length="5000")
+    active = models.BooleanField(verbose_name=_("Is Active"), default=False)
+    is_faq = models.BooleanField(verbose_name=_("Is Frequently Asked Question?"), default=True)
 
     class Meta:
-        verbose_name = _("Answer")
-        verbose_name_plural = _("Answers")
+        verbose_name = _("Question")
+        verbose_name_plural = _("Questions")
 
     def __unicode__(self):
         return self.detail
 
 
-class Question(models.Model):
-    no = models.IntegerField()
-    detail = models.CharField(verbose_name=_("Question"), max_length="5000")
-    choices = models.ManyToManyField(Answer, related_name="choices")
-    rightanswer = models.ForeignKey(Answer, related_name="rightanswer")
-    active = models.BooleanField(verbose_name=_("Is Active"), default=False)
+class Answer(models.Model):
+    question = models.ForeignKey(Question, null=True)
+    detail = models.CharField(verbose_name=_("Detail"), max_length="500")
+    is_right = models.BooleanField(verbose_name=_("Is Right Answer"), default=False)
 
     class Meta:
-        verbose_name = _("Question")
-        verbose_name_plural = _("Questions")
+        verbose_name = _("Answer")
+        verbose_name_plural = _("Answers")
 
     def __unicode__(self):
         return self.detail
