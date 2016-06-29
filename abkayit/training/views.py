@@ -478,7 +478,7 @@ def addtrainess(request):
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
     data = getsiteandmenus(request)
     now = datetime.date(datetime.now())
-    if request.user.userprofile.can_elect and site.event_start_date > now > site.application_end_date:
+    if request.user.userprofile.can_elect and data['site'].event_start_date > now > data['site'].application_end_date:
         data['form'] = AddTrainessForm(ruser=request.user)
         data['note'] = "Kursunuza eklemek istediğiniz katilimciyi seçin (E-posta adresine göre)"
         if "add" in request.POST:

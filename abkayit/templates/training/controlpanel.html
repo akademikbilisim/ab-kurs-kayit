@@ -8,6 +8,7 @@
 <script src="{% static '/static/js/courses.js' %}"></script>
 <link href="{% static '/static/css/courses.css' %}" rel="stylesheet" type="text/css"/>
 <div class="container-fluid" style="margin-top:20px;">
+{% if trainess %}
   <div class="alert alert-info">{{ note }}</div>
     {% manuallyaddtrainess site user%}
   <form name="select-student{{course.id}}" method="POST">{% csrf_token %}
@@ -168,6 +169,7 @@
 
   </form>
   </div>
+{%endif%}
 <!--div id="addprefpopup" class="modal" tabindex="-1" role="dialog" aria-labelledby="addprefpopupLabel">
       <div class="modal-header">
       </div>
