@@ -1,0 +1,34 @@
+{% extends "dashboard.html" %}
+{% load i18n %}
+{% block content %}
+{% load staticfiles %}
+
+<div class="container-fluid">
+    <div class="alert alert-info" style="width:30%">{{ note }}</div>
+    <div>
+        <form name="form-control" class="span4 signup-form" method="POST">{% csrf_token %}
+            <div class=".col-md-8">
+                {% for course,questions in pref_tests.items %}
+                <h3>{{ course.name }} kursuna basvurabilmeniz icin asagidaki sorulari yanitlamalisiniz:</h3>
+                    {% for question in questions%}
+                        <div class="row">
+
+                            <p><strong>{{question.no}}. {{ question.detail }}</strong></p>
+                            {% for choice in question.answer_set.all %}
+                                <div class="radio">
+                                    <label><input type="radio" value="{{ choice.id }}" name="{{ course.pk }}{{question.no}}"><p>{{ choice.detail }}</p></label>
+                                </div>
+                            {% endfor %}
+                         </div>
+                    {% endfor%}
+                {% endfor %}
+                    <div class="row">
+                        <input type="submit" name="submitanswers" class="btn" value="Cevaplari Gonder">
+                    </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+

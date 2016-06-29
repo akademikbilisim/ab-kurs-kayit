@@ -17,7 +17,7 @@ from django.db.models import Count
 from django.utils import timezone
 
 from abkayit.backend import getsiteandmenus
-from abkayit.models import Site, Menu, ApprovalDate
+from abkayit.models import Site, Menu, ApprovalDate, Answer
 from abkayit.decorators import active_required
 from abkayit.settings import PREFERENCE_LIMIT, ADDITION_PREFERENCE_LIMIT, EMAIL_FROM_ADDRESS, REQUIRE_TRAINESS_APPROVE
 
@@ -29,7 +29,8 @@ from training.models import Course, TrainessCourseRecord
 from training.forms import CreateCourseForm, ParticipationForm, AddTrainessForm
 from training.tutils import get_approve_start_end_dates_for_inst, save_course_prefferences, applytrainerselections
 from training.tutils import get_approve_start_end_dates_for_tra, get_additional_pref_start_end_dates_for_trainess
-from training.tutils import get_approved_trainess, get_trainess_by_course, is_trainess_approved_any_course
+from training.tutils import get_approved_trainess, get_trainess_by_course, is_trainess_approved_any_course, \
+    gettestsofcourses
 
 log = logging.getLogger(__name__)
 
@@ -94,10 +95,34 @@ def apply_to_course(request):
             if userprofile.userpassedtest:
                 data['closed'] = False
                 note = _("You can choose courses in order of preference.")
-                if request.method == "POST":
-                    TrainessCourseRecord.objects.filter(trainess=userprofile).delete()
-                    course_prefs = json.loads(request.POST.get('course'))
-                    res = save_course_prefferences(userprofile, course_prefs, data['site'], d)
+                if request.GET:
+                    course_prefs = request.GET
+                    pref_tests = gettestsofcourses(course_prefs)
+                    if pref_tests:
+                        data['pref_tests'] = pref_tests
+                        if "submitanswers" in request.POST:
+                            answersforcourse = {}
+                            for course, questions in pref_tests.items():
+                                answersforcourse[course] = []
+                                for question in questions:
+                                    uansw = request.POST.get(str(course.pk) + str(question.no))[0]
+                                    ranswer = Answer.objects.get(pk=int(uansw))
+                                    if ranswer:
+                                        answersforcourse[course].append(ranswer)
+                                    else:
+                                        data["note"] = "Lütfen tüm soruları doldurun!"
+                                        return render_to_response("training/testforapplication.html", data,
+                                                                  context_instance=RequestContext(request))
+                            res = save_course_prefferences(userprofile, course_prefs, data['site'], d,
+                                                           answersforcourse=answersforcourse)
+                            data['note'] = res['message']
+                            return render_to_response("training/applytocourse.html", data,
+                                                      context_instance=RequestContext(request))
+                        return render_to_response("training/testforapplication.html", data,
+                                                  context_instance=RequestContext(request))
+                    else:
+                        res = save_course_prefferences(userprofile, course_prefs, data['site'], d)
+                        data['note'] = res['message']
                     return HttpResponse(json.dumps(res), content_type="application/json")
                 data['note'] = note
             else:
@@ -126,6 +151,13 @@ def apply_to_course(request):
     else:
         data['note'] = _("There isn't any course in this event.")
     return render_to_response('training/applytocourse.html', data)
+
+
+@login_required
+def testforapplication(request):
+    data = getsiteandmenus(request)
+
+    return render_to_response("testforapplication.html", data, context_instance=RequestContext(request))
 
 
 @login_required

@@ -152,44 +152,44 @@ $(document).ready(function(){
 	});
 
 
-  $("#field-container-form").find("#sendPreference").click(function(){
-    var selectedCourse = JSON.stringify($("#field-container-form").serializeArray());
-	var jsonData = {};
-	jsonData['course'] = selectedCourse;
-	jsonData['csrfmiddlewaretoken'] = getCookie('csrftoken');
+//  $("#field-container-form").find("#sendPreference").click(function(){
+//    var selectedCourse = JSON.stringify($("#field-container-form").serializeArray());
+//	var jsonData = {};
+//	jsonData['course'] = selectedCourse;
+//	jsonData['csrfmiddlewaretoken'] = getCookie('csrftoken');
+//
+//		$.ajax({
+//		    url : "/egitim/applytocourse",
+//		    type : "POST",
+//		    dataType: "json",
+//		    data : jsonData,
+//		    success : function(json) {
+//				bootbox.alert(json.message, function() {});
+//		    },
+////		    error : function(xhr,errmsg,err) {
+////				bootbox.alert(errmsg, function() {});
+////		    }
+//		});
+//  });
 
-		$.ajax({
-		    url : "/egitim/applytocourse", 
-		    type : "POST",
-		    dataType: "json", 
-		    data : jsonData,
-		    success : function(json) {
-				bootbox.alert(json.message, function() {});
-		    },
-		    error : function(xhr,errmsg,err) {
-				bootbox.alert(errmsg, function() {});
-		    }
-		});
-  });
-
-  $("#field-container-for-addition-form").find("#sendPreference").click(function(){
-    var selectedCourse = JSON.stringify($("#field-container-for-addition-form").serializeArray());
-	var jsonData = {};
-	jsonData['course'] = selectedCourse;
-	jsonData['csrfmiddlewaretoken'] = getCookie('csrftoken');
-		$.ajax({
-		    url : "/egitim/additionprefapply/", 
-		    type : "POST",
-		    dataType: "json", 
-		    data : jsonData,
-		    success : function(json) {
-				bootbox.alert(json.message, function() {});
-		    },
-		    error : function(xhr,errmsg,err) {
-				bootbox.alert(errmsg, function() {});
-		    }
-		});
-  });
+//  $("#field-container-for-addition-form").find("#sendPreference").click(function(){
+//    var selectedCourse = JSON.stringify($("#field-container-for-addition-form").serializeArray());
+//	var jsonData = {};
+//	jsonData['course'] = selectedCourse;
+//	jsonData['csrfmiddlewaretoken'] = getCookie('csrftoken');
+//		$.ajax({
+//		    url : "/egitim/additionprefapply/",
+//		    type : "POST",
+//		    dataType: "json",
+//		    data : jsonData,
+//		    success : function(json) {
+//				bootbox.alert(json.message, function() {});
+//		    },
+////		    error : function(xhr,errmsg,err) {
+////				bootbox.alert(errmsg, function() {});
+////		    }
+//		});
+//  });
 
   $("#cancel-all").click(function(){
     var selectedCourse = "Başvurduğunuz Kurslar İptal Edilecektir. Kabul edildiğiniz kursları iptal etmeniz durumunda profilinize bu bilgi kaydedilecektir.</br></br>";

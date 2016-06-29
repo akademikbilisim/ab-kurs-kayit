@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 
 from userprofile.models import UserProfile
 
-from abkayit.models import Site, Question
+from abkayit.models import Site, Question, Answer
 from abkayit.settings import TRAINESS_PARTICIPATION_STATE
 
 
@@ -70,3 +70,15 @@ class TrainessParticipation(models.Model):
     class Meta:
         verbose_name = _('Trainess Participation Information')
         verbose_name_plural = _('Trainess Participation Information')
+
+
+class TrainessTestAnswers(models.Model):
+    tcourserecord = models.ForeignKey(TrainessCourseRecord)
+    answer = models.ManyToManyField(Answer)
+
+    def __unicode__(self):
+        return self.tcourserecord.trainess.user.username
+
+    class Meta:
+        verbose_name = _('Trainess Test Answer')
+        verbose_name_plural = _('Trainess Test Answer')

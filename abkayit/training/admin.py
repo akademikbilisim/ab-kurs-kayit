@@ -3,7 +3,7 @@
 from django.utils import timezone
 from django.contrib import admin
 
-from training.models import Course, TrainessCourseRecord, TrainessParticipation
+from training.models import Course, TrainessCourseRecord, TrainessParticipation, TrainessTestAnswers
 from userprofile.models import TrainessNote
 
 

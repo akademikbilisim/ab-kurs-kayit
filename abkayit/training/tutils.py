@@ -10,7 +10,7 @@ from abkayit.settings import EMAIL_FROM_ADDRESS, PREFERENCE_LIMIT, ADDITION_PREF
 
 from abkayit.models import ApprovalDate
 from abkayit.backend import send_email_by_operation_name
-from training.models import Course, TrainessCourseRecord, TrainessParticipation
+from training.models import Course, TrainessCourseRecord, TrainessParticipation, TrainessTestAnswers
 from training.forms import ParticipationForm
 
 log = logging.getLogger(__name__)
@@ -140,33 +140,49 @@ def is_trainess_approved_any_course(userprofile, site, d):
         return False
 
 
-def save_course_prefferences(userprofile, course_prefs, site, d):
+def save_course_prefferences(userprofile, course_prefs, site, d, answersforcourse=None):
     res = {'status': '-1', 'message': 'error'}
-    if len(course_prefs) <= PREFERENCE_LIMIT:
-        if len(set([i['value'] for i in course_prefs])) == len([i['value'] for i in course_prefs]):
 
-            try:
-                for course_pre in course_prefs:
-                    course_record = TrainessCourseRecord(trainess=userprofile,
-                                                         course=Course.objects.get(id=course_pre['value']),
-                                                         preference_order=course_pre['name'],
-                                                         )
-                    course_record.save()
-                res['status'] = 0
-                res['message'] = "Tercihleriniz başarılı bir şekilde güncellendi"
-                context = {'user': userprofile.user, 'course_prefs': course_prefs, 'site': site}
-                domain = site.home_url
-                context['domain'] = domain.rstrip('/')
-                context['recipientlist'] = userprofile.user.username
-                send_email_by_operation_name(context, "preference_saved")
-            except Exception as e:
-                log.error(e.message, extra=d)
-                res['message'] = "Tercihleriniz kaydedilirken hata oluştu"
-        else:
-            res['message'] = "Farklı Tercihlerinizde Aynı Kursu Seçemezsiniz"
+    if len(course_prefs) <= PREFERENCE_LIMIT:
+        TrainessCourseRecord.objects.filter(trainess=userprofile).delete()
+        try:
+            for pref, course in course_prefs.items():
+                course = Course.objects.get(id=int(course))
+                course_record = TrainessCourseRecord(trainess=userprofile,
+                                                     course=course,
+                                                     preference_order=int(pref),
+                                                     )
+                course_record.save()
+                if answersforcourse:
+                    answers = answersforcourse.get(course)
+                    if answers:
+                        tta = TrainessTestAnswers(tcourserecord=course_record)
+                        tta.save()
+                        tta.answer.add(*answers)
+                        tta.save()
+            res['status'] = 0
+            res['message'] = "Tercihleriniz başarılı bir şekilde güncellendi"
+            context = {'user': userprofile.user, 'course_prefs': course_prefs, 'site': site}
+            domain = site.home_url
+            context['domain'] = domain.rstrip('/')
+            context['recipientlist'] = userprofile.user.username
+            send_email_by_operation_name(context, "preference_saved")
+        except Exception as e:
+            log.error(e.message, extra=d)
+            res['message'] = "Tercihleriniz kaydedilirken hata oluştu"
     else:
         res['message'] = "En fazla " + PREFERENCE_LIMIT + " tane tercih hakkına sahipsiniz"
     return res
+
+
+def gettestsofcourses(course_prefs):
+    tests = {}
+    for pref, courses in course_prefs.items():
+        course = Course.objects.get(pk=int(courses))
+        questions = course.question.all()
+        if questions:
+            tests[course] = questions
+    return tests
 
 
 def daterange(start_date, end_date):
