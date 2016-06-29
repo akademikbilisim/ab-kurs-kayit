@@ -26,8 +26,10 @@ from userprofile.forms import InstProfileForm, CreateInstForm
 from userprofile.userprofileops import UserProfileOPS
 
 from training.models import Course, TrainessCourseRecord
-from training.forms import CreateCourseForm, ParticipationForm
-from training.tutils import *
+from training.forms import CreateCourseForm, ParticipationForm, AddTrainessForm
+from training.tutils import get_approve_start_end_dates_for_inst, save_course_prefferences, applytrainerselections
+from training.tutils import get_approve_start_end_dates_for_tra, get_additional_pref_start_end_dates_for_trainess
+from training.tutils import get_approved_trainess, get_trainess_by_course, is_trainess_approved_any_course
 
 log = logging.getLogger(__name__)
 
@@ -322,7 +324,8 @@ def cancel_all_preference(request):
                     if data['site'].application_end_date < now_for_approve < data['site'].event_start_date:
                         if tcr.trainess_approved:
                             context['trainess_course_record'] = tcr
-                            context['recipientlist'] = tcr.course.trainer.filter(can_elect=True).values_list('user__username', flat=True)
+                            context['recipientlist'] = tcr.course.trainer.filter(can_elect=True).values_list(
+                                'user__username', flat=True)
                             send_email_by_operation_name(context, "notice_for_canceled_prefs")
                 except Exception as e:
                     log.error(e.message, extra=d)
@@ -437,13 +440,38 @@ def apply_course_in_addition(request):
     message = "Tercih işlemi yapmanıza izin verilmiyor"
     return HttpResponse(json.dumps({'status': '-1', 'message': message}), content_type="application/json")
 
+
 @login_required
 def addtrainess(request):
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
     data = getsiteandmenus(request)
-    if request.user.userprofile.can_elect:
-        data['form'] = AddTrainess()
-    return render_to_response('training/addtrainess.html', data, context_instance=RequestContext(request))
+    now = datetime.date(datetime.now())
+    if request.user.userprofile.can_elect and site.event_start_date > now > site.application_end_date:
+        data['form'] = AddTrainessForm(ruser=request.user)
+        data['note'] = "Kursunuza eklemek istediğiniz katilimciyi seçin (E-posta adresine göre)"
+        if "add" in request.POST:
+            data['form'] = AddTrainessForm(request.POST, ruser=request.user)
+            if data['form'].is_valid():
+                tcourserecord = data['form'].save(commit=False)
+                tcourserecord.preference_order = 1
+                tcourserecord.trainess_approved = True
+                tcourserecord.approved = True
+                tcourserecord.save()
+                notestr = "Bu kullanicinin %s kursu tercihi eğitmen tarafından eklendi." % tcourserecord.course.name
+                note = TrainessNote(note=notestr, note_from_profile=request.user.userprofile,
+                                    note_to_profile=tcourserecord.trainess,
+                                    site=tcourserecord.course.site, note_date=timezone.now(), label="tercih")
+                note.save()
+                data['note'] = "Form kaydedildi. Eklediğiniz katılımcıları 1. tercih listesinde görüntüleyebilirsiniz."
+                log.info("%s kullanicisi %s kullanicisini %s kursuna ekledi." % (
+                    request.user.username, tcourserecord.user.username, tcourserecord.course.name), extra=d)
+            else:
+                data['note'] = "Form aşağıdaki sebeplerden dolayı kaydedilemedi."
+        elif "cancel" in request.POST:
+            return redirect("controlpanel")
+        return render_to_response('training/addtrainess.html', data, context_instance=RequestContext(request))
+    else:
+        return redirect("controlpanel")
 
 
 @staff_member_required
@@ -530,4 +558,3 @@ def submitandregister(request):
     return render_to_response("training/submitandregister.html",
                               data,
                               context_instance=RequestContext(request))
-

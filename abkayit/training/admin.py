@@ -10,7 +10,7 @@ from userprofile.models import TrainessNote
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
     list_display = ['no', 'name', 'approved']
-    list_filter = ('approved', 'trainer')
+    list_filter = ('approved', 'site')
     search_fields = ('name', 'trainer__user__username')
 
 
@@ -18,6 +18,7 @@ class CourseAdmin(admin.ModelAdmin):
 class TrainessCourseRecordAdmin(admin.ModelAdmin):
     list_display = ['id', 'course', 'trainess', 'preference_order', 'approved', 'trainess_approved']
     search_fields = ('id', 'course__name', 'trainess__user__username')
+    list_filter = ('approved', 'trainess_approved', 'course__site')
 
     def save_model(self, request, obj, form, change):
         notestr = ""
@@ -39,6 +40,7 @@ class TrainessCourseRecordAdmin(admin.ModelAdmin):
 class TrainessParticipationAdmin(admin.ModelAdmin):
     list_display = ['get_site', 'day', 'get_trainess_name', 'get_trainess_username', 'id']
     search_fields = ('courserecord__course__name', 'trainess__user__username')
+    list_filter = ('courserecord__course__site',)
 
     def get_trainess_name(self, obj):
         return "%s %s" % (obj.courserecord.trainess.user.first_name, obj.courserecord.trainess.user.last_name)
@@ -47,5 +49,5 @@ class TrainessParticipationAdmin(admin.ModelAdmin):
         return obj.courserecord.trainess.user.username
 
     def get_site(self, obj):
-        return "%s" % (obj.courserecord.course.site)
+        return "%s" % obj.courserecord.course.site
         # accounts/showuser/2701/12824

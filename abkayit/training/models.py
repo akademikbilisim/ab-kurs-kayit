@@ -55,10 +55,12 @@ class TrainessCourseRecord(models.Model):
 
 class TrainessParticipation(models.Model):
     courserecord = models.ForeignKey(TrainessCourseRecord)
-    morning = models.CharField(choices=TRAINESS_PARTICIPATION_STATE, verbose_name=_("Morning"), max_length=3, default='0')
+    morning = models.CharField(choices=TRAINESS_PARTICIPATION_STATE, verbose_name=_("Morning"), max_length=3,
+                               default='0')
     afternoon = models.CharField(choices=TRAINESS_PARTICIPATION_STATE, verbose_name=_("Afternoon"), max_length=3,
                                  default='0')
-    evening = models.CharField(choices=TRAINESS_PARTICIPATION_STATE, verbose_name=_("Evening"), max_length=3, default='0')
+    evening = models.CharField(choices=TRAINESS_PARTICIPATION_STATE, verbose_name=_("Evening"), max_length=3,
+                               default='0')
     day = models.CharField(verbose_name=_("Day"), max_length=20, default='1')
 
     def __unicode__(self):

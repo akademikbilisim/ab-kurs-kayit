@@ -1,14 +1,18 @@
 # -*- coding:utf-8  -*-
-from django import forms
+
 import datetime
-from django.forms.models import ModelForm
-from training.models import Course, TrainessParticipation, TrainessCourseRecord
+
+from django.db.models import Q
+
+from django.forms import HiddenInput, ModelChoiceField, Select
 from django.forms.extras.widgets import SelectDateWidget
+from django.forms.models import ModelForm
+
+from training.models import Course, TrainessParticipation, TrainessCourseRecord
+from userprofile.models import UserProfile
 
 
 class CreateCourseForm(ModelForm):
-    # numoftrainer= forms.ChoiceField(widget=Select, choices=[(1,1),(2,2),(3,3),(4,4)],label="Egitmen sayisi")
-    # fulltext= forms.FileField(upload_to='%Y/%m/%d/'label='Select a file', help_text='max. 42 megabytes' )
     class Meta:
         model = Course
         exclude = []
@@ -17,12 +21,11 @@ class CreateCourseForm(ModelForm):
                 years=(str(datetime.datetime.now().year), str(datetime.datetime.now().year + 1))),
             'end_date': SelectDateWidget(
                 years=(str(datetime.datetime.now().year), str(datetime.datetime.now().year + 1))),
-            'reg_start_date': forms.HiddenInput(),
-            'reg_end_date': forms.HiddenInput(),
-            'trainess': forms.HiddenInput(),
-            'trainer': forms.HiddenInput(),
-            'approved': forms.HiddenInput(),
-            # 'fulltext': forms.HiddenInput(),
+            'reg_start_date': HiddenInput(),
+            'reg_end_date': HiddenInput(),
+            'trainess': HiddenInput(),
+            'trainer': HiddenInput(),
+            'approved': HiddenInput(),
         }
 
     def __init__(self, *args, **kwargs):
@@ -54,10 +57,30 @@ class ParticipationForm(ModelForm):
         model = TrainessParticipation
         fields = ['courserecord', 'day', 'morning', 'afternoon', 'evening']
         widgets = {
-            'courserecord': forms.HiddenInput(),
-            'day': forms.HiddenInput(),
+            'courserecord': HiddenInput(),
+            'day': HiddenInput(),
         }
 
-class AddTrainess(ModelForm):
+
+class AddTrainessForm(ModelForm):
+    trainess = ModelChoiceField(queryset=UserProfile.objects.none(), label="Trainess",
+                                widget=Select(attrs={'class': 'form-control'}))
+    course = ModelChoiceField(queryset=Course.objects.none(), label="Course",
+                              widget=Select(attrs={'class': 'form-control'}))
+
+    def __init__(self, *args, **kwargs):
+        self.ruser = kwargs.pop('ruser', None)
+        super(AddTrainessForm, self).__init__(*args, **kwargs)
+        if self.ruser:
+            self.fields['course'].queryset = Course.objects.filter(trainer=self.ruser.userprofile, site__is_active=True)
+        self.fields['trainess'].queryset = UserProfile.objects.exclude(
+            Q(trainesscourserecord__approved=True) | Q(is_instructor=True) | Q(can_elect=True) | Q(user__is_staff=True))
+
     class Meta:
         model = TrainessCourseRecord
+        exclude = ['instapprovedate', 'consentemailsent']
+        widgets = {
+            'preference_order': HiddenInput(),
+            'trainess_approved': HiddenInput(),
+            'approved': HiddenInput(),
+        }

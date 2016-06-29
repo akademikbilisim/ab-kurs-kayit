@@ -24,13 +24,13 @@ def isdategtnow_head(datedict, key):
 
 
 @register.simple_tag(name="manuallyaddtrainess")
-def manuallyaddtrainess(site):
+def manuallyaddtrainess(site, user):
     now = datetime.date(datetime.now())
-    if now > site.application_end_date:
+    if site.event_start_date > now > site.application_end_date and user.userprofile.can_elect:
         return """
         <div class="alert alert-info">Sistemde profili tanimli olup başvuruyu kaçırmış kullanıcıları "Kursiyer Ekle"
          butonuna tıklayarak kursunuza ekleyebilirsiniz</div>
-        <a href="#addprefpopup" class="btn btn-primary pull-right" type="button" data-toggle="modal"><i class="fa fa-fw fa-plus"></i>
+        <a href="/egitim/katilimciekle" class="btn btn-primary pull-right" type="button" data-toggle="modal"><i class="fa fa-fw fa-plus"></i>
         Kursiyer Ekle
       </a>"""
 
