@@ -408,7 +408,8 @@ msgstr "Katılımcı Notu"
 
 #: training/views.py:97
 msgid "You can choose courses in order of preference."
-msgstr "Tercih sırasına göre kursları seçebilirsiniz"
+msgstr "Başvurmak istediğiniz kursları lütfen tercih sırasına göre aşağıdan
+ekleyiniz. En az 1, en çok 3 tercih yapabilirsiniz."
 
 #: training/views.py:150
 msgid "You can make additional preference."

@@ -172,7 +172,7 @@ $(document).ready(function() {
       $("#closed-courses").html(closedCourses);
       $("#closed-courses").show();
   {% else %}
-      var openCourses = "<strong>Başvurusu Alınacak Kurslar</strong><ul>";
+      var openCourses = "<strong>Tercih Edebileceğiniz Kurslar</strong><ul>";
       {% for course in courses %}
         openCourses += "<li>{{course.name}}</li>";
       {% endfor %}

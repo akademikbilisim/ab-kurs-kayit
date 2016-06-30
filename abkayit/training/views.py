@@ -123,7 +123,9 @@ def apply_to_course(request):
                     else:
                         res = save_course_prefferences(userprofile, course_prefs, data['site'], d)
                         data['note'] = res['message']
-                    return HttpResponse(json.dumps(res), content_type="application/json")
+                    data['note'] = res['message']
+                    return render_to_response("training/applytocourse.html", data,
+                                                      context_instance=RequestContext(request))
                 data['note'] = note
             else:
                 return redirect("testbeforeapply")
