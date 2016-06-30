@@ -10,8 +10,6 @@
 	    <tr>
 	        <th>{% trans "Course Name" %}</th>
 	        <th>{% trans "Description" %}</th>
-	        <th>{% trans "Trainers" %}</th>
-	        <th>{% trans "Submission ID" %}</th>
 	    </tr>
 	</thead>
 	<tbody>
@@ -19,12 +17,6 @@
 		<tr href="{{course.url}}" class="clickableRow">
 			<th>{{course.name}}</th>
 			<th>{{course.description}}</th>
-			<th>
-				{% for t in course.trainer.all %}
-					{{ t.user.first_name }} {{ t.user.last_name }} </br>
-				{% endfor %}
-			</th>
-			<th>{{course.no}}</th>
 		</tr>
 	{% endfor %}
 	</tbody>
