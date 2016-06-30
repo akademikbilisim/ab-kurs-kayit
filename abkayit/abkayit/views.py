@@ -66,16 +66,23 @@ def testbeforeapply(request):
                 data['questions'] = questions
                 if request.POST:
                     userpasstest = True
+                    wronganswers = ""
                     for q in questions:
-                        uansw = request.POST[str(q.no)][0]
+                        uansw = request.POST.get(str(q.no))
+                        if not uansw:
+                            data['note'] = "Tüm sorulara cevap veriniz."
+                            return render_to_response('abkayit/faqtest.html', data)
                         ranswer = Answer.objects.get(pk=int(uansw))
                         if not ranswer.is_right:
-                            data["note"] = "Tüm sorulara doğru cevap veriniz"
+                            log.info("yanlis cevap: %s" % q.no, extra=d)
+                            wronganswers += "%s " % q.no
                             userpasstest = False
                     if userpasstest:
                         request.user.userprofile.userpassedtest = True
                         request.user.userprofile.save()
                         return redirect("applytocourse")
+                    else:
+                        data["note"] = "Tüm sorulara doğru cevap veriniz yanlış cevaplar %s" % wronganswers 
                 return render_to_response('abkayit/faqtest.html', data)
             else:
                 request.user.userprofile.userpassedtest = True
