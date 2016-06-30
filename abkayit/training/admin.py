@@ -3,8 +3,9 @@
 from django.utils import timezone
 from django.contrib import admin
 
+from abkayit.models import Question
 from training.models import Course, TrainessCourseRecord, TrainessParticipation, TrainessTestAnswers
-from userprofile.models import TrainessNote
+from userprofile.models import TrainessNote, UserProfile
 
 
 @admin.register(Course)
@@ -12,6 +13,15 @@ class CourseAdmin(admin.ModelAdmin):
     list_display = ['no', 'name', 'approved']
     list_filter = ('approved', 'site')
     search_fields = ('name', 'trainer__user__username')
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        if db_field.name == "trainer":
+            kwargs["queryset"] = UserProfile.objects.filter(is_instructor=True)
+        elif db_field.name == "trainess":
+            kwargs["queryset"] = UserProfile.objects.filter(is_instructor=False)
+        elif db_field.name == "question":
+            kwargs["queryset"] = Question.objects.filter(is_faq=False, active=True)
+        return super(CourseAdmin, self).formfield_for_manytomany(db_field, request, **kwargs)
 
 
 @admin.register(TrainessCourseRecord)
