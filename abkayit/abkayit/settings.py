@@ -25,11 +25,12 @@ COMMON_CONFIG_FILE = '/opt/kampyazilim.conf'
     EMAIL_FROM_ADDRESS: Sistemden gonderilecek maillerin from adresi
 '''
 EMAIL_FROM_ADDRESS = "kayit@linux.org.tr"
-
+EMAIL_HOST = "postaci.linux.org.tr"
+EMAIL_PORT = 25
 '''
     PREFERENCE_LIMIT: Kurs tercih limiti
 '''
-PREFERENCE_LIMIT = 2
+PREFERENCE_LIMIT = 3
 
 '''
     ADDITION_PREFERENCE_LIMIT: Ek kurs tercih limiti
@@ -77,11 +78,11 @@ REQUIRE_TRAINESS_APPROVE = False
 '''
     VIRTUAL_ENV_PATH: Uygulamanın Python virtualenv'nin kurulu oldugu dizinin yolu
 '''
-VIRTUAL_ENV_PATH = "/home/ozge/ab-kurs-kayit/venv"
+VIRTUAL_ENV_PATH = "venv/venv"
 '''
     PROJECT_HOME_DIR: Uygulamanın ana dizini
 '''
-PROJECT_HOME_DIR = "/home/ozge/ab-kurs-kayit/abkayit"
+PROJECT_HOME_DIR = "/opt/ab-kurs-kayit/abkayit"
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 MEDIA_URL = '/media/'

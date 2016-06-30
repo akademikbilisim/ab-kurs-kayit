@@ -21,7 +21,7 @@
 			<th>{{course.description}}</th>
 			<th>
 				{% for t in course.trainer.all %}
-					{{t.user}} </br>
+					{{ t.user.first_name }} {{ t.user.last_name }} </br>
 				{% endfor %}
 			</th>
 			<th>{{course.no}}</th>
