@@ -180,6 +180,8 @@ class StuProfileForm(ModelForm):
         self.fields['userpassedtest'].required = False
         self.fields['user'].required = False
         self.fields['additional_information'].required = False
+        self.fields['website'].required = False
+        self.fields['experience'].required = False
 
     def clean(self):
         cleaned_data = super(StuProfileForm, self).clean()

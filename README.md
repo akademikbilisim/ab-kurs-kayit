@@ -30,6 +30,8 @@ Gereksinimler:
 
 - python-crontab 2.0.2
 
+- Pillow
+
 Abkayit / kamp yazılımı ilk kurulum aşamasında dikkat edilmesi gerekenler:
 
 *** Yapilandirma dosyasi:

@@ -29,6 +29,10 @@ class UserVerification(models.Model):
         verbose_name_plural = _('User Verifications')
 
 
+def user_directory_path(instance, filename):
+    return 'user_{0}/{1}'.format(instance.user.id, filename)
+
+
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
     birthdate = models.DateField(verbose_name=_("Birth Date"), default=datetime.date(1970, 1, 1))
@@ -38,17 +42,20 @@ class UserProfile(models.Model):
                               max_length=1)
     mobilephonenumber = models.CharField(verbose_name=_("Mobile Phone Number"), max_length=14)
     address = models.TextField(verbose_name=_("Home Address"))
-    job = models.CharField(verbose_name=_("Job"), max_length=40)
+    job = models.CharField(verbose_name=_("Job"), max_length=40, null=True, blank=True)
     city = models.CharField(verbose_name=_("City"), max_length=40)
     country = CountryField(verbose_name=_("Country"), choices=COUNTRIES, default='TR')
     title = models.CharField(verbose_name=_("Title"), max_length=40)
-    organization = models.CharField(verbose_name=_("Organization"), max_length=200)
+    organization = models.CharField(verbose_name=_("Organization"), max_length=200, null=True, blank=True)
     university = models.CharField(choices=UNIVERSITIES, verbose_name=_("University"), max_length=300, blank=True)
     department = models.CharField(verbose_name=_("Department"), max_length=50)
+    website = models.CharField(verbose_name=_("Website"), max_length=300, null=True, blank=True)
+    experience = models.CharField(verbose_name=_("Work Experience"), max_length=1000, null=True, blank=True)
     is_instructor = models.BooleanField(verbose_name=_("Is Instructor"), default=False)
     can_elect = models.BooleanField(verbose_name=_("Can Elect"), default=False)
     additional_information = models.TextField(verbose_name=_("Additional Information"), null=True)
     userpassedtest = models.BooleanField(verbose_name=_("Can Apply"), blank=True, default=False)
+    profilephoto = models.ImageField(upload_to=user_directory_path, verbose_name=_("Profile Picture"))
 
     def __unicode__(self):
         return self.user.username

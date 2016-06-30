@@ -95,7 +95,7 @@ $(document).ready(function(){
         <div class="alert alert-danger">{{ form.non_field_errors.as_text }}</div>
       {% endif %}
 	{% endif %} 
-   <form id="userprofile" name="form-control" class="span4 signup-form" method="POST">{% csrf_token %}
+   <form id="userprofile" name="form-control" class="span4 signup-form" method="POST" enctype="multipart/form-data">{% csrf_token %}
     {% if form %}
     	<!-- UPDATE USER FORM -->
     	{% if update_user_form %}

@@ -112,14 +112,15 @@ def createprofile(request):
     if 'register' in request.POST:
         data['update_user_form'] = UpdateUserForm(data=request.POST, instance=request.user)
         try:
-            data['form'] = StuProfileForm(data=request.POST, instance=request.user.userprofile, ruser=request.user)
+            data['form'] = StuProfileForm(request.POST, request.FILES, instance=request.user.userprofile, ruser=request.user)
         except UserProfile.DoesNotExist:
-            data['form'] = StuProfileForm(request.POST, ruser=request.user)
+            data['form'] = StuProfileForm(request.POST, request.FILES, ruser=request.user)
         if data['update_user_form'].is_valid() and data['form'].is_valid():
             log.info("formvalid", extra=d)
             try:
                 profile = data['form'].save(commit=False)
                 profile.user = request.user
+                profile.profilephoto = data['form'].cleaned_data['profilephoto']
                 profile.save()
                 if not request.user.userprofile.is_instructor and ACCOMODATION_PREFERENCE_LIMIT:
                     prefs = UserAccomodationPref.objects.filter(user=request.user.userprofile)
