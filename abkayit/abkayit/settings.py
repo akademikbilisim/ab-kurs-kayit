@@ -30,7 +30,7 @@ EMAIL_PORT = 25
 '''
     PREFERENCE_LIMIT: Kurs tercih limiti
 '''
-PREFERENCE_LIMIT = 2
+PREFERENCE_LIMIT = 3
 
 '''
     ADDITION_PREFERENCE_LIMIT: Ek kurs tercih limiti
