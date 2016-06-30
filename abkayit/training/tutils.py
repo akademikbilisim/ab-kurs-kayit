@@ -165,7 +165,7 @@ def save_course_prefferences(userprofile, course_prefs, site, d, answersforcours
             context = {'user': userprofile.user, 'course_prefs': course_prefs, 'site': site}
             domain = site.home_url
             context['domain'] = domain.rstrip('/')
-            context['recipientlist'] = userprofile.user.username
+            context['recipientlist'] = [userprofile.user.username]
             send_email_by_operation_name(context, "preference_saved")
         except Exception as e:
             log.error(e.message, extra=d)
