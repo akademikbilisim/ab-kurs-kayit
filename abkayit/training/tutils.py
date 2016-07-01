@@ -183,7 +183,8 @@ def gettestsofcourses(course_prefs):
         course = Course.objects.get(pk=int(courses))
         questions = course.question.all()
         textboxquestion = course.textboxquestion.all()
-        tests[course] = (questions, textboxquestion)
+        if questions or textboxquestion:
+            tests[course] = (questions, textboxquestion)
     return tests
 
 
