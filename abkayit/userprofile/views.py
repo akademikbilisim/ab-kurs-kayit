@@ -303,7 +303,12 @@ def password_reset_key(request):
                 data['activation_key'] = user_verification.password_reset_key
                 domain = data['site'].home_url
                 data['domain'] = domain.rstrip('/')
+                data['recipientlist'] = [user.username]
                 note = send_email_by_operation_name(data, "send_reset_password_key")
+                if note:
+                    note = "Parola sıfırlama e-postası adresinize gönderildi."
+                else:
+                    note = "E-posta gönderilemedi"
             except ObjectDoesNotExist:
                 note = _("""There isn't any user record with this e-mail on the system""")
                 log.error(note, extra=d)
