@@ -2,6 +2,7 @@
 {% load i18n %}
 {% block content %}
 {% load staticfiles %}
+{% load trainingtags %}
 
 <div class="container-fluid">
     <div class="alert alert-info" style="width:30%">{{ note }}</div>
@@ -9,17 +10,33 @@
         <form name="form-control" class="span4 signup-form" method="POST">{% csrf_token %}
             <div class=".col-md-8">
                 {% for course,questions in pref_tests.items %}
-                <h3>{{ course.name }} kursuna basvurabilmeniz icin asagidaki sorulari yanitlamalisiniz:</h3>
-                    {% for question in questions%}
+
+                    {% if questions.0 or  questions.1 %}
+                        <h3>{{ course.name }} kursuna basvurabilmeniz icin asagidaki sorulari yanitlamalisiniz:</h3>
+                    {% endif %}
+                    {% for question0 in questions.0%}
                         <div class="row">
 
-                            <p><strong>{{question.no}}. {{ question.detail }}</strong></p>
-                            {% for choice in question.answer_set.all %}
+                            <p><strong>{{ question0.detail }}</strong></p>
+                            {% for choice in question0.answer_set.all %}
                                 <div class="radio">
-                                    <label><input type="radio" value="{{ choice.id }}" name="{{ course.pk }}{{question.no}}"><p>{{ choice.detail }}</p></label>
+                                    <label><input type="radio" value="{{ choice.id }}" name="{{ course.pk }}{{question0.no}}"><p>{{ choice.detail }}</p></label>
                                 </div>
                             {% endfor %}
                          </div>
+                    {% endfor%}
+
+                    {% for question1 in questions.1%}
+                    <div class="form-group">
+                        <div class="row">
+
+                            <p><strong>{{ question1.detail }}</strong></p>
+
+                            <div class="col-md-6">
+                                <textarea class="form-control" name="answer{{ question1.pk }}" rows="4" cols="50">{% getanswer question1 user %}</textarea>
+                            </div>
+                        </div>
+                    </div>
                     {% endfor%}
                 {% endfor %}
                     <div class="row">

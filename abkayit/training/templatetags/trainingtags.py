@@ -4,6 +4,7 @@ from datetime import datetime
 from django import template
 
 from abkayit.models import ApprovalDate
+from userprofile.models import TrainessClassicTestAnswers
 
 register = template.Library()
 
@@ -62,3 +63,11 @@ def isdategtnow_body(datedict, key, t, course, user):
         return "Evet"
     else:
         return "Hayir"
+
+
+@register.simple_tag(name="getanswer")
+def getanswer(question, user):
+    try:
+        return TrainessClassicTestAnswers.objects.get(question=question, user=user.userprofile).answer
+    except TrainessClassicTestAnswers.DoesNotExist:
+        return ""

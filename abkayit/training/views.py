@@ -21,7 +21,7 @@ from abkayit.models import Site, Menu, ApprovalDate, Answer
 from abkayit.decorators import active_required
 from abkayit.settings import PREFERENCE_LIMIT, ADDITION_PREFERENCE_LIMIT, EMAIL_FROM_ADDRESS, REQUIRE_TRAINESS_APPROVE
 
-from userprofile.models import UserProfile, TrainessNote
+from userprofile.models import UserProfile, TrainessNote, TrainessClassicTestAnswers
 from userprofile.forms import InstProfileForm, CreateInstForm
 from userprofile.userprofileops import UserProfileOPS
 
@@ -99,13 +99,14 @@ def apply_to_course(request):
                     course_prefs = request.GET
                     pref_tests = gettestsofcourses(course_prefs)
                     if pref_tests:
+                        data['note'] = "Lutfen asağidaki soruları yanıtlayın"
                         data['pref_tests'] = pref_tests
                         if "submitanswers" in request.POST:
                             answersforcourse = {}
                             for course, questions in pref_tests.items():
                                 answersforcourse[course] = []
-                                for question in questions:
-                                    uansw = request.POST.get(str(course.pk) + str(question.no))[0]
+                                for question in questions[0]:
+                                    uansw = request.POST.get(str(course.pk) + str(question.no))
                                     ranswer = Answer.objects.get(pk=int(uansw))
                                     if ranswer:
                                         answersforcourse[course].append(ranswer)
@@ -113,6 +114,13 @@ def apply_to_course(request):
                                         data["note"] = "Lütfen tüm soruları doldurun!"
                                         return render_to_response("training/testforapplication.html", data,
                                                                   context_instance=RequestContext(request))
+                                for question in questions[1]:
+                                    tbansw = request.POST.get("answer" + str(question.pk))
+                                    if tbansw:
+                                        tcta, created = TrainessClassicTestAnswers.objects.get_or_create(
+                                            user=request.user.userprofile, question=question)
+                                        tcta.answer = tbansw
+                                        tcta.save()
                             res = save_course_prefferences(userprofile, course_prefs, data['site'], d,
                                                            answersforcourse=answersforcourse)
                             data['note'] = res['message']
@@ -125,7 +133,7 @@ def apply_to_course(request):
                         data['note'] = res['message']
                     data['note'] = res['message']
                     return render_to_response("training/applytocourse.html", data,
-                                                      context_instance=RequestContext(request))
+                                              context_instance=RequestContext(request))
                 data['note'] = note
             else:
                 return redirect("testbeforeapply")
