@@ -162,6 +162,7 @@ class StuProfileForm(ModelForm):
         }
         help_texts = {
             'organization': 'Kurum Bilgisi; okuyorsanız okuduğunuz kurum, çalışıyorsanız çalıştığınız kurum bilgisidir',
+            'document': 'Görevlendirme yazısı, veli izin yazısı vb.',
         }
 
     def __init__(self, *args, **kwargs):
@@ -184,6 +185,7 @@ class StuProfileForm(ModelForm):
         self.fields['additional_information'].required = False
         self.fields['website'].required = False
         self.fields['experience'].required = False
+        self.fields['document'].required = False
 
     def clean(self):
         cleaned_data = super(StuProfileForm, self).clean()
