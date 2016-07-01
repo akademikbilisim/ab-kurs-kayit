@@ -307,7 +307,7 @@ def password_reset_key(request):
                 user_verification, created = UserVerification.objects.get_or_create(user=user)
                 user_verification.password_reset_key = create_verification_link(user)
                 user_verification.save()
-                data['user'] = user
+                data['ruser'] = user
                 data['activation_key'] = user_verification.password_reset_key
                 domain = data['site'].home_url
                 data['domain'] = domain.rstrip('/')
