@@ -146,6 +146,7 @@ def save_course_prefferences(userprofile, course_prefs, site, d, answersforcours
     if len(course_prefs) <= PREFERENCE_LIMIT:
         TrainessCourseRecord.objects.filter(trainess=userprofile).delete()
         try:
+            course_records = []
             for pref, course in course_prefs.items():
                 course = Course.objects.get(id=int(course))
                 course_record = TrainessCourseRecord(trainess=userprofile,
@@ -153,6 +154,7 @@ def save_course_prefferences(userprofile, course_prefs, site, d, answersforcours
                                                      preference_order=int(pref),
                                                      )
                 course_record.save()
+                course_records.append(course_record)
                 if answersforcourse:
                     answers = answersforcourse.get(course)
                     if answers:
@@ -162,7 +164,7 @@ def save_course_prefferences(userprofile, course_prefs, site, d, answersforcours
                         tta.save()
             res['status'] = 0
             res['message'] = "Tercihleriniz başarılı bir şekilde güncellendi"
-            context = {'user': userprofile.user, 'course_prefs': course_prefs, 'site': site}
+            context = {'user': userprofile.user, 'course_prefs': course_records, 'site': site}
             domain = site.home_url
             context['domain'] = domain.rstrip('/')
             context['recipientlist'] = [userprofile.user.username]
