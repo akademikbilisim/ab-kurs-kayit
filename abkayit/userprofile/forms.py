@@ -193,12 +193,15 @@ class StuProfileForm(ModelForm):
         if ruser:
             first_name = ruser.first_name.rstrip().lstrip()
             last_name = ruser.last_name.rstrip().lstrip()
-            byear = cleaned_data['birthdate'].year
+            birthdate = cleaned_data.get('birthdate')
+            byear = ""
+            if birthdate:
+                byear = birthdate.year
             if cleaned_data['tckimlikno'] and cleaned_data['ykimlikno']:
                 raise forms.ValidationError(_("Please fill only one of them:tckimlikno,ykimlikno"))
             elif not cleaned_data['tckimlikno'] and cleaned_data['country'] == 'TR':
                 raise forms.ValidationError(_("TC identity number can not be empty for Turkish citizens"))
-            elif not cleaned_data['ykimlikno'] and cleaned_data['country'] != 'TR':
+            elif not cleaned_data.get('ykimlikno') and cleaned_data['country'] != 'TR':
                 raise forms.ValidationError(_("Foreign identity number can not be empty for non Turkish citizens"))
             elif cleaned_data['tckimlikno'] and cleaned_data['country'] == 'TR':
                 tcknosorgu = UserProfile.objects.filter(tckimlikno=cleaned_data['tckimlikno'])
