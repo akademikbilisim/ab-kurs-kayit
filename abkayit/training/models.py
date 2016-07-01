@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 
 from userprofile.models import UserProfile
 
-from abkayit.models import Site, Question, Answer
+from abkayit.models import Site, Question, Answer, TextBoxQuestions
 from abkayit.settings import TRAINESS_PARTICIPATION_STATE
 
 
@@ -27,7 +27,8 @@ class Course(models.Model):
     application_is_open = models.BooleanField(default=True)
     site = models.ForeignKey(Site)
     url = models.CharField(verbose_name=_("URL"), max_length="350")
-    question = models.ManyToManyField(Question, blank=True)
+    question = models.ManyToManyField(Question, blank=True, verbose_name="Çoktan Seçmeli Sorular")
+    textboxquestion = models.ManyToManyField(TextBoxQuestions, blank=True, verbose_name="Klasik Sorular")
 
     def __unicode__(self):
         return self.name

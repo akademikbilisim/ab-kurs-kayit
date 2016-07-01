@@ -83,6 +83,21 @@ class Answer(models.Model):
         return self.detail
 
 
+class TextBoxQuestions(models.Model):
+    questionno = models.IntegerField()
+    site = models.ForeignKey(Site)
+    detail = models.CharField(max_length=700, verbose_name=_("Classic Questions"))
+    active = models.BooleanField(verbose_name=_("Is Active"), default=True)
+    is_sitewide = models.BooleanField(verbose_name=_("Site Wide"), default=False)
+
+    class Meta:
+        verbose_name = _("Classic Question")
+        verbose_name_plural = _("Classic Questions")
+
+    def __unicode__(self):
+        return self.detail
+
+
 class ApprovalDate(models.Model):
     start_date = models.DateTimeField(verbose_name=_("Start Date"), default=datetime.now)
     end_date = models.DateTimeField(verbose_name=_("End Date"), default=datetime.now)

@@ -3,9 +3,9 @@
 from django.utils import timezone
 from django.contrib import admin
 
-from abkayit.models import Question
+from abkayit.models import Question, TextBoxQuestions
 from training.models import Course, TrainessCourseRecord, TrainessParticipation, TrainessTestAnswers
-from userprofile.models import TrainessNote, UserProfile
+from userprofile.models import TrainessNote, UserProfile, TrainessClassicTestAnswers
 
 
 @admin.register(Course)
@@ -21,6 +21,8 @@ class CourseAdmin(admin.ModelAdmin):
             kwargs["queryset"] = UserProfile.objects.filter(is_instructor=False)
         elif db_field.name == "question":
             kwargs["queryset"] = Question.objects.filter(is_faq=False, active=True)
+        elif db_field.name == "textboxquestion":
+            kwargs["queryset"] = TextBoxQuestions.objects.filter(is_sitewide=False, active=True)
         return super(CourseAdmin, self).formfield_for_manytomany(db_field, request, **kwargs)
 
 
@@ -61,3 +63,9 @@ class TrainessParticipationAdmin(admin.ModelAdmin):
     def get_site(self, obj):
         return "%s" % obj.courserecord.course.site
         # accounts/showuser/2701/12824
+
+
+@admin.register(TrainessClassicTestAnswers)
+class TrainessClassicTestAnswersAdmin(admin.ModelAdmin):
+    list_display = ['user', 'question', 'answer']
+    search_fields = ('user__user__username',)

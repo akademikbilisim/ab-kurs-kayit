@@ -1,6 +1,7 @@
 {% extends "dashboard.html" %}
 {% load i18n %}
 {% block head %}
+{% load userprofiletags %}
 <script type="text/javascript">
 
 function addPreference(selectedPreference){
@@ -171,6 +172,21 @@ $(document).ready(function(){
                 {% endif %}
   		    </div>
         {% endfor %}
+       {% if sitewidequestions %}
+           {% for sitewidequestion in sitewidequestions %}
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <b>{{ sitewidequestion.detail }}</b>
+
+                        </div>
+                        <div class="col-md-6">
+                            <textarea name="answer{{ sitewidequestion.pk }}" rows="4" cols="50">{% getanswer sitewidequestion user %}</textarea>
+                        </div>
+                    </div>
+                </div>
+           {% endfor %}
+       {% endif %}
         {% if accomodations and accomodations_preference_count %}
                 <div class="form-group">
                     <div class="row col-xs-8 col-md-12 col-sm-12 control-label">

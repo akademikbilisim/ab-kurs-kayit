@@ -11,7 +11,7 @@ from django_countries.data import COUNTRIES
 
 from abkayit.settings import USER_TYPES, UNIVERSITIES, GENDER, TRANSPORTATION
 
-from abkayit.models import Site
+from abkayit.models import Site, TextBoxQuestions
 
 
 class UserVerification(models.Model):
@@ -127,3 +127,17 @@ class InstructorInformation(models.Model):
     class Meta:
         verbose_name = _("Instructor Additional Information")
         verbose_name_plural = _("Instructor Additional Information")
+
+
+class TrainessClassicTestAnswers(models.Model):
+    user = models.ForeignKey(UserProfile)
+    question = models.ForeignKey(TextBoxQuestions, verbose_name="Soru")
+    answer = models.CharField(max_length=1000, verbose_name="Cevap")
+
+    def __unicode__(self):
+        return self.user.user.username
+
+    class Meta:
+        verbose_name = _("Trainess Answer for Classic Question")
+        verbose_name_plural = _("Trainess Answers for Classic Questions ")
+

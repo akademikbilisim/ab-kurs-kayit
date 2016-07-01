@@ -20,7 +20,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from userprofile.forms import CreateUserForm, UpdateUserForm, StuProfileForm, InstructorInformationForm, \
     ChangePasswordForm
 from userprofile.models import Accommodation, UserProfile, UserAccomodationPref, InstructorInformation, \
-    UserVerification, TrainessNote
+    UserVerification, TrainessNote, TrainessClassicTestAnswers
 from training.tutils import getparticipationforms
 from training.forms import ParticipationForm
 from training.models import Course, TrainessCourseRecord
@@ -109,6 +109,7 @@ def createprofile(request):
         data['form'] = StuProfileForm()
         data['accomodations'] = Accommodation.objects.filter(usertype__in=['stu', 'hepsi'], gender__in=['K', 'E', 'H'],
                                                              site=data['site']).order_by('name')
+    data['sitewidequestions'] = TextBoxQuestions.objects.filter(site=data["site"], active=True, is_sitewide=True)
     if 'register' in request.POST:
         data['update_user_form'] = UpdateUserForm(data=request.POST, instance=request.user)
         try:
@@ -122,6 +123,13 @@ def createprofile(request):
                 profile.user = request.user
                 profile.profilephoto = data['form'].cleaned_data['profilephoto']
                 profile.save()
+                if data['sitewidequestions']:
+                    for question in data['sitewidequestions']:
+                        answer = request.POST.get("answer%s" % question.pk, "")
+                        if answer:
+                            tca, created = TrainessClassicTestAnswers.objects.get_or_create(user=request.user.userprofile, question=question)
+                            tca.answer = answer
+                            tca.save()
                 if not request.user.userprofile.is_instructor and ACCOMODATION_PREFERENCE_LIMIT:
                     prefs = UserAccomodationPref.objects.filter(user=request.user.userprofile)
                     if prefs:

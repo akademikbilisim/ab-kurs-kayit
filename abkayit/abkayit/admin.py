@@ -42,3 +42,9 @@ class QuestionAdmin(admin.ModelAdmin):
     inlines = [
         AnswerInline,
     ]
+
+
+@admin.register(TextBoxQuestions)
+class TextBoxQuestionsAdmin(admin.ModelAdmin):
+    list_display = ['questionno', 'detail', 'site', 'is_sitewide']
+    list_filter = ['is_sitewide', 'active']
