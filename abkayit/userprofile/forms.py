@@ -150,6 +150,8 @@ class StuProfileForm(ModelForm):
             'organization': forms.TextInput(attrs={'placeholder': _('Organization'), 'class': 'form-control'}),
             'university': forms.Select(attrs={'placeholder': _('University'), 'class': 'form-control'}),
             'department': forms.TextInput(attrs={'placeholder': _('Department'), 'class': 'form-control'}),
+            'website': forms.TextInput(attrs={'placeholder': _('Website'), 'class': 'form-control'}),
+            'experience': forms.TextInput(attrs={'placeholder': _('Daha önce çalışılan/Staj yapılan yerler'), 'class': 'form-control'}),
             'additional_information': forms.Textarea(
                 attrs={'placeholder': _('Additional Information'), 'class': 'form-control'}),
             'is_instructor': forms.HiddenInput(),
