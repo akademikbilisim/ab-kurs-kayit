@@ -12,5 +12,5 @@ register = template.Library()
 def getanswer(question, user):
     try:
         return TrainessClassicTestAnswers.objects.get(question=question, user=user.userprofile).answer
-    except TrainessClassicTestAnswers.DoesNotExist:
+    except:
         return ""

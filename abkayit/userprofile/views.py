@@ -104,7 +104,7 @@ def createprofile(request):
                 'name')
             data['accomodation_records'] = UserAccomodationPref.objects.filter(user=user_profile).order_by(
                 'preference_order')
-    except UserProfile.DoesNotExist:
+    except:
         note = _("If you want to continue please complete your profile.")
         data['form'] = StuProfileForm()
         data['accomodations'] = Accommodation.objects.filter(usertype__in=['stu', 'hepsi'], gender__in=['K', 'E', 'H'],
