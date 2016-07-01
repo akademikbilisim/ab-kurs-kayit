@@ -201,6 +201,9 @@ class StuProfileForm(ModelForm):
             elif not cleaned_data['ykimlikno'] and cleaned_data['country'] != 'TR':
                 raise forms.ValidationError(_("Foreign identity number can not be empty for non Turkish citizens"))
             elif cleaned_data['tckimlikno'] and cleaned_data['country'] == 'TR':
+                tcknosorgu = UserProfile.objects.filter(tckimlikno=cleaned_data['tckimlikno'])
+                if tcknosorgu:
+                    raise forms.ValidationError(_("Bu TC Kimlik numarasına sahip başka hesap var."))
                 tckisvalid = UserProfileOPS.validateTCKimlikNo(cleaned_data['tckimlikno'].rstrip().lstrip(), first_name,
                                                                last_name, byear)
                 if tckisvalid == -1:
