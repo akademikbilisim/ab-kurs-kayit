@@ -147,16 +147,16 @@ def save_course_prefferences(userprofile, course_prefs, site, d, answersforcours
         TrainessCourseRecord.objects.filter(trainess=userprofile).delete()
         try:
             course_records = []
-            for pref, course in course_prefs.items():
-                course = Course.objects.get(id=int(course))
+            for i in range(1, len(course_prefs)+1):
+                course = Course.objects.get(id=int(course_prefs[str(i)]))
                 course_record = TrainessCourseRecord(trainess=userprofile,
                                                      course=course,
-                                                     preference_order=int(pref),
+                                                     preference_order=i,
                                                      )
                 course_record.save()
                 course_records.append(course_record)
                 if answersforcourse:
-                    answers = answersforcourse.get(course)
+                    answers = answersforcourse.get(course_prefs[str(i)])
                     if answers:
                         tta = TrainessTestAnswers(tcourserecord=course_record)
                         tta.save()
