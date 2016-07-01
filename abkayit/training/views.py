@@ -188,7 +188,8 @@ def approve_course_preference(request):
         first_start_date, last_end_date = get_approve_start_end_dates_for_tra(data['site'], d)
         data["approve_is_open"] = False
         note = "Başvuru Durumunuz"
-        recordapprovedbyinst = TrainessCourseRecord.objects.filter(trainess=request.user.userprofile, approved=True)
+        recordapprovedbyinst = TrainessCourseRecord.objects.filter(trainess=request.user.userprofile, approved=True, 
+                                                                    course__site=data['site'])
         recordapprovedbytra = recordapprovedbyinst.filter(trainess_approved=True)
         if first_start_date and last_end_date:
             if first_start_date.start_date < now < last_end_date.end_date:
