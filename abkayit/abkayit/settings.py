@@ -24,7 +24,7 @@ COMMON_CONFIG_FILE = '/opt/kampyazilim.conf'
 '''
     EMAIL_FROM_ADDRESS: Sistemden gonderilecek maillerin from adresi
 '''
-EMAIL_FROM_ADDRESS = "kayit@linux.org.tr"
+EMAIL_FROM_ADDRESS = "kamp@linux.org.tr"
 EMAIL_HOST = "postaci.linux.org.tr"
 EMAIL_PORT = 25
 '''
@@ -96,7 +96,7 @@ DJANGOSETTINGS = DjangoSettings()
 SECRET_KEY = DJANGOSETTINGS.getsecretkey()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 TEMPLATE_DEBUG = False
 
