@@ -191,19 +191,19 @@ def approve_course_preference(request):
         recordapprovedbyinst = TrainessCourseRecord.objects.filter(trainess=request.user.userprofile, approved=True, 
                                                                     course__site=data['site'])
         recordapprovedbytra = recordapprovedbyinst.filter(trainess_approved=True)
-        if first_start_date and last_end_date:
+        if first_start_date and last_end_date and REQUIRE_TRAINESS_APPROVE:
             if first_start_date.start_date < now < last_end_date.end_date:
                 if not recordapprovedbyinst:
                     note = "Henüz herhangi bir kursa kabul edilemediniz."
                 elif not recordapprovedbytra and recordapprovedbyinst:
-                    note = "Kabul edildiğiniz aşağıdaki kursu onaylayabilirsiniz"
+                    note = "Aşağıdaki kursa kabul edildiniz"
                     for record in recordapprovedbyinst:
                         pref_order = record.preference_order
-                        approvedate = ApprovalDate.objects.get(preference_order=pref_order)
+                        approvedate = ApprovalDate.objects.get(site=data['site'], preference_order=pref_order)
                         if approvedate.start_date <= now <= approvedate.end_date:
                             data["approve_is_open"] = True
                             trainess_course_record = record
-                elif recordapprovedbytra:
+                else:
                     trainess_course_record = recordapprovedbytra[0]
                     note = "Aşağıdaki Kursa Kabul Edildiniz"
             else:
@@ -214,7 +214,7 @@ def approve_course_preference(request):
                     note = "Aşağıdaki kursa kabul edildiniz ancak teyit etmediniz. Kursa katılamazsınız."
                     trainess_course_record = recordapprovedbyinst[0]
                 else:
-                    note = "Kurs teyit dönemi dışındasınız veya kabul edildiğiniz kurs yok"
+                    note = "Henüz kabul edildiğiniz bir kurs yok"
         else:
             if recordapprovedbytra:
                 note = "Aşağıdaki kursa kabul edildiniz"

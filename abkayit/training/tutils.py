@@ -64,8 +64,11 @@ def get_approve_start_end_dates_for_tra(site, d):
         :param d: log icin gerekli detaylar
         :return: kursiyerler için tercih onaylama tarihlerinin start_date'i en yakin olan ile end_date'i en son olani doner.
     """
-    dates = ApprovalDate.objects.filter(site=site, for_trainess=True)
-    return dates.order_by("start_date").first(), dates.latest("end_date")
+    try:
+    	dates = ApprovalDate.objects.filter(site=site, for_trainess=True)
+   	return dates.order_by("start_date").first(), dates.latest("end_date")
+    except:
+        return None, None
 
 
 def get_additional_pref_start_end_dates_for_trainess(site, d):
