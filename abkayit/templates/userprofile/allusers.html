@@ -13,7 +13,6 @@
 	        <th>{% trans "Last Name" %}</th>
 	        <th>{% trans "E-mail" %}</th>
 	        <th>{% trans "TC Identity No / Foreign Identity No" %}</th>
-	        <th>{% trans "Course Name" %}</th>
 	        <th>{% trans "Gender" %}</th>
 	        <th>{% trans "Accomodation Preference Seq." %}</th>
 	    </tr>
@@ -26,7 +25,6 @@
 			<th>{{data.lastname}}</th>
 			<th>{{data.email}}</th>
 			<th>{{data.tcino}}</th>
-            <th>{{data.coursename}}</th>
             <th>{{data.gender}}</th>
 			<th>
 				{% for a in data.accomodation %}

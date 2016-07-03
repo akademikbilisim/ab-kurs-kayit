@@ -212,15 +212,15 @@ def alluserview(request):
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
     data = getsiteandmenus(request)
     userlist = []
-    allcourserecord = TrainessCourseRecord.objects.filter(course__site=data['site'], approved=True)
+    allcourserecord = TrainessCourseRecord.objects.filter(course__site__is_active=True).values_list('trainess').distinct()
     if allcourserecord:
         for r in allcourserecord:
-            usr = {"usertype": "student", "firstname": r.trainess.user.first_name,
-                   "email": r.trainess.user.username, "lastname": r.trainess.user.last_name,
-                   "tcino": r.trainess.tckimlikno if r.trainess.tckimlikno != '' else r.trainess.ykimlikno,
-                   "coursename": r.course.name,
-                   "gender": r.trainess.gender,
-                   "accomodation": UserAccomodationPref.objects.filter(user=r.trainess)}
+            up = UserProfile.objects.get(pk=r[0])
+            usr = {"usertype": "student", "firstname": up.user.first_name,
+                   "email": up.user.username, "lastname": up.user.last_name,
+                   "tcino": up.tckimlikno if up.tckimlikno != '' else up.ykimlikno,
+                   "gender": up.gender,
+                   "accomodation": up.useraccomodationpref_set.filter(accomodation__site__is_active=True)}
             userlist.append(usr)
     data["datalist"] = userlist
     return render_to_response("userprofile/allusers.html", data, context_instance=RequestContext(request))
