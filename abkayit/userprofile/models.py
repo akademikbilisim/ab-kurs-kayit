@@ -133,7 +133,7 @@ class InstructorInformation(models.Model):
 class TrainessClassicTestAnswers(models.Model):
     user = models.ForeignKey(UserProfile)
     question = models.ForeignKey(TextBoxQuestions, verbose_name="Soru")
-    answer = models.CharField(max_length=1000, verbose_name="Cevap")
+    answer = models.CharField(max_length=2000, verbose_name="Cevap")
 
     def __unicode__(self):
         return self.user.user.username
