@@ -17,5 +17,5 @@ urlpatterns = patterns('training.views',
                        url(r'^approve_course_preference/$', 'approve_course_preference',
                            name="approve_course_preference"),
                        url(r'^participationstatuses/$', 'participationstatuses', name='participationstatuses'),
-                       url(r'^editparticipationstatus/(?P<courseid>[1-9]+)/$', 'editparticipationstatusebycourse', name='editparticipationstatusebycourse'),
+                       url(r'^editparticipationstatus/(?P<courseid>[0-9]+)/$', 'editparticipationstatusebycourse', name='editparticipationstatusebycourse'),
                        )

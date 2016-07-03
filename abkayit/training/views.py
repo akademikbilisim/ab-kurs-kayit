@@ -525,7 +525,7 @@ def participationstatuses(request):
     """
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
     data = getsiteandmenus(request)
-    data['allcourses'] = Course.objects.filter(site=data['site'].pk)
+    data['allcourses'] = Course.objects.filter(site=data['site'])
     data['note'] = "İşlem yapmak istediğiniz kursu seçiniz."
     return render_to_response('training/participationstatuses.html', data, context_instance=RequestContext(request))
 
@@ -534,7 +534,7 @@ def participationstatuses(request):
 def editparticipationstatusebycourse(request, courseid):
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
     data = getsiteandmenus(request)
-    data['courserecords'] = TrainessCourseRecord.objects.filter(course=courseid, approved=True, trainess_approved=True)
+    data['courserecords'] = TrainessCourseRecord.objects.filter(course__pk=int(courseid), approved=True, trainess_approved=True)
     data['note'] = "Yoklama bilgilerini girmek için kullanıcı profiline gidiniz."
     return render_to_response('training/courseparstatus.html', data, context_instance=RequestContext(request))
 
