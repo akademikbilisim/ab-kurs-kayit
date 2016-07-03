@@ -11,7 +11,6 @@
   coursePreference1 = [];
   coursePreference2 = [];
   coursePreference3 = [];
-  coursePreference4 = [];
   coursePreferenceTotalApply = [];
   coursePreferenceTotalApplyByTrainer = [];
   coursePreferenceTotalApplyByTrainess = [];
@@ -34,11 +33,6 @@
        coursePreference3.push(courseStatisticDetail[3])
     }else{
        coursePreference3.push(0);
-    }
-    if(courseStatisticDetail[-1]){
-       coursePreference4.push(courseStatisticDetail[-1])
-    }else{
-       coursePreference4.push(0);
     }
     if(courseStatisticDetail['total_apply']){
         coursePreferenceTotalApply.push(courseStatisticDetail['total_apply'])
@@ -134,14 +128,9 @@
               name: '3. Tercih',
               data: coursePreference3,
               visible: false
-          }, {
-              name: '4. Tercih',
-              data: coursePreference4,
-              visible: false
           }]
-      });
   });
-
+  });
 
 
 
@@ -500,12 +489,6 @@
                 data: genderStatisticForApproved
             }]
         });
-
-
-
-
-
-
 
 });
   
