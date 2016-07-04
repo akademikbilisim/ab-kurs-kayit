@@ -216,11 +216,15 @@ def alluserview(request):
     if allcourserecord:
         for r in allcourserecord:
             up = UserProfile.objects.get(pk=r[0])
-            usr = {"usertype": "student", "firstname": up.user.first_name,
+            usr = {
+                   "pk": up.pk,
+                   "usertype": "student",
+                   "firstname": up.user.first_name,
                    "email": up.user.username, "lastname": up.user.last_name,
                    "tcino": up.tckimlikno if up.tckimlikno != '' else up.ykimlikno,
                    "gender": up.gender,
-                   "accomodation": up.useraccomodationpref_set.filter(accomodation__site__is_active=True)}
+                   "accomodation": up.useraccomodationpref_set.filter(accomodation__site__is_active=True),
+                   "courserecordid": r[0]}
             userlist.append(usr)
     data["datalist"] = userlist
     return render_to_response("userprofile/allusers.html", data, context_instance=RequestContext(request))
@@ -405,7 +409,7 @@ def backend_login(request, user):
     login(request, user)
 
 
-@staff_member_required
+@login_required
 def showuserprofile(request, userid, courserecordid):
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
     data = getsiteandmenus(request)
@@ -414,6 +418,8 @@ def showuserprofile(request, userid, courserecordid):
     if user:
         data['note'] = "Detaylı kullanıcı bilgileri"
         data['tuser'] = user
+        data['ruser'] = request.user
+        data['courseid'] = courserecord.course.pk  
         data['forms'] = getparticipationforms(data['site'], courserecord)
         if request.POST:
             formsarevalid = []
@@ -426,7 +432,6 @@ def showuserprofile(request, userid, courserecordid):
                 frm.day = f.initial['day']
                 formsarevalid.append(frm.is_valid())
                 frms.append(frm)
-            print formsarevalid
             if all(formsarevalid):
                 for f in frms:
                     f.save()

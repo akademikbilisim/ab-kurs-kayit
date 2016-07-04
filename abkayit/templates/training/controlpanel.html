@@ -63,8 +63,7 @@
                   <th>Ek Bilgiler</th>
                   <th>Seçilen Kurslar</th>
                   <th>Onaylanma Bilgileri</th>
-                  <th>Etkinlik Geçmişi</th>
-                  <th>Not Ekle</th>
+                  <th>Detaylı Profil</th>
               </tr>
             </thead>
             <tbody>
@@ -123,28 +122,7 @@
                       {% endif%}
                     {%endfor%}
                   </td>
-                    <td>
-                        {% for journal in t.trainess.note_to_profile.all %}
-                            <section>
-                                <p>{{ journal.site.name }} - {{ journal.site.year }}</p>
-                                <ul>
-                                    <li> <b>Notu ekleyen:</b> {{ journal.note_from_profile.user.first_name }} {{ journal.note_from_profile.user.last_name }} {{ journal.note_from_profile.user.username }}</li>
-                                    <li> <b>Not:</b><p>{{ journal.note}}</p></li>
-                                    <li> <b>Durum:</b><p>Buraya hesaplama sonucu gelecek</p></li>
-                                </ul>
-                            </section>
-                        {% empty %}
-                            <p>Bu kullanıcı ile ilgili not girilmemiş</p>
-                        {% endfor%}
-                    </td>
-                     <td>
-                           <div class="col-md-1">Not</div>
-                           <div class="col-md-6">
-                               <input type="text" class="form-control input-note" value=""/>
-                               <input type="hidden" class="input-username" value="{{ t.trainess.user.username }}"/>
-                           </div>
-                           <div class="col-md-2"><input id="save-score" type="button" value="Kaydet"/></div>
- +                  <td>
+                    <td><a href="{% url 'showuserprofile'  t.trainess.pk t.pk %}" type="button"> Profil Detayı </a></td>
                 </tr>
                 {% empty %}
                   <tr><td>Goruntulenecek basvuru yok</td></tr>

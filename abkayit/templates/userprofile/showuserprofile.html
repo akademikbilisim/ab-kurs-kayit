@@ -1,8 +1,12 @@
 {% extends "dashboard.html" %}
+{% load staticfiles %}
 {% load i18n %}
 {% block head %}
 {% endblock %}
 {% block content %}
+{% load userprofiletags %}
+<script src="{% static '/static/js/courses.js' %}"></script>
+<link href="{% static '/static/css/courses.css' %}" rel="stylesheet" type="text/css"/>
 <div class="container-fluid">
     <div class="alert alert-info">{{ note }}</div>
     {% if tuser %}
@@ -12,61 +16,66 @@
                 <div class="box-header width-border">
                     <h3 class=box-title">Kullanıcı Bilgileri</h3>
                 </div>
-                <div class="box-body">
-                    <dl class="dl-horizontal">
-                        <dt>Adı Soyadı:</dt><dd>{{ tuser.user.first_name }} {{ tuser.user.last_name }}</dd>
-                        <dt>E-posta:</dt><dd>{{ tuser.user.username }}</dd>
-                        <dt>Şehir:</dt><dd>{{ tuser.city }}</dd>
-                        <dt>Ünvan:</dt><dd>{{ tuser.title }}</dd>
-                        <dt>Kurum:</dt><dd>{{ tuser.organization }}</dd>
-                        <dt>Üniversite:</dt><dd>{{ tuser.university }}</dd>
-                        <dt>Bölüm:</dt><dd>{{ tuser.department }}</dd>
-                        <dt>Ek Bilgiler:</dt><dd>{{ tuser.additional_information }}</dd>
-                        <dt>Seçtiği kurslar:</dt>
-                        <dd>
-                            {% for tcr in tuser.trainesscourserecord_set.all%}
-                            {% if tcr.approved %}
-                             <div> - {{tcr.course.name}} ({{tcr.course.no}}) Onaylanmış </br></div>
-                            {% else %}
-                              <div> - {{tcr.course.name}} ({{tcr.course.no}})</br></div>
-                            {% endif %}
-                            {%endfor%}
-                        </dd>
-                        <dt>Etkinlik geçmişi</dt>
-                        <dd>
-                            {% for journal in tuser.note_to_profile.all %}
-                            <section>
-                                <p>{{ journal.site.name }} - {{ journal.site.year }}</p>
-                                <ul>
-                                    <li> <b>Notu ekleyen:</b> {{ journal.note_from_profile.user.first_name }} {{ journal.note_from_profile.user.last_name }} {{ journal.note_from_profile.user.username }}</li>
-                                    <li> <b>Not:</b><p>{{ journal.note}}</p></li>
-                                    <li> <b>Durum:</b><p>Buraya hesaplama sonucu gelecek</p></li>
-                                </ul>
-                            </section>
-                            {% empty %}
-                                <p>Bu kullanıcı ile ilgili not girilmemiş</p>
-                            {% endfor%}
-                        </dd>
 
-                    </dl>
+                <dl class="dl-horizontal">
+                    <dt>Adı Soyadı:</dt><dd>{{ tuser.user.first_name }} {{ tuser.user.last_name }}</dd> <dd><img src="{{ tuser.profilephoto }}"></dd>
+                    <dt>E-posta:</dt><dd>{{ tuser.user.username }}</dd>
+                    <dt>Şehir:</dt><dd>{{ tuser.city }}</dd>
+                    <dt>Ünvan:</dt><dd>{{ tuser.title }}</dd>
+                    <dt>Kurum:</dt><dd>{{ tuser.organization }}</dd>
+                    <dt>Üniversite:</dt><dd>{{ tuser.university }}</dd>
+                    <dt>Bölüm:</dt><dd>{{ tuser.department }}</dd>
+                    <dt>Ek Bilgiler:</dt><dd>{{ tuser.additional_information }}</dd>
+                    <dt>Seçtiği kurslar:</dt>
+                    <dd>
+                        {% for tcr in tuser.trainesscourserecord_set.all%}
+                        {% if tcr.approved %}
+                         <div>  - {{tcr.course.name}} ({{tcr.course.no}}) Onaylanmış </br></div>
+                        {% else %}
+                          <div> - {{tcr.course.name}} ({{tcr.course.no}})</br></div>
+                        {% endif %}
+                        {%endfor%}
+                    </dd>
+                    <dt>Etkinlik geçmişi: </dt>
+                    <dd>
+                        {% for journal in tuser.note_to_profile.all %}
+                        <section>
+                            <p>{{ journal.site.name }} - {{ journal.site.year }}</p>
+                            <ul>
+                                <li> <b>Notu ekleyen:</b> {{ journal.note_from_profile.user.first_name }} {{ journal.note_from_profile.user.last_name }} {{ journal.note_from_profile.user.username }}</li>
+                                <li> <b>Not:</b><p>{{ journal.note}}</p></li>
+                                <li> <b>Tarih:</b><p>{{ journal.note_date }}</p></li>
+                            </ul>
+                        </section>
+                        {% empty %}
+                            <p>Bu kullanıcı ile ilgili not girilmemiş</p>
+                        {% endfor%}
+                    </dd>
+                    <dt>Not Ekle: </dt>
+                    <dd>
+                            <p> <input id="trainessnotetext" type="text" class="form-control input-note" value=""/>
+                           <input id="trainessnoteuser" type="hidden" class="input-username" value="{{ tuser.user.username }}"/><input id="save-score" class="default" type="button" value="Ekle"/></p>
+                    </dd>
+                    {% getanswers tuser ruser courseid %}
+                </dl>
+                {% if ruser.is_staff %}
                     {% if forms %}
                     <form name="form-control" class="span4 signup-form" method="POST">{% csrf_token %}
                         <dl class="dl-horizontal">
                             {% for form in forms %}
                             <dt> {{form.initial.day}}: </dt>
-                            {{ form }}
+                            <dd>{{ form }}</dd>
                             {% endfor %}
                             <dd><input type="submit" name="save" id="save" class="btn btn-primary" value="{% trans 'Save' %}"></dd>
                         </dl>
-
                     </form>
                     {% endif %}
+                {% endif %}
                 </div>
             </div>
         </div>
 
-    </div>
-    {% endif %}
+    </div>{% endif %}
 
 </div>
 

@@ -12,19 +12,6 @@ function fnFormatDetails ( dTable, nTr )
     sOut += '<tr><td></td><td>'+aData[15]+'</td></tr>';
     sOut += '</table>';
     sOut += '</br>';
-    sOut += '<div class="score">';
-    sOut += '<div class="form-group">';
-    sOut += '<div class="row">';
-    sOut += aData[16];
-    sOut += '</div>';
-    sOut += '</div>';
-    sOut += '</br>';
-    sOut += '<div class="score">';
-    sOut += '<div class="form-group">';
-    sOut += '<div class="row">';
-    sOut += aData[17];
-    sOut += '</div>';
-    sOut += '</div>';
     return sOut;
 }
 
@@ -85,14 +72,6 @@ $(document).ready(function(){
                 "targets": [ 15 ],
                 "visible": false
                },
-               {
-                "targets": [ 16 ],
-                "visible": false
-               },
-               {
-                "targets": [ 17 ],
-                "visible": false
-               },
 
             ],
             "searching": false,
@@ -112,33 +91,11 @@ $(document).ready(function(){
           if ( dTable.fnIsOpen(nTr) )
           {
               dTable.fnClose( nTr );
-         1 }
+          }
           else
           {
               dTable.fnOpen( nTr, fnFormatDetails(dTable, nTr), 'details' );
-              dTable.find("#save-score").click(function(){
-                  var score = $(this).closest(".score").find("select").val();
-                  var note = $(this).closest(".score").find("input[type='text']").val();
-                  var trainess_username = $(this).closest(".score").find("input[class='input-username']").val();
-	              var jsonData = {};
-	              jsonData['score'] = score;
-	              jsonData['note'] = note;
-	              jsonData['trainess_username'] = trainess_username;
-	              jsonData['csrfmiddlewaretoken'] = getCookie('csrftoken');
-	              $.ajax({
-	                  url : "/accounts/savenote", 
-	                  type : "POST",
-	                  dataType: "json", 
-	                  data : jsonData,
-	                  success : function(json) {
-	              		bootbox.alert(json.message, function() {});
-	                  },
-	                  error : function(xhr,errmsg,err) {
-	              		bootbox.alert(errmsg, function() {});
-	                  }
-	              });
-                  
-              });
+
           }
       });
 
@@ -150,7 +107,28 @@ $(document).ready(function(){
 			window.location=attr;
 		}
 	});
+   $("#save-score").click(function(){
+        var note = $("#trainessnotetext").val();
+        var trainess_username = $("#trainessnoteuser").val();
+        var jsonData = {};
+        jsonData['note'] = note;
+        jsonData['trainess_username'] = trainess_username;
+        jsonData['csrfmiddlewaretoken'] = getCookie('csrftoken');
+        $.ajax({
+            url : "/accounts/savenote",
+            type : "POST",
+            dataType: "json",
+            data : jsonData,
+            success : function(json) {
+        		//bootbox.alert(json.message, function() {});
+        		location.reload();
+            },
+            error : function(xhr,errmsg,err) {
+        		bootbox.alert(errmsg, function() {});
+            }
+        });
 
+   });
 
 //  $("#field-container-form").find("#sendPreference").click(function(){
 //    var selectedCourse = JSON.stringify($("#field-container-form").serializeArray());
@@ -223,7 +201,6 @@ $(document).ready(function(){
                     className: "btn-success",
                     callback: function() {
                         jsonData['cancelnote'] = $('#cancelnote').val();
-                        console.log($('#cancelnote').val());
             	        $.ajax({
             	            url : "/egitim/cancelallpreference/", 
             	            type : "POST",

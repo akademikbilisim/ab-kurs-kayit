@@ -535,8 +535,7 @@ def participationstatuses(request):
 def editparticipationstatusebycourse(request, courseid):
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
     data = getsiteandmenus(request)
-    data['courserecords'] = TrainessCourseRecord.objects.filter(course__pk=int(courseid), approved=True,
-                                                                trainess_approved=True)
+    data['courserecords'] = TrainessCourseRecord.objects.filter(course__pk=int(courseid), approved=True)
     data['note'] = "Yoklama bilgilerini girmek için kullanıcı profiline gidiniz."
     return render_to_response('training/courseparstatus.html', data, context_instance=RequestContext(request))
 
