@@ -34,6 +34,7 @@ def manuallyaddtrainess(site, user):
         <a href="/egitim/katilimciekle" class="btn btn-primary pull-right" type="button" data-toggle="modal"><i class="fa fa-fw fa-plus"></i>
         Kursiyer Ekle
       </a>"""
+    return ""
 
 
 @register.simple_tag(name="isdategtnow_body")

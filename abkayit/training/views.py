@@ -266,7 +266,7 @@ def control_panel(request):
                         else:
                             note = _("Consent period is closed")
                             data['trainess'][course] = get_approved_trainess(course, d)
-                if request.POST:
+                if "send" in request.POST:
                     log.info("kursiyer onay islemi basladi", extra=d)
                     log.info(request.POST, extra=d)
                     note = applytrainerselections(request.POST, courses, data, d)
