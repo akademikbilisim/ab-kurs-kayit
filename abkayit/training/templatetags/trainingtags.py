@@ -40,8 +40,7 @@ def manuallyaddtrainess(site, user):
 @register.simple_tag(name="authorizedforelection")
 def authorizedforelection(site, user):
     now = datetime.date(datetime.now())
-
-    approvaldates = ApprovalDate.objects.all().order_by("start_date")
+    approvaldates = ApprovalDate.objects.filter(site__is_active=True).order_by("start_date")
     if approvaldates:
         if site.event_start_date > now and datetime.now() >= approvaldates[0].start_date and user.userprofile.can_elect:
             return """
