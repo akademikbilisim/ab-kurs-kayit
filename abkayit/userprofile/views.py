@@ -212,7 +212,7 @@ def alluserview(request):
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
     data = getsiteandmenus(request)
     userlist = []
-    allcourserecord = TrainessCourseRecord.objects.filter(course__site__is_active=True).values_list('trainess').distinct()
+    allcourserecord = TrainessCourseRecord.objects.filter(course__site__is_active=True).values_list('trainess', 'pk').distinct()
     if allcourserecord:
         for r in allcourserecord:
             up = UserProfile.objects.get(pk=r[0])
@@ -224,7 +224,7 @@ def alluserview(request):
                    "tcino": up.tckimlikno if up.tckimlikno != '' else up.ykimlikno,
                    "gender": up.gender,
                    "accomodation": up.useraccomodationpref_set.filter(accomodation__site__is_active=True),
-                   "courserecordid": r[0]}
+                   "courserecordid": r[1]}
             userlist.append(usr)
     data["datalist"] = userlist
     return render_to_response("userprofile/allusers.html", data, context_instance=RequestContext(request))

@@ -18,7 +18,8 @@
                 </div>
 
                 <dl class="dl-horizontal">
-                    <dt>Adı Soyadı:</dt><dd>{{ tuser.user.first_name }} {{ tuser.user.last_name }}</dd> <dd><img src="{{ tuser.profilephoto }}"></dd>
+                    <dt>Profil Foto:</dt><dd><img src="/media/{{ tuser.profilephoto }}" style="width: 200px; heigth:200px;border:5px solid #000000;"></dd>
+                    <dt>Adı Soyadı:</dt><dd>{{ tuser.user.first_name }} {{ tuser.user.last_name }}</dd>
                     <dt>E-posta:</dt><dd>{{ tuser.user.username }}</dd>
                     <dt>Şehir:</dt><dd>{{ tuser.city }}</dd>
                     <dt>Ünvan:</dt><dd>{{ tuser.title }}</dd>
