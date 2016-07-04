@@ -37,6 +37,26 @@ def manuallyaddtrainess(site, user):
     return ""
 
 
+@register.simple_tag(name="authorizedforelection")
+def authorizedforelection(site, user):
+    now = datetime.date(datetime.now())
+
+    approvaldates = ApprovalDate.objects.all().order_by("start_date")
+    if approvaldates:
+        if site.event_start_date > now and datetime.now() >= approvaldates[0].start_date and user.userprofile.can_elect:
+            return """
+            <div class="alert alert-danger">
+                Uyarı: <p>* Onay tarihleri içerisinde kabul e-postaları onayladığınız 1. tercihi kursunuz olan katılımcılara gönderilir.</p>
+                       <p>* Kabul e-postası gönderilen kullanıcıların onayını kaldıramazsınız!</p>
+                       <p>* Onaylanan diğer (1. tercihi kursunuz olmayan) katılımcıların kabul e-postaları onay tarihi bitiminde gönderilir.</p>
+                       <p>* El ile eklediğiniz katılımcıları 1. tercih listesinde görüntüleyebilirsiniz.</p>
+            </div>
+            <p><input type="checkbox" name="send_consent_email"/>  Kabul e-postaları gönderilsin</p>
+            <button type="submit" class="btn btn-success pull-left" name="send">Gönder</button>
+            """
+    return ""
+
+
 @register.simple_tag(name="isdategtnow_body")
 def isdategtnow_body(datedict, key, t, course, user):
     now = datetime.now()

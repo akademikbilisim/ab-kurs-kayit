@@ -152,21 +152,10 @@
              </tbody>
           </table>
 
-{%endif%}
-{% endfor %}
-  {% endfor %}
-      {% if user.userprofile.can_elect%}
-        <div class="alert alert-danger">
-            Uyarı: <p>* Onay tarihleri içerisinde kabul e-postaları onayladığınız 1. tercihi kursunuz olan katılımcılara gönderilir.</p>
-                   <p>* Kabul e-postası gönderilen kullanıcıların onayını kaldıramazsınız!</p>
-                   <p>* Onaylanan diğer (1. tercihi kursunuz olmayan) katılımcıların kabul e-postaları onay tarihi bitiminde gönderilir.</p>
-                   <p>* El ile eklediğiniz katılımcıları 1. tercih listesinde görüntüleyebilirsiniz.</p>
-        </div>
-        <p><input type="checkbox" name="send_consent_email"/>  Kabul e-postaları gönderilsin</p>
-        <button type="submit" class="btn btn-success pull-left" name="send">Gönder</button>
-
-      {% endif %}
-
+      {%endif%}
+      {% endfor %}
+      {% endfor %}
+      {% authorizedforelection site user%}
   </form>
   </div>
 {%endif%}
