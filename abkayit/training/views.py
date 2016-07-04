@@ -310,29 +310,37 @@ def statistic(request):
                 course=course_object, approved=True, trainess_approved=True))
 
         data['statistic_by_course'] = statistic_by_course
-        statistic_by_gender = UserProfile.objects.filter(is_instructor=False).values('gender').annotate(Count('gender')).order_by('gender')
+        statistic_by_gender = UserProfile.objects.filter(is_instructor=False).filter(
+            trainesscourserecord__course__site__is_active__in=[True]).values('gender').annotate(
+            Count('gender')).order_by('gender')
         data['statistic_by_gender'] = statistic_by_gender
-        statistic_by_gender_for_approved = UserProfile.objects.filter(is_instructor=False).filter(trainesscourserecord__approved__in=[True]).filter(trainesscourserecord__trainess_approved__in=[True]).values('gender').annotate(Count('gender')).order_by('gender')
+        statistic_by_gender_for_approved = UserProfile.objects.filter(is_instructor=False).filter(
+            trainesscourserecord__approved=[True], trainesscourserecord__course__site__is_active__in=[True]).filter(
+            trainesscourserecord__trainess_approved__in=[True]).values('gender').annotate(Count('gender')).order_by(
+            'gender')
         data['statistic_by_gender_for_approved'] = statistic_by_gender_for_approved
         log.debug(statistic_by_gender, extra=d)
-        statistic_by_university = TrainessCourseRecord.objects.filter(course__site=data['site']).values(
-            'trainess').distinct().annotate(Count('trainess__university')).order_by('-trainess__university__count')
+        statistic_by_university = UserProfile.objects.filter(is_instructor=False).filter(
+            trainesscourserecord__course__site__is_active__in=[True]).values('university').annotate(
+            Count('university')).order_by('-university__count')
         data['statistic_by_university'] = statistic_by_university
 
-        statistic_by_university_for_approved = TrainessCourseRecord.objects.filter(course__site=data['site'],
-                                                                                   approved=True).values(
-            'trainess').distinct().annotate(Count('trainess__university')).order_by('-trainess__university__count')
+        statistic_by_university_for_approved = UserProfile.objects.filter(is_instructor=False).values(
+            'university').filter(trainesscourserecord__course__site__is_active__in=[True],
+                                 trainesscourserecord__approved__in=[True]).filter(
+            trainesscourserecord__trainess_approved__in=[True]).annotate(Count('university')).order_by(
+            '-university__count')
         data['statistic_by_university_for_approved'] = statistic_by_university_for_approved
 
         # kurs bazinda toplam teyitli olanlar
         data['statistic_by_course_for_apply'] = TrainessCourseRecord.objects.filter(course__site=data['site'],
                                                                                     approved=True).values(
             'course__name').annotate(count=Count('course')).order_by('-count')
-        total_profile = len(TrainessCourseRecord.objects.filter(course__site=data['site']).values(
+        total_profile = len(TrainessCourseRecord.objects.filter(course__site__is_active=True).values(
             'trainess').distinct())
-        total_preference = len(TrainessCourseRecord.objects.filter(course__site=data['site']))
+        total_preference = len(TrainessCourseRecord.objects.filter(course__site__is_active=True))
         total_preference_for_approved = len(
-            TrainessCourseRecord.objects.filter(course__site=data['site'], approved=True))
+            TrainessCourseRecord.objects.filter(course__site__is_active=True, approved=True))
         data['statistic_by_totalsize'] = {'Toplam Profil(Kişi)': total_profile, 'Toplam Tercih': total_preference,
                                           'Toplam Teyit Eden': total_preference_for_approved}
     except Exception as e:
