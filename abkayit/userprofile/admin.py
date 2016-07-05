@@ -1,6 +1,7 @@
 #!-*- coding:utf-8 -*-
 
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin as AuthUserAdmin
 from django.contrib.auth.models import User
 from userprofile.models import InstructorInformation, UserProfile, Accommodation, UserAccomodationPref, \
     UserVerification, TrainessNote
@@ -19,7 +20,7 @@ class UserProfileInline(admin.StackedInline):
 
 
 @admin.register(User)
-class UserAdmin(admin.ModelAdmin):
+class UserAdmin(AuthUserAdmin):
     list_display = ['username', 'first_name', 'last_name', 'is_instructor', 'tckimlikno', 'gender']
     list_filter = ('userprofile__is_instructor', )
     search_fields = ('username', 'first_name', 'last_name', 'userprofile__tckimlikno')
