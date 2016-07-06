@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-07-03 21:52+0300\n"
+"POT-Creation-Date: 2016-07-06 11:53+0300\n"
 "PO-Revision-Date: 2016-06-23 11:45+0300\n"
 "Last-Translator: Özge Barbaros <ozgebarbaros@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -114,22 +114,16 @@ msgid "Answers"
 msgstr "Cevaplar"
 
 #: abkayit/models.py:89 abkayit/models.py:95
-#, fuzzy
-#| msgid "Questions"
 msgid "Classic Questions"
-msgstr "Sorular"
+msgstr "Klasik Sorular"
 
 #: abkayit/models.py:91
-#, fuzzy
-#| msgid "Site Name"
 msgid "Site Wide"
 msgstr "Site Adı"
 
 #: abkayit/models.py:94
-#, fuzzy
-#| msgid "Question"
 msgid "Classic Question"
-msgstr "Soru"
+msgstr "Klasik Soru"
 
 #: abkayit/models.py:102
 msgid "Start Date"
@@ -199,8 +193,8 @@ msgid "Email"
 msgstr "E-posta"
 
 #: templates/homepagedashboard.html:137 templates/homepagedashboard.html:138
-#: userprofile/forms.py:35 userprofile/forms.py:44 userprofile/forms.py:233
-#: userprofile/forms.py:239
+#: userprofile/forms.py:35 userprofile/forms.py:44 userprofile/forms.py:240
+#: userprofile/forms.py:246
 msgid "Password"
 msgstr "Parola"
 
@@ -323,12 +317,12 @@ msgstr "TC Kimlik No"
 msgid "Transportation Type"
 msgstr "Ulaşım Türü"
 
-#: templates/userprofile/alltrainess.html:16 userprofile/forms.py:257
+#: templates/userprofile/alltrainess.html:16 userprofile/forms.py:264
 #: userprofile/models.py:122
 msgid "Arrival Date"
 msgstr "Varış Tarihi"
 
-#: templates/userprofile/alltrainess.html:17 userprofile/forms.py:258
+#: templates/userprofile/alltrainess.html:17 userprofile/forms.py:265
 #: userprofile/models.py:123
 msgid "Departure Date"
 msgstr "Ayrılış Tarihi"
@@ -350,6 +344,14 @@ msgstr "TC Kimlik No / Yabancı Kimlik No"
 msgid "Accomodation Preference Seq."
 msgstr "Konaklama Tercih Sıralaması!"
 
+#: templates/userprofile/allusers.html:18
+msgid "Detailed Profile"
+msgstr "Detaylı Profil"
+
+#: templates/userprofile/allusers.html:38
+msgid "Show Profile"
+msgstr "Profili Göster"
+
 #: templates/userprofile/change_password.html:40
 msgid "Update"
 msgstr "Güncelle"
@@ -359,7 +361,7 @@ msgid "Reset Password"
 msgstr "Parola Sıfırla"
 
 #: templates/userprofile/instructor_information.html:35
-#: templates/userprofile/showuserprofile.html:59
+#: templates/userprofile/showuserprofile.html:70
 msgid "Save"
 msgstr "Kaydet"
 
@@ -459,8 +461,8 @@ msgstr "Kursiyerleri kabul edebilirsiniz"
 msgid "Consent period is closed"
 msgstr "Onaylama dönemi kapanmıştır."
 
-#: userprofile/forms.py:23 userprofile/forms.py:26 userprofile/forms.py:225
-#: userprofile/forms.py:228
+#: userprofile/forms.py:23 userprofile/forms.py:26 userprofile/forms.py:232
+#: userprofile/forms.py:235
 msgid "Confirm Password"
 msgstr "Parola Doğrula"
 
@@ -472,7 +474,7 @@ msgstr "E-posta Adresi"
 msgid "This email address already exists in this system"
 msgstr "Sistemde bu e-posta adresi zaten bulunuyor"
 
-#: userprofile/forms.py:57 userprofile/forms.py:245
+#: userprofile/forms.py:57 userprofile/forms.py:252
 msgid "Your passwords do not match"
 msgstr "Parolalarınız eşleşmiyor"
 
@@ -520,32 +522,36 @@ msgstr "Website"
 msgid "Daha önce çalışılan/Staj yapılan yerler"
 msgstr ""
 
-#: userprofile/forms.py:156 userprofile/forms.py:256 userprofile/models.py:56
+#: userprofile/forms.py:156 userprofile/forms.py:263 userprofile/models.py:56
 #: userprofile/models.py:121
 msgid "Additional Information"
 msgstr "Ek Bilgiler"
 
-#: userprofile/forms.py:201
+#: userprofile/forms.py:194
+msgid "Image file size too large > 1mb )"
+msgstr "Fotograf boyutu çok büyük (>1MB)"
+
+#: userprofile/forms.py:208
 msgid "Please fill only one of them:tckimlikno,ykimlikno"
 msgstr "Lütfen tckimlikno, ykimlikno alanlarından sadece bir tanesini doldurun"
 
-#: userprofile/forms.py:203
+#: userprofile/forms.py:210
 msgid "TC identity number can not be empty for Turkish citizens"
 msgstr "Türkiye vatandaşları için TC kimlik no boş olamaz"
 
-#: userprofile/forms.py:205
+#: userprofile/forms.py:212
 msgid "Foreign identity number can not be empty for non Turkish citizens"
 msgstr "Yabancı uyruklu katılımcılar için yabancı kimlik no boş olamaz"
 
-#: userprofile/forms.py:210
+#: userprofile/forms.py:217
 msgid "Bu TC Kimlik numarasına sahip başka hesap var."
 msgstr ""
 
-#: userprofile/forms.py:214
+#: userprofile/forms.py:221
 msgid "An error occured while verifing your TC identity number"
 msgstr "TC kimlik numaranız doğrulanırken hata oluştu"
 
-#: userprofile/forms.py:216
+#: userprofile/forms.py:223
 msgid ""
 "Your identity information can not be verified, Please "
 "enter                                                      your TC identity "
@@ -557,23 +563,23 @@ msgstr ""
 "soyisminizi (varsa Türkçe karakterler ile birlikte) ve doğum tarihinizi "
 "eksiksiz giriniz."
 
-#: userprofile/forms.py:220
+#: userprofile/forms.py:227
 msgid "User not found"
 msgstr "Kullanıcı bulunamadı"
 
-#: userprofile/forms.py:254 userprofile/models.py:120
+#: userprofile/forms.py:261 userprofile/models.py:120
 msgid "Transportation"
 msgstr "Ulaşım Türü"
 
-#: userprofile/forms.py:261
+#: userprofile/forms.py:268
 msgid "Select your transportation type"
 msgstr "Ulaşım şeklinizi seçin"
 
-#: userprofile/forms.py:262
+#: userprofile/forms.py:269
 msgid "If you want to add additional information, please enter here"
 msgstr "Ek bilgi vermek isterseniz, lütfen buraya yazın"
 
-#: userprofile/forms.py:264
+#: userprofile/forms.py:271
 msgid ""
 "Arrival Date (Example: If your first day at event will be 1st February, "
 "please select 1st February"
@@ -581,7 +587,7 @@ msgstr ""
 "Varış tarihi (Örneğin: İlk gününüz (konaklama için) 1 Şubat ise),Lütfen 1 "
 "Şubat'ı seçin"
 
-#: userprofile/forms.py:266
+#: userprofile/forms.py:273
 msgid ""
 "Departure Date (Example: If you will stay at 3rd February, please select 3rd "
 "February)"
@@ -732,7 +738,7 @@ msgstr "Bilgileriniz kaydedildi"
 msgid "An error occurred while saving your information"
 msgstr "Bilgileriniz kaydedilirken hata oluştu."
 
-#: userprofile/views.py:261
+#: userprofile/views.py:265
 msgid ""
 "Please activate your account.  If you want to re-send an activation email, "
 "please click following button"
@@ -740,31 +746,31 @@ msgstr ""
 "Lütfen hesabınızı aktifleştirin. Eğer aktifleştirme e-postasını tekrar "
 "göndermek istiyorsanız aşağıdaki düğmeye tıklayınız"
 
-#: userprofile/views.py:280 userprofile/views.py:339
+#: userprofile/views.py:284 userprofile/views.py:343
 msgid "Change your password"
 msgstr "Parolanızı değiştirin"
 
-#: userprofile/views.py:288 userprofile/views.py:355
+#: userprofile/views.py:292 userprofile/views.py:359
 msgid "Your password has been changed"
 msgstr "Parolanız değiştirildi"
 
-#: userprofile/views.py:291 userprofile/views.py:359
+#: userprofile/views.py:295 userprofile/views.py:363
 msgid "Your password couldn't be changed"
 msgstr "Parolanız değiştirilemedi"
 
-#: userprofile/views.py:301
+#: userprofile/views.py:305
 msgid "Please enter your registered email"
 msgstr "Lütfen kayıtlı e-posta adresinizi giriniz"
 
-#: userprofile/views.py:321
+#: userprofile/views.py:325
 msgid "There isn't any user record with this e-mail on the system"
 msgstr "Sistemde bu e-posta adresi ile kayıtlı bir kullanıcı bulunmamaktadır!"
 
-#: userprofile/views.py:324 userprofile/views.py:347
+#: userprofile/views.py:328 userprofile/views.py:351
 msgid "Password reset operation failed"
 msgstr "Parola sıfırlama işlemi başarısız"
 
-#: userprofile/views.py:328
+#: userprofile/views.py:332
 msgid "Email field can not be empty"
 msgstr "E-posta alanı boş olamaz"
 

@@ -187,6 +187,13 @@ class StuProfileForm(ModelForm):
         self.fields['experience'].required = False
         self.fields['document'].required = False
 
+    def clean_profilephoto(self):
+        profilephoto = self.cleaned_data.get("profilephoto", False)
+        if profilephoto:
+            if profilephoto._size > 1024*1024:
+                raise forms.ValidationError(_("Image file size too large > 1mb )"))
+        return image
+
     def clean(self):
         cleaned_data = super(StuProfileForm, self).clean()
         ruser = self.ruser
