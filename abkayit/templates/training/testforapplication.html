@@ -33,7 +33,7 @@
                             <p><strong>{{ question1.detail }}</strong></p>
 
                             <div class="col-md-6">
-                                <textarea class="form-control" name="answer{{ question1.pk }}" rows="4" cols="50">{% getanswer question1 user %}</textarea>
+                                <textarea class="form-control" name="answer{{ question1.pk }}" rows="4" cols="50" maxlength="2000">{% getanswer question1 user %}</textarea>
                             </div>
                         </div>
                     </div>
