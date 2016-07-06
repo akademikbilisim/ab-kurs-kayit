@@ -192,7 +192,7 @@ class StuProfileForm(ModelForm):
         if profilephoto:
             if profilephoto._size > 1024*1024:
                 raise forms.ValidationError(_("Image file size too large > 1mb )"))
-        return image
+        return profilephoto
 
     def clean(self):
         cleaned_data = super(StuProfileForm, self).clean()
