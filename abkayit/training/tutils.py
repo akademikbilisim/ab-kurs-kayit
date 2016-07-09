@@ -159,11 +159,14 @@ def save_course_prefferences(userprofile, course_prefs, site, d, answersforcours
                                        'course_no': oldpref.course.no,
                                        'course_name': oldpref.course.name}
             oldprefs.delete()
+        else:
+            is_changed = True
         try:
             course_records = []
             for i in range(1, len(course_prefs) + 1):
-                if context['oldprefs'][i].get('course_id') != int(course_prefs[str(i)]):
-                    is_changed = True
+                if context['oldprefs']:
+                    if len(context['oldprefs']) != len(course_prefs) or context['oldprefs'][i].get('course_id') != int(course_prefs[str(i)]):
+                        is_changed = True
                 course = Course.objects.get(id=int(course_prefs[str(i)]))
                 course_record = TrainessCourseRecord(trainess=userprofile,
                                                      course=course,
@@ -187,7 +190,7 @@ def save_course_prefferences(userprofile, course_prefs, site, d, answersforcours
             context['domain'] = domain.rstrip('/')
             try:
                 if is_changed:
-                    if SEND_REPORT and is_changed:
+                    if SEND_REPORT:
                         context['recipientlist'] = REPORT_RECIPIENT_LIST
                         send_email_by_operation_name(context, "notice_for_pref_changes")
                     context['recipientlist'] = [userprofile.user.username]
