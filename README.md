@@ -208,3 +208,22 @@ Başvurularınız kabul edilmemiştir. Bir sonraki etkinlikte görüşmek dileğ
 
 subject:
 {{ site.name }} {{ site.year }} - Tercihleriniz Hakkında
+
+*** notice_for_pref_changes *** training.views.py
+
+Merhaba,<br><br>
+
+Aşağıdaki bilgileri verilen katılımcı tercihlerini değiştirdi.<br><br>
+Katılımcı: {{ user.user.username}}<br>
+Eski Tercihleri:<br>
+{% for op in old_prefs %}
+{{ op.preference_order }}. tercih: {{ op.course.no }} - {{ op.course.name }}<br>
+{% endfor %}
+<br>
+Yeni Tercihler:<br>
+{% for cp in course_prefs %}
+{{ cp.preference_order }}. tercih: {{ cp.course.no }} - {{ cp.course.name }}<br>
+{% endfor %}
+
+subject:
+{{ site.name }} {{ site.year }} - Kurs Tercih Degisikligi Bilgilendirmesi

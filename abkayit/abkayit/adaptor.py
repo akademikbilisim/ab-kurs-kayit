@@ -16,7 +16,9 @@ def send_email(subject_template, content_template, data, from_email, to_addresse
         subject_template_instance = Template(subject_template)
         content_template_instace = Template(content_template)
         subject = subject_template_instance.render(Context(data))
+        print subject
         html_content = content_template_instace.render(Context(data))
+        print html_content
         msg = EmailMessage(subject, html_content, from_email, to_addresses)
         msg.content_subtype = "html"
         msg.send()

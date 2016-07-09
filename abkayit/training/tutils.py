@@ -6,7 +6,8 @@ from datetime import timedelta
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 
-from abkayit.settings import EMAIL_FROM_ADDRESS, PREFERENCE_LIMIT, ADDITION_PREFERENCE_LIMIT, REQUIRE_TRAINESS_APPROVE
+from abkayit.settings import EMAIL_FROM_ADDRESS, PREFERENCE_LIMIT, ADDITION_PREFERENCE_LIMIT, REQUIRE_TRAINESS_APPROVE, \
+    SEND_REPORT, REPORT_RECIPIENT_LIST
 
 from abkayit.models import ApprovalDate
 from abkayit.backend import send_email_by_operation_name
@@ -65,8 +66,8 @@ def get_approve_start_end_dates_for_tra(site, d):
         :return: kursiyerler için tercih onaylama tarihlerinin start_date'i en yakin olan ile end_date'i en son olani doner.
     """
     try:
-    	dates = ApprovalDate.objects.filter(site=site, for_trainess=True)
-   	return dates.order_by("start_date").first(), dates.latest("end_date")
+        dates = ApprovalDate.objects.filter(site=site, for_trainess=True)
+        return dates.order_by("start_date").first(), dates.latest("end_date")
     except:
         return None, None
 
@@ -145,12 +146,24 @@ def is_trainess_approved_any_course(userprofile, site, d):
 
 def save_course_prefferences(userprofile, course_prefs, site, d, answersforcourse=None):
     res = {'status': '-1', 'message': 'error'}
-
     if len(course_prefs) <= PREFERENCE_LIMIT:
-        TrainessCourseRecord.objects.filter(trainess=userprofile).delete()
+        context = {}
+        oldprefs = TrainessCourseRecord.objects.filter(trainess=userprofile)
+
+        context['oldprefs'] = {}
+        is_changed = False
+        if oldprefs:
+            for oldpref in oldprefs:
+                context['oldprefs'][oldpref.preference_order] = {
+                                       'course_id': oldpref.course.pk,
+                                       'course_no': oldpref.course.no,
+                                       'course_name': oldpref.course.name}
+            oldprefs.delete()
         try:
             course_records = []
-            for i in range(1, len(course_prefs)+1):
+            for i in range(1, len(course_prefs) + 1):
+                if context['oldprefs'][i].get('course_id') != int(course_prefs[str(i)]):
+                    is_changed = True
                 course = Course.objects.get(id=int(course_prefs[str(i)]))
                 course_record = TrainessCourseRecord(trainess=userprofile,
                                                      course=course,
@@ -167,11 +180,20 @@ def save_course_prefferences(userprofile, course_prefs, site, d, answersforcours
                         tta.save()
             res['status'] = 0
             res['message'] = "Tercihleriniz başarılı bir şekilde güncellendi"
-            context = {'user': userprofile.user, 'course_prefs': course_records, 'site': site}
+            context['user'] = userprofile.user
+            context['course_prefs'] = course_records
+            context['site'] = site
             domain = site.home_url
             context['domain'] = domain.rstrip('/')
-            context['recipientlist'] = [userprofile.user.username]
-            send_email_by_operation_name(context, "preference_saved")
+            try:
+                if is_changed:
+                    if SEND_REPORT and is_changed:
+                        context['recipientlist'] = REPORT_RECIPIENT_LIST
+                        send_email_by_operation_name(context, "notice_for_pref_changes")
+                    context['recipientlist'] = [userprofile.user.username]
+                    send_email_by_operation_name(context, "preference_saved")
+            except:
+                log.error("rapor e-postası gönderilemedi", extra=d)
         except Exception as e:
             log.error(e.message, extra=d)
             res['message'] = "Tercihleriniz kaydedilirken hata oluştu"

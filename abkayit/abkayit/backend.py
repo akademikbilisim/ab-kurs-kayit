@@ -5,7 +5,6 @@ import logging
 import random
 
 from django.core.exceptions import *
-from django.utils.translation import ugettext_lazy as _
 
 from abkayit.models import Site, Menu
 from abkayit.settings import EMAIL_FROM_ADDRESS

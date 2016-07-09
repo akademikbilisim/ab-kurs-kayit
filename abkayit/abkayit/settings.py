@@ -27,6 +27,9 @@ COMMON_CONFIG_FILE = '/opt/kampyazilim.conf'
 EMAIL_FROM_ADDRESS = "kamp@linux.org.tr"
 EMAIL_HOST = "postaci.linux.org.tr"
 EMAIL_PORT = 25
+
+SEND_REPORT = True
+REPORT_RECIPIENT_LIST = ["kamp-gelismeler@linux.org.tr"]
 '''
     PREFERENCE_LIMIT: Kurs tercih limiti
 '''

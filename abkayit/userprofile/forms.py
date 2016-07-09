@@ -151,7 +151,8 @@ class StuProfileForm(ModelForm):
             'university': forms.Select(attrs={'placeholder': _('University'), 'class': 'form-control'}),
             'department': forms.TextInput(attrs={'placeholder': _('Department'), 'class': 'form-control'}),
             'website': forms.TextInput(attrs={'placeholder': _('Website'), 'class': 'form-control'}),
-            'experience': forms.TextInput(attrs={'placeholder': _('Daha önce çalışılan/Staj yapılan yerler'), 'class': 'form-control'}),
+            'experience': forms.TextInput(
+                attrs={'placeholder': _('Daha önce çalışılan/Staj yapılan yerler'), 'class': 'form-control'}),
             'additional_information': forms.Textarea(
                 attrs={'placeholder': _('Additional Information'), 'class': 'form-control'}),
             'is_instructor': forms.HiddenInput(),
@@ -190,7 +191,7 @@ class StuProfileForm(ModelForm):
     def clean_profilephoto(self):
         profilephoto = self.cleaned_data.get("profilephoto", False)
         if profilephoto and "profilephoto" in self.changed_data:
-            if profilephoto._size > 1024*1024:
+            if profilephoto._size > 1024 * 1024:
                 raise forms.ValidationError(_("Image file size too large > 1mb )"))
         return profilephoto
 
@@ -214,7 +215,7 @@ class StuProfileForm(ModelForm):
                 tcknosorgu = UserProfile.objects.filter(tckimlikno=cleaned_data['tckimlikno'])
                 if tcknosorgu:
                     if tcknosorgu[0].user.username != ruser.username:
-                    	raise forms.ValidationError(_("Bu TC Kimlik numarasına sahip başka hesap var."))
+                        raise forms.ValidationError(_("Bu TC Kimlik numarasına sahip başka hesap var."))
                 tckisvalid = UserProfileOPS.validateTCKimlikNo(cleaned_data['tckimlikno'].rstrip().lstrip(), first_name,
                                                                last_name, byear)
                 if tckisvalid == -1:
@@ -278,6 +279,3 @@ class InstructorInformationForm(ModelForm):
         for field in self.fields:
             self.fields[field].required = True
         self.fields['additional_information'].required = False
-
-
-
