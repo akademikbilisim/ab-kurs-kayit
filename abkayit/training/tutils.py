@@ -148,7 +148,7 @@ def save_course_prefferences(userprofile, course_prefs, site, d, answersforcours
     res = {'status': '-1', 'message': 'error'}
     if len(course_prefs) <= PREFERENCE_LIMIT:
         context = {}
-        oldprefs = TrainessCourseRecord.objects.filter(trainess=userprofile)
+        oldprefs = TrainessCourseRecord.objects.filter(course__site__is_active=True, trainess=userprofile)
 
         context['oldprefs'] = {}
         is_changed = False

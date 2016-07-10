@@ -357,7 +357,8 @@ def cancel_all_preference(request):
     if request.POST:
         try:
             cancelnote = request.POST.get('cancelnote', '')
-            trainess_course_records = TrainessCourseRecord.objects.filter(trainess=userprofile)
+            trainess_course_records = TrainessCourseRecord.objects.filter(course__site__is_active=True,
+                                                                          trainess=userprofile)
             context = {}
             approvedpref = None
             for tcr in trainess_course_records:
