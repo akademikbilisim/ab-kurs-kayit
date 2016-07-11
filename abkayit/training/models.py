@@ -53,6 +53,7 @@ class TrainessCourseRecord(models.Model):
     class Meta:
         verbose_name = _('Trainess Course Record')
         verbose_name_plural = _('Trainess Course Records')
+        ordering = ['trainess', 'preference_order']
 
 
 class TrainessParticipation(models.Model):
