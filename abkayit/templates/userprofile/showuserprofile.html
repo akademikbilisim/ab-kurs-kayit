@@ -41,6 +41,8 @@
                     </dd>
                     <dt>Etkinlik geçmişi: </dt>
                     <dd>
+                        <h4>Notlar:</h4>
+                        <p>
                         {% for journal in tuser.note_to_profile.all %}
                         <section>
                             <p>{{ journal.site.name }} - {{ journal.site.year }}</p>
@@ -53,7 +55,10 @@
                         {% empty %}
                             <p>Bu kullanıcı ile ilgili not girilmemiş</p>
                         {% endfor%}
-                    </dd>
+                        </p>
+                        {% oldeventprefs tuser %}
+
+                        </dd>
                     <dt>Not Ekle: </dt>
                     <dd>
                             <p> <input id="trainessnotetext" type="text" class="form-control input-note" value=""/>

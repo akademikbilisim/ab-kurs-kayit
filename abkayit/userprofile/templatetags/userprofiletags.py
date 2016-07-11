@@ -3,8 +3,9 @@
 
 from django import template
 
+from abkayit.models import ApprovalDate, Site
 from userprofile.models import TrainessClassicTestAnswers
-from training.models import Course
+from training.models import Course, TrainessCourseRecord
 
 register = template.Library()
 
@@ -37,4 +38,28 @@ def getanswers(tuser, ruser, courseid):
             html += "<li> <b>" + answer.question.detail + "</b> <p>" + answer.answer + "</p> </li>"
         html += "</section></ul></dd>"
 
+    return html
+
+
+@register.simple_tag(name="oldeventprefs")
+def oldeventprefs(tuser):
+    html = ""
+    try:
+        sites = Site.objects.filter(is_active=False)
+
+        for site in sites:
+            trainessoldprefs = TrainessCourseRecord.objects.filter(trainess=tuser, course__site=site).order_by(
+                'preference_order')
+            if trainessoldprefs:
+                html += "<section><p>" + site.name + " - " + site.year + "</p><ul>"
+                for top in trainessoldprefs:
+                    if top.approved:
+                        html += "<li>" + str(top.preference_order) + ".tercih: " + top.course.name + " (Onaylanmış) </li>"
+                    else:
+                        html += "<li>" + str(top.preference_order) + ".tercih: " + top.course.name + " </li>"
+                html += "</ul></section>"
+        if html:
+            html = "<h4>Eski Tercihleri: </h4>" + html
+    except Exception as e:
+        print e.message
     return html
