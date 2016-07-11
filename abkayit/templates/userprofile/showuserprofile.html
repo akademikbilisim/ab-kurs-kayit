@@ -30,11 +30,13 @@
                     <dt>Seçtiği kurslar:</dt>
                     <dd>
                         {% for tcr in tuser.trainesscourserecord_set.all%}
-                        {% if tcr.approved %}
-                         <div>  - {{tcr.course.name}} ({{tcr.course.no}}) Onaylanmış </br></div>
-                        {% else %}
-                          <div> - {{tcr.course.name}} ({{tcr.course.no}})</br></div>
-                        {% endif %}
+                            {% if tcr.course.site.is_active %}
+                                {% if tcr.approved %}
+                                 <div> {{ tcr.preference_order }}. tercihi - {{tcr.course.name}} ({{tcr.course.no}}) Onaylanmış </br></div>
+                                {% else %}
+                                  <div> {{ tcr.preference_order }}. tercihi - {{tcr.course.name}} ({{tcr.course.no}})</br></div>
+                                {% endif %}
+                            {% endif %}
                         {%endfor%}
                     </dd>
                     <dt>Etkinlik geçmişi: </dt>

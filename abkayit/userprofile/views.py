@@ -113,7 +113,8 @@ def createprofile(request):
     if 'register' in request.POST:
         data['update_user_form'] = UpdateUserForm(data=request.POST, instance=request.user)
         try:
-            data['form'] = StuProfileForm(request.POST, request.FILES, instance=request.user.userprofile, ruser=request.user)
+            data['form'] = StuProfileForm(request.POST, request.FILES, instance=request.user.userprofile,
+                                          ruser=request.user)
         except UserProfile.DoesNotExist:
             data['form'] = StuProfileForm(request.POST, request.FILES, ruser=request.user)
         if data['update_user_form'].is_valid() and data['form'].is_valid():
@@ -127,7 +128,8 @@ def createprofile(request):
                     for question in data['sitewidequestions']:
                         answer = request.POST.get("answer%s" % question.pk, "")
                         if answer:
-                            tca, created = TrainessClassicTestAnswers.objects.get_or_create(user=request.user.userprofile, question=question)
+                            tca, created = TrainessClassicTestAnswers.objects.get_or_create(
+                                user=request.user.userprofile, question=question)
                             tca.answer = answer
                             tca.save()
                 if not request.user.userprofile.is_instructor and ACCOMODATION_PREFERENCE_LIMIT:
@@ -150,7 +152,7 @@ def createprofile(request):
                                        " Sistem yöneticisi ile görüşün!"
                 else:
                     note = "Profiliniz başarılı bir şekilde kaydedildi. Kurs tercihleri adımından" \
-                       " devam edebilirsiniz"
+                           " devam edebilirsiniz"
             except Exception as e:
                 log.error(e.message, extra=d)
                 note = "Profiliniz kaydedilirken hata oluştu lütfen sayfayı yeniden yükleyip tekrar deneyin"
@@ -212,20 +214,27 @@ def alluserview(request):
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
     data = getsiteandmenus(request)
     userlist = []
-    allcourserecord = TrainessCourseRecord.objects.filter(course__site__is_active=True).values_list('trainess', 'pk').distinct()
-    if allcourserecord:
-        for r in allcourserecord:
-            up = UserProfile.objects.get(pk=r[0])
-            usr = {
-                   "pk": up.pk,
-                   "usertype": "student",
-                   "firstname": up.user.first_name,
-                   "email": up.user.username, "lastname": up.user.last_name,
-                   "tcino": up.tckimlikno if up.tckimlikno != '' else up.ykimlikno,
-                   "gender": up.gender,
-                   "accomodation": up.useraccomodationpref_set.filter(accomodation__site__is_active=True),
-                   "courserecordid": r[1]}
-            userlist.append(usr)
+    try:
+        allcourserecord = TrainessCourseRecord.objects.filter(course__site__is_active=True).values_list(
+            'trainess').distinct('trainess')
+        if allcourserecord:
+
+            for r in allcourserecord:
+                up = UserProfile.objects.get(pk=r[0])
+                usr = {
+                    "pk": up.pk,
+                    "usertype": "student",
+                    "firstname": up.user.first_name,
+                    "email": up.user.username, "lastname": up.user.last_name,
+                    "tcino": up.tckimlikno if up.tckimlikno != '' else up.ykimlikno,
+                    "gender": up.gender,
+                    "accomodation": up.useraccomodationpref_set.filter(accomodation__site__is_active=True),
+                    "courserecordid": "0"}
+                userlist.append(usr)
+    except Exception as e:
+        log.error("An error occured while showing alluserview", extra=d)
+        log.error(e.message, extra=d)
+    log.info("All user view showed", extra=d)
     data["datalist"] = userlist
     return render_to_response("userprofile/allusers.html", data, context_instance=RequestContext(request))
 
@@ -236,7 +245,7 @@ def get_all_trainers_view(request):
     data = getsiteandmenus(request)
     try:
         trainers = []
-        courses = Course.objects.filter(site=2)
+        courses = Course.objects.filter(site__is_active=True)
         for course in courses:
             trainers.extend(course.trainer.all())
         data['trainers'] = set(trainers)
@@ -414,32 +423,38 @@ def showuserprofile(request, userid, courserecordid):
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
     data = getsiteandmenus(request)
     user = UserProfile.objects.get(pk=userid)
-    courserecord = TrainessCourseRecord.objects.get(pk=courserecordid)
+    courserecord = None
+    try:
+        courserecord = TrainessCourseRecord.objects.get(pk=courserecordid)
+    except Exception as e:
+        log.warning(e.message, extra=d)
+        log.warning("Staff user show user profile", extra=d)
     if user:
         data['note'] = "Detaylı kullanıcı bilgileri"
         data['tuser'] = user
         data['ruser'] = request.user
-        data['courseid'] = courserecord.course.pk  
-        data['forms'] = getparticipationforms(data['site'], courserecord)
-        if request.POST:
-            formsarevalid = []
-            frms = []
-            for f in data['forms']:
-                frm = ParticipationForm(request.POST,
-                                        prefix="participation" + str(
-                                            datetime.strptime(f.initial['day'], '%Y-%m-%d').day))
-                frm.courserecord = courserecord.pk
-                frm.day = f.initial['day']
-                formsarevalid.append(frm.is_valid())
-                frms.append(frm)
-            if all(formsarevalid):
-                for f in frms:
-                    f.save()
-                data['note'] = 'Seçimleriniz başarıyla kaydedildi.'
-                log.info("%s nolu kurs kaydinin yoklama kaydi girişi başarılı" % courserecord.pk, extra=d)
-            else:
-                data['note'] = 'Hata oluştu!'
-                log.info("%s nolu kurs kaydinin yoklama kaydi girişi hatalı" % courserecord.pk, extra=d)
+        if courserecord:
+            data['courseid'] = courserecord.course.pk
+            data['forms'] = getparticipationforms(data['site'], courserecord)
+            if request.POST:
+                formsarevalid = []
+                frms = []
+                for f in data['forms']:
+                    frm = ParticipationForm(request.POST,
+                                            prefix="participation" + str(
+                                                datetime.strptime(f.initial['day'], '%Y-%m-%d').day))
+                    frm.courserecord = courserecord.pk
+                    frm.day = f.initial['day']
+                    formsarevalid.append(frm.is_valid())
+                    frms.append(frm)
+                if all(formsarevalid):
+                    for f in frms:
+                        f.save()
+                    data['note'] = 'Seçimleriniz başarıyla kaydedildi.'
+                    log.info("%s nolu kurs kaydinin yoklama kaydi girişi başarılı" % courserecord.pk, extra=d)
+                else:
+                    data['note'] = 'Hata oluştu!'
+                    log.info("%s nolu kurs kaydinin yoklama kaydi girişi hatalı" % courserecord.pk, extra=d)
     else:
         data['note'] = "Böyle Bir kullanıcı yoktur."
 

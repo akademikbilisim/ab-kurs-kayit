@@ -107,19 +107,23 @@
                   <td>{{ t.trainess.additional_information }}</td>
                   <td>
                     {% for tcr in t.trainess.trainesscourserecord_set.all%}
-                     {% if tcr.course.id != course.id %}
-                          <div> - {{tcr.course.name}} ({{tcr.course.no}}) </br></div>
-                      {% endif%}
+                         {% if tcr.course.id != course.id %}
+                              {% if tcr.course.site.is_active %}
+                                  <div> {{ tcr.preference_order }}. tercihi - {{tcr.course.name}} ({{tcr.course.no}}) </br></div>
+                              {% endif %}
+                          {% endif%}
                     {%endfor%}
 
                   </td>
                   <td>
                     {% for tcr in t.trainess.trainesscourserecord_set.all%}
-                     {% if tcr.course.id != course.id %}
-                        {%if tcr.approved %}
-                              <div class="checked-for-another-course">Kursiyer {{tcr.preference_order}}. tercihi olan {{tcr.course.name}} kursuna kabul edilmiş</br></div>
-                        {% endif%}
-                      {% endif%}
+                         {% if tcr.course.id != course.id %}
+                              {% if tcr.course.site.is_active %}
+                                    {%if tcr.approved %}
+                                          <div class="checked-for-another-course">Kursiyer {{tcr.preference_order}}. tercihi olan {{tcr.course.name}} kursuna kabul edilmiş</br></div>
+                                    {% endif%}
+                              {% endif %}
+                          {% endif%}
                     {%endfor%}
                   </td>
                     <td><a href="{% url 'showuserprofile'  t.trainess.pk t.pk %}" type="button"> Profil Detayı </a></td>
