@@ -117,45 +117,50 @@ def createprofile(request):
                                           ruser=request.user)
         except UserProfile.DoesNotExist:
             data['form'] = StuProfileForm(request.POST, request.FILES, ruser=request.user)
-        if data['update_user_form'].is_valid() and data['form'].is_valid():
-            log.info("formvalid", extra=d)
-            try:
-                profile = data['form'].save(commit=False)
-                profile.user = request.user
-                profile.profilephoto = data['form'].cleaned_data['profilephoto']
-                profile.save()
-                if data['sitewidequestions']:
-                    for question in data['sitewidequestions']:
-                        answer = request.POST.get("answer%s" % question.pk, "")
-                        if answer:
-                            tca, created = TrainessClassicTestAnswers.objects.get_or_create(
-                                user=request.user.userprofile, question=question)
-                            tca.answer = answer
-                            tca.save()
-                if not request.user.userprofile.is_instructor and ACCOMODATION_PREFERENCE_LIMIT:
-                    prefs = UserAccomodationPref.objects.filter(user=request.user.userprofile)
-                    if prefs:
-                        prefs.delete()
-                    for pref in range(0, len(data['accomodations'])):
-                        if 'tercih' + str(pref + 1) in request.POST.keys():
-                            try:
-                                uaccpref = UserAccomodationPref(user=profile,
-                                                                accomodation=Accommodation.objects.get(
-                                                                    pk=request.POST['tercih' + str(pref + 1)]),
-                                                                usertype="stu", preference_order=pref + 1)
-                                uaccpref.save()
-                                note = "Profiliniz başarılı bir şekilde kaydedildi. Kurs tercihleri adımından" \
-                                       " devam edebilirsiniz"
-                            except Exception as e:
-                                log.error(e.message, extra=d)
-                                note = "Profiliniz kaydedildi ancak konaklama tercihleriniz kaydedilemedi." \
-                                       " Sistem yöneticisi ile görüşün!"
-                else:
-                    note = "Profiliniz başarılı bir şekilde kaydedildi. Kurs tercihleri adımından" \
-                           " devam edebilirsiniz"
-            except Exception as e:
-                log.error(e.message, extra=d)
-                note = "Profiliniz kaydedilirken hata oluştu lütfen sayfayı yeniden yükleyip tekrar deneyin"
+
+        if data['update_user_form'].is_valid():
+            data['update_user_form'].save()
+            if data['form'].is_valid():
+                log.info("formvalid", extra=d)
+                try:
+                    profile = data['form'].save(commit=False)
+                    profile.user = request.user
+                    profile.profilephoto = data['form'].cleaned_data['profilephoto']
+                    profile.save()
+                    if data['sitewidequestions']:
+                        for question in data['sitewidequestions']:
+                            answer = request.POST.get("answer%s" % question.pk, "")
+                            if answer:
+                                tca, created = TrainessClassicTestAnswers.objects.get_or_create(
+                                    user=request.user.userprofile, question=question)
+                                tca.answer = answer
+                                tca.save()
+                    if not request.user.userprofile.is_instructor and ACCOMODATION_PREFERENCE_LIMIT:
+                        prefs = UserAccomodationPref.objects.filter(user=request.user.userprofile)
+                        if prefs:
+                            prefs.delete()
+                        for pref in range(0, len(data['accomodations'])):
+                            if 'tercih' + str(pref + 1) in request.POST.keys():
+                                try:
+                                    uaccpref = UserAccomodationPref(user=profile,
+                                                                    accomodation=Accommodation.objects.get(
+                                                                        pk=request.POST['tercih' + str(pref + 1)]),
+                                                                    usertype="stu", preference_order=pref + 1)
+                                    uaccpref.save()
+                                    note = "Profiliniz başarılı bir şekilde kaydedildi. Kurs tercihleri adımından" \
+                                           " devam edebilirsiniz"
+                                except Exception as e:
+                                    log.error(e.message, extra=d)
+                                    note = "Profiliniz kaydedildi ancak konaklama tercihleriniz kaydedilemedi." \
+                                           " Sistem yöneticisi ile görüşün!"
+                    else:
+                        note = "Profiliniz başarılı bir şekilde kaydedildi. Kurs tercihleri adımından" \
+                               " devam edebilirsiniz"
+                except Exception as e:
+                    log.error(e.message, extra=d)
+                    note = "Profiliniz kaydedilirken hata oluştu lütfen sayfayı yeniden yükleyip tekrar deneyin"
+            else:
+                note = "Profiliniz aşağıdaki sebeplerden dolayı oluşturulamadı"
         else:
             note = "Profiliniz aşağıdaki sebeplerden dolayı oluşturulamadı"
     elif 'cancel' in request.POST:

@@ -69,7 +69,7 @@ class UpdateUserForm(ModelForm):
         widgets = {
             'first_name': forms.TextInput(attrs={'placeholder': _('First Name'), 'class': 'form-control'}),
             'last_name': forms.TextInput(attrs={'placeholder': _('Last Name'), 'class': 'form-control'}),
-            'email': TextInput(attrs={'readonly': 'readonly', 'class': 'form-control'}),
+            'email': TextInput(attrs={'placeholder': _('E-mail'), 'class': 'form-control'}),
             'username': forms.HiddenInput()
         }
 
@@ -78,6 +78,18 @@ class UpdateUserForm(ModelForm):
         for field in self.fields:
             self.fields[field].required = False
         self.fields['username'].required = False
+        self.fields['email'].required = True
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        users = User.objects.filter(email=email)
+        if len(users) > 0:
+            raise forms.ValidationError(_("This email address already exists in this system"))
+        return email
+
+    def clean_username(self):
+        username = self.cleaned_data.get('email')
+        return username
 
 
 class CreateInstForm(ModelForm):
