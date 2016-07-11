@@ -216,7 +216,7 @@ def alluserview(request):
     userlist = []
     try:
         allcourserecord = TrainessCourseRecord.objects.filter(course__site__is_active=True).values_list(
-            'trainess').distinct('trainess')
+            'trainess').order_by('trainess').distinct()
         if allcourserecord:
 
             for r in allcourserecord:
