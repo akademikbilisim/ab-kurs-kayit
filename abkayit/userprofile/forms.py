@@ -82,9 +82,10 @@ class UpdateUserForm(ModelForm):
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
-        users = User.objects.filter(email=email)
-        if len(users) > 0:
-            raise forms.ValidationError(_("This email address already exists in this system"))
+        if email in self.changed_data:
+            users = User.objects.filter(email=email)
+            if len(users) > 0:
+                raise forms.ValidationError(_("This email address already exists in this system"))
         return email
 
     def clean_username(self):
