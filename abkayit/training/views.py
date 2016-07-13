@@ -251,7 +251,7 @@ def control_panel(request):
     now = timezone.now()
     data["user"] = request.user
     try:
-        if request.user.userprofile.is_instructor:
+        if UserProfileOPS.is_instructor(request.user.userprofile):
             courses = Course.objects.filter(site=data['site'], approved=True, trainer__user=request.user)
             log.info(courses, extra=d)
             if courses:
@@ -299,7 +299,7 @@ def statistic(request):
             'course', '-preference_order')
         statistic_by_course = {}
         for key, group in itertools.groupby(record_data, lambda item: item["course"]):
-            course_object = Course.objects.get(pk=key, site=data['site'])
+            course_object = Course.objects.get(pk=key, site__is_active=True)
             statistic_by_course[course_object] = {str(item['preference_order']): item['preference_order__count'] for
                                                   item in group}
             statistic_by_course[course_object]['total_apply'] = len(TrainessCourseRecord.objects.filter(
@@ -310,34 +310,35 @@ def statistic(request):
                 course=course_object, approved=True, trainess_approved=True))
 
         data['statistic_by_course'] = statistic_by_course
-        statistic_by_gender = UserProfile.objects.filter(is_instructor=False).filter(
-            trainesscourserecord__course__site__is_active__in=[True]).values('gender').annotate(
-            Count('gender')).order_by('gender')
-        data['statistic_by_gender'] = statistic_by_gender
-        statistic_by_gender_for_approved = UserProfile.objects.filter(is_instructor=False).filter(
-            trainesscourserecord__approved=[True], trainesscourserecord__course__site__is_active__in=[True]).filter(
-            trainesscourserecord__trainess_approved__in=[True]).values('gender').annotate(Count('gender')).order_by(
-            'gender')
-        data['statistic_by_gender_for_approved'] = statistic_by_gender_for_approved
-        log.debug(statistic_by_gender, extra=d)
-        statistic_by_university = UserProfile.objects.filter(is_instructor=False).filter(
-            trainesscourserecord__course__site__is_active__in=[True]).values('university').annotate(
-            Count('university')).order_by('-university__count')
-        data['statistic_by_university'] = statistic_by_university
-
-        statistic_by_university_for_approved = UserProfile.objects.filter(is_instructor=False).values(
-            'university').filter(trainesscourserecord__course__site__is_active__in=[True],
-                                 trainesscourserecord__approved__in=[True]).filter(
-            trainesscourserecord__trainess_approved__in=[True]).annotate(Count('university')).order_by(
-            '-university__count')
-        data['statistic_by_university_for_approved'] = statistic_by_university_for_approved
+        # statistic_by_gender = UserProfile.objects.filter(is_instructor=False).filter(
+        #    trainesscourserecord__course__site__is_active__in=[True]).values('gender').annotate(
+        #    Count('gender')).order_by('gender')
+        # data['statistic_by_gender'] = statistic_by_gender
+        # statistic_by_gender_for_approved = UserProfile.objects.filter(is_instructor=False).filter(
+        #    trainesscourserecord__approved=[True], trainesscourserecord__course__site__is_active__in=[True]).filter(
+        #    trainesscourserecord__trainess_approved__in=[True]).values('gender').annotate(Count('gender')).order_by(
+        #    'gender')
+        # data['statistic_by_gender_for_approved'] = statistic_by_gender_for_approved
+        # log.debug(statistic_by_gender, extra=d)
+        # statistic_by_university = UserProfile.objects.filter(is_instructor=False).filter(
+        #    trainesscourserecord__course__site__is_active__in=[True]).values('university').annotate(
+        #    Count('university')).order_by('-university__count')
+        # data['statistic_by_university'] = statistic_by_university
+        #
+        # statistic_by_university_for_approved = UserProfile.objects.filter(is_instructor=False).values(
+        #    'university').filter(trainesscourserecord__course__site__is_active__in=[True],
+        #                         trainesscourserecord__approved__in=[True]).filter(
+        #    trainesscourserecord__trainess_approved__in=[True]).annotate(Count('university')).order_by(
+        #    '-university__count')
+        # data['statistic_by_university_for_approved'] = statistic_by_university_for_approved
 
         # kurs bazinda toplam teyitli olanlar
-        data['statistic_by_course_for_apply'] = TrainessCourseRecord.objects.filter(course__site=data['site'],
+        data['statistic_by_course_for_apply'] = TrainessCourseRecord.objects.filter(course__site__is_active=True,
                                                                                     approved=True).values(
             'course__name').annotate(count=Count('course')).order_by('-count')
-        total_profile = len(TrainessCourseRecord.objects.filter(course__site__is_active=True).values(
-            'trainess').distinct())
+        total_profile = len(
+            TrainessCourseRecord.objects.filter(course__site__is_active=True).order_by("trainess").values(
+                "trainess").distinct())
         total_preference = len(TrainessCourseRecord.objects.filter(course__site__is_active=True))
         total_preference_for_approved = len(
             TrainessCourseRecord.objects.filter(course__site__is_active=True, approved=True))
@@ -369,7 +370,7 @@ def cancel_all_preference(request):
                     if data['site'].application_end_date < now_for_approve < data['site'].event_start_date:
                         if tcr.trainess_approved:
                             context['trainess_course_record'] = tcr
-                            context['recipientlist'] = tcr.course.trainer.filter(can_elect=True).values_list(
+                            context['recipientlist'] = tcr.course.authorized_trainer.all().values_list(
                                 'user__username', flat=True)
                             send_email_by_operation_name(context, "notice_for_canceled_prefs")
                 except Exception as e:
@@ -491,7 +492,8 @@ def addtrainess(request):
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
     data = getsiteandmenus(request)
     now = datetime.date(datetime.now())
-    if request.user.userprofile.can_elect and data['site'].event_start_date > now > data['site'].application_end_date:
+    if UserProfileOPS.is_authorized_inst(request.user.userprofile) and data['site'].event_start_date > now > data[
+        'site'].application_end_date:
         data['form'] = AddTrainessForm(ruser=request.user)
         data['note'] = "Kursunuza eklemek istediğiniz katilimciyi seçin (E-posta adresine göre)"
         if "add" in request.POST:

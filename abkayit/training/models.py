@@ -21,8 +21,10 @@ class Course(models.Model):
     no = models.CharField(verbose_name=_("Course No"), max_length="4")
     name = models.CharField(verbose_name=_("Course Name"), max_length="255")
     description = models.TextField(verbose_name=_("Description"))
-    trainess = models.ManyToManyField(UserProfile, related_name="trainess",verbose_name=_("Trainess"), blank=True)
+    trainess = models.ManyToManyField(UserProfile, related_name="trainess", verbose_name=_("Trainess"), blank=True)
     trainer = models.ManyToManyField(UserProfile, related_name="trainer", verbose_name=_("Trainer"))
+    authorized_trainer = models.ManyToManyField(UserProfile, related_name="authorized_trainer",
+                                                verbose_name=_("Authorized Trainers"))
     approved = models.BooleanField(default=False)
     application_is_open = models.BooleanField(default=True)
     site = models.ForeignKey(Site)

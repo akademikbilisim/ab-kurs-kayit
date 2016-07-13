@@ -1,4 +1,5 @@
 {% extends "homepagedashboard.html" %}
+{% load userprofiletags %}
 {% block content %}
     {% if content%}
         {% autoescape off %}
@@ -34,22 +35,7 @@
         </li>
         {% else %}
         {%if user.userprofile %}
-        {% if user.userprofile.is_instructor %}
-        <li>
-            <a href="{% url 'controlpanel' %}"><i class="fa fa-book fa-fw"></i> Kursum</a>
-        </li>
-        <li>
-            <a href="{% url 'addtrainess' %}"><i class="fa fa-book fa-fw"></i> Kursiyer Ekle</a>
-        </li>
-        {% else %}
-        <li>
-            <a href="{% url 'applytocourse' %}"><i class="fa fa-check-square-o fa-fw"></i> Kurs Başvurusu</a>
-        </li>
-        <li>
-            <a href="{% url 'approve_course_preference' %}"><i class="fa fa-thumbs-o-up fa-fw"></i> Başvuru Durum/Onayla</a>
-        </li>
-        {% endif %}
-
+        {% getoperationsmenu user.userprofile %}
         {% endif%}
         {% endif %}
         <li class="divider"></li>

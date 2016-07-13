@@ -5,6 +5,8 @@ from django.contrib.auth.admin import UserAdmin as AuthUserAdmin
 from django.contrib.auth.models import User
 from userprofile.models import InstructorInformation, UserProfile, Accommodation, UserAccomodationPref, \
     UserVerification, TrainessNote
+from training.models import Course
+
 
 admin.site.unregister(User)
 
@@ -21,8 +23,8 @@ class UserProfileInline(admin.StackedInline):
 
 @admin.register(User)
 class UserAdmin(AuthUserAdmin):
-    list_display = ['username', 'first_name', 'last_name', 'is_instructor', 'tckimlikno', 'gender']
-    list_filter = ('userprofile__is_instructor', )
+    list_display = ['username', 'first_name', 'last_name', 'tckimlikno', 'gender']
+    #list_filter = ('is_instructor', )
     search_fields = ('username', 'first_name', 'last_name', 'userprofile__tckimlikno')
     inlines = [
         UserProfileInline,
@@ -30,8 +32,10 @@ class UserAdmin(AuthUserAdmin):
     ]
 
     def is_instructor(self, obj):
-        if obj.userprofile.is_instructor:
-            return obj.userprofile.is_instructor
+        if obj.userprofile:
+            courses = Course.objects.filter(site__is_active=True, trainer=obj.userprofile)
+            if courses:
+                return True
         else:
             return False
 

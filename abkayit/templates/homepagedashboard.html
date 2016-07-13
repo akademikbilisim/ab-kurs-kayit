@@ -1,4 +1,5 @@
 {% load staticfiles %}
+{% load userprofiletags %}
 {% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
@@ -106,11 +107,7 @@
                 <a href="{%url 'createprofile'%}"><i class="fa fa-user fa-fw"></i> {% trans "User Profile" %}</a>
               </li>
               {% if user.userprofile %}
-                {% if user.userprofile.is_instructor %}
-                  <li>
-                    <a href="{%url 'instructor_information' %}"><i class="fa-info-circle fa-fw"></i> {% trans "Instructor Information" %}</a>
-                  </li>
-                {% endif %}
+                {% instinfo user.userprofile %}
               {% endif %}
               <li>
                 <a href="{%url 'account_reset_password' %}"><i class="fa fa-key fa-fw"></i> {% trans "Change Password" %}</a>

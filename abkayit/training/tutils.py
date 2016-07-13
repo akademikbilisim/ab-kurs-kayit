@@ -14,6 +14,8 @@ from abkayit.backend import send_email_by_operation_name
 from training.models import Course, TrainessCourseRecord, TrainessParticipation, TrainessTestAnswers
 from training.forms import ParticipationForm
 
+from userprofile.userprofileops import UserProfileOPS
+
 log = logging.getLogger(__name__)
 
 
@@ -155,9 +157,9 @@ def save_course_prefferences(userprofile, course_prefs, site, d, answersforcours
         if oldprefs:
             for oldpref in oldprefs:
                 context['oldprefs'][oldpref.preference_order] = {
-                                       'course_id': oldpref.course.pk,
-                                       'course_no': oldpref.course.no,
-                                       'course_name': oldpref.course.name}
+                    'course_id': oldpref.course.pk,
+                    'course_no': oldpref.course.no,
+                    'course_name': oldpref.course.name}
             oldprefs.delete()
         else:
             is_changed = True
@@ -165,7 +167,8 @@ def save_course_prefferences(userprofile, course_prefs, site, d, answersforcours
             course_records = []
             for i in range(1, len(course_prefs) + 1):
                 if context['oldprefs']:
-                    if len(context['oldprefs']) != len(course_prefs) or context['oldprefs'][i].get('course_id') != int(course_prefs[str(i)]):
+                    if len(context['oldprefs']) != len(course_prefs) or context['oldprefs'][i].get('course_id') != int(
+                            course_prefs[str(i)]):
                         is_changed = True
                 course = Course.objects.get(id=int(course_prefs[str(i)]))
                 course_record = TrainessCourseRecord(trainess=userprofile,
@@ -258,7 +261,7 @@ def is_trainess_approved_anothercourse(trainess, cur_pref_order):
 def applytrainerselections(postrequest, courses, data, d):
     note = ""
     now = timezone.now()
-    if data["user"].userprofile.can_elect:
+    if UserProfileOPS.is_authorized_inst(data["user"].userprofile):
         sendconsentemail = postrequest.get("send_consent_email", False)
         for course in courses:
             try:
@@ -276,9 +279,8 @@ def applytrainerselections(postrequest, courses, data, d):
                                     trainess_approved_pref = is_trainess_approved_anothercourse(p.trainess, pref)
                                     if trainess_approved_pref:
                                         data['changedpref'] = trainess_approved_pref
-                                        data["recipientlist"] = trainess_approved_pref.course.trainer.filter(
-                                            can_elect=True).values_list(
-                                            'user__username', flat=True)
+                                        data["recipientlist"] = trainess_approved_pref.course.authorized_trainer.all()\
+                                            .values_list('user__username', flat=True)
                                         send_email_by_operation_name(data, "inform_trainers_about_changes")
                                     else:
                                         '''
@@ -301,7 +303,7 @@ def applytrainerselections(postrequest, courses, data, d):
                                 p.save()
                                 log.debug(p, extra=d)
                     note = "Seçimleriniz başarılı bir şekilde kaydedildi."
-                    data["recipientlist"] = data['course'].trainer.filter(can_elect=True).values_list('user__username',
+                    data["recipientlist"] = data['course'].authorized_trainer.all().values_list('user__username',
                                                                                                       flat=True)
                     send_email_by_operation_name(data, "inform_about_changes")
             except Exception as e:

@@ -74,7 +74,7 @@ class AddTrainessForm(ModelForm):
         if self.ruser:
             self.fields['course'].queryset = Course.objects.filter(trainer=self.ruser.userprofile, site__is_active=True)
         self.fields['trainess'].queryset = UserProfile.objects.exclude(
-            Q(trainesscourserecord__approved=True) | Q(is_instructor=True) | Q(can_elect=True) | Q(user__is_staff=True))
+            Q(trainesscourserecord__approved=True) | Q(user__is_staff=True))
 
     class Meta:
         model = TrainessCourseRecord

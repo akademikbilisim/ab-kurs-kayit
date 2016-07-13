@@ -5,6 +5,7 @@ from django import template
 
 from abkayit.models import ApprovalDate
 from userprofile.models import TrainessClassicTestAnswers
+from userprofile.userprofileops import UserProfileOPS
 
 register = template.Library()
 
@@ -27,7 +28,7 @@ def isdategtnow_head(datedict, key):
 @register.simple_tag(name="manuallyaddtrainess")
 def manuallyaddtrainess(site, user):
     now = datetime.date(datetime.now())
-    if site.event_start_date > now > site.application_end_date and user.userprofile.can_elect:
+    if site.event_start_date > now > site.application_end_date and UserProfileOPS.is_authorized_inst(user.userprofile):
         return """
         <div class="alert alert-info">Sistemde profili tanimli olup başvuruyu kaçırmış kullanıcıları "Kursiyer Ekle"
          butonuna tıklayarak kursunuza ekleyebilirsiniz</div>
@@ -42,7 +43,8 @@ def authorizedforelection(site, user):
     now = datetime.date(datetime.now())
     approvaldates = ApprovalDate.objects.filter(site__is_active=True).order_by("start_date")
     if approvaldates:
-        if site.event_start_date > now and datetime.now() >= approvaldates[0].start_date and user.userprofile.can_elect:
+        if site.event_start_date > now and datetime.now() >= approvaldates[0].start_date and\
+                UserProfileOPS.is_authorized_inst(user.userprofile):
             return """
             <div class="alert alert-danger">
                 Uyarı: <p>* Onay tarihleri içerisinde kabul e-postaları onayladığınız 1. tercihi kursunuz olan katılımcılara gönderilir.</p>
@@ -61,7 +63,8 @@ def isdategtnow_body(datedict, key, t, course, user):
     now = datetime.now()
     adate = datedict.get(key)
     if adate:
-        if adate.end_date >= now >= adate.start_date and user.userprofile.can_elect and not t.consentemailsent:
+        if adate.end_date >= now >= adate.start_date and UserProfileOPS.is_authorized_inst(
+                user.userprofile) and not t.consentemailsent:
             approvedprefs = t.trainess.trainesscourserecord_set.all().filter(approved=True)
             is_selectable = True
             priviliged_pref = None

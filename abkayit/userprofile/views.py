@@ -21,6 +21,8 @@ from userprofile.forms import CreateUserForm, UpdateUserForm, StuProfileForm, In
     ChangePasswordForm
 from userprofile.models import Accommodation, UserProfile, UserAccomodationPref, InstructorInformation, \
     UserVerification, TrainessNote, TrainessClassicTestAnswers
+from userprofile.userprofileops import UserProfileOPS
+
 from training.tutils import getparticipationforms
 from training.forms import ParticipationForm
 from training.models import Course, TrainessCourseRecord
@@ -97,7 +99,7 @@ def createprofile(request):
         user_profile = request.user.userprofile
         note = _("You can update your profile below")
         data['form'] = StuProfileForm(instance=user_profile)
-        if not user_profile.is_instructor:
+        if not UserProfileOPS.is_instructor(user_profile):
             log.debug("egitmen olmayan kullanici icin isleme devam ediliyor", extra=d)
             data['accomodations'] = Accommodation.objects.filter(
                 usertype__in=['stu', 'hepsi'], gender__in=[user_profile.gender, 'H'], site=data['site']).order_by(
@@ -135,7 +137,7 @@ def createprofile(request):
                                     user=request.user.userprofile, question=question)
                                 tca.answer = answer
                                 tca.save()
-                    if not request.user.userprofile.is_instructor and ACCOMODATION_PREFERENCE_LIMIT:
+                    if not UserProfileOPS.is_instructor(request.user.userprofile) and ACCOMODATION_PREFERENCE_LIMIT:
                         prefs = UserAccomodationPref.objects.filter(user=request.user.userprofile)
                         if prefs:
                             prefs.delete()
@@ -177,7 +179,7 @@ def instructor_information(request):
         log.error("Kullanıcı Profili Bulunamadı", extra=d)
         return redirect("createprofile")
     data = getsiteandmenus(request)
-    if not request.user.userprofile.is_instructor:
+    if not UserProfileOPS.is_instructor(request.user.userprofile):
         note = _("You are not authorized to access here")
     else:
         note = _("Please enter your transformation, arrival date, departure date information")

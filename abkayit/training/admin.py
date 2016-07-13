@@ -12,14 +12,11 @@ from userprofile.models import TrainessNote, UserProfile, TrainessClassicTestAns
 class CourseAdmin(admin.ModelAdmin):
     list_display = ['no', 'name', 'approved']
     list_filter = ('approved', 'site')
+    filter_horizontal = ('trainess', 'trainer', 'authorized_trainer',)
     search_fields = ('name', 'trainer__user__username')
 
     def formfield_for_manytomany(self, db_field, request, **kwargs):
-        if db_field.name == "trainer":
-            kwargs["queryset"] = UserProfile.objects.filter(is_instructor=True)
-        elif db_field.name == "trainess":
-            kwargs["queryset"] = UserProfile.objects.filter(is_instructor=False)
-        elif db_field.name == "question":
+        if db_field.name == "question":
             kwargs["queryset"] = Question.objects.filter(is_faq=False, active=True)
         elif db_field.name == "textboxquestion":
             kwargs["queryset"] = TextBoxQuestions.objects.filter(is_sitewide=False, active=True)

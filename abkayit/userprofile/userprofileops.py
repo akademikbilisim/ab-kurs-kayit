@@ -4,7 +4,7 @@ import random
 from pysimplesoap.client import SoapClient
 
 from abkayit.settings import TCKIMLIK_SORGULAMA_WS, EMAIL_FROM_ADDRESS
-
+from training.models import Course
 
 
 '''
@@ -33,4 +33,18 @@ class UserProfileOPS:
         except:
             return -1
 
+    @staticmethod
+    def is_instructor(uprofile):
+        courses = Course.objects.filter(site__is_active=True, trainer=uprofile)
+        if courses:
+            return True
+        else:
+            return False
 
+    @staticmethod
+    def is_authorized_inst(uprofile):
+        courses = Course.objects.filter(site__is_active=True, authorized_trainer=uprofile)
+        if courses:
+            return True
+        else:
+            return False

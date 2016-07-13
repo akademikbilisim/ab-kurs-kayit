@@ -129,9 +129,8 @@ class InstProfileForm(ModelForm):
     class Meta:
         model = UserProfile
         exclude = {}
-        fields = ['job', 'title', 'organization', 'country', 'is_instructor', 'user']
+        fields = ['job', 'title', 'organization', 'country', 'user']
         widgets = {
-            'is_instructor': forms.HiddenInput(),
             'user': forms.HiddenInput(),
         }
 
@@ -139,7 +138,6 @@ class InstProfileForm(ModelForm):
         super(InstProfileForm, self).__init__(*args, **kwargs)
         for field in self.fields:
             self.fields[field].required = True
-        self.fields['is_instructor'].required = False
         self.fields['user'].required = False
 
 
@@ -168,8 +166,6 @@ class StuProfileForm(ModelForm):
                 attrs={'placeholder': _('Daha önce çalışılan/Staj yapılan yerler'), 'class': 'form-control'}),
             'additional_information': forms.Textarea(
                 attrs={'placeholder': _('Additional Information'), 'class': 'form-control'}),
-            'is_instructor': forms.HiddenInput(),
-            'can_elect': forms.HiddenInput(),
             'userpassedtest': forms.HiddenInput(),
             'user': forms.HiddenInput(),
             'birthdate': SelectDateWidget(years=dyncf.BirthDateYears),
@@ -191,8 +187,6 @@ class StuProfileForm(ModelForm):
             self.fields[field].required = True
         self.fields['tckimlikno'].required = False
         self.fields['ykimlikno'].required = False
-        self.fields['is_instructor'].required = False
-        self.fields['can_elect'].required = False
         self.fields['university'].required = False
         self.fields['userpassedtest'].required = False
         self.fields['user'].required = False
