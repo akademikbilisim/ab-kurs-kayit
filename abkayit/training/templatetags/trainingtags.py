@@ -4,6 +4,7 @@ from datetime import datetime
 from django import template
 
 from abkayit.models import ApprovalDate
+from training.models import TrainessCourseRecord
 from userprofile.models import TrainessClassicTestAnswers
 from userprofile.userprofileops import UserProfileOPS
 
@@ -43,7 +44,7 @@ def authorizedforelection(site, user):
     now = datetime.date(datetime.now())
     approvaldates = ApprovalDate.objects.filter(site__is_active=True).order_by("start_date")
     if approvaldates:
-        if site.event_start_date > now and datetime.now() >= approvaldates[0].start_date and\
+        if site.event_start_date > now and datetime.now() >= approvaldates[0].start_date and \
                 UserProfileOPS.is_authorized_inst(user.userprofile):
             return """
             <div class="alert alert-danger">
@@ -94,3 +95,41 @@ def getanswer(question, user):
         return TrainessClassicTestAnswers.objects.get(question=question, user=user.userprofile).answer
     except TrainessClassicTestAnswers.DoesNotExist:
         return ""
+
+
+@register.simple_tag(name="gettrainesscolor")
+def gettrainesscolor(trainess, courserecord):
+    if courserecord.trainess_approved:
+        return "<div class =\"approved-trainess-for-this-course\" ></div >"
+    elif courserecord.approved:
+        return "<div class =\"checked-trainee-course\" ></div>"
+    else:
+        is_approved_another_course = TrainessCourseRecord.objects.filter(course__site__is_active=True,
+                                                                         trainess=trainess, approved=True)
+        if is_approved_another_course:
+            return "<div class =\"checked-for-another-course\" > </div>"
+    return ""
+
+
+@register.simple_tag(name="getapprovedcourse")
+def gettrainessapprovedpref(courserecord):
+    trainess_approved_prefs = TrainessCourseRecord.objects.filter(course__site__is_active=True,
+                                                                  trainess=courserecord.trainess,
+                                                                  approved=True).exclude(
+        pk=courserecord.pk)
+    html = ""
+    for tap in trainess_approved_prefs:
+        html += "<div class =\"checked-for-another-course\" > Kursiyer %s.tercihi olan %s kursuna kabul edilmiş </br>" \
+                "</div>" % (tap.preference_order, tap.course.name)
+    return html
+
+
+@register.simple_tag(name="getallprefs")
+def getallprefs(courserecord):
+    trainess_all_prefs = TrainessCourseRecord.objects.filter(course__site__is_active=True,
+                                                             trainess=courserecord.trainess).exclude(
+                                                             pk=courserecord.pk)
+    html = ""
+    for pref in trainess_all_prefs:
+        html += "<div> %s.tercihi - %s (%s) </br></div>" % (pref.preference_order, pref.course.name, pref.course.no)
+    return html

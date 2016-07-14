@@ -78,19 +78,7 @@
                   <td>{{ t.trainess.user.email }}</td>
                   <td>{{ t.trainess.city }}</td>
                   <td>
-                    {% for tcr in t.trainess.trainesscourserecord_set.all%}
-                     {% if tcr.course.id != course.id %}
-                        {%if tcr.approved %}
-                              <div class="checked-for-another-course"></div>
-                        {% endif%}
-                      {% endif%}
-                    {%endfor%}
-                    {%if t.trainess_approved %}
-                              <div class="approved-trainess-for-this-course"></div>
-                    {% endif%}
-                    {%if t.approved %}
-                              <div class="checked-trainee-course"></div>
-                    {% endif%}
+                    {% gettrainesscolor t.trainess t%}
                     {% isdategtnow_body  dates pref t course user %}
                   </td>
                   <td>
@@ -106,25 +94,10 @@
                   <td>{{ t.trainess.department }}</td>
                   <td>{{ t.trainess.additional_information }}</td>
                   <td>
-                    {% for tcr in t.trainess.trainesscourserecord_set.all%}
-                         {% if tcr.course.id != course.id %}
-                              {% if tcr.course.site.is_active %}
-                                  <div> {{ tcr.preference_order }}. tercihi - {{tcr.course.name}} ({{tcr.course.no}}) </br></div>
-                              {% endif %}
-                          {% endif%}
-                    {%endfor%}
-
+                    {% getallprefs t %}
                   </td>
                   <td>
-                    {% for tcr in t.trainess.trainesscourserecord_set.all%}
-                         {% if tcr.course.id != course.id %}
-                              {% if tcr.course.site.is_active %}
-                                    {%if tcr.approved %}
-                                          <div class="checked-for-another-course">Kursiyer {{tcr.preference_order}}. tercihi olan {{tcr.course.name}} kursuna kabul edilmiş</br></div>
-                                    {% endif%}
-                              {% endif %}
-                          {% endif%}
-                    {%endfor%}
+                    {% getapprovedcourse t %}
                   </td>
                     <td><a href="{% url 'showuserprofile'  t.trainess.pk t.pk %}" type="button"> Profil Detayı </a></td>
                 </tr>
@@ -140,16 +113,6 @@
       {% authorizedforelection site user%}
   </form>
   </div>
-{%endif%}
-<!--div id="addprefpopup" class="modal" tabindex="-1" role="dialog" aria-labelledby="addprefpopupLabel">
-      <div class="modal-header">
-      </div>
-      <div class="modal-body">
-        <p>One fine body&hellip;</p>
-      </div>
-      <div class="modal-footer">
-      </div>
-</div><!-- /.modal -->
-
+{% endif %}
   {% endblock %}
 
