@@ -367,7 +367,7 @@ def cancel_all_preference(request):
                     # x. tercih onaylama donemi baslangic zamani ile x. tercih teyit etme donemi arasinda ise mail atsin.
                     if tcr.approved:
                         approvedpref = tcr
-                    if data['site'].application_end_date < now_for_approve < data['site'].event_start_date:
+                    if data['site'].application_end_date < datetime.date(datetime.now()) < data['site'].event_start_date:
                         if tcr.trainess_approved:
                             context['trainess_course_record'] = tcr
                             context['recipientlist'] = tcr.course.authorized_trainer.all().values_list(
