@@ -152,12 +152,17 @@ Subject:
 
 *** inform_about_changes *** 
 
-Merhaba,<br>
-<br>
-{{ course.no }} numaralı kursta  güncelleme yapılmıştır.<br>
-<br>
-Yapılan değişiklikleri görmek için https://{{ site.url }}/egitim/controlpanel adresini ziyaret ediniz.<br>
-<br>
+Merhaba,<br><br>
+
+{{ course.no }} numaralı kursta {{ user.first_name }} {{ user.last_name }} tarafından güncelleme yapılmıştır.<br><br>
+
+Yapılan değişiklikler:
+{% for pref in changedprefs %}
+- {{ pref.trainess.user.username }} kullanıcısının {{ pref.pk}} nolu tercihi {% if pref.approved %} onaylandı. {% else %} onayı kaldırıldı. {% endif %}<br>
+{% endfor %}
+
+Yapılan değişiklikleri görmek için https://{{ site.url }}/egitim/controlpanel adresini ziyaret ediniz.<br><br>
+
 {{ site.name }} - {{ site.year }}<br>
 
 Subject:
