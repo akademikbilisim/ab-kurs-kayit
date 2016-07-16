@@ -2,14 +2,14 @@ function fnFormatDetails ( dTable, nTr )
 {
     var aData = dTable.fnGetData( nTr );
     var sOut = '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
-    sOut += '<tr><td><b>Ünvan:</b></td><td>'+aData[8]+'</td></tr>';
-    sOut += '<tr><td><b>Kurum:</b></td><td>'+aData[9]+'</td></tr>';
-    sOut += '<tr><td><b>Üniversite:</b></td><td>'+aData[10]+'</td></tr>';
-    sOut += '<tr><td><b>Bölüm:</b></td><td>'+aData[11]+'</td></tr>';
-    sOut += '<tr><td><b>Ek Bilgiler:</b></td><td>'+aData[12]+'</td></tr>';
-    sOut += '<tr><td><b>Kursiyerin Seçtiği Diğer Kurslar: </b></td><td>'+aData[13]+'</td></tr>';
-    sOut += '<tr><td></td><td>'+aData[14]+'</td></tr>';
-    sOut += '<tr><td></td><td>'+aData[15]+'</td></tr>';
+    sOut += '<tr><td><b>Ünvan:</b></td><td>'+aData[10]+'</td></tr>';
+    sOut += '<tr><td><b>Üniversite:</b></td><td>'+aData[11]+'</td></tr>';
+    sOut += '<tr><td><b>Bölüm:</b></td><td>'+aData[12]+'</td></tr>';
+    sOut += '<tr><td><b>Ek Bilgiler:</b></td><td>'+aData[13]+'</td></tr>';
+    sOut += '<tr><td><b>Kursiyerin Seçtiği Diğer Kurslar: </b></td><td>'+aData[14]+'</td></tr>';
+    sOut += '<tr><td>Onaylandı mı?</td><td>'+aData[15]+'</td></tr>';
+    sOut += '<tr><td></td><td>'+aData[16]+'</td></tr>';
+
     sOut += '</table>';
     sOut += '</br>';
     return sOut;
@@ -26,11 +26,11 @@ $(document).ready(function(){
             "ordering": true,
             "paging" : false,
             buttons : [
-          'copyHtml5',
-            'excelHtml5',
-            'csvHtml5',
-            'pdfHtml5'
-                        ],
+              'copyHtml5',
+              'excelHtml5',
+              'csvHtml5',
+              'pdfHtml5'
+            ],
     });
     $('[data-id="course_table_control_panel"]').each(function(){
 
@@ -40,14 +40,6 @@ $(document).ready(function(){
               "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Turkish.json"
             },
             "columnDefs": [
-               {
-                "targets": [ 8 ],
-                "visible": false
-               },
-               {
-                "targets": [ 9 ],
-                "visible": false
-               },
                {
                 "targets": [ 10 ],
                 "visible": false
@@ -72,18 +64,22 @@ $(document).ready(function(){
                 "targets": [ 15 ],
                 "visible": false
                },
-
+               {
+                "targets": [ 16 ],
+                "visible": false
+               },
             ],
             "searching": false,
             "bJQueryUI": false,
             "ordering": true,
             "paging" : false,
-            buttons : [
+             buttons : [
               'copyHtml5',
               'excelHtml5',
               'csvHtml5',
               'pdfHtml5'
             ],
+
       });
 
       dTable.find('tbody a').click(function(){
@@ -130,44 +126,6 @@ $(document).ready(function(){
 
    });
 
-//  $("#field-container-form").find("#sendPreference").click(function(){
-//    var selectedCourse = JSON.stringify($("#field-container-form").serializeArray());
-//	var jsonData = {};
-//	jsonData['course'] = selectedCourse;
-//	jsonData['csrfmiddlewaretoken'] = getCookie('csrftoken');
-//
-//		$.ajax({
-//		    url : "/egitim/applytocourse",
-//		    type : "POST",
-//		    dataType: "json",
-//		    data : jsonData,
-//		    success : function(json) {
-//				bootbox.alert(json.message, function() {});
-//		    },
-////		    error : function(xhr,errmsg,err) {
-////				bootbox.alert(errmsg, function() {});
-////		    }
-//		});
-//  });
-
-//  $("#field-container-for-addition-form").find("#sendPreference").click(function(){
-//    var selectedCourse = JSON.stringify($("#field-container-for-addition-form").serializeArray());
-//	var jsonData = {};
-//	jsonData['course'] = selectedCourse;
-//	jsonData['csrfmiddlewaretoken'] = getCookie('csrftoken');
-//		$.ajax({
-//		    url : "/egitim/additionprefapply/",
-//		    type : "POST",
-//		    dataType: "json",
-//		    data : jsonData,
-//		    success : function(json) {
-//				bootbox.alert(json.message, function() {});
-//		    },
-////		    error : function(xhr,errmsg,err) {
-////				bootbox.alert(errmsg, function() {});
-////		    }
-//		});
-//  });
 
   $("#cancel-all").click(function(){
     var selectedCourse = "Başvurduğunuz Kurslar İptal Edilecektir. Kabul edildiğiniz kursları iptal etmeniz durumunda profilinize bu bilgi kaydedilecektir.</br></br>";

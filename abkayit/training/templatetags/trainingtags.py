@@ -4,6 +4,7 @@ from datetime import datetime
 from django import template
 
 from abkayit.models import ApprovalDate
+from abkayit.settings import REQUIRE_TRAINESS_APPROVE
 from training.models import TrainessCourseRecord
 from userprofile.models import TrainessClassicTestAnswers
 from userprofile.userprofileops import UserProfileOPS
@@ -23,7 +24,9 @@ def isdategtnow_head(datedict, key):
     if adate:
         if adate.end_date >= now >= adate.start_date:
             return "Onayla"
-    return "Gelecegini Teyit Etti"
+    if REQUIRE_TRAINESS_APPROVE:
+        return "Geleceğini Teyid Etti"
+    return "Onaylandı"
 
 
 @register.simple_tag(name="manuallyaddtrainess")
@@ -83,7 +86,7 @@ def isdategtnow_body(datedict, key, t, course, user):
                 return dom
             else:
                 return "%d. tercihi kabul edilmis." % priviliged_pref.preference_order
-    if t.trainess_approved:
+    if (t.trainess_approved and REQUIRE_TRAINESS_APPROVE) or (t.approved and not REQUIRE_TRAINESS_APPROVE):
         return "Evet"
     else:
         return "Hayir"

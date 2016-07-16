@@ -52,18 +52,21 @@
                   <th>Soyisim</th>
                   <th>E-posta</th>
                   <th>Sehir</th>
+                  <th>Cinsiyet</th>
+                  <th>Kurum</th>
                   <th>
                       {% isdategtnow_head dates pref %}
                   </th>
                   <th>Kabul e-postası gönderildi mi?</th>
                   <th>Ünvan</th>
-                  <th>Kurum</th>
+
                   <th>Üniversite</th>
                   <th>Bölüm</th>
                   <th>Ek Bilgiler</th>
                   <th>Seçilen Kurslar</th>
-                  <th>Onaylanma Bilgileri</th>
+                  <th>Onaylandı mı?</th>
                   <th>Detaylı Profil</th>
+
               </tr>
             </thead>
             <tbody>
@@ -77,6 +80,8 @@
                   <td>{{ t.trainess.user.last_name }}</td>
                   <td>{{ t.trainess.user.email }}</td>
                   <td>{{ t.trainess.city }}</td>
+                    <td>{{ t.trainess.gender }}</td>
+                    <td>{{ t.trainess.organization }}</td>
                   <td>
                     {% gettrainesscolor t.trainess t%}
                     {% isdategtnow_body  dates pref t course user %}
@@ -89,7 +94,6 @@
                       {% endif %}
                   </td>
                   <td>{{ t.trainess.title }}</td>
-                  <td>{{ t.trainess.organization }}</td>
                   <td>{{ t.trainess.university }}</td>
                   <td>{{ t.trainess.department }}</td>
                   <td>{{ t.trainess.additional_information }}</td>
@@ -98,6 +102,11 @@
                   </td>
                   <td>
                     {% getapprovedcourse t %}
+                      {% if t.approved %}
+                        Evet
+                        {% else %}
+                        Hayır
+                        {% endif %}
                   </td>
                     <td><a href="{% url 'showuserprofile'  t.trainess.pk t.pk %}" type="button"> Profil Detayı </a></td>
                 </tr>
