@@ -7,53 +7,23 @@
 <script src="https://code.highcharts.com/modules/exporting.js"></script>
 <script type="text/javascript">
   $(document).ready(function(){
-  courseList = [];
+  courseList = []
   coursePreference1 = [];
   coursePreference2 = [];
   coursePreference3 = [];
   coursePreferenceTotalApply = [];
   coursePreferenceTotalApplyByTrainer = [];
-  coursePreferenceTotalApplyByTrainess = [];
-  coursePreferenceTotalAttended = [];
-
+  applicationbywomen = []
+  applicationbymen = []
   {% for course,course_stat_detail in statistic_by_course.items%}
-    courseList.push("{{course}}");
-    var courseStatisticDetail = JSON.parse("{{course_stat_detail}}".replace(/&#39;/g,'"'));
-    if(courseStatisticDetail["1"]){
-       coursePreference1.push(courseStatisticDetail["1"])
-    }else{
-       coursePreference1.push(0);
-    }
-    if(courseStatisticDetail[2]){
-       coursePreference2.push(courseStatisticDetail[2])
-    }else{
-       coursePreference2.push(0);
-    }
-    if(courseStatisticDetail[3]){
-       coursePreference3.push(courseStatisticDetail[3])
-    }else{
-       coursePreference3.push(0);
-    }
-    if(courseStatisticDetail['total_apply']){
-        coursePreferenceTotalApply.push(courseStatisticDetail['total_apply'])
-    }else{
-       coursePreferenceTotalApply.push(0);
-    }
-    if(courseStatisticDetail['total_apply_by_trainer']){
-        coursePreferenceTotalApplyByTrainer.push(courseStatisticDetail['total_apply_by_trainer'])
-    }else{
-       coursePreferenceTotalApplyByTrainer.push(0);
-    }
-    if(courseStatisticDetail['total_apply_by_trainess']){
-        coursePreferenceTotalApplyByTrainess.push(courseStatisticDetail['total_apply_by_trainess'])
-    }else{
-       coursePreferenceTotalApplyByTrainer.push(0);
-    }
-    if(courseStatisticDetail['total_attended']){
-        coursePreferenceTotalAttended.push(courseStatisticDetail['total_attended'])
-    }else{
-       coursePreferenceTotalAttended.push(0);
-    }
+    courseList.push("{{ course.name }}")
+    coursePreference1.push({{ course_stat_detail.1 }});
+    coursePreference2.push({{ course_stat_detail.2 }});
+    coursePreference3.push({{ course_stat_detail.3 }});
+    coursePreferenceTotalApply.push({{ course_stat_detail.total_apply }});
+    coursePreferenceTotalApplyByTrainer.push({{ course_stat_detail.total_apply_by_trainer }});
+    applicationbywomen.push({{ course_stat_detail.applicationbywomen }});
+    applicationbymen.push({{ course_stat_detail.applicationbymen }});
   {% endfor%}
 
   $(function () {
@@ -66,7 +36,7 @@
           },
           xAxis: {
               min: 0,
-              max: 10,
+              max: {{ statistic_by_course |length }},
               categories: courseList,
               title: {
                   text: null
@@ -115,102 +85,37 @@
           }, {
               name: 'Toplam Kabul',
               data: coursePreferenceTotalApplyByTrainer
-          }, {
-              name: 'Toplam Teyit',
-              data: coursePreferenceTotalApplyByTrainess
-          }, {
-              name: 'Gelenler',
-              data: coursePreferenceTotalAttended
-          },{
+          },
+          {
+              name: 'Kadın (Başvuru)',
+              data: applicationbywomen,
+          },
+          {
+              name: 'Erkek (Başvuru)',
+              data: applicationbymen,
+          },
+          {
               name: '1. Tercih',
               data: coursePreference1,
-              visible: false
-          }, {
+          },
+          {
               name: '2. Tercih',
               data: coursePreference2,
-              visible: false
-          }, {
+          },
+           {
               name: '3. Tercih',
               data: coursePreference3,
-              visible: false
-          }]
+          },
+          ]
   });
   });
-
-
-
-
-  var appliedCourseText = [];
-  var appliedCourseValue = [];
-  {% for course in statistic_by_course_for_apply %}
-  appliedCourseText.push("{{course.course__name}}");
-  appliedCourseValue.push({{course.count}});
-  {% endfor%}
-  $(function () {
-      $('#statistic-by-course-for-apply').highcharts({
-          chart: {
-              type: 'bar'
-          },
-          title: {
-              text: 'Kurs Dağılımı - Teyit Edenler'
-          },
-          xAxis: {
-              min: 0,
-              max: 10,
-              categories: courseList,
-              title: {
-                  text: null
-              }
-          },
-          yAxis: {
-              min: 0,
-              title: {
-                  align: 'high'
-              },
-              labels: {
-                  overflow: 'justify'
-              }
-          },
-          tooltip: {
-              valueSuffix: ' kişi'
-          },
-          plotOptions: {
-              bar: {
-                  dataLabels: {
-                      enabled: true
-                  }
-              }
-          },
-          legend: {
-              layout: 'vertical',
-              align: 'right',
-              verticalAlign: 'top',
-              x: -40,
-              y: 80,
-              floating: true,
-              borderWidth: 1,
-              backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
-              shadow: true
-          },
-          credits: {
-              enabled: false
-          },
-          series: [{
-              name: 'Katılım',
-              data: appliedCourseValue
-          }]
-      });
-  });
-
-
-
 
 
   universityList = [];
   userSize = [];
-  {% for item in statistic_by_university%}
-    universityList.push("{{item.university}}");
-    userSize.push({{item.university__count}});
+  {% for item in statistic_by_university %}
+    universityList.push("{{ item.0 }}");
+    userSize.push({{ item.1 }});
   {% endfor%}
   $(function () {
       $('#statistic-by-university').highcharts({
@@ -272,8 +177,8 @@
   universityListForApproved = [];
   userSizeForApproved = [];
   {% for item in statistic_by_university_for_approved%}
-    universityListForApproved.push("{{item.university}}");
-    userSizeForApproved.push({{item.university__count}});
+    universityListForApproved.push("{{ item.0 }}");
+    userSizeForApproved.push({{ item.1 }});
   {% endfor%}
   $(function () {
       $('#statistic-by-university-for-approved').highcharts({
@@ -281,7 +186,7 @@
               type: 'bar'
           },
           title: {
-              text: 'Üniversite/Katılım(Teyit Edenler)'
+              text: 'Üniversite/Katılım(Kabul Edilenler)'
           },
           xAxis: {
               categories: universityList,
@@ -400,19 +305,8 @@
 
 
 
-   var genderStatistic = [];
+   var genderStatistic = [{'name':'K', 'y':{{ statistic_by_gender_k }}},{'name':'E', 'y':{{ statistic_by_gender_e }}}];
 
-  {% for gender_stat in statistic_by_gender %}
-    var temp = {};
-    {%for key,value in gender_stat.items%} 
-       if("{{key}}" == "gender"){
-         temp['name'] = "{{value}}";
-       }else{
-         temp['y'] = parseInt("{{value}}");
-       }
-    {%endfor%}
-       genderStatistic.push(temp);
-  {% endfor%}
    $('#statistic-by-gender').highcharts({
             chart: {
                 plotBackgroundColor: null,
@@ -446,24 +340,8 @@
 
 
 
+   genderStatisticForApproved = [{'name':'K', 'y':{{ statistic_by_gender_k_approved }}},{'name':'E', 'y':{{ statistic_by_gender_e_approved }}}];
 
-
-
-
-
-   var genderStatisticForApproved = [];
-
-  {% for gender_stat in statistic_by_gender_for_approved %}
-    var temp = {};
-    {%for key,value in gender_stat.items%} 
-       if("{{key}}" == "gender"){
-         temp['name'] = "{{value}}";
-       }else{
-         temp['y'] = parseInt("{{value}}");
-       }
-    {%endfor%}
-       genderStatisticForApproved.push(temp);
-  {% endfor%}
    $('#statistic-by-gender-for-approved').highcharts({
             chart: {
                 plotBackgroundColor: null,
@@ -472,7 +350,7 @@
                 type: 'pie'
             },
             title: {
-                text: 'Kadın/Erkek Dağılımı(Teyit Edenler)'
+                text: 'Kadın/Erkek Dağılımı (Kabul Edilenler)'
             },
             tooltip: {
                 pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -500,26 +378,20 @@
 
 <div id="statistic-by-course" style="min-width: 360px; max-width: 800px; height: 1000px; margin: 0 auto"></div>
 
-</br>
-</br>
-</br>
-<div id="statistic-by-course-for-apply" style="min-width: 360px; max-width: 800px; height: 1000px; margin: 0 auto"></div>
-
-</br>
-</br>
-</br>
+<br>
+<br>
+<br>
 <div class="row">
 <div id="statistic-by-university" class="pull-left" style="min-width: 360px; max-width: 500px; height: 2000px; margin: 0 auto"></div>
-<div id="statistic-by-university-for-approved" class="pull-right" style="min-width: 360px; max-width: 500px; height: 2000px; margin: 0 auto"></div>
-</div>
-</br>
-</br>
-</br>
+<div id="statistic-by-university-for-approved" style="min-width: 360px; max-width: 500px; height: 2000px; margin: 0 auto"></div></div>
+<br>
+<br>
+<br>
 <div id="statistic_by_totalsize" style="min-width: 360px; max-width: 800px; height: 300px; margin: 0 auto"></div>
 
-</br>
-</br>
-</br>
+<br>
+<br>
+<br>
 <div class="row">
 <div id="statistic-by-gender" class="pull-left" style="min-width: 310px; height: 400px; max-width: 400px; margin: 0 auto"></div>
 <div id="statistic-by-gender-for-approved" class="pull-right" style="min-width: 310px; height: 400px; max-width: 400px; margin: 0 auto"></div>
