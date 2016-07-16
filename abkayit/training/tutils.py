@@ -242,8 +242,7 @@ def getparticipationforms(site, courserecord):
 
 
 def is_trainess_approved_anothercourse(trainess, cur_pref_order):
-    trainessapprovedprefs = trainess.trainesscourserecord_set.all().filter(
-        approved=True)
+    trainessapprovedprefs = TrainessCourseRecord.objects.filter(trainess=trainess, approved=True, course__site__is_active=True)
     for tp in trainessapprovedprefs:
         if cur_pref_order < tp.preference_order:
             '''

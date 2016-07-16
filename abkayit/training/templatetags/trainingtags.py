@@ -66,7 +66,7 @@ def isdategtnow_body(datedict, key, t, course, user):
     if adate:
         if adate.end_date >= now >= adate.start_date and UserProfileOPS.is_authorized_inst(
                 user.userprofile) and not t.consentemailsent:
-            approvedprefs = t.trainess.trainesscourserecord_set.all().filter(approved=True)
+            approvedprefs = TrainessCourseRecord.objects.filter(trainess=t.trainess, course__site__is_active=True, approved=True)
             is_selectable = True
             priviliged_pref = None
             for approvedpref in approvedprefs:

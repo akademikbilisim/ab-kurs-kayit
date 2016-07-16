@@ -84,7 +84,7 @@ def apply_to_course(request):
     course_records: katilimcinin, mevcut etkinlikteki tercihleri
     """
     data['course_records'] = TrainessCourseRecord.objects.filter(trainess__user=request.user,
-                                                                 course__site=data['site']).order_by('preference_order')
+                                                                 course__site__is_active=True).order_by('preference_order')
     userprofile = request.user.userprofile
     if not userprofile:
         log.info("userprofile not found", extra=d)
@@ -440,7 +440,7 @@ def get_preferred_courses(request):
     if request.POST:
         preferred_courses = []
         try:
-            course_records = TrainessCourseRecord.objects.filter(trainess__user=request.user).order_by(
+            course_records = TrainessCourseRecord.objects.filter(course__site__is_active=True, trainess__user=request.user).order_by(
                 'preference_order')
             preferred_courses = [course_record.course.name for course_record in course_records]
             status = "0"
@@ -460,7 +460,7 @@ def apply_course_in_addition(request):
             userprofile = UserProfile.objects.get(user=request.user)
         except ObjectDoesNotExist:
             return redirect("createprofile")
-        TrainessCourseRecord.objects.filter(trainess=userprofile).delete()
+        TrainessCourseRecord.objects.filter(course__site__is_active=True, trainess=userprofile).delete()
         course_prefs = json.loads(request.POST.get('course'))
         if len(course_prefs) <= ADDITION_PREFERENCE_LIMIT:
             if len(set([i['value'] for i in course_prefs])) == len([i['value'] for i in course_prefs]):
