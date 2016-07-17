@@ -268,6 +268,7 @@ def applytrainerselections(postrequest, courses, data, d):
                 data["changedprefs"] = []
                 data["course"] = course
                 approvedr = postrequest.getlist('students' + str(course.pk))
+                sendconsentmailprefs = postrequest.getlist('consentmail' + str(course.pk))
                 for pref in data['dates']:
                     if data['dates'][pref].start_date <= now <= data['dates'][pref].end_date:
                         allprefs = TrainessCourseRecord.objects.filter(course=course.pk, preference_order=pref)
@@ -291,7 +292,7 @@ def applytrainerselections(postrequest, courses, data, d):
                                     course.save()
                                     if not REQUIRE_TRAINESS_APPROVE:
                                         p.trainess_approved = True
-                                    if sendconsentemail == "on":
+                                    if sendconsentemail == "on" and str(p.pk) in sendconsentmailprefs:
                                         if p.preference_order == 1:
                                             data["recipientlist"] = [p.trainess.user.username]
                                             res = send_email_by_operation_name(data, "send_consent_email")

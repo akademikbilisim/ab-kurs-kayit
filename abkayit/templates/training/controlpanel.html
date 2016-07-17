@@ -57,7 +57,7 @@
                   <th>
                       {% isdategtnow_head dates pref %}
                   </th>
-                  <th>Kabul e-postası gönderildi mi?</th>
+                  <th>Kabul e-postası gönderilsin mi?</th>
                   <th>Ünvan</th>
 
                   <th>Üniversite</th>
@@ -87,11 +87,7 @@
                     {% isdategtnow_body  dates pref t course user %}
                   </td>
                   <td>
-                      {% if t.consentemailsent  %}
-                          Evet
-                      {% else %}
-                          Hayır
-                      {% endif %}
+                      {% getconsentmailfield t %}
                   </td>
                   <td>{{ t.trainess.title }}</td>
                   <td>{{ t.trainess.university }}</td>

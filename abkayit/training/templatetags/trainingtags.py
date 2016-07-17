@@ -92,6 +92,19 @@ def isdategtnow_body(datedict, key, t, course, user):
         return "Hayir"
 
 
+@register.simple_tag(name="getconsentmailfield")
+def getconsentmailfield(tcr):
+    if not tcr.consentemailsent and tcr.preference_order == 1:
+        dom = "<div class=\"checkbox\">"
+        dom += "<input type=\"checkbox\" name=\"consentmail%s\" value=\"%s\"/>" % (tcr.course.pk, tcr.pk)
+        dom += "</div>"
+        return dom
+    elif not tcr.consentemailsent and tcr.preference_order != 1:
+        return "Gönderilmedi"
+    elif tcr.consentemailsent:
+        return "Gönderildi"
+
+
 @register.simple_tag(name="getanswer")
 def getanswer(question, user):
     try:
