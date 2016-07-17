@@ -429,40 +429,49 @@ def backend_login(request, user):
 def showuserprofile(request, userid, courserecordid):
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
     data = getsiteandmenus(request)
-    user = UserProfile.objects.get(pk=userid)
-    courserecord = None
-    try:
-        courserecord = TrainessCourseRecord.objects.get(pk=courserecordid)
-    except Exception as e:
-        log.warning(e.message, extra=d)
-        log.warning("Staff user show user profile", extra=d)
-    if user:
-        data['note'] = "Detaylı kullanıcı bilgileri"
-        data['tuser'] = user
-        data['ruser'] = request.user
-        if courserecord:
-            data['courseid'] = courserecord.course.pk
-            data['forms'] = getparticipationforms(data['site'], courserecord)
-            if request.POST:
-                formsarevalid = []
-                frms = []
-                for f in data['forms']:
-                    frm = ParticipationForm(request.POST,
-                                            prefix="participation" + str(
-                                                datetime.strptime(f.initial['day'], '%Y-%m-%d').day))
-                    frm.courserecord = courserecord.pk
-                    frm.day = f.initial['day']
-                    formsarevalid.append(frm.is_valid())
-                    frms.append(frm)
-                if all(formsarevalid):
-                    for f in frms:
-                        f.save()
-                    data['note'] = 'Seçimleriniz başarıyla kaydedildi.'
-                    log.info("%s nolu kurs kaydinin yoklama kaydi girişi başarılı" % courserecord.pk, extra=d)
-                else:
-                    data['note'] = 'Hata oluştu!'
-                    log.info("%s nolu kurs kaydinin yoklama kaydi girişi hatalı" % courserecord.pk, extra=d)
-    else:
-        data['note'] = "Böyle Bir kullanıcı yoktur."
+    if UserProfileOPS.is_instructor(request.user.userprofile) or request.user.is_staff:
+        courserecord = None
+        try:
+            courserecord = TrainessCourseRecord.objects.get(pk=courserecordid)
+            if not request.user.is_staff and request.user.userprofile not in courserecord.course.trainer.all():
+                return redirect("controlpanel")
+        except Exception as e:
+            log.warning(e.message, extra=d)
+            log.warning("Staff user show user profile", extra=d)
+            if not request.user.is_staff:
+                return redirect("controlpanel")
+        user = UserProfile.objects.get(pk=userid)
+        if user:
+            data['note'] = "Detaylı kullanıcı bilgileri"
+            data['tuser'] = user
+            data['ruser'] = request.user
+            if courserecord:
+                try:
+                    data['courseid'] = courserecord.course.pk
+                    data['forms'] = getparticipationforms(data['site'], courserecord)
+                    if request.POST:
+                        formsarevalid = []
+                        frms = []
+                        for f in data['forms']:
+                            frm = ParticipationForm(request.POST,
+                                                    prefix="participation" + str(
+                                                        datetime.strptime(f.initial['day'], '%Y-%m-%d').day))
+                            frm.courserecord = courserecord.pk
+                            frm.day = f.initial['day']
+                            formsarevalid.append(frm.is_valid())
+                            frms.append(frm)
+                        if all(formsarevalid):
+                            for f in frms:
+                                f.save()
+                            data['note'] = 'Seçimleriniz başarıyla kaydedildi.'
+                            log.info("%s nolu kurs kaydinin yoklama kaydi girişi başarılı" % courserecord.pk, extra=d)
+                        else:
+                            data['note'] = 'Hata oluştu!'
+                            log.info("%s nolu kurs kaydinin yoklama kaydi girişi hatalı" % courserecord.pk, extra=d)
+                except Exception as e:
+                    log.error(e.message, extra=d)
+        else:
+            data['note'] = "Böyle Bir kullanıcı yoktur."
 
-    return render_to_response("userprofile/showuserprofile.html", data, context_instance=RequestContext(request))
+        return render_to_response("userprofile/showuserprofile.html", data, context_instance=RequestContext(request))
+    return redirect("controlpanel")
