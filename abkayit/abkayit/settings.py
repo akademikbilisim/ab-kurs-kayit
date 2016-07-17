@@ -432,4 +432,5 @@ UNIVERSITIES = [('Abant İzzet Baysal Üniversitesi (Bolu)', 'Abant İzzet Baysa
                 ('Yıldırım Beyazıt Üniversitesi (Ankara)', 'Yıldırım Beyazıt Üniversitesi (Ankara)'),
                 ('Yüksek İhtisas Üniversitesi (Ankara)', 'Yüksek İhtisas Üniversitesi (Ankara)'),
                 ('Yüzüncü Yıl Üniversitesi (Van)', 'Yüzüncü Yıl Üniversitesi (Van)'),
+                ('Zirve Üniversitesi (Gaziantep)', 'Zirve Üniversitesi (Gaziantep)'),
                 ('Zonguldak Karaelmas Üniversitesi(Zonguldak)', 'Zonguldak Karaelmas Üniversitesi(Zonguldak)'), ]
