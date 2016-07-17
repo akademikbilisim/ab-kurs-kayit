@@ -30,7 +30,7 @@ def getanswers(tuser, ruser, courseid):
         course = Course.objects.get(pk=int(courseid))
         questions = course.textboxquestion.all()
         for q in questions:
-            answers.append(TrainessClassicTestAnswers.objects.filter(question=q, user=tuser))
+            answers.append(TrainessClassicTestAnswers.objects.get(question=q, user=tuser))
         answers.extend(TrainessClassicTestAnswers.objects.filter(user=tuser, question__site__is_active=True,
                                                                  question__is_sitewide=True))
 
