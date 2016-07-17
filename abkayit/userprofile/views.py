@@ -432,9 +432,10 @@ def showuserprofile(request, userid, courserecordid):
     if UserProfileOPS.is_instructor(request.user.userprofile) or request.user.is_staff:
         courserecord = None
         try:
-            courserecord = TrainessCourseRecord.objects.get(pk=courserecordid)
+            courserecord = TrainessCourseRecord.objects.get(pk=courserecordid,
+                                                            trainess=UserProfile.objects.get(pk=userid))
             if not request.user.is_staff and request.user.userprofile not in courserecord.course.trainer.all() and \
-                             request.user.userprofile not in courserecord.course.authorized_trainer.all():
+                            request.user.userprofile not in courserecord.course.authorized_trainer.all():
                 return redirect("controlpanel")
         except Exception as e:
             log.warning(e.message, extra=d)
