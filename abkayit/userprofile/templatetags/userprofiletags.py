@@ -1,6 +1,8 @@
 #!-*- coding-utf8 -*-
 # coding=utf-8
 
+import logging
+
 from django import template
 
 from abkayit.models import ApprovalDate, Site
@@ -9,6 +11,8 @@ from userprofile.models import TrainessClassicTestAnswers
 from userprofile.userprofileops import UserProfileOPS
 
 from training.models import Course, TrainessCourseRecord
+
+log = logging.getLogger(__name__)
 
 register = template.Library()
 
@@ -23,25 +27,29 @@ def getanswer(question, user):
 
 @register.simple_tag(name="getanswers")
 def getanswers(tuser, ruser, courseid):
-    answers = []
-    if ruser.is_staff:
-        answers = TrainessClassicTestAnswers.objects.filter(user=tuser, question__site__is_active=True)
-    elif courseid:
-        course = Course.objects.get(pk=int(courseid))
-        questions = course.textboxquestion.all()
-        for q in questions:
-            answers.append(TrainessClassicTestAnswers.objects.get(question=q, user=tuser))
-        answers.extend(TrainessClassicTestAnswers.objects.filter(user=tuser, question__site__is_active=True,
-                                                                 question__is_sitewide=True))
+    try:
+        answers = []
+        if ruser.is_staff:
+            answers = TrainessClassicTestAnswers.objects.filter(user=tuser, question__site__is_active=True)
+        elif courseid:
+            course = Course.objects.get(pk=int(courseid))
+            questions = course.textboxquestion.all()
+            for q in questions:
+                answers.append(TrainessClassicTestAnswers.objects.get(question=q, user=tuser))
+            answers.extend(TrainessClassicTestAnswers.objects.filter(user=tuser, question__site__is_active=True,
+                                                                     question__is_sitewide=True))
 
-    html = ""
-    if answers:
-        html = "<dt>Cevaplar:</dt><dd><section><ul>"
-        for answer in answers:
-            html += "<li> <b>" + answer.question.detail + "</b> <p>" + answer.answer + "</p> </li>"
-        html += "</section></ul></dd>"
+        html = ""
+        if answers:
+            html = "<dt>Cevaplar:</dt><dd><section><ul>"
+            for answer in answers:
+                html += "<li> <b>" + answer.question.detail + "</b> <p>" + answer.answer + "</p> </li>"
+            html += "</section></ul></dd>"
 
-    return html
+        return html
+    except Exception as e:
+        log.error(e.message, extra={'clientip':'','user':ruser})
+        return ""
 
 
 @register.simple_tag(name="oldeventprefs")
@@ -64,7 +72,7 @@ def oldeventprefs(tuser):
         if html:
             html = "<h4>Eski Tercihleri: </h4>" + html
     except Exception as e:
-        print e.message
+        log.error(e.message, extra={'clientip':'','user':''})
     return html
 
 
