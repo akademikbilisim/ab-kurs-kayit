@@ -292,14 +292,14 @@ def applytrainerselections(postrequest, courses, data, d):
                                     course.save()
                                     if not REQUIRE_TRAINESS_APPROVE:
                                         p.trainess_approved = True
-                                    if sendconsentemail == "on" and str(p.pk) in sendconsentmailprefs:
-                                        if p.preference_order == 1:
-                                            data["recipientlist"] = [p.trainess.user.username]
-                                            res = send_email_by_operation_name(data, "send_consent_email")
-                                            if res == 1:
-                                                p.consentemailsent = True
                                     data["changedprefs"].append(p)
-
+                                if sendconsentemail == "on" and str(p.pk) in sendconsentmailprefs:
+                                    if p.preference_order == 1 and p.approved:
+                                        data['approvedpref'] = p
+                                        data["recipientlist"] = [p.trainess.user.username]
+                                        res = send_email_by_operation_name(data, "send_consent_email")
+                                        if res == 1:
+                                            p.consentemailsent = True
                                 p.save()
                                 log.debug(p, extra=d)
                 note = "Seçimleriniz başarılı bir şekilde kaydedildi."
