@@ -137,7 +137,8 @@ def is_trainess_approved_any_course(userprofile, site, d):
                                                                             approved=True,
                                                                             trainess_approved=True,
                                                                             course__site=site,
-                                                                            preference_order__gte=0)
+                                                                            preference_order__gte=0,
+                                                                            consentemailsent=True)
         if not len(approvedtrainesscourserecords):
             return True
         return False

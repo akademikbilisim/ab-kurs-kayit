@@ -191,6 +191,7 @@ def approve_course_preference(request):
         data["approve_is_open"] = False
         note = "Başvuru Durumunuz"
         recordapprovedbyinst = TrainessCourseRecord.objects.filter(trainess=request.user.userprofile, approved=True,
+                                                                   consentemailsent=True,
                                                                    course__site=data['site'])
         recordapprovedbytra = recordapprovedbyinst.filter(trainess_approved=True)
         if first_start_date and last_end_date and REQUIRE_TRAINESS_APPROVE:
