@@ -16,7 +16,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Count
 from django.utils import timezone
 
-from abkayit.backend import getsiteandmenus
+from abkayit.backend import getsiteandmenus, send_email_by_operation_name
 from abkayit.models import Site, Menu, ApprovalDate, Answer
 from abkayit.decorators import active_required
 from abkayit.settings import PREFERENCE_LIMIT, ADDITION_PREFERENCE_LIMIT, EMAIL_FROM_ADDRESS, REQUIRE_TRAINESS_APPROVE, \
