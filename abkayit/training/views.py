@@ -222,11 +222,14 @@ def approve_course_preference(request):
             if recordapprovedbytra:
                 note = "Aşağıdaki kursa kabul edildiniz"
                 trainess_course_record = recordapprovedbytra[0]
+            elif datetime.date(now) < data['site'].event_start_date:
+                note = "Henüz kabul edildiğiniz bir kurs bulunmamaktadır. E-postanızı kontrol etmeye devam edin."
             else:
                 note = "Kabul edildiğiniz bir kurs bulunmamakta"
         data['note'] = note
     except Exception as e:
         log.error(e.message, extra=d)
+        print e.message
         data['note'] = "Hata oluştu"
     if request.POST:
         try:
