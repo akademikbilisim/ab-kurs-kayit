@@ -454,31 +454,32 @@ def showuserprofile(request, userid, courserecordid):
                     data['note'] = "Kullanıcının Tüm Başvuruları Silindi"
                 else:
                     data['note'] = "Kullanıcının Başvuruları silinirken hata oluştu"
-            if request.user.is_staff and courserecord and courserecord.consentemailsent:
-                try:
-                    data['courseid'] = courserecord.course.pk
-                    data['forms'] = getparticipationforms(data['site'], courserecord)
-                    if request.POST:
-                        formsarevalid = []
-                        frms = []
-                        for f in data['forms']:
-                            frm = ParticipationForm(request.POST,
-                                                    prefix="participation" + str(
-                                                        datetime.strptime(f.initial['day'], '%Y-%m-%d').day))
-                            frm.courserecord = courserecord.pk
-                            frm.day = f.initial['day']
-                            formsarevalid.append(frm.is_valid())
-                            frms.append(frm)
-                        if all(formsarevalid):
-                            for f in frms:
-                                f.save()
-                            data['note'] = 'Seçimleriniz başarıyla kaydedildi.'
-                            log.info("%s nolu kurs kaydinin yoklama kaydi girişi başarılı" % courserecord.pk, extra=d)
-                        else:
-                            data['note'] = 'Hata oluştu!'
-                            log.info("%s nolu kurs kaydinin yoklama kaydi girişi hatalı" % courserecord.pk, extra=d)
-                except Exception as e:
-                    log.error(e.message, extra=d)
+            if courserecord:
+                data['courseid'] = courserecord.course.pk
+                if request.user.is_staff and courserecord.consentemailsent:
+                    try:
+                        data['forms'] = getparticipationforms(data['site'], courserecord)
+                        if request.POST:
+                            formsarevalid = []
+                            frms = []
+                            for f in data['forms']:
+                                frm = ParticipationForm(request.POST,
+                                                        prefix="participation" + str(
+                                                            datetime.strptime(f.initial['day'], '%Y-%m-%d').day))
+                                frm.courserecord = courserecord.pk
+                                frm.day = f.initial['day']
+                                formsarevalid.append(frm.is_valid())
+                                frms.append(frm)
+                            if all(formsarevalid):
+                                for f in frms:
+                                    f.save()
+                                data['note'] = 'Seçimleriniz başarıyla kaydedildi.'
+                                log.info("%s nolu kurs kaydinin yoklama kaydi girişi başarılı" % courserecord.pk, extra=d)
+                            else:
+                                data['note'] = 'Hata oluştu!'
+                                log.info("%s nolu kurs kaydinin yoklama kaydi girişi hatalı" % courserecord.pk, extra=d)
+                    except Exception as e:
+                        log.error(e.message, extra=d)
         else:
             data['note'] = "Böyle Bir kullanıcı yoktur."
         return render_to_response("userprofile/showuserprofile.html", data, context_instance=RequestContext(request))

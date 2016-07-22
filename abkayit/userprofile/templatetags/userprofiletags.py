@@ -27,6 +27,9 @@ def getanswer(question, user):
 
 @register.simple_tag(name="getanswers")
 def getanswers(tuser, ruser, courseid):
+    print tuser
+    print ruser
+    print courseid
     try:
         answers = []
         if ruser.is_staff:
@@ -48,7 +51,7 @@ def getanswers(tuser, ruser, courseid):
 
         return html
     except Exception as e:
-        log.error(e.message, extra={'clientip':'','user':ruser})
+        log.error(e.message, extra={'clientip': '', 'user': ruser})
         return ""
 
 
