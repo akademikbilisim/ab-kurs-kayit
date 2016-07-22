@@ -31,7 +31,7 @@ from training.forms import CreateCourseForm, ParticipationForm, AddTrainessForm
 from training.tutils import get_approve_start_end_dates_for_inst, save_course_prefferences, applytrainerselections
 from training.tutils import get_approve_start_end_dates_for_tra, get_additional_pref_start_end_dates_for_trainess
 from training.tutils import get_approved_trainess, get_trainess_by_course, is_trainess_approved_any_course, \
-    gettestsofcourses
+    gettestsofcourses, cancel_all_prefs
 
 log = logging.getLogger(__name__)
 
@@ -259,7 +259,6 @@ def control_panel(request):
     try:
         if UserProfileOPS.is_instructor(request.user.userprofile):
             courses = Course.objects.filter(site=data['site'], approved=True, trainer__user=request.user)
-            log.info(courses, extra=d)
             if courses:
                 log.info("egitmenin " + str(len(courses)) + " tane kursu var", extra=d)
                 data['now'] = now
@@ -367,52 +366,14 @@ def cancel_all_preference(request):
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
     data = getsiteandmenus(request)
     userprofile = UserProfile.objects.get(user=request.user)
-    now_for_approve = timezone.now()
     if request.POST:
-        try:
-            cancelnote = request.POST.get('cancelnote', '')
-            trainess_course_records = TrainessCourseRecord.objects.filter(course__site__is_active=True,
-                                                                          trainess=userprofile)
-            context = {}
-            approvedpref = None
-            for tcr in trainess_course_records:
-                try:
-                    # x. tercih onaylama donemi baslangic zamani ile x. tercih teyit etme donemi arasinda ise mail atsin.
-                    if tcr.approved:
-                        approvedpref = tcr
-                    if data['site'].application_end_date < datetime.date(datetime.now()) < data[
-                        'site'].event_start_date:
-                        if tcr.trainess_approved:
-                            context['trainess_course_record'] = tcr
-                            context['recipientlist'] = tcr.course.authorized_trainer.all().values_list(
-                                'user__username', flat=True)
-                            send_email_by_operation_name(context, "notice_for_canceled_prefs")
-                except Exception as e:
-                    log.error(e.message, extra=d)
-                trainess_course_records.delete()
-            if data['site'].application_end_date < datetime.date(now_for_approve):
-                remaining_days = int((data['site'].event_start_date - datetime.date(now_for_approve)).days)
-                notestr = "Kursların başlamasına %d gun kala tüm başvurularını iptal etti." % remaining_days
-                if approvedpref:
-                    # Kullanicinin tercihi kursa kaç gün kala kabul görmüş
-                    daysbetweenapproveandevent = int(
-                        (data['site'].event_start_date - approvedpref.instapprovedate).days)
-                    notestr += "\nTercihi kursun başlamasına %d gün kala kabul edilmiş." % daysbetweenapproveandevent
-            else:
-                notestr = "Kullanici tercihlerini iptal etti"
-            if cancelnote:
-                notestr += "\nİptal Sebebi:%s" % cancelnote
-            if notestr:
-                note = TrainessNote(note=notestr, note_from_profile=userprofile, note_to_profile=userprofile,
-                                    site=data['site'], note_date=now_for_approve, label="sistem")
-                note.save()
+        cancelnote = request.POST.get('cancelnote', '')
+        res = cancel_all_prefs(userprofile, cancelnote, data['site'], request.user, d)
+        if res == 1:
             message = "Tüm Başvurularınız Silindi"
-            log.debug(message, extra=d)
-        except ObjectDoesNotExist:
-            message = "Başvurularınız Silinirken Hata Oluştu"
-        except Exception as e:
-            message = "Başvurularınız Silinirken Hata Oluştu"
-            log.error(e.message, extra=d)
+        else:
+            message = "Başvurularınız silinirken hata oluştu"
+        log.debug(message, extra=d)
         return HttpResponse(json.dumps({'status': '-1', 'message': message}), content_type="application/json")
     message = "Başvurularınız Silinirken Hata Oluştu"
     return HttpResponse(json.dumps({'status': '-1', 'message': message}), content_type="application/json")

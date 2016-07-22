@@ -65,23 +65,30 @@
                     <dt>Not Ekle: </dt>
                     <dd>
                             <p> <input id="trainessnotetext" type="text" class="form-control input-note" value=""/>
-                           <input id="trainessnoteuser" type="hidden" class="input-username" value="{{ tuser.user.username }}"/><input id="save-score" class="default" type="button" value="Ekle"/></p>
+                           <input id="trainessnoteuser" type="hidden" class="input-username" value="{{ tuser.user.username }}"/><input id="save-score" class="btn btn-primary" type="button" value="Ekle" /></p>
                     </dd>
                     {% getanswers tuser ruser courseid %}
+
                 </dl>
                 {% if ruser.is_staff %}
-                    {% if forms %}
                     <form name="form-control" class="span4 signup-form" method="POST">{% csrf_token %}
                         <dl class="dl-horizontal">
-                            {% for form in forms %}
-                            <dt> {{form.initial.day}}: </dt>
-                            <dd>{{ form }}</dd>
-                            {% endfor %}
-                            <dd><input type="submit" name="save" id="save" class="btn btn-primary" value="{% trans 'Save' %}"></dd>
+                            <dd><button type="button" class="btn btn-danger" id="cancel-all" name="cancelall">Tüm Başvurularını İptal Et</button></dd>
                         </dl>
                     </form>
-                    {% endif %}
                 {% endif %}
+                {% if forms %}
+                <form name="form-control" class="span4 signup-form" method="POST">{% csrf_token %}
+                    <dl class="dl-horizontal">
+                        {% for form in forms %}
+                        <dt> {{form.initial.day}}: </dt>
+                        <dd>{{ form }}</dd>
+                        {% endfor %}
+                        <dd><input type="submit" name="save" id="save" class="btn btn-primary" value="{% trans 'Save' %}"></dd>
+                    </dl>
+                </form>
+                {% endif %}
+
                 </div>
             </div>
         </div>

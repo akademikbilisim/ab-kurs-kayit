@@ -447,7 +447,7 @@ def showuserprofile(request, userid, courserecordid):
             data['note'] = "Detaylı kullanıcı bilgileri"
             data['tuser'] = user
             data['ruser'] = request.user
-            if courserecord:
+            if request.user.is_staff and courserecord and courserecord.consentemailsent:
                 try:
                     data['courseid'] = courserecord.course.pk
                     data['forms'] = getparticipationforms(data['site'], courserecord)
@@ -474,6 +474,5 @@ def showuserprofile(request, userid, courserecordid):
                     log.error(e.message, extra=d)
         else:
             data['note'] = "Böyle Bir kullanıcı yoktur."
-
         return render_to_response("userprofile/showuserprofile.html", data, context_instance=RequestContext(request))
     return redirect("controlpanel")

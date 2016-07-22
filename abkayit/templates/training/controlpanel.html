@@ -87,7 +87,7 @@
                     {% isdategtnow_body  dates pref t course user %}
                   </td>
                   <td>
-                      {% getconsentmailfield t %}
+                      {% getconsentmailfield t user%}
                   </td>
                   <td>{{ t.trainess.title }}</td>
                   <td>{{ t.trainess.university }}</td>
@@ -104,7 +104,7 @@
                         Hayır
                         {% endif %}
                   </td>
-                    <td><a href="{% url 'showuserprofile'  t.trainess.pk t.pk %}" type="button"> Profil Detayı </a></td>
+                    <td><a href="{% url 'showuserprofile' t.trainess.pk t.pk %}" type="button"> Profil Detayı </a></td>
                 </tr>
                 {% empty %}
                   <tr><td>Goruntulenecek basvuru yok</td></tr>

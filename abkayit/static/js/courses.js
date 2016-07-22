@@ -128,7 +128,7 @@ $(document).ready(function(){
 
 
   $("#cancel-all").click(function(){
-    var selectedCourse = "Başvurduğunuz Kurslar İptal Edilecektir. Kabul edildiğiniz kursları iptal etmeniz durumunda profilinize bu bilgi kaydedilecektir.</br></br>";
+    var selectedCourse = "Başvurular İptal Edilecektir. Kabul edildiğiniz kursları iptal etmeniz durumunda profilinize bu bilgi kaydedilecektir.</br></br>";
     selectedCourse += "<label for=\"cancelnote\">Neden?</label><input type=\"text\" class=\"form-control\" id=\"cancelnote\"/>"
     var jsonData = {};
 	jsonData['csrfmiddlewaretoken'] = getCookie('csrftoken');
