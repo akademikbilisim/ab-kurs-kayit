@@ -326,19 +326,17 @@ def cancel_all_prefs(trainess, cancelnote, site, ruser, d):
                                                                   trainess=trainess)
     now = datetime.date.today()
     try:
-        context = {}
-        approvedpref = None
+        context = {"trainess": trainess}
         try:
-            for tcr in trainess_course_records:
-                # x. tercih onaylama donemi baslangic zamani ile x. tercih teyit etme donemi arasinda ise mail atsin.
-                if tcr.approved:
-                    approvedpref = tcr
-                if site.application_end_date < now < site.event_start_date:
-                    if tcr.trainess_approved:
-                        context['trainess_course_record'] = tcr
-                        context['recipientlist'] = tcr.course.authorized_trainer.all().values_list(
-                            'user__username', flat=True)
-                        send_email_by_operation_name(context, "notice_for_canceled_prefs")
+            context['recipientlist'] = REPORT_RECIPIENT_LIST
+            context['course_prefs'] = trainess_course_records
+            approvedpref = TrainessCourseRecord.objects.filter(course__site__is_active=True, trainess=trainess,
+                                                            approved=True, consentemailsent=True)
+            if site.application_end_date < now < site.event_start_date:
+                if approvedpref:
+                    context['recipientlist'].extent(approvedpref[0].course.authorized_trainer.all().values_list(
+                        'user__username', flat=True))
+            send_email_by_operation_name(context, "notice_for_canceled_prefs")
             trainess_course_records.delete()
         except Exception as e:
             log.error('Error on line {}'.format(sys.exc_info()[-1].tb_lineno), extra=d)
@@ -349,7 +347,7 @@ def cancel_all_prefs(trainess, cancelnote, site, ruser, d):
             notestr = "Kursların başlamasına %d gun kala tüm başvurularını iptal etti." % remaining_days
             if approvedpref:
                 # Kullanicinin tercihi kursa kaç gün kala kabul görmüş
-                daysbetweenapproveandevent = int((site.event_start_date - approvedpref.instapprovedate).days)
+                daysbetweenapproveandevent = int((site.event_start_date - approvedpref[0].instapprovedate).days)
                 notestr += "\nTercihi kursun başlamasına %d gün kala kabul edilmiş." % daysbetweenapproveandevent
         else:
             notestr = "Kullanici tercihlerini iptal etti"
