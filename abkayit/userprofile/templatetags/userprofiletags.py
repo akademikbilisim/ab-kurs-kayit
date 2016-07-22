@@ -27,9 +27,6 @@ def getanswer(question, user):
 
 @register.simple_tag(name="getanswers")
 def getanswers(tuser, ruser, courseid):
-    print tuser
-    print ruser
-    print courseid
     try:
         answers = []
         if ruser.is_staff:
