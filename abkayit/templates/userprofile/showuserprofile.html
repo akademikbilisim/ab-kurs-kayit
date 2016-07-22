@@ -73,7 +73,8 @@
                 {% if ruser.is_staff %}
                     <form name="form-control" class="span4 signup-form" method="POST">{% csrf_token %}
                         <dl class="dl-horizontal">
-                            <dd><button type="button" class="btn btn-danger" id="cancel-all" name="cancelall">Tüm Başvurularını İptal Et</button></dd>
+                            <dt>İptal sebebi: </dt><dd><input id="trainesscancelnotetext" type="text" class="form-control input-note" value=""/></dd>
+                            <dd><input type="submit" class="btn btn-danger" id="cancelall" name="cancelall" value="Tüm Başvurularını İptal Et"></dd>
                         </dl>
                     </form>
                 {% endif %}

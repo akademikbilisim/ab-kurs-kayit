@@ -229,7 +229,6 @@ def approve_course_preference(request):
         data['note'] = note
     except Exception as e:
         log.error(e.message, extra=d)
-        print e.message
         data['note'] = "Hata oluştu"
     if request.POST:
         try:
@@ -365,18 +364,16 @@ def statistic(request):
 def cancel_all_preference(request):
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
     data = getsiteandmenus(request)
-    userprofile = UserProfile.objects.get(user=request.user)
+    hres = {'status': '-1', 'message':  "Başvurularınız Silinirken Hata Oluştu"}
     if request.POST:
         cancelnote = request.POST.get('cancelnote', '')
-        res = cancel_all_prefs(userprofile, cancelnote, data['site'], request.user, d)
+        res = cancel_all_prefs(request.user.userprofile, cancelnote, data['site'], request.user, d)
         if res == 1:
-            message = "Tüm Başvurularınız Silindi"
+            hres = {'status': '1', 'message': "Tüm Başvurularınız Silindi"}
         else:
-            message = "Başvurularınız silinirken hata oluştu"
-        log.debug(message, extra=d)
-        return HttpResponse(json.dumps({'status': '-1', 'message': message}), content_type="application/json")
-    message = "Başvurularınız Silinirken Hata Oluştu"
-    return HttpResponse(json.dumps({'status': '-1', 'message': message}), content_type="application/json")
+            hres = {'status': '-1', 'message': "Başvurularınız silinirken hata oluştu"}
+        log.debug(hres['message'], extra=d)
+    return HttpResponse(json.dumps(hres), content_type="application/json")
 
 
 # 52 numarali issue ile kapatildi

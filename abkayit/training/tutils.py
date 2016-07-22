@@ -1,5 +1,5 @@
 #!-*- coding:utf-8 -*-
-
+import sys
 import logging
 from datetime import timedelta
 import datetime
@@ -16,6 +16,7 @@ from training.models import Course, TrainessCourseRecord, TrainessParticipation,
 from training.forms import ParticipationForm
 
 from userprofile.userprofileops import UserProfileOPS
+from userprofile.models import TrainessNote
 
 log = logging.getLogger(__name__)
 
@@ -200,9 +201,12 @@ def save_course_prefferences(userprofile, course_prefs, site, d, answersforcours
                         send_email_by_operation_name(context, "notice_for_pref_changes")
                     context['recipientlist'] = [userprofile.user.username]
                     send_email_by_operation_name(context, "preference_saved")
-            except:
+            except Exception as e:
+                log.error('Error on line {}'.format(sys.exc_info()[-1].tb_lineno), extra=d)
+                log.error(e.message, extra=d)
                 log.error("rapor e-postası gönderilemedi", extra=d)
         except Exception as e:
+            log.error('Error on line {}'.format(sys.exc_info()[-1].tb_lineno), extra=d)
             log.error(e.message, extra=d)
             res['message'] = "Tercihleriniz kaydedilirken hata oluştu"
     else:
@@ -310,6 +314,7 @@ def applytrainerselections(postrequest, courses, data, d):
                     send_email_by_operation_name(data, "inform_about_changes")
             except Exception as e:
                 note = "Beklenmedik bir hata oluştu!"
+                log.error('Error on line {}'.format(sys.exc_info()[-1].tb_lineno), extra=d)
                 log.error(e.message, extra=d)
     else:
         note = "Bu işlemi yapmaya yetkiniz yok!"
@@ -319,41 +324,43 @@ def applytrainerselections(postrequest, courses, data, d):
 def cancel_all_prefs(trainess, cancelnote, site, ruser, d):
     trainess_course_records = TrainessCourseRecord.objects.filter(course__site__is_active=True,
                                                                   trainess=trainess)
-    now_for_approve = timezone.now()
-    #try:
-    context = {}
-    approvedpref = None
+    now = datetime.date.today()
     try:
-        for tcr in trainess_course_records:
-            # x. tercih onaylama donemi baslangic zamani ile x. tercih teyit etme donemi arasinda ise mail atsin.
-            if tcr.approved:
-                approvedpref = tcr
-            if site.application_end_date < datetime.date(datetime.now()) < site.event_start_date:
-                if tcr.trainess_approved:
-                    context['trainess_course_record'] = tcr
-                    context['recipientlist'] = tcr.course.authorized_trainer.all().values_list(
-                        'user__username', flat=True)
-                    send_email_by_operation_name(context, "notice_for_canceled_prefs")
-        trainess_course_records.delete()
+        context = {}
+        approvedpref = None
+        try:
+            for tcr in trainess_course_records:
+                # x. tercih onaylama donemi baslangic zamani ile x. tercih teyit etme donemi arasinda ise mail atsin.
+                if tcr.approved:
+                    approvedpref = tcr
+                if site.application_end_date < now < site.event_start_date:
+                    if tcr.trainess_approved:
+                        context['trainess_course_record'] = tcr
+                        context['recipientlist'] = tcr.course.authorized_trainer.all().values_list(
+                            'user__username', flat=True)
+                        send_email_by_operation_name(context, "notice_for_canceled_prefs")
+            trainess_course_records.delete()
+        except Exception as e:
+            log.error('Error on line {}'.format(sys.exc_info()[-1].tb_lineno), extra=d)
+            log.error(e.message, extra=d)
+            return 0
+        if site.application_end_date < now:
+            remaining_days = int((site.event_start_date - now).days)
+            notestr = "Kursların başlamasına %d gun kala tüm başvurularını iptal etti." % remaining_days
+            if approvedpref:
+                # Kullanicinin tercihi kursa kaç gün kala kabul görmüş
+                daysbetweenapproveandevent = int((site.event_start_date - approvedpref.instapprovedate).days)
+                notestr += "\nTercihi kursun başlamasına %d gün kala kabul edilmiş." % daysbetweenapproveandevent
+        else:
+            notestr = "Kullanici tercihlerini iptal etti"
+        if cancelnote:
+            notestr += "\nİptal Sebebi:%s" % cancelnote
+        if notestr:
+            note = TrainessNote(note=notestr, note_from_profile=ruser.userprofile, note_to_profile=trainess,
+                                site=site, note_date=now, label="sistem")
+            note.save()
+        return 1
     except Exception as e:
+        log.error('Error on line {}'.format(sys.exc_info()[-1].tb_lineno), extra=d)
         log.error(e.message, extra=d)
-        return 0
-    if site.application_end_date < datetime.date(now_for_approve):
-        remaining_days = int((site.event_start_date - datetime.date(now_for_approve)).days)
-        notestr = "Kursların başlamasına %d gun kala tüm başvurularını iptal etti." % remaining_days
-        if approvedpref:
-            # Kullanicinin tercihi kursa kaç gün kala kabul görmüş
-            daysbetweenapproveandevent = int((site.event_start_date - approvedpref.instapprovedate).days)
-            notestr += "\nTercihi kursun başlamasına %d gün kala kabul edilmiş." % daysbetweenapproveandevent
-    else:
-        notestr = "Kullanici tercihlerini iptal etti"
-    if cancelnote:
-        notestr += "\nİptal Sebebi:%s" % cancelnote
-    if notestr:
-        note = TrainessNote(note=notestr, note_from_profile=ruser.userprofile, note_to_profile=trainess,
-                            site=site, note_date=now_for_approve, label="sistem")
-        note.save()
-    return 1
-    #except Exception as e:
-    #    log.error(e.message, extra=d)
-    #    return 2
+        return 2
