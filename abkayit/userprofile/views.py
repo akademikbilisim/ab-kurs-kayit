@@ -448,7 +448,7 @@ def showuserprofile(request, userid, courserecordid):
             data['tuser'] = user
             data['ruser'] = request.user
             if request.user.is_staff and "cancelall" in request.POST:
-                cancelnote = request.POST.get('cancelnote', '')
+                cancelnote = request.POST.get('trainesscancelnotetext', '')
                 res = cancel_all_prefs(user, cancelnote, data['site'], request.user, d)
                 if res == 1:
                     data['note'] = "Kullanıcının Tüm Başvuruları Silindi"

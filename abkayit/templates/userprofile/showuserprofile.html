@@ -70,13 +70,15 @@
                     {% getanswers tuser ruser courseid %}
 
                 </dl>
-                {% if ruser.is_staff %}
-                    <form name="form-control" class="span4 signup-form" method="POST">{% csrf_token %}
-                        <dl class="dl-horizontal">
-                            <dt>İptal sebebi: </dt><dd><input id="trainesscancelnotetext" type="text" class="form-control input-note" value=""/></dd>
-                            <dd><input type="submit" class="btn btn-danger" id="cancelall" name="cancelall" value="Tüm Başvurularını İptal Et"></dd>
-                        </dl>
-                    </form>
+                {% if tuser.trainesscourserecord_set.all %}
+                    {% if ruser.is_staff %}
+                        <form name="form-control" class="span4 signup-form" method="POST">{% csrf_token %}
+                            <dl class="dl-horizontal">
+                                <dt>İptal sebebi: </dt><dd><input id="trainesscancelnotetext" name="trainesscancelnotetext" type="text" class="form-control input-note" value=""/></dd>
+                                <dd><input type="submit" class="btn btn-danger" id="cancelall" name="cancelall" value="Tüm Başvurularını İptal Et"></dd>
+                            </dl>
+                        </form>
+                    {% endif %}
                 {% endif %}
                 {% if forms %}
                 <form name="form-control" class="span4 signup-form" method="POST">{% csrf_token %}
