@@ -8,20 +8,19 @@
 <table id="list_table" class="table table-hover table-striped">
 	<thead>
 	    <tr>
-	        <th>{% trans "User Type" %}</th>
 	        <th>{% trans "First Name" %}</th>
 	        <th>{% trans "Last Name" %}</th>
 	        <th>{% trans "E-mail" %}</th>
 	        <th>{% trans "TC Identity No / Foreign Identity No" %}</th>
 	        <th>{% trans "Gender" %}</th>
 	        <th>{% trans "Accomodation Preference Seq." %}</th>
+			<th>{% trans "Needs Document" %}
             <th>{% trans "Detailed Profile" %}</th>
 	    </tr>
 	</thead>
 	<tbody>
 	{% for data in datalist %}
 		<tr>
-			<th>{{data.usertype}}</th>
 			<th>{{data.firstname}}</th>
 			<th>{{data.lastname}}</th>
 			<th>{{data.email}}</th>
@@ -34,6 +33,13 @@
                     <span>&nbsp;</span>
                 {% endfor %}
                 </ul>
+			</th>
+			<th>
+				{% if data.needs_document %}
+					Evet
+				{% else%}
+				    Hayır
+				{% endif %}
 			</th>
 			<th><a href="{% url 'showuserprofile'  data.pk data.courserecordid %}" type="button">{% trans "Show Profile" %} </a></th>
 		</tr>

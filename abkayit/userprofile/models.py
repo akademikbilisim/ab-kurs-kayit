@@ -55,6 +55,7 @@ class UserProfile(models.Model):
     userpassedtest = models.BooleanField(verbose_name=_("Can Apply"), blank=True, default=False)
     profilephoto = models.ImageField(upload_to=user_directory_path, verbose_name=_("Profile Picture"))
     document = models.FileField(upload_to=user_directory_path, verbose_name=_("Belge Ekle"), blank=True, null=True)
+    needs_document = models.BooleanField(verbose_name=_("Needs Document"), blank=True, default=False)
 
     def __unicode__(self):
         return self.user.username

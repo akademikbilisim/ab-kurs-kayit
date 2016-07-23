@@ -168,6 +168,7 @@ class StuProfileForm(ModelForm):
                 attrs={'placeholder': _('Additional Information'), 'class': 'form-control'}),
             'userpassedtest': forms.HiddenInput(),
             'user': forms.HiddenInput(),
+            'needs_document': forms.HiddenInput(),
             'birthdate': SelectDateWidget(years=dyncf.BirthDateYears),
         }
         help_texts = {
@@ -184,16 +185,11 @@ class StuProfileForm(ModelForm):
         self.ruser = kwargs.pop('ruser', None)
         super(StuProfileForm, self).__init__(*args, **kwargs)
         for field in self.fields:
-            self.fields[field].required = True
-        self.fields['tckimlikno'].required = False
-        self.fields['ykimlikno'].required = False
-        self.fields['university'].required = False
-        self.fields['userpassedtest'].required = False
-        self.fields['user'].required = False
-        self.fields['additional_information'].required = False
-        self.fields['website'].required = False
-        self.fields['experience'].required = False
-        self.fields['document'].required = False
+            if field in ['needs_document', 'tckimlikno','ykimlikno','university', 'userpassedtest', 'user',
+                         'additional_information', 'website', 'experience', 'document']:
+                self.fields[field].required = False
+            else:
+                self.fields[field].required = True
 
     def clean_profilephoto(self):
         profilephoto = self.cleaned_data.get("profilephoto", False)

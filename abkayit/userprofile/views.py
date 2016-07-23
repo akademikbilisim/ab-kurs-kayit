@@ -230,11 +230,11 @@ def alluserview(request):
                 up = UserProfile.objects.get(pk=r[0])
                 usr = {
                     "pk": up.pk,
-                    "usertype": "student",
                     "firstname": up.user.first_name,
                     "email": up.user.username, "lastname": up.user.last_name,
                     "tcino": up.tckimlikno if up.tckimlikno != '' else up.ykimlikno,
                     "gender": up.gender,
+                    "needs_document": up.needs_document,
                     "accomodation": up.useraccomodationpref_set.filter(accomodation__site__is_active=True),
                     "courserecordid": "0"}
                 userlist.append(usr)
