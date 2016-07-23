@@ -192,7 +192,7 @@ def approve_course_preference(request):
         trainess_course_records = TrainessCourseRecord.objects.filter(trainess=request.user.userprofile,
                                                                       course__site__is_active=True)
         first_start_date_inst, last_end_date_inst = get_approve_first_start_last_end_dates_for_inst(data['site'], d)
-        if trainess_course_records:
+        if not trainess_course_records:
             data['note'] = "Henüz herhangi bir kursa başvuru yapmadınız!"
         elif data['site'].application_start_date <= datetime.date(now) <= data['site'].application_end_date:
             data['note'] = "Başvurunuz için teşekkürler. Değerlendirme sürecinin başlaması için " \
