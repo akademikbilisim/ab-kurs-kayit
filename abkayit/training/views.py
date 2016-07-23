@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import sys
 import json
 import logging
 import itertools
@@ -31,7 +31,7 @@ from training.forms import CreateCourseForm, ParticipationForm, AddTrainessForm
 from training.tutils import get_approve_start_end_dates_for_inst, save_course_prefferences, applytrainerselections
 from training.tutils import get_approve_start_end_dates_for_tra, get_additional_pref_start_end_dates_for_trainess
 from training.tutils import get_approved_trainess, get_trainess_by_course, is_trainess_approved_any_course, \
-    gettestsofcourses, cancel_all_prefs
+    gettestsofcourses, cancel_all_prefs, get_approve_first_start_last_end_dates_for_inst
 
 log = logging.getLogger(__name__)
 
@@ -184,67 +184,68 @@ def approve_course_preference(request):
     message = ""
     status = "1"
     data = getsiteandmenus(request)
-    now = timezone.now()
-    trainess_course_record = None
+    data["note"] = "Başvuru Durumunuz"
+    now = datetime.now()
     try:
-        first_start_date, last_end_date = get_approve_start_end_dates_for_tra(data['site'], d)
+
         data["approve_is_open"] = False
-        note = "Başvuru Durumunuz"
-        recordapprovedbyinst = TrainessCourseRecord.objects.filter(trainess=request.user.userprofile, approved=True,
-                                                                   consentemailsent=True,
-                                                                   course__site=data['site'])
-        recordapprovedbytra = recordapprovedbyinst.filter(trainess_approved=True)
-        if first_start_date and last_end_date and REQUIRE_TRAINESS_APPROVE:
-            if first_start_date.start_date < now < last_end_date.end_date:
-                if not recordapprovedbyinst:
-                    note = "Henüz herhangi bir kursa kabul edilemediniz."
-                elif not recordapprovedbytra and recordapprovedbyinst:
-                    note = "Aşağıdaki kursa kabul edildiniz"
-                    for record in recordapprovedbyinst:
-                        pref_order = record.preference_order
-                        approvedate = ApprovalDate.objects.get(site=data['site'], preference_order=pref_order)
-                        if approvedate.start_date <= now <= approvedate.end_date:
-                            data["approve_is_open"] = True
-                            trainess_course_record = record
-                else:
-                    trainess_course_record = recordapprovedbytra[0]
-                    note = "Aşağıdaki Kursa Kabul Edildiniz"
-            else:
-                if recordapprovedbytra:
-                    note = "Aşağıdaki Kursa Kabul Edildiniz"
-                    trainess_course_record = recordapprovedbytra[0]
-                elif recordapprovedbyinst:
-                    note = "Aşağıdaki kursa kabul edildiniz ancak teyit etmediniz. Kursa katılamazsınız."
-                    trainess_course_record = recordapprovedbyinst[0]
-                else:
-                    note = "Henüz kabul edildiğiniz bir kurs yok"
+        trainess_course_records = TrainessCourseRecord.objects.filter(trainess=request.user.userprofile,
+                                                                      course__site__is_active=True)
+        first_start_date_inst, last_end_date_inst = get_approve_first_start_last_end_dates_for_inst(data['site'], d)
+        if trainess_course_records:
+            data['note'] = "Henüz herhangi bir kursa başvuru yapmadınız!"
+        elif data['site'].application_start_date <= datetime.date(now) <= data['site'].application_end_date:
+            data['note'] = "Başvurunuz için teşekkürler. Değerlendirme sürecinin başlaması için " \
+                           "tüm başvuruların tamamlanması beklenmektedir."
+        elif first_start_date_inst.start_date <= now <= last_end_date_inst.end_date:
+            data['note'] = "Başvurular değerlendirilmektedir. En geç %s tarihine kadar sonuçları burada" \
+                                   " görebilirsiniz." % last_end_date_inst.end_date.strftime("%d-%m-%Y")
         else:
-            if recordapprovedbytra:
-                note = "Aşağıdaki kursa kabul edildiniz"
-                trainess_course_record = recordapprovedbytra[0]
-            elif datetime.date(now) < data['site'].event_start_date:
-                note = "Henüz kabul edildiğiniz bir kurs bulunmamaktadır. E-postanızı kontrol etmeye devam edin."
+            recordapprovedbyinst = TrainessCourseRecord.objects.filter(trainess=request.user.userprofile, approved=True,
+                                                                       consentemailsent=True,
+                                                                       course__site__is_active=True)
+            if not recordapprovedbyinst:
+                if data['site'].event_start_date - 1 > now > last_end_date_inst.end_date:
+                    data['note'] = "Kurslara kabul dönemi bitmiş olup başvurularınıza kabul edilmediniz ancak" \
+                                   " kurs başlangıç tarihine kadar kabul edilme şansınız hala devam ediyor." \
+                                   " Takip etmeye devam edin."
+                elif data['site'].event_start_date - 1 <= now:
+                    data['note'] = "Başvurularınız kabul edilmemiştir. Bir sonraki etkinlikte görüşmek dileğiyle."
             else:
-                note = "Kabul edildiğiniz bir kurs bulunmamakta"
-        data['note'] = note
+                data["note"] = "Aşağıdaki Kursa Kabul Edildiniz"
+                data['trainess_course_record'] = recordapprovedbyinst[0]
+                if REQUIRE_TRAINESS_APPROVE:
+                    recordapprovedbytra = recordapprovedbyinst.filter(trainess_approved=True)
+                    if not recordapprovedbytra:
+                        tra_approvaldate = ApprovalDate.objects.get(site__is_active=True, for_trainess=True,
+                                                                    preference_order=recordapprovedbyinst[
+                                                                        0].preference_order)
+                        if tra_approvaldate.start_date <= now <= tra_approvaldate.end_date:
+                            data['note'] = "Aşağıdaki kursa kabul edildiniz"
+                            data["approve_is_open"] = True
+                        else:
+                            data[
+                                "note"] = "Aşağıdaki kursa kabul edildiniz ancak teyit etmediniz. Kursa katılamazsınız."
+                            data["approve_is_open"] = False
     except Exception as e:
+        log.error('Error on line {}'.format(sys.exc_info()[-1].tb_lineno), extra=d)
         log.error(e.message, extra=d)
         data['note'] = "Hata oluştu"
     if request.POST:
         try:
             log.debug(request.POST.get("courseRecordId"), extra=d)
-            if request.POST.get("courseRecordId") and trainess_course_record:
-                trainess_course_record.trainess_approved = True
-                trainess_course_record.save()
+            if request.POST.get("courseRecordId") and data['trainess_course_record']:
+                data['trainess_course_record'].trainess_approved = True
+                data['trainess_course_record'].save()
                 message = "İşleminiz başarılı bir şekilde gerçekleştirildi"
                 status = "0"
-                log.debug("kursu onayladi " + trainess_course_record.course.name, extra=d)
+                log.debug("kursu onayladi " + data['trainess_course_record'].course.name, extra=d)
         except Exception as e:
+            log.error('Error on line {}'.format(sys.exc_info()[-1].tb_lineno), extra=d)
             log.error(e.message, extra=d)
             message = "İşleminiz Sırasında Hata Oluştu"
             status = "-1"
         return HttpResponse(json.dumps({'status': status, 'message': message}), content_type="application/json")
-    data['trainess_course_record'] = trainess_course_record
     return render_to_response("training/confirm_course_preference.html", data)
 
 
@@ -364,7 +365,7 @@ def statistic(request):
 def cancel_all_preference(request):
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
     data = getsiteandmenus(request)
-    hres = {'status': '-1', 'message':  "Başvurularınız Silinirken Hata Oluştu"}
+    hres = {'status': '-1', 'message': "Başvurularınız Silinirken Hata Oluştu"}
     if request.POST:
         cancelnote = request.POST.get('cancelnote', '')
         res = cancel_all_prefs(request.user.userprofile, cancelnote, data['site'], request.user, d)

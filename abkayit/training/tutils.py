@@ -42,6 +42,19 @@ def get_approve_start_end_dates_for_inst(site, d):
     return dates
 
 
+def get_approve_first_start_last_end_dates_for_inst(site, d):
+    """
+        :param site: aktif etkinliğin sitesi
+        :param d: log icin gerekli detaylar
+        :return: kursiyerler için tercih onaylama tarihlerinin start_date'i en yakin olan ile end_date'i en son olani doner.
+    """
+    try:
+        dates = ApprovalDate.objects.filter(site=site, for_instructor=True)
+        return dates.order_by("start_date").first(), dates.latest("end_date")
+    except:
+        return None, None
+
+
 def get_all_approve_start_end_dates_for_inst(site, d):
     """
 
