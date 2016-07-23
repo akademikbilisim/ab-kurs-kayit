@@ -32,7 +32,7 @@ def isdategtnow_head(datedict, key):
 @register.simple_tag(name="manuallyaddtrainess")
 def manuallyaddtrainess(site, user):
     now = datetime.date(datetime.now())
-    if site.event_start_date > now > site.application_end_date and UserProfileOPS.is_authorized_inst(user.userprofile):
+    if site.event_start_date > now > site.application_end_date and user.is_staff:
         return """
         <div class="alert alert-info">Sistemde profili tanimli olup başvuruyu kaçırmış kullanıcıları "Kursiyer Ekle"
          butonuna tıklayarak kursunuza ekleyebilirsiniz</div>

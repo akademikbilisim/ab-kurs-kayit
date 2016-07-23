@@ -460,7 +460,7 @@ def apply_course_in_addition(request):
     return HttpResponse(json.dumps({'status': '-1', 'message': message}), content_type="application/json")
 
 
-@login_required
+@staff_member_required
 def addtrainess(request):
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
     data = getsiteandmenus(request)
@@ -484,7 +484,7 @@ def addtrainess(request):
                 note.save()
                 data['note'] = "Form kaydedildi. Eklediğiniz katılımcıları 1. tercih listesinde görüntüleyebilirsiniz."
                 log.info("%s kullanicisi %s kullanicisini %s kursuna ekledi." % (
-                    request.user.username, tcourserecord.user.username, tcourserecord.course.name), extra=d)
+                    request.user.username, tcourserecord.trainess.user.username, tcourserecord.course.name), extra=d)
             else:
                 data['note'] = "Form aşağıdaki sebeplerden dolayı kaydedilemedi."
         elif "cancel" in request.POST:
