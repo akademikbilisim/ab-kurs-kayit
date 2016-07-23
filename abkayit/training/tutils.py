@@ -326,7 +326,7 @@ def cancel_all_prefs(trainess, cancelnote, site, ruser, d):
                                                                   trainess=trainess)
     now = datetime.date.today()
     try:
-        context = {"trainess": trainess}
+        context = {"trainess": trainess, "site": site}
         try:
             context['recipientlist'] = REPORT_RECIPIENT_LIST
             context['course_prefs'] = trainess_course_records
