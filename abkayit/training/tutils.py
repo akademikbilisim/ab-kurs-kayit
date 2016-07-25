@@ -347,7 +347,7 @@ def cancel_all_prefs(trainess, cancelnote, site, ruser, d):
                                                             approved=True, consentemailsent=True)
             if site.application_end_date < now < site.event_start_date:
                 if approvedpref:
-                    context['recipientlist'].extent(approvedpref[0].course.authorized_trainer.all().values_list(
+                    context['recipientlist'].extend(approvedpref[0].course.authorized_trainer.all().values_list(
                         'user__username', flat=True))
             send_email_by_operation_name(context, "notice_for_canceled_prefs")
             trainess_course_records.delete()

@@ -459,7 +459,7 @@ def showuserprofile(request, userid, courserecordid):
                 if request.user.is_staff and courserecord.consentemailsent:
                     try:
                         data['forms'] = getparticipationforms(data['site'], courserecord)
-                        if request.POST:
+                        if "save" in request.POST:
                             formsarevalid = []
                             frms = []
                             for f in data['forms']:
