@@ -194,18 +194,19 @@ def approve_course_preference(request):
         first_start_date_inst, last_end_date_inst = get_approve_first_start_last_end_dates_for_inst(data['site'], d)
         if not trainess_course_records:
             data['note'] = "Henüz herhangi bir kursa başvuru yapmadınız!"
-        elif data['site'].application_start_date <= datetime.date(now) <= data['site'].application_end_date:
+        elif data['site'].application_start_date <= datetime.date(now) < data['site'].application_end_date:
             data['note'] = "Başvurunuz için teşekkürler. Değerlendirme sürecinin başlaması için " \
                            "tüm başvuruların tamamlanması beklenmektedir."
-        elif first_start_date_inst.start_date <= now <= last_end_date_inst.end_date:
-            data['note'] = "Başvurular değerlendirilmektedir. En geç %s tarihine kadar sonuçları burada" \
-                                   " görebilirsiniz." % last_end_date_inst.end_date.strftime("%d-%m-%Y")
         else:
             recordapprovedbyinst = TrainessCourseRecord.objects.filter(trainess=request.user.userprofile, approved=True,
                                                                        consentemailsent=True,
                                                                        course__site__is_active=True)
             if not recordapprovedbyinst:
-                if data['site'].event_start_date - 1 > now > last_end_date_inst.end_date:
+                
+                if first_start_date_inst.start_date <= now < last_end_date_inst.end_date:
+                    data['note'] = "Başvurular değerlendirilmektedir. En geç %s tarihine kadar sonuçları burada" \
+                                   " görebilirsiniz." % last_end_date_inst.end_date.strftime("%d-%m-%Y")
+                elif data['site'].event_start_date - 1 > now > last_end_date_inst.end_date:
                     data['note'] = "Kurslara kabul dönemi bitmiş olup başvurularınıza kabul edilmediniz ancak" \
                                    " kurs başlangıç tarihine kadar kabul edilme şansınız hala devam ediyor." \
                                    " Takip etmeye devam edin."
