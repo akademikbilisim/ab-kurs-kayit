@@ -18,7 +18,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.admin.views.decorators import staff_member_required
 
 from userprofile.forms import CreateUserForm, UpdateUserForm, StuProfileForm, InstructorInformationForm, \
-    ChangePasswordForm
+    ChangePasswordForm, DocumentUploadForm
 from userprofile.models import Accommodation, UserProfile, UserAccomodationPref, InstructorInformation, \
     UserVerification, TrainessNote, TrainessClassicTestAnswers
 from userprofile.userprofileops import UserProfileOPS
@@ -237,6 +237,7 @@ def alluserview(request):
                     "gender": up.gender,
                     "job": up.job,
                     "title": up.title,
+                    "document": up.document,
                     "needs_document": up.needs_document,
                     "accomodation": up.useraccomodationpref_set.filter(accomodation__site__is_active=True),
                     "courserecordid": "0"}
@@ -450,6 +451,14 @@ def showuserprofile(request, userid, courserecordid):
             data['note'] = "Detaylı kullanıcı bilgileri"
             data['tuser'] = user
             data['ruser'] = request.user
+            if request.user.is_staff:
+                data['documentform'] = DocumentUploadForm()
+                if "save-document" in request.POST:
+                    document = request.FILES.get("document", "")
+                    if document:
+                        user.document = document
+                        user.save()
+
             if request.user.is_staff and "cancelall" in request.POST:
                 cancelnote = request.POST.get('trainesscancelnotetext', '')
                 res = cancel_all_prefs(user, cancelnote, data['site'], request.user, d)

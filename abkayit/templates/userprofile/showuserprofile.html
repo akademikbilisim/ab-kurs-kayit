@@ -29,6 +29,7 @@
                     <dt>Kurum:</dt><dd>{{ tuser.organization }}</dd>
                     <dt>Üniversite:</dt><dd>{{ tuser.university }}</dd>
                     <dt>Bölüm:</dt><dd>{{ tuser.department }}</dd>
+                    <dt>Evrak:</dt><dd>{{ tuser.document }}</dd>
                     <dt>Ek Bilgiler:</dt><dd>{{ tuser.additional_information }}</dd>
                     <dt>Seçtiği kurslar:</dt>
                     <dd>
@@ -67,6 +68,22 @@
                             <p> <input id="trainessnotetext" type="text" class="form-control input-note" value=""/>
                            <input id="trainessnoteuser" type="hidden" class="input-username" value="{{ tuser.user.username }}"/><input id="save-score" class="btn btn-primary" type="button" value="Ekle" /></p>
                     </dd>
+                    {% if ruser.is_staff %}
+                    <dt>Evrak:</dt>
+                    <dd>
+                        {% if tuser.document %}
+                        <a href="https://{{site.home_url}}/media/{{ tuser.document }}">{{ tuser.document }}</a>
+                        {% else %}
+                            Belge yok
+                        {% endif %}
+                        {%if documentform %}
+                        <form name="form-control" class="span4 signup-form" method="POST" enctype="multipart/form-data">{% csrf_token %}
+                            {{ documentform }}
+                            <input type="submit" name="save-document" id="save-document" class="btn btn-primary" value="{% trans 'Save' %}">
+                        </form>
+                        {% endif %}
+                    </dd>
+                    {% endif %}
                     {% getanswers tuser ruser courseid %}
 
                 </dl>

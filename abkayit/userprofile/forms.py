@@ -141,6 +141,16 @@ class InstProfileForm(ModelForm):
         self.fields['user'].required = False
 
 
+class DocumentUploadForm(ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ["user", "document"]
+        widgets = {
+            "user": forms.HiddenInput(),
+        }
+
+
+
 class StuProfileForm(ModelForm):
     class Meta:
         dyncf = DynmcFields()

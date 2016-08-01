@@ -18,6 +18,7 @@
 	        <th>{% trans "Title" %}</th>
 	        <th>{% trans "Accomodation Preference Seq." %}</th>
 			<th>{% trans "Needs Document" %}
+			<th>{% trans "Document" %}</th>
             <th>{% trans "Detailed Profile" %}</th>
 	    </tr>
 	</thead>
@@ -40,11 +41,19 @@
                 {% endfor %}
                 </ul>
 			</th>
+
 			<th>
 				{% if data.needs_document %}
 					Evet
 				{% else%}
 				    Hayır
+				{% endif %}
+			</th>
+			<th>
+				{% if data.document %}
+				 {{ data.document }}
+				{% else %}
+				  Belge Yok
 				{% endif %}
 			</th>
 			<th><a href="{% url 'showuserprofile'  data.pk data.courserecordid %}" type="button">{% trans "Show Profile" %} </a></th>
