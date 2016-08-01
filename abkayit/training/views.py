@@ -337,19 +337,15 @@ def statistic(request):
         for university in UNIVERSITIES:
             data['statistic_by_university'].append((university[0], len(
                 TrainessCourseRecord.objects.filter(course__site__is_active=True,
-                                                    trainess__university=university[0]).order_by(
+                                                    trainess__university__contains=university[0]).order_by(
                     "trainess").values_list("trainess").distinct())))
-            data['statistic_by_university_for_approved'].append((university[0], len(
-                TrainessCourseRecord.objects.filter(course__site__is_active=True,
-                                                    trainess__university=university[0],
-                                                    approved=True).order_by(
-                    "trainess").values_list("trainess").distinct())))
-        data['statistic_by_university'] = sorted(data['statistic_by_university'], key=lambda x: (x[1], x[1]),
-                                                 reverse=True)
+            data['statistic_by_university_for_approved'].append((university[0],len(TrainessCourseRecord.objects.filter(course__site__is_active=True,trainess__university__contains=university[0],approved=True).order_by("trainess").values_list("trainess").distinct()))) 
+        #data['statistic_by_university'] = sorted(data['statistic_by_university'], key=lambda x: (x[1], x[1]),
+        #                                         reverse=True)
 
-        data['statistic_by_university_for_approved'] = sorted(data['statistic_by_university_for_approved'],
-                                                              key=lambda x: (x[1], x[1]),
-                                                              reverse=True)
+        #data['statistic_by_university_for_approved'] = sorted(data['statistic_by_university_for_approved'],
+        #                                                      key=lambda x: (x[1], x[1]),
+        #                                                      reverse=True)
 
         # kurs bazinda toplam teyitli olanlar
         total_profile = len(

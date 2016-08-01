@@ -12,7 +12,10 @@
 	        <th>{% trans "Last Name" %}</th>
 	        <th>{% trans "E-mail" %}</th>
 	        <th>{% trans "TC Identity No / Foreign Identity No" %}</th>
+	        <th>{% trans "University" %}</th>
 	        <th>{% trans "Gender" %}</th>
+	        <th>{% trans "Job" %}</th>
+	        <th>{% trans "Title" %}</th>
 	        <th>{% trans "Accomodation Preference Seq." %}</th>
 			<th>{% trans "Needs Document" %}
             <th>{% trans "Detailed Profile" %}</th>
@@ -25,7 +28,10 @@
 			<th>{{data.lastname}}</th>
 			<th>{{data.email}}</th>
 			<th>{{data.tcino}}</th>
+            <th>{{data.university}}</th>
             <th>{{data.gender}}</th>
+            <th>{{data.job}}</th>
+            <th>{{data.title}}</th>
 			<th>
 				{% for a in data.accomodation %}
                     <span>&nbsp;</span>

@@ -233,7 +233,10 @@ def alluserview(request):
                     "firstname": up.user.first_name,
                     "email": up.user.username, "lastname": up.user.last_name,
                     "tcino": up.tckimlikno if up.tckimlikno != '' else up.ykimlikno,
+                    "university": up.university,
                     "gender": up.gender,
+                    "job": up.job,
+                    "title": up.title,
                     "needs_document": up.needs_document,
                     "accomodation": up.useraccomodationpref_set.filter(accomodation__site__is_active=True),
                     "courserecordid": "0"}
