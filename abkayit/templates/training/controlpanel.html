@@ -51,7 +51,7 @@
                   <th>İsim</th>
                   <th>Soyisim</th>
                   <th>E-posta</th>
-                  <th>Sehir</th>
+                  <th>Konaklama Tercihi</th>
                   <th>Cinsiyet</th>
                   <th>Kurum</th>
                   <th>
@@ -79,9 +79,15 @@
                   <td>{{ t.trainess.user.first_name }}</td>
                   <td>{{ t.trainess.user.last_name }}</td>
                   <td>{{ t.trainess.user.email }}</td>
-                  <td>{{ t.trainess.city }}</td>
-                    <td>{{ t.trainess.gender }}</td>
-                    <td>{{ t.trainess.organization }}</td>
+                  <td>
+                    {% for pref in t.trainess.useraccomodationpref_set.all %}
+                            {% if pref.accomodation.site.is_active %}
+                               {{ pref.accomodation }}
+                            {% endif %}
+                    {% endfor %}
+                  </td>
+                  <td>{{ t.trainess.gender }}</td>
+                  <td>{{ t.trainess.organization }}</td>
                   <td>
                     {% gettrainesscolor t.trainess t%}
                     {% isdategtnow_body  dates pref t course user %}
