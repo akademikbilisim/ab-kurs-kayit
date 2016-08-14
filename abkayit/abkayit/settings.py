@@ -207,6 +207,10 @@ LOGGING = {
             'format': "[%(asctime)s] [%(clientip)s - %(user)-8s] %(levelname)s [%(name)s:%(lineno)s]  %(message)s",
             'datefmt': "%d/%b/%Y %H:%M:%S"
         },
+        'simple': {
+            'format': "[%(asctime)s] [%(user)-8s] %(levelname)s [%(name)s:%(lineno)s]  %(message)s",
+            'datefmt': "%d/%b/%Y %H:%M:%S"
+        },
     },
     'handlers': {
         'null': {
@@ -224,7 +228,7 @@ LOGGING = {
         'console': {
             'level': 'INFO',
             'class': 'logging.StreamHandler',
-            'formatter': 'standard'
+            'formatter': 'simple'
         },
     },
     'loggers': {
