@@ -99,7 +99,7 @@
             </a>
             <ul class="dropdown-menu dropdown-user">
               <li>
-				<center><img src="/media/{{ user.userprofile.profilephoto }}" style="width: 20px; heigth:20px;">{{user.first_name}} {{user.last_name}}</center>
+				<center><img src="{{ user.userprofile.profilephoto.url }}" style="width: 20px; heigth:20px;">{{user.first_name}} {{user.last_name}}</center>
               </li>
    			  <li class="divider"></li>
 			  </hr>
