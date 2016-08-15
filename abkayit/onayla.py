@@ -67,15 +67,35 @@ def karalisteimport():
                         print userfields[0]
                         print userobj2
 
+def push_note_to_trainess(note, filename):
+    from userprofile.models import UserProfile, TrainessNote
+    from abkayit.models import Site
+    if note and filename:
+        site = Site.objects.get(is_active=True)
+        fromup = UserProfile.objects.get(user__username="ozge@kripton.rocks")
+        with open(filename) as f:
+            userlist = f.readlines()
+            for user in userlist:
+                print user
+                usermail = user.rstrip()
+                up = UserProfile.objects.get(user__username=usermail)
+                #trainessnote = TrainessNote.objects.get(note_to_profile=up)
+                #trainessnote.note = note
+                #trainessnote.save()
+                trainessnote = TrainessNote(site=site, note_to_profile=up, note_from_profile=fromup, label="sistem", note=note)
+                trainessnote.save()
+    else:
+        print "note and filename can not be empty!!"
 
 if __name__ == "__main__":
-    #try:
-    path = sys.argv[1]
-    if path not in sys.path:
-        sys.path.append(path)
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "abkayit.settings")
-    django.setup()
-    karalisteimport()
+    try:
+       path = sys.argv[1]
+       if path not in sys.path:
+           sys.path.append(path)
+       os.environ.setdefault("DJANGO_SETTINGS_MODULE", "abkayit.settings")
+       django.setup()
+       #karalisteimport()
+       #push_note_to_trainess("note", "filename")
         
-    #except:
-    #    print "Project path can not be empty!"
+    except:
+        print "Project path can not be empty!"
