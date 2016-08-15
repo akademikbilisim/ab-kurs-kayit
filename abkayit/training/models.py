@@ -18,8 +18,8 @@ def make_choices(choices):
 
 
 class Course(models.Model):
-    no = models.CharField(verbose_name=_("Course No"), max_length="4")
-    name = models.CharField(verbose_name=_("Course Name"), max_length="255")
+    no = models.CharField(verbose_name=_("Course No"), max_length=4)
+    name = models.CharField(verbose_name=_("Course Name"), max_length=255)
     description = models.TextField(verbose_name=_("Description"))
     trainess = models.ManyToManyField(UserProfile, related_name="trainess", verbose_name=_("Trainess"), blank=True)
     trainer = models.ManyToManyField(UserProfile, related_name="trainer", verbose_name=_("Trainer"))
@@ -28,7 +28,7 @@ class Course(models.Model):
     approved = models.BooleanField(default=False)
     application_is_open = models.BooleanField(default=True)
     site = models.ForeignKey(Site)
-    url = models.CharField(verbose_name=_("URL"), max_length="350")
+    url = models.CharField(verbose_name=_("URL"), max_length=350)
     question = models.ManyToManyField(Question, blank=True, verbose_name=_("Question"))
     textboxquestion = models.ManyToManyField(TextBoxQuestions, blank=True, verbose_name=_("Text Box Questions"))
 

@@ -86,7 +86,7 @@
     <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
       <div class="navbar-header">
         <a  href="/">
-          <img style="margin-left:20px; height: 50px;" src="/static/{{site.logo}}">
+          <img style="margin-left:20px; height: 50px;" src="{{site.logo.url}}">
         </a>
       </div>
       <ul class="nav navbar-top-links navbar-right">
@@ -99,7 +99,7 @@
             </a>
             <ul class="dropdown-menu dropdown-user">
               <li>
-				<center><img src="/media/{{ user.userprofile.profilephoto }}" style="width: 20px; heigth:20px;">{{user.first_name}} {{user.last_name}}</center>
+				<center><img src="{{ user.userprofile.profilephoto.url }}" style="width: 20px; heigth:20px;">{{user.first_name}} {{user.last_name}}</center>
               </li>
    			  <li class="divider"></li>
 			  </hr>

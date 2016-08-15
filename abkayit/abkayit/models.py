@@ -17,11 +17,11 @@ def make_choices(choices):
 
 
 class Site(models.Model):
-    name = models.CharField(verbose_name=_("Site Name"), max_length="255")
-    year = models.CharField(verbose_name=_("Year"), max_length="4")
+    name = models.CharField(verbose_name=_("Site Name"), max_length=255)
+    year = models.CharField(verbose_name=_("Year"), max_length=4)
     logo = models.ImageField(verbose_name=_("Logo"), upload_to="images/")
     is_active = models.BooleanField(verbose_name=_("Is Active"), default=False)
-    home_url = models.CharField(verbose_name=_("Home Url"), max_length="128", null=True)
+    home_url = models.CharField(verbose_name=_("Home Url"), max_length=128, null=True)
     application_start_date = models.DateField(verbose_name=_("Course Application Start Date"), default=datetime.now)
     application_end_date = models.DateField(verbose_name=_("Course Application End Date"), default=datetime.now)
     event_start_date = models.DateField(verbose_name=_("Event Start Date"), default=datetime.now)
@@ -32,7 +32,7 @@ class Site(models.Model):
 
 
 class Menu(models.Model):
-    name = models.CharField(verbose_name=_("Name"), max_length="255")
+    name = models.CharField(verbose_name=_("Name"), max_length=255)
     order = models.IntegerField(verbose_name=_("Order"))
     site = models.ForeignKey(Site)
 
@@ -44,7 +44,7 @@ class Menu(models.Model):
 
 
 class Content(models.Model):
-    name = models.CharField(verbose_name=_("Content Name"), max_length="255")
+    name = models.CharField(verbose_name=_("Content Name"), max_length=255)
     content = RichTextField(verbose_name=_("HTML Content"))
     menu = models.OneToOneField(Menu, related_name="+", null=True)
 
@@ -58,7 +58,7 @@ class Content(models.Model):
 
 class Question(models.Model):
     no = models.IntegerField()
-    detail = models.CharField(verbose_name=_("Question"), max_length="5000")
+    detail = models.CharField(verbose_name=_("Question"), max_length=5000)
     active = models.BooleanField(verbose_name=_("Is Active"), default=False)
     is_faq = models.BooleanField(verbose_name=_("Is Frequently Asked Question?"), default=True)
 
@@ -72,7 +72,7 @@ class Question(models.Model):
 
 class Answer(models.Model):
     question = models.ForeignKey(Question, null=True)
-    detail = models.CharField(verbose_name=_("Detail"), max_length="500")
+    detail = models.CharField(verbose_name=_("Detail"), max_length=500)
     is_right = models.BooleanField(verbose_name=_("Is Right Answer"), default=False)
 
     class Meta:

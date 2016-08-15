@@ -180,6 +180,7 @@ Aşağıdaki bilgileri verilen katılımcı "Tüm Başvurularımı İptal Et" se
 Katılımcı: {{trainess_course_record.trainess.user.username}}<br>
 Kurs: {{trainess_course_record.course.no}} - {{trainess_course_record.course.name}}<br>
 Tercih Sırası: {{trainess_course_record.preference_order}}<br>
+Sebep: {{cancelnote}}<br>
 
 subject:
 {{ site.name }} {{ site.year }} - Kurs Tercih İptal Bilgilendirmesi
