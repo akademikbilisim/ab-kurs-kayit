@@ -166,7 +166,7 @@ class StuProfileForm(ModelForm):
             'address': forms.Textarea(attrs={'placeholder': _('Address'), 'class': 'form-control'}),
             'job': forms.TextInput(attrs={'placeholder': _('Job'), 'class': 'form-control'}),
             'city': forms.TextInput(attrs={'placeholder': _('Current City'), 'class': 'form-control'}),
-            'country': CountrySelectWidget(attrs={'placeholder': _('Country')}),
+            'country': CountrySelectWidget(attrs={'placeholder': _('Nationality')}),
             'title': forms.TextInput(attrs={'placeholder': _('Title'), 'class': 'form-control'}),
             'organization': forms.TextInput(attrs={'placeholder': _('Organization'), 'class': 'form-control'}),
             'university': forms.Select(attrs={'placeholder': _('University'), 'class': 'form-control'}),
