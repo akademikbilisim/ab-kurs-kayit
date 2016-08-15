@@ -1,4 +1,4 @@
-#!/usr/bin/env pythonfrom django.utils.translation import ugettext_lazy as _
+#!/usr/bin/env python
 
 # -*- coding:utf-8 -*-
 
