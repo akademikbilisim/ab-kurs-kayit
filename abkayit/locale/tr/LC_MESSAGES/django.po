@@ -517,8 +517,8 @@ msgid "Address"
 msgstr "Adres"
 
 #: userprofile/forms.py:169 userprofile/models.py:47
-msgid "Country"
-msgstr "Ülke"
+msgid "Nationality"
+msgstr "Uyruk"
 
 #: userprofile/forms.py:171 userprofile/models.py:49
 msgid "Organization"
