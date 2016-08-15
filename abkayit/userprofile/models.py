@@ -43,7 +43,7 @@ class UserProfile(models.Model):
     mobilephonenumber = models.CharField(verbose_name=_("Mobile Phone Number"), max_length=14)
     address = models.TextField(verbose_name=_("Home Address"))
     job = models.CharField(verbose_name=_("Job"), max_length=40, null=True, blank=True)
-    city = models.CharField(verbose_name=_("Current City"), max_length=40)
+    city = models.CharField(verbose_name=_("Current City"), max_length=200)
     country = CountryField(verbose_name=_("Country"), choices=COUNTRIES, default='TR')
     title = models.CharField(verbose_name=_("Title"), max_length=40)
     organization = models.CharField(verbose_name=_("Organization"), max_length=200, null=True, blank=True)

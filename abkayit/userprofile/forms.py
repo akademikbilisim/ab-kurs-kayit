@@ -15,6 +15,7 @@ from django_countries.widgets import CountrySelectWidget
 from userprofile.models import *
 from userprofile.dynamicfields import DynmcFields
 from userprofile.userprofileops import UserProfileOPS
+from cities_light.models import Region
 
 log = logging.getLogger(__name__)
 
@@ -150,7 +151,6 @@ class DocumentUploadForm(ModelForm):
         }
 
 
-
 class StuProfileForm(ModelForm):
     class Meta:
         dyncf = DynmcFields()
@@ -165,7 +165,8 @@ class StuProfileForm(ModelForm):
                 attrs={'placeholder': _('Mobile Phone Number'), 'class': 'form-control'}),
             'address': forms.Textarea(attrs={'placeholder': _('Address'), 'class': 'form-control'}),
             'job': forms.TextInput(attrs={'placeholder': _('Job'), 'class': 'form-control'}),
-            'city': forms.TextInput(attrs={'placeholder': _('Current City'), 'class': 'form-control'}),
+            'city': forms.Select(attrs={'placeholder': _('Current City'), 'class': 'form-control'},
+                                 choices=Region.objects.all().values_list('name_ascii', 'name_ascii')),
             'country': CountrySelectWidget(attrs={'placeholder': _('Country')}),
             'title': forms.TextInput(attrs={'placeholder': _('Title'), 'class': 'form-control'}),
             'organization': forms.TextInput(attrs={'placeholder': _('Organization'), 'class': 'form-control'}),
@@ -195,7 +196,7 @@ class StuProfileForm(ModelForm):
         self.ruser = kwargs.pop('ruser', None)
         super(StuProfileForm, self).__init__(*args, **kwargs)
         for field in self.fields:
-            if field in ['needs_document', 'tckimlikno','ykimlikno','university', 'userpassedtest', 'user',
+            if field in ['needs_document', 'tckimlikno', 'ykimlikno', 'university', 'userpassedtest', 'user',
                          'additional_information', 'website', 'experience', 'document']:
                 self.fields[field].required = False
             else:
@@ -234,9 +235,9 @@ class StuProfileForm(ModelForm):
                 if tckisvalid == -1:
                     raise forms.ValidationError(_("An error occured while verifing your TC identity number"))
                 elif not tckisvalid:
-                    raise forms.ValidationError(_("Your identity information can not be verified, Please enter \
-                                                     your TC identity number, your name, your last name (with Turkish characters if exist) \
-                                                     and your birth date precisely"))
+                    raise forms.ValidationError(_(("Your identity information can not be verified, Please enter"
+                                                   "your TC identity number, your name, your last name (with Turkish"
+                                                   "characters if exist) and your birth date precisely")))
         else:
             raise forms.ValidationError(_("User not found"))
         return cleaned_data
