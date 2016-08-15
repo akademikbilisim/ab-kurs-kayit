@@ -2,6 +2,7 @@
 {% load i18n %}
 {% block content %}
 {% load staticfiles %}
+{% load userprofiletags %}
 <script src="{% static '/static/js/allusers.js' %}"></script>
 
 <div class="container-fluid">
@@ -31,10 +32,7 @@
                     <span>&nbsp;</span>
                 {% endfor %}
             </td>
-			<td>{{trainer.instructorinformation_set.first.get_transportation_display}}</td>
-			<td>{{trainer.instructorinformation_set.first.arrival_date}}</td>
-			<td>{{trainer.instructorinformation_set.first.departure_date}}</td>
-			<td>{{trainer.instructorinformation_set.first.additional_information}}</td>
+			{% getinstinfo trainer site %}
 		</tr>
 	{% endfor %}
 	</tbody>

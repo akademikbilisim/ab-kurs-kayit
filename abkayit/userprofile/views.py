@@ -262,7 +262,7 @@ def get_all_trainers_view(request):
         data['trainers'] = set(trainers)
     except Exception as e:
         log.error(e.message, extra=d)
-    return render_to_response("userprofile/alltrainess.html", data, context_instance=RequestContext(request))
+    return render_to_response("userprofile/alltrainers.html", data, context_instance=RequestContext(request))
 
 
 def active(request, key):
