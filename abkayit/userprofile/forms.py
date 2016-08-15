@@ -292,3 +292,9 @@ class InstructorInformationForm(ModelForm):
         for field in self.fields:
             self.fields[field].required = True
         self.fields['additional_information'].required = False
+
+    def clean_departure_date(self):
+        from django.core.exceptions import ValidationError
+        if self.cleaned_data["departure_date"] < self.cleaned_data["arrival_date"]:
+            raise ValidationError(_("Can't be prior to Arrival Date"))
+        return self.cleaned_data["departure_date"]
