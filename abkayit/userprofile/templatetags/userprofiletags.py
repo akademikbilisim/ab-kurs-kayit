@@ -103,7 +103,7 @@ def getoperationsmenu(uprofile):
 def instinfo(uprofile):
     html = ""
     if UserProfileOPS.is_instructor(uprofile):
-        html += "<li><a href=\"/accounts/egitmen/bilgi\"><i class=\"fa-info-circle fa-fw\"></i> Egitmen Bilgileri </a></li>"
+        html += "<li><a href=\"/accounts/egitmen/bilgi\"><i class=\"fa fa-info-circle fa-fw\"></i> Egitmen Bilgileri </a></li>"
 
     return html
 #
