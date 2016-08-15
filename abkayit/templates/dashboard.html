@@ -11,8 +11,21 @@
 {% block dashboard %}
 <li class="dropdown">
     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+        <i class="fa fa-bars"></i>  Menü <i class="fa fa-caret-down"></i>
+    </a>
+    <ul class="dropdown-menu" style>
+    {% for menu in menus %}
+              <li>
+                <a href="/?menu_id={{menu.id}}">{{menu.name}}</a>
+              </li>
+            {% endfor %}
+    </ul>
+</li>
+<li class="dropdown">
+    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
         <i class="fa fa-tachometer"></i>  İşlemler <i class="fa fa-caret-down"></i>
     </a>
+
     <ul class="dropdown-menu" style>
         <li>
             <a href="{% url 'listcourses' %}"><i class="fa fa-list fa-fw"></i> Mevcut Kurslar</a>
