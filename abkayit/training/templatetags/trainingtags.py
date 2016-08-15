@@ -77,7 +77,7 @@ def isdategtnow_body(datedict, key, t, course, user):
                     is_selectable = False
                     priviliged_pref = approvedpref
             if is_selectable:
-                dom = "<div class=\"checkbox\">"
+                dom = "<div>"
                 if t.approved:
                     dom += "<input type=\"checkbox\" checked name=\"students%s\" value=\"%s\"/>" % (course.id, t.pk)
                 else:
@@ -97,7 +97,7 @@ def getconsentmailfield(tcr, user):
     if tcr.consentemailsent:
         return "Gönderildi"
     elif not tcr.consentemailsent and tcr.preference_order == 1 and UserProfileOPS.is_authorized_inst(user.userprofile):
-        dom = "<div class=\"checkbox\">"
+        dom = "<div>"
         dom += "<input type=\"checkbox\" name=\"consentmail%s\" value=\"%s\"/>" % (tcr.course.pk, tcr.pk)
         dom += "</div>"
         return dom
