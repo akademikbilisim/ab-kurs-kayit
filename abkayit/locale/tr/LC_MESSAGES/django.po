@@ -220,8 +220,8 @@ msgstr "Soyad"
 
 #: templates/training/allcourseprefs.html:14 userprofile/forms.py:168
 #: userprofile/models.py:46
-msgid "City"
-msgstr "Şehir"
+msgid "Current City"
+msgstr "Yaşadığınız Şehir"
 
 #: templates/training/allcourseprefs.html:15
 #: templates/userprofile/alltrainess.html:12
