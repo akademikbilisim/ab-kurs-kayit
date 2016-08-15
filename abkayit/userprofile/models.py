@@ -14,6 +14,21 @@ from abkayit.settings import USER_TYPES, UNIVERSITIES, GENDER, TRANSPORTATION
 from abkayit.models import Site, TextBoxQuestions
 
 
+OCCUPATIONS = [
+    ("kamu",  _("Public")),
+    ("ozel",  _("Private")),
+    ("akdm",  _("Academic")),
+    ("none",    _("Unoccupied")),
+]
+
+EDUCATIONS = [
+    ("orta", _("Middle School")),
+    ("lise", _("High School")),
+    ("univ", _("University")),
+    ("yksk", _("Master")),
+    ("dktr", _("Doctorate")),
+    ("none",   _("Not a Student")),
+]
 class UserVerification(models.Model):
     user = models.ForeignKey(User)
     activation_key = models.CharField(max_length=40, null=True)
@@ -46,6 +61,8 @@ class UserProfile(models.Model):
     city = models.CharField(verbose_name=_("Current City"), max_length=40)
     country = CountryField(verbose_name=_("Nationality"), choices=COUNTRIES, default='TR')
     title = models.CharField(verbose_name=_("Title"), max_length=40)
+    occupation = models.CharField(verbose_name=_("Occupation"), choices=OCCUPATIONS, max_length=4)
+    current_education = models.CharField(verbose_name=_("Current Education"), choices=EDUCATIONS, max_length=4)
     organization = models.CharField(verbose_name=_("Organization"), max_length=200, null=True, blank=True)
     university = models.CharField(choices=UNIVERSITIES, verbose_name=_("University"), max_length=300, blank=True)
     department = models.CharField(verbose_name=_("Department"), max_length=50)
