@@ -350,9 +350,8 @@ def cancel_all_prefs(trainess, cancelnote, site, ruser, d):
                     context['recipientlist'].extend(approvedpref[0].course.authorized_trainer.all().values_list(
                         'user__username', flat=True))
             send_email_by_operation_name(context, "notice_for_canceled_prefs")
-            recontext = context.copy()
-            recontext['recipientlist'] = [ruser.email]
-            send_email_by_operation_name(recontext, "notice_for_canceled_prefs")
+            context['recipientlist'] = [trainess.user.email]
+            send_email_by_operation_name(context, "notice_for_canceled_prefs")
             trainess_course_records.delete()
         except Exception as e:
             log.error('Error on line {}'.format(sys.exc_info()[-1].tb_lineno), extra=d)
