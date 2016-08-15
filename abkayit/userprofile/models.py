@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+#!/usr/bin/env pythonfrom django.utils.translation import ugettext_lazy as _
+
 # -*- coding:utf-8 -*-
 
 import datetime

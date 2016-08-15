@@ -5,17 +5,18 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: None\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-15 17:06+0300\n"
-"PO-Revision-Date: 2016-06-23 11:45+0300\n"
+"POT-Creation-Date: 2016-08-15 21:41+0300\n"
+"PO-Revision-Date: 2016-08-15 21:47+0200\n"
 "Last-Translator: Özge Barbaros <ozgebarbaros@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 1.5.4\n"
+"Language: TR\n"
 
 #: abkayit/adaptor.py:25
 msgid "Mail could not be sent"
@@ -57,7 +58,7 @@ msgstr "Etkinlik Başlangıç Tarihi"
 msgid "Event End Date"
 msgstr "Etkinlik Bitiş Tarihi"
 
-#: abkayit/models.py:35 userprofile/models.py:89
+#: abkayit/models.py:35 userprofile/models.py:107
 msgid "Name"
 msgstr "İsim"
 
@@ -161,40 +162,40 @@ msgstr ""
 msgid "Login Failed!"
 msgstr "Giriş Başarısız!"
 
-#: templates/homepagedashboard.html:107 userprofile/models.py:65
+#: templates/homepagedashboard.html:109 userprofile/models.py:83
 msgid "User Profile"
 msgstr "Kullanıcı Profili"
 
-#: templates/homepagedashboard.html:113
+#: templates/homepagedashboard.html:115
 msgid "Change Password"
 msgstr "Parola Değiştir"
 
-#: templates/homepagedashboard.html:118
+#: templates/homepagedashboard.html:120
 msgid "Log out"
 msgstr "Çıkış"
 
-#: templates/homepagedashboard.html:130
+#: templates/homepagedashboard.html:132
 msgid "Email adress"
 msgstr "E-posta adresi"
 
-#: templates/homepagedashboard.html:131
+#: templates/homepagedashboard.html:133
 #: templates/userprofile/change_password_key_request.html:14
 #: templates/userprofile/change_password_key_request.html:17
 #: userprofile/forms.py:103
 msgid "Email"
 msgstr "E-posta"
 
-#: templates/homepagedashboard.html:134 templates/homepagedashboard.html:135
-#: userprofile/forms.py:35 userprofile/forms.py:44 userprofile/forms.py:254
-#: userprofile/forms.py:260
+#: templates/homepagedashboard.html:136 templates/homepagedashboard.html:137
+#: userprofile/forms.py:35 userprofile/forms.py:44 userprofile/forms.py:256
+#: userprofile/forms.py:262
 msgid "Password"
 msgstr "Parola"
 
-#: templates/homepagedashboard.html:138
+#: templates/homepagedashboard.html:140
 msgid "Log in"
 msgstr "Giriş"
 
-#: templates/homepagedashboard.html:143
+#: templates/homepagedashboard.html:145
 msgid "Forgot password"
 msgstr "Parolamı unuttum"
 
@@ -215,7 +216,7 @@ msgid "Last Name"
 msgstr "Soyad"
 
 #: templates/training/allcourseprefs.html:14 userprofile/forms.py:168
-#: userprofile/models.py:46
+#: userprofile/models.py:62
 msgid "Current City"
 msgstr "Yaşadığınız Şehir"
 
@@ -227,7 +228,7 @@ msgstr "E-posta"
 
 #: templates/training/allcourseprefs.html:16
 #: templates/userprofile/allusers.html:16 userprofile/forms.py:163
-#: userprofile/models.py:41 userprofile/models.py:87
+#: userprofile/models.py:57 userprofile/models.py:105
 msgid "Gender"
 msgstr "Cinsiyet"
 
@@ -236,19 +237,18 @@ msgid "Organisation"
 msgstr "Kurum"
 
 #: templates/training/allcourseprefs.html:18
-#: templates/userprofile/allusers.html:15 userprofile/forms.py:172
-#: userprofile/models.py:50
+#: templates/userprofile/allusers.html:15 userprofile/forms.py:174
+#: userprofile/models.py:28 userprofile/models.py:68
 msgid "University"
 msgstr "Üniversite"
 
 #: templates/training/allcourseprefs.html:19
 #: templates/userprofile/allusers.html:17 userprofile/forms.py:167
-#: userprofile/models.py:45
+#: userprofile/models.py:61
 msgid "Job"
 msgstr "İş"
 
 #: templates/training/allcourseprefs.html:20
-#, fuzzy
 #| msgid "Accommodation"
 msgid "Accomodation"
 msgstr "Konaklama Seçeneği"
@@ -314,7 +314,7 @@ msgstr "Aktifleştirme Bağlantısı Gönder"
 msgid "Full Name"
 msgstr "Ad Soyad"
 
-#: templates/userprofile/alltrainess.html:13 userprofile/models.py:39
+#: templates/userprofile/alltrainess.html:13 userprofile/models.py:55
 msgid "TC Identity Number"
 msgstr "TC Kimlik No"
 
@@ -322,13 +322,13 @@ msgstr "TC Kimlik No"
 msgid "Transportation Type"
 msgstr "Ulaşım Türü"
 
-#: templates/userprofile/alltrainess.html:16 userprofile/forms.py:278
-#: userprofile/models.py:121
+#: templates/userprofile/alltrainess.html:16 userprofile/forms.py:280
+#: userprofile/models.py:139
 msgid "Arrival Date"
 msgstr "Varış Tarihi"
 
-#: templates/userprofile/alltrainess.html:17 userprofile/forms.py:279
-#: userprofile/models.py:122
+#: templates/userprofile/alltrainess.html:17 userprofile/forms.py:281
+#: userprofile/models.py:140
 msgid "Departure Date"
 msgstr "Ayrılış Tarihi"
 
@@ -341,7 +341,7 @@ msgid "TC Identity No / Foreign Identity No"
 msgstr "TC Kimlik No / Yabancı Kimlik No"
 
 #: templates/userprofile/allusers.html:18 userprofile/forms.py:170
-#: userprofile/models.py:48
+#: userprofile/models.py:64
 msgid "Title"
 msgstr "Ünvan"
 
@@ -349,7 +349,7 @@ msgstr "Ünvan"
 msgid "Accomodation Preference Seq."
 msgstr "Konaklama Tercih Sıralaması!"
 
-#: templates/userprofile/allusers.html:20 userprofile/models.py:58
+#: templates/userprofile/allusers.html:20 userprofile/models.py:76
 msgid "Needs Document"
 msgstr "Evrak Gerekli"
 
@@ -477,8 +477,13 @@ msgstr "Kursiyerleri kabul edebilirsiniz"
 msgid "Consent period is closed"
 msgstr "Onaylama dönemi kapanmıştır."
 
-#: userprofile/forms.py:23 userprofile/forms.py:26 userprofile/forms.py:246
-#: userprofile/forms.py:249
+#: userprofile/admin.py:47
+#| msgid "Trainess Note"
+msgid "Trainees Site"
+msgstr "Öğrencinin Site'ı"
+
+#: userprofile/forms.py:23 userprofile/forms.py:26 userprofile/forms.py:248
+#: userprofile/forms.py:251
 msgid "Confirm Password"
 msgstr "Parola Doğrula"
 
@@ -490,7 +495,7 @@ msgstr "E-posta Adresi"
 msgid "This email address already exists in this system"
 msgstr "Sistemde bu e-posta adresi zaten bulunuyor"
 
-#: userprofile/forms.py:57 userprofile/forms.py:266
+#: userprofile/forms.py:57 userprofile/forms.py:268
 msgid "Your passwords do not match"
 msgstr "Parolalarınız eşleşmiyor"
 
@@ -502,64 +507,74 @@ msgstr "TC Kimlik No"
 msgid "Foreigner ID No"
 msgstr "Yabancı Kimlik No"
 
-#: userprofile/forms.py:165 userprofile/models.py:43
+#: userprofile/forms.py:165 userprofile/models.py:59
 msgid "Mobile Phone Number"
 msgstr "Cep Telefonu Numarası"
 
-#: userprofile/forms.py:166 userprofile/models.py:90
+#: userprofile/forms.py:166 userprofile/models.py:108
 msgid "Address"
 msgstr "Adres"
 
-#: userprofile/forms.py:169 userprofile/models.py:47
+#: userprofile/forms.py:169 userprofile/models.py:63
 msgid "Nationality"
 msgstr "Uyruk"
 
-#: userprofile/forms.py:171 userprofile/models.py:49
+#: userprofile/forms.py:171 userprofile/models.py:67
 msgid "Organization"
 msgstr "Kurum"
 
-#: userprofile/forms.py:173 userprofile/models.py:51
+#: userprofile/forms.py:172 userprofile/models.py:65
+#| msgid "Description"
+msgid "Occupation"
+msgstr "Meslek"
+
+#: userprofile/forms.py:173 userprofile/models.py:66
+#| msgid "Current City"
+msgid "Current Education"
+msgstr "Öğrenci Misiniz"
+
+#: userprofile/forms.py:175 userprofile/models.py:69
 msgid "Department"
 msgstr "Bölüm/Birim"
 
-#: userprofile/forms.py:174 userprofile/models.py:52 userprofile/models.py:91
+#: userprofile/forms.py:176 userprofile/models.py:70 userprofile/models.py:109
 msgid "Website"
 msgstr "Website"
 
-#: userprofile/forms.py:176
+#: userprofile/forms.py:178
 msgid "Daha önce çalışılan/Staj yapılan yerler"
 msgstr ""
 
-#: userprofile/forms.py:178 userprofile/forms.py:277 userprofile/models.py:54
-#: userprofile/models.py:120
+#: userprofile/forms.py:180 userprofile/forms.py:279 userprofile/models.py:72
+#: userprofile/models.py:138
 msgid "Additional Information"
 msgstr "Ek Bilgiler"
 
-#: userprofile/forms.py:208
+#: userprofile/forms.py:210
 msgid "Image file size too large > 1mb )"
 msgstr "Fotograf boyutu çok büyük (>1MB)"
 
-#: userprofile/forms.py:222
+#: userprofile/forms.py:224
 msgid "Please fill only one of them:tckimlikno,ykimlikno"
 msgstr "Lütfen tckimlikno, ykimlikno alanlarından sadece bir tanesini doldurun"
 
-#: userprofile/forms.py:224
+#: userprofile/forms.py:226
 msgid "TC identity number can not be empty for Turkish citizens"
 msgstr "Türkiye vatandaşları için TC kimlik no boş olamaz"
 
-#: userprofile/forms.py:226
+#: userprofile/forms.py:228
 msgid "Foreign identity number can not be empty for non Turkish citizens"
 msgstr "Yabancı uyruklu katılımcılar için yabancı kimlik no boş olamaz"
 
-#: userprofile/forms.py:231
+#: userprofile/forms.py:233
 msgid "Bu TC Kimlik numarasına sahip başka hesap var."
 msgstr ""
 
-#: userprofile/forms.py:235
+#: userprofile/forms.py:237
 msgid "An error occured while verifing your TC identity number"
 msgstr "TC kimlik numaranız doğrulanırken hata oluştu"
 
-#: userprofile/forms.py:237
+#: userprofile/forms.py:239
 msgid ""
 "Your identity information can not be verified, Please "
 "enter                                                      your TC identity "
@@ -571,23 +586,23 @@ msgstr ""
 "soyisminizi (varsa Türkçe karakterler ile birlikte) ve doğum tarihinizi "
 "eksiksiz giriniz."
 
-#: userprofile/forms.py:241
+#: userprofile/forms.py:243
 msgid "User not found"
 msgstr "Kullanıcı bulunamadı"
 
-#: userprofile/forms.py:275 userprofile/models.py:119
+#: userprofile/forms.py:277 userprofile/models.py:137
 msgid "Transportation"
 msgstr "Ulaşım Türü"
 
-#: userprofile/forms.py:282
+#: userprofile/forms.py:284
 msgid "Select your transportation type"
 msgstr "Ulaşım şeklinizi seçin"
 
-#: userprofile/forms.py:283
+#: userprofile/forms.py:285
 msgid "If you want to add additional information, please enter here"
 msgstr "Ek bilgi vermek isterseniz, lütfen buraya yazın"
 
-#: userprofile/forms.py:285
+#: userprofile/forms.py:287
 msgid ""
 "Arrival Date (Example: If your first day at event will be 1st February, "
 "please select 1st February"
@@ -595,7 +610,7 @@ msgstr ""
 "Varış tarihi (Örneğin: İlk gününüz (konaklama için) 1 Şubat ise),Lütfen 1 "
 "Şubat'ı seçin"
 
-#: userprofile/forms.py:287
+#: userprofile/forms.py:289
 msgid ""
 "Departure Date (Example: If you will stay at 3rd February, please select 3rd "
 "February)"
@@ -603,103 +618,140 @@ msgstr ""
 "Ayrılış Tarihi (Örneğin: Eğer 3 Şubat'ta konaklayacaksanız, lütfen 3 Şubat'ı "
 "seçin)"
 
-#: userprofile/forms.py:299
+#: userprofile/forms.py:301
 msgid "Can't be prior to Arrival Date"
 msgstr "Varış Tarihinden önce olamaz"
 
-#: userprofile/models.py:28
+#: userprofile/models.py:19
+msgid "Public"
+msgstr "Kamu"
+
+#: userprofile/models.py:20
+#| msgid "Arrival Date"
+msgid "Private"
+msgstr "Özel"
+
+#: userprofile/models.py:21
+msgid "Academic"
+msgstr "Akademik"
+
+#: userprofile/models.py:22
+msgid "Unoccupied"
+msgstr "İşsiz"
+
+#: userprofile/models.py:26
+msgid "Middle School"
+msgstr "Ortaokul"
+
+#: userprofile/models.py:27
+msgid "High School"
+msgstr "Lise"
+
+#: userprofile/models.py:29
+msgid "Master"
+msgstr "Yüksek Lisans"
+
+#: userprofile/models.py:30
+msgid "Doctorate"
+msgstr "Doktora"
+
+#: userprofile/models.py:31
+msgid "Not a Student"
+msgstr "Öğrenci Değil"
+
+#: userprofile/models.py:44
 msgid "User Verification"
 msgstr "Kullanıcı Doğrulama"
 
-#: userprofile/models.py:29
+#: userprofile/models.py:45
 msgid "User Verifications"
 msgstr "Kullancı Doğrulama"
 
-#: userprofile/models.py:38
+#: userprofile/models.py:54
 msgid "Birth Date"
 msgstr "Doğum Tarihi"
 
-#: userprofile/models.py:40
+#: userprofile/models.py:56
 msgid "Foreign Identity Number"
 msgstr "Yabancı Kimlik No"
 
-#: userprofile/models.py:41
+#: userprofile/models.py:57
 msgid "Male"
 msgstr "Erkek"
 
-#: userprofile/models.py:41
+#: userprofile/models.py:57
 msgid "Female"
 msgstr "Kadın"
 
-#: userprofile/models.py:44
+#: userprofile/models.py:60
 msgid "Home Address"
 msgstr "Ev Adresi"
 
-#: userprofile/models.py:53
+#: userprofile/models.py:71
 msgid "Work Experience"
 msgstr "Daha önce çalışılan/Staj yapılan yerler"
 
-#: userprofile/models.py:55
+#: userprofile/models.py:73
 msgid "Can Apply"
 msgstr "Başvuru yapabilir mi?"
 
-#: userprofile/models.py:56
+#: userprofile/models.py:74
 msgid "Profile Picture"
 msgstr "Foto"
 
-#: userprofile/models.py:57
+#: userprofile/models.py:75
 msgid "Belge Ekle"
 msgstr ""
 
-#: userprofile/models.py:66
+#: userprofile/models.py:84
 msgid "User Profiles"
 msgstr "Kullanıcı Profilleri"
 
-#: userprofile/models.py:70
+#: userprofile/models.py:88
 msgid "Note"
 msgstr "Not"
 
-#: userprofile/models.py:76
+#: userprofile/models.py:94
 msgid "Label"
 msgstr "Etiket"
 
-#: userprofile/models.py:82
+#: userprofile/models.py:100
 msgid "Trainess Note"
 msgstr "Katılımcı Notu"
 
-#: userprofile/models.py:83
+#: userprofile/models.py:101
 msgid "Trainess Notes"
 msgstr "Katılımcı Notları"
 
-#: userprofile/models.py:88 userprofile/models.py:105
+#: userprofile/models.py:106 userprofile/models.py:123
 msgid "User Type"
 msgstr "Kullanıcı Tipi"
 
-#: userprofile/models.py:98
+#: userprofile/models.py:116
 msgid "Accommodation"
 msgstr "Konaklama Seçeneği"
 
-#: userprofile/models.py:99
+#: userprofile/models.py:117
 msgid "Accommodations"
 msgstr "Konaklama Seçenekleri"
 
-#: userprofile/models.py:113
+#: userprofile/models.py:131
 msgid "Participant Accommodation Preference"
 msgstr "Katılımcı Konaklama Tercihi"
 
-#: userprofile/models.py:114
+#: userprofile/models.py:132
 msgid "Participant Accommodation Preferences"
 msgstr "Katılımcı Konaklama Tercihleri"
 
-#: userprofile/models.py:128 userprofile/models.py:129
+#: userprofile/models.py:146 userprofile/models.py:147
 msgid "Instructor Additional Information"
 msgstr "Eğitmen Ek Bilgileri"
 
-#: userprofile/models.py:141
+#: userprofile/models.py:159
 msgid "Trainess Answer for Classic Question"
 msgstr "Klasik Soruya Katılımcının Cevabı"
 
-#: userprofile/models.py:142
+#: userprofile/models.py:160
 msgid "Trainess Answers for Classic Questions "
 msgstr "Klasik Sorulara Katılımcıların Cevapları"
 
@@ -781,85 +833,3 @@ msgstr "Parola sıfırlama işlemi başarısız"
 #: userprofile/views.py:352
 msgid "Email field can not be empty"
 msgstr "E-posta alanı boş olamaz"
-
-#, fuzzy
-#~| msgid "Site Name"
-#~ msgid "Site Maps"
-#~ msgstr "Site Adı"
-
-#, fuzzy
-#~| msgid "Organisation"
-#~ msgid "Syndication"
-#~ msgstr "Kurum"
-
-#, fuzzy
-#~| msgid "Email adress"
-#~ msgid "Enter a valid email address."
-#~ msgstr "E-posta adresi"
-
-#, fuzzy
-#~| msgid "Email field can not be empty"
-#~ msgid "This field cannot be null."
-#~ msgstr "E-posta alanı boş olamaz"
-
-#, fuzzy
-#~| msgid "Email field can not be empty"
-#~ msgid "This field cannot be blank."
-#~ msgstr "E-posta alanı boş olamaz"
-
-#, fuzzy
-#~| msgid "Description"
-#~ msgid "Duration"
-#~ msgstr "Açıklama"
-
-#, fuzzy
-#~| msgid "Email adress"
-#~ msgid "Email address"
-#~ msgstr "E-posta adresi"
-
-#, fuzzy
-#~| msgid "Address"
-#~ msgid "IPv4 address"
-#~ msgstr "Adres"
-
-#, fuzzy
-#~| msgid "Address"
-#~ msgid "IP address"
-#~ msgstr "Adres"
-
-#, fuzzy
-#~| msgid "Note"
-#~ msgid "No"
-#~ msgstr "Not"
-
-#, fuzzy
-#~| msgid "Afternoon"
-#~ msgid "noon"
-#~ msgstr "Öğleden Sonra"
-
-#, fuzzy
-#~| msgid "Morning"
-#~ msgid "Mon"
-#~ msgstr "Sabah"
-
-#, fuzzy
-#~| msgid "Day"
-#~ msgid "May"
-#~ msgstr "Gün"
-
-#, fuzzy
-#~| msgid "Day"
-#~ msgid "may"
-#~ msgstr "Gün"
-
-#, fuzzy
-#~| msgid "Day"
-#~ msgctxt "abbrev. month"
-#~ msgid "May"
-#~ msgstr "Gün"
-
-#, fuzzy
-#~| msgid "Day"
-#~ msgctxt "alt. month"
-#~ msgid "May"
-#~ msgstr "Gün"

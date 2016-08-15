@@ -3,6 +3,10 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as AuthUserAdmin
 from django.contrib.auth.models import User
+from django.utils.translation import ugettext_lazy as _
+
+
+from models import Site
 from userprofile.models import InstructorInformation, UserProfile, Accommodation, UserAccomodationPref, \
     UserVerification, TrainessNote
 from training.models import Course
@@ -39,9 +43,24 @@ class UserProfileInline(admin.StackedInline):
     extra = 0
 
 
+class UserSiteFilter(admin.SimpleListFilter):
+    title = _('Trainees Site')
+
+    parameter_name = 'treessite'
+
+    def lookups(self, request, model_admin):
+        return User.objects.all().values_list("userprofile__trainess__site__id", "userprofile__trainess__site__name").distinct()
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(userprofile__trainess__site__in=self.value())
+        else:
+            return queryset
+
 @admin.register(User)
 class UserAdmin(AuthUserAdmin):
     list_display = ['username', 'first_name', 'last_name', 'tckimlikno', 'gender']
+    list_filter = AuthUserAdmin.list_display + (UserSiteFilter,)
     search_fields = ('username', 'first_name', 'last_name', 'userprofile__tckimlikno')
     actions = [make_needs_document, remove_needs_document]
     inlines = [
