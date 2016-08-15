@@ -289,6 +289,8 @@ class InstructorInformationForm(ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+        self.site = kwargs.pop('site', None)
+        self.request = kwargs.pop('request')
         super(InstructorInformationForm, self).__init__(*args, **kwargs)
         for field in self.fields:
             self.fields[field].required = True
@@ -299,3 +301,9 @@ class InstructorInformationForm(ModelForm):
         if self.cleaned_data["departure_date"] < self.cleaned_data["arrival_date"]:
             raise ValidationError(_("Can't be prior to Arrival Date"))
         return self.cleaned_data["departure_date"]
+    
+    def save(self, commit=True):
+        if self.site is not None:
+            self.instance.site = self.site
+        self.instance.user = self.request.user.userprofile
+        return super(InstructorInformationForm, self).save(commit)
