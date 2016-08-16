@@ -4,11 +4,6 @@ abkayit/documents/*
 .project
 .pydevproject
 .settings/
-abkayit/userprofile/migrations/
-abkayit/seminar/migrations/
-abkayit/abkayit/migrations/
-abkayit/training/migrations/
-abkayit/mailing/migrations/
 */__init__.py
 abkayit/static/images/*
 abkayit/abkayit/settings.py
