@@ -26,12 +26,13 @@ from userprofile.models import UserProfile, TrainessNote, TrainessClassicTestAns
 from userprofile.forms import InstProfileForm, CreateInstForm
 from userprofile.userprofileops import UserProfileOPS
 
-from training.models import Course, TrainessCourseRecord
+from training.models import Course, TrainessCourseRecord, TrainessParticipation
 from training.forms import CreateCourseForm, ParticipationForm, AddTrainessForm
 from training.tutils import get_approve_start_end_dates_for_inst, save_course_prefferences, applytrainerselections
 from training.tutils import get_approve_start_end_dates_for_tra, get_additional_pref_start_end_dates_for_trainess
 from training.tutils import get_approved_trainess, get_trainess_by_course, is_trainess_approved_any_course, \
-    gettestsofcourses, cancel_all_prefs, get_approve_first_start_last_end_dates_for_inst
+    gettestsofcourses, cancel_all_prefs, get_approve_first_start_last_end_dates_for_inst, daterange, \
+    getparticipationforms_by_date
 
 log = logging.getLogger(__name__)
 
@@ -202,7 +203,7 @@ def approve_course_preference(request):
                                                                        consentemailsent=True,
                                                                        course__site__is_active=True)
             if not recordapprovedbyinst:
-                
+
                 if first_start_date_inst.start_date <= now < last_end_date_inst.end_date:
                     data['note'] = "Başvurular değerlendirilmektedir. En geç %s tarihine kadar sonuçları burada" \
                                    " görebilirsiniz." % last_end_date_inst.end_date.strftime("%d-%m-%Y")
@@ -339,11 +340,15 @@ def statistic(request):
                 TrainessCourseRecord.objects.filter(course__site__is_active=True,
                                                     trainess__university__contains=university[0]).order_by(
                     "trainess").values_list("trainess").distinct())))
-            data['statistic_by_university_for_approved'].append((university[0],len(TrainessCourseRecord.objects.filter(course__site__is_active=True,trainess__university__contains=university[0],approved=True).order_by("trainess").values_list("trainess").distinct()))) 
-        #data['statistic_by_university'] = sorted(data['statistic_by_university'], key=lambda x: (x[1], x[1]),
-        #                                         reverse=True)
+            data['statistic_by_university_for_approved'].append((university[0], len(
+                TrainessCourseRecord.objects.filter(course__site__is_active=True,
+                                                    trainess__university__contains=university[0],
+                                                    approved=True).order_by("trainess").values_list(
+                    "trainess").distinct())))
+            # data['statistic_by_university'] = sorted(data['statistic_by_university'], key=lambda x: (x[1], x[1]),
+        # reverse=True)
 
-        #data['statistic_by_university_for_approved'] = sorted(data['statistic_by_university_for_approved'],
+        # data['statistic_by_university_for_approved'] = sorted(data['statistic_by_university_for_approved'],
         #                                                      key=lambda x: (x[1], x[1]),
         #                                                      reverse=True)
 
@@ -501,20 +506,38 @@ def participationstatuses(request):
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
     data = getsiteandmenus(request)
     data['allcourses'] = Course.objects.filter(site=data['site'])
+    data['daylist'] = list(daterange(data['site'].event_start_date, data['site'].event_end_date))
     data['note'] = "İşlem yapmak istediğiniz kursu seçiniz."
     return render_to_response('training/participationstatuses.html', data, context_instance=RequestContext(request))
 
 
 @staff_member_required
-def editparticipationstatusebycourse(request, courseid):
+def editparticipationstatusebycourse(request, courseid, date):
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
     data = getsiteandmenus(request)
-    data['courserecords'] = TrainessCourseRecord.objects.filter(course__pk=int(courseid), approved=True)
+    courserecords = TrainessCourseRecord.objects.filter(course__pk=int(courseid), approved=True)
+    data['courserecords'] = {}
+    for courserecord in courserecords:
+        data['courserecords'][courserecord] = getparticipationforms_by_date(courserecord, date)
+    if request.POST:
+        for courserecord in courserecords:
+            morning = request.POST.get("participation" + str(courserecord.pk) + str(date) + "-morning")
+            afternoon = request.POST.get("participation" + str(courserecord.pk) + str(date) + "-afternoon")
+            evening = request.POST.get("participation" + str(courserecord.pk) + str(date) + "-evening")
+            tp = TrainessParticipation.objects.filter(courserecord=courserecord, day=str(date)).first()
+            if tp:
+                tp.morning = morning
+                tp.afternoon = afternoon
+                tp.evening = evening
+                tp.save()
+            else:
+                trainessp = TrainessParticipation(courserecord=courserecord, day=str(date), morning=morning,
+                                                  afternoon=afternoon, evening=evening)
+                trainessp.save()
+            data['courserecords'][courserecord] = getparticipationforms_by_date(courserecord, date)
     data['note'] = "Yoklama bilgilerini girmek için kullanıcı profiline gidiniz."
+    data['date'] = date
     return render_to_response('training/courseparstatus.html', data, context_instance=RequestContext(request))
-
-
-#  submitandregister, new_course, edit_course viewlari kullanılmıyor.
 
 
 @login_required

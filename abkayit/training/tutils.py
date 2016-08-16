@@ -250,7 +250,7 @@ def daterange(start_date, end_date):
 
 def getparticipationforms(site, courserecord):
     rows = []
-    for date in range(1, int((site.event_end_date - site.event_start_date).days)+2):
+    for date in range(1, int((site.event_end_date - site.event_start_date).days) + 2):
         try:
             tp = TrainessParticipation.objects.get(courserecord=courserecord, day=str(date))
             rows.append(ParticipationForm(instance=tp, prefix="participation" + str(date)))
@@ -258,6 +258,17 @@ def getparticipationforms(site, courserecord):
             rows.append(ParticipationForm(initial={'courserecord': courserecord.pk, 'day': str(date)},
                                           prefix="participation" + str(date)))
     return rows
+
+
+def getparticipationforms_by_date(courserecord, date):
+    try:
+        tp = TrainessParticipation.objects.get(courserecord=courserecord, day=str(date))
+
+        form = ParticipationForm(instance=tp, prefix="participation" + str(courserecord.pk) + str(date))
+    except ObjectDoesNotExist as e:
+        form = ParticipationForm(initial={'courserecord': courserecord.pk, 'day': str(date)},
+                                 prefix="participation" + str(courserecord.pk) + str(date))
+    return form
 
 
 def is_trainess_approved_anothercourse(trainess, cur_pref_order):
@@ -339,12 +350,12 @@ def cancel_all_prefs(trainess, cancelnote, site, ruser, d):
                                                                   trainess=trainess)
     now = datetime.date.today()
     try:
-        context = {"trainess": trainess, "site": site, "cancelnote":cancelnote}
+        context = {"trainess": trainess, "site": site, "cancelnote": cancelnote}
         try:
             context['recipientlist'] = REPORT_RECIPIENT_LIST
             context['course_prefs'] = trainess_course_records
             approvedpref = TrainessCourseRecord.objects.filter(course__site__is_active=True, trainess=trainess,
-                                                            approved=True, consentemailsent=True)
+                                                               approved=True, consentemailsent=True)
             if site.application_end_date < now < site.event_start_date:
                 if approvedpref:
                     context['recipientlist'].extend(approvedpref[0].course.authorized_trainer.all().values_list(

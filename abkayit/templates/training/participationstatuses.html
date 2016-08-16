@@ -11,16 +11,22 @@
             <th>{% trans "Submission ID" %}</th>
 	        <th>{% trans "Course Name" %}</th>
 	        <th>{% trans "Trainers" %}</th>
+			<th>{% trans "Days for participation status" %}</th>
 	    </tr>
 	</thead>
 	<tbody>
 	{% for course in allcourses %}
-		<tr href='{% url "editparticipationstatusebycourse" course.pk %}' class="clickableRow">
+
             <th>{{course.no}}</th>
 			<th>{{course.name}}</th>
 			<th>
 				{% for t in course.trainer.all %}
 					{{t.user}} </br>
+				{% endfor %}
+			</th>
+			<th>
+				{% for date in daylist %}
+					<a href="{% url 'editparticipationstatusebycourse' course.pk forloop.counter %}">{{ forloop.counter }}. Gun</a>
 				{% endfor %}
 			</th>
 

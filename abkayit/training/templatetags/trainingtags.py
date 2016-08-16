@@ -8,6 +8,7 @@ from abkayit.settings import REQUIRE_TRAINESS_APPROVE
 from training.models import TrainessCourseRecord
 from userprofile.models import TrainessClassicTestAnswers
 from userprofile.userprofileops import UserProfileOPS
+from training.tutils import getparticipationforms, getparticipationforms_by_date
 
 register = template.Library()
 
@@ -69,7 +70,8 @@ def isdategtnow_body(datedict, key, t, course, user):
     if adate:
         if adate.end_date >= now >= adate.start_date and UserProfileOPS.is_authorized_inst(
                 user.userprofile) and not t.consentemailsent:
-            approvedprefs = TrainessCourseRecord.objects.filter(trainess=t.trainess, course__site__is_active=True, approved=True)
+            approvedprefs = TrainessCourseRecord.objects.filter(trainess=t.trainess, course__site__is_active=True,
+                                                                approved=True)
             is_selectable = True
             priviliged_pref = None
             for approvedpref in approvedprefs:
@@ -103,7 +105,6 @@ def getconsentmailfield(tcr, user):
         return dom
     else:
         return "Gönderilmedi"
-
 
 
 @register.simple_tag(name="getanswer")
@@ -145,8 +146,31 @@ def gettrainessapprovedpref(courserecord):
 def getallprefs(courserecord):
     trainess_all_prefs = TrainessCourseRecord.objects.filter(course__site__is_active=True,
                                                              trainess=courserecord.trainess).exclude(
-                                                             pk=courserecord.pk)
+        pk=courserecord.pk)
     html = ""
     for pref in trainess_all_prefs:
         html += "<div> %s.tercihi - %s (%s) </br></div>" % (pref.preference_order, pref.course.name, pref.course.no)
     return html
+
+
+@register.simple_tag(name="getparticipationheader")
+def getparticipationheader(site):
+    html = ""
+    for date in range(1, int((site.event_end_date - site.event_start_date).days) + 2):
+        html += "<th>%s. gun</th>" % str(date)
+    return html
+
+
+@register.simple_tag(name="getparforms")
+def getparforms(site, cr):
+    html = ""
+    forms = getparticipationforms(site, cr)
+    for form in forms:
+        html += "<td>" + form.as_p() + "</td>"
+    return html
+
+
+@register.simple_tag(name="getparformsbydate")
+def getparformsbydate(cr, date):
+    form = getparticipationforms_by_date(cr, date)
+    return form.as_ul()

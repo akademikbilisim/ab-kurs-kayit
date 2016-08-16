@@ -48,7 +48,7 @@ class TrainessCourseRecordAdmin(admin.ModelAdmin):
 @admin.register(TrainessParticipation)
 class TrainessParticipationAdmin(admin.ModelAdmin):
     list_display = ['get_site', 'day', 'get_trainess_name', 'get_trainess_username', 'id']
-    search_fields = ('courserecord__course__name', 'trainess__user__username')
+    search_fields = ('courserecord__course__name', 'courserecord__trainess__user__username')
     list_filter = ('courserecord__course__site',)
 
     def get_trainess_name(self, obj):
