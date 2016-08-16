@@ -26,6 +26,7 @@ class Site(models.Model):
     application_end_date = models.DateField(verbose_name=_("Course Application End Date"), default=datetime.now)
     event_start_date = models.DateField(verbose_name=_("Event Start Date"), default=datetime.now)
     event_end_date = models.DateField(verbose_name=_("Event End Date"), default=datetime.now)
+    docs_end_date = models.DateField(verbose_name=_("Docs End Date"), default=datetime.now)
 
     def __unicode__(self):
         return "%s %s" % (self.name, self.year)
