@@ -170,6 +170,8 @@ class StuProfileForm(ModelForm):
             'country': CountrySelectWidget(attrs={'placeholder': _('Nationality')}),
             'title': forms.TextInput(attrs={'placeholder': _('Title'), 'class': 'form-control'}),
             'organization': forms.TextInput(attrs={'placeholder': _('Organization'), 'class': 'form-control'}),
+            'occupation': forms.Select(attrs={'placeholder': _('Occupation'), 'class': 'form-control'}),
+            'current_education': forms.Select(attrs={'placeholder': _('Current Education'), 'class': 'form-control'}),
             'university': forms.Select(attrs={'placeholder': _('University'), 'class': 'form-control'}),
             'department': forms.TextInput(attrs={'placeholder': _('Department'), 'class': 'form-control'}),
             'website': forms.TextInput(attrs={'placeholder': _('Website'), 'class': 'form-control'}),
