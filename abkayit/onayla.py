@@ -3,6 +3,7 @@
 import sys
 import os
 import django
+import re
 
 
 def onayla():
@@ -99,15 +100,29 @@ def push_note_to_trainess(note, filename):
         print "note and filename can not be empty!!"
 
 
-if __name__ == "__main__":
-    try:
-        path = sys.argv[1]
-        if path not in sys.path:
-            sys.path.append(path)
-        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "abkayit.settings")
-        django.setup()
-        # karalisteimport()
-        # push_note_to_trainess("note", "filename")
+def import_participation(filename):
+    from training.models import TrainessCourseRecord, TrainessParticipation
+    with open(filename) as f:
+        tcrlist = f.readlines()  # trainess course record id listesi
+        for tcrno in tcrlist:
+            tcrnoint = int(re.search(r'\d+', tcrno.rstrip()).group())
+            tcr = TrainessCourseRecord.objects.get(pk=tcrnoint)
+            print tcr
+            for i in range(1, 17):
+                print i
+                trp = TrainessParticipation(courserecord=tcr, day=i, morning='2', afternoon='2', evening='2')
+                trp.save()
 
-    except:
-        print "Project path can not be empty!"
+
+if __name__ == "__main__":
+    # try:
+    path = sys.argv[1]
+    if path not in sys.path:
+        sys.path.append(path)
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "abkayit.settings")
+    django.setup()
+    # karalisteimport()
+    # push_note_to_trainess("note", "filename")
+    import_participation("lyk2016_kabuledilenler_tercihno.csv")
+    # except:
+    #    print "Project path can not be empty!"
