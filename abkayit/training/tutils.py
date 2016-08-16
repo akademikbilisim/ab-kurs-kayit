@@ -250,13 +250,13 @@ def daterange(start_date, end_date):
 
 def getparticipationforms(site, courserecord):
     rows = []
-    for date in daterange(site.event_start_date, site.event_end_date):
+    for date in range(1, int((site.event_end_date - site.event_start_date).days)+2):
         try:
-            tp = TrainessParticipation.objects.get(courserecord=courserecord.pk, day=str(date))
-            rows.append(ParticipationForm(instance=tp, prefix="participation" + str(date.day)))
+            tp = TrainessParticipation.objects.get(courserecord=courserecord, day=str(date))
+            rows.append(ParticipationForm(instance=tp, prefix="participation" + str(date)))
         except:
             rows.append(ParticipationForm(initial={'courserecord': courserecord.pk, 'day': str(date)},
-                                          prefix="participation" + str(date.day)))
+                                          prefix="participation" + str(date)))
     return rows
 
 

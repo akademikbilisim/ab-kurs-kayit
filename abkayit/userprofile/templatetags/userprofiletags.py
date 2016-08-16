@@ -7,7 +7,7 @@ from django import template
 
 from abkayit.models import ApprovalDate, Site
 
-from userprofile.models import TrainessClassicTestAnswers
+from userprofile.models import TrainessClassicTestAnswers, InstructorInformation
 from userprofile.userprofileops import UserProfileOPS
 
 from training.models import Course, TrainessCourseRecord
@@ -65,14 +65,15 @@ def oldeventprefs(tuser):
                 html += "<section><p>" + site.name + " - " + site.year + "</p><ul>"
                 for top in trainessoldprefs:
                     if top.approved:
-                        html += "<li>" + str(top.preference_order) + ".tercih: " + top.course.name + " (Onaylanmış) </li>"
+                        html += "<li>" + str(
+                            top.preference_order) + ".tercih: " + top.course.name + " (Onaylanmış) </li>"
                     else:
                         html += "<li>" + str(top.preference_order) + ".tercih: " + top.course.name + " </li>"
                 html += "</ul></section>"
         if html:
             html = "<h4>Eski Tercihleri: </h4>" + html
     except Exception as e:
-        log.error(e.message, extra={'clientip':'','user':''})
+        log.error(e.message, extra={'clientip': '', 'user': ''})
     return html
 
 
@@ -99,6 +100,7 @@ def getoperationsmenu(uprofile):
 
     return html
 
+
 @register.simple_tag(name="instinfo")
 def instinfo(uprofile):
     html = ""
@@ -106,4 +108,17 @@ def instinfo(uprofile):
         html += "<li><a href=\"/accounts/egitmen/bilgi\"><i class=\"fa fa-info-circle fa-fw\"></i> Egitmen Bilgileri </a></li>"
 
     return html
-#
+
+
+@register.simple_tag(name="getinstinfo")
+def getinstinfo(uprofile, site):
+    html = ""
+    if UserProfileOPS.is_instructor(uprofile):
+        try:
+            inst_info = InstructorInformation.objects.get(user=uprofile, site=site)
+            html = "<td>%s</td><td>%s</td><td>%s</td><td>%s</td>" % (
+                inst_info.transportation, inst_info.arrival_date, inst_info.departure_date,
+                inst_info.additional_information)
+        except Exception as e:
+            return "<td></td><td></td><td></td><td></td>"
+    return html

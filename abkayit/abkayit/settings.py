@@ -65,6 +65,10 @@ GENDER = {'E': 'Erkek', 'K': 'Kadin', 'H': 'Hepsi'}
 '''
 TRANSPORTATION = {'0': 'Uçak', '1': 'Otobüs', '2': 'Araba', '3': 'Diğer'}
 
+CITIES_LIGHT_TRANSLATION_LANGUAGES = ['tr', 'en']
+CITIES_LIGHT_INCLUDE_COUNTRIES = ['TR']
+CITIES_LIGHT_INCLUDE_CITY_TYPES = ['ADM1','ADM2']
+
 CKEDITOR_UPLOAD_PATH = "/static/"
 CKEDITOR_JQUERY_URL = '//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'
 
@@ -122,6 +126,7 @@ INSTALLED_APPS = (
     'ckeditor_uploader',
     'django_countries',
     'mailing',
+    'cities_light',
 )
 
 MIDDLEWARE_CLASSES = (

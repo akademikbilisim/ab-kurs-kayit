@@ -60,7 +60,7 @@ class UserSiteFilter(admin.SimpleListFilter):
 @admin.register(User)
 class UserAdmin(AuthUserAdmin):
     list_display = ['username', 'first_name', 'last_name', 'tckimlikno', 'gender']
-    list_filter = AuthUserAdmin.list_display + (UserSiteFilter,)
+    list_filter = AuthUserAdmin.list_filter + (UserSiteFilter,)
     search_fields = ('username', 'first_name', 'last_name', 'userprofile__tckimlikno')
     actions = [make_needs_document, remove_needs_document]
     inlines = [

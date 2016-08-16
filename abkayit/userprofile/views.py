@@ -173,7 +173,7 @@ def createprofile(request):
 
 @login_required(login_url='/')
 @user_passes_test(active_required, login_url=reverse_lazy("active_resend"))
-def instructor_information(request):
+def instructor_information_view(request):
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
     if not request.user.userprofile:
         log.error("Kullanıcı Profili Bulunamadı", extra=d)
@@ -183,26 +183,26 @@ def instructor_information(request):
         note = _("You are not authorized to access here")
     else:
         note = _("Please enter your transformation, arrival date, departure date information")
-        instructorinformation = None
         try:
-            instructorinformation = InstructorInformation.objects.get(user=request.user.userprofile)
-            form = InstructorInformationForm(instance=instructor_information)
-        except Exception as e:
+            instructorinformation = InstructorInformation.objects.get(user=request.user.userprofile, site=data['site'])
+            form = InstructorInformationForm(instance=instructorinformation, site=data['site'], request=request)
+
+        except ObjectDoesNotExist as e:
             log.debug("Egitmen bilgileri bulunamadi, yeni bilgiler olusturulmak icin form acilacak", extra=d)
             log.error(e.message, extra=d)
-            form = InstructorInformationForm()
+            form = InstructorInformationForm(site=data['site'], request=request)
+            instructorinformation = None
+
         if request.POST:
-            if instructorinformation:
-                form = InstructorInformationForm(request.POST, instance=instructorinformation)
+            if instructorinformation is not None:
+                form = InstructorInformationForm(request.POST, instance=instructorinformation, site=data['site'], request=request)
             else:
-                form = InstructorInformationForm(request.POST)
+                form = InstructorInformationForm(request.POST, site=data['site'], request=request)
             if form.is_valid():
                 try:
-                    form.instance.user = request.user.userprofile
                     instructor_info = form.save(commit=True)
-                    instructor_info.user = request.user.userprofile
-                    instructor_info.save()
                     note = _("Your information saved successfully")
+                    log.info("%s egitmeni ek bilgilerini guncelledi" % instructor_info.user.user.username, extra=d)
                 except Exception as e:
                     note = _("An error occurred while saving your information")
                     log.error(e.message, extra=d)
@@ -262,7 +262,7 @@ def get_all_trainers_view(request):
         data['trainers'] = set(trainers)
     except Exception as e:
         log.error(e.message, extra=d)
-    return render_to_response("userprofile/alltrainess.html", data, context_instance=RequestContext(request))
+    return render_to_response("userprofile/alltrainers.html", data, context_instance=RequestContext(request))
 
 
 def active(request, key):

@@ -138,6 +138,7 @@ class InstructorInformation(models.Model):
     additional_information = models.CharField(verbose_name=_("Additional Information"), max_length=300, null=True)
     arrival_date = models.DateField(verbose_name=_("Arrival Date"), default=datetime.date.today)
     departure_date = models.DateField(verbose_name=_("Departure Date"), default=datetime.date.today)
+    site = models.ForeignKey(Site)
 
     def __unicode__(self):
         return self.user.user.username

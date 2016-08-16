@@ -10,6 +10,8 @@ Gereksinimler:
 
 - python-devel
 
+- postgresql-devel
+
 - Postgresql 9.2
 
 - postgresql-server

@@ -101,7 +101,7 @@
                 <form name="form-control" class="span4 signup-form" method="POST">{% csrf_token %}
                     <dl class="dl-horizontal">
                         {% for form in forms %}
-                        <dt> {{form.initial.day}}: </dt>
+                        <dt> {{form.initial.day}}. gün: </dt>
                         <dd>{{ form }}</dd>
                         {% endfor %}
                         <dd><input type="submit" name="save" id="save" class="btn btn-primary" value="{% trans 'Save' %}"></dd>
