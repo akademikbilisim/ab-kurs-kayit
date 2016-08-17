@@ -248,6 +248,35 @@ def daterange(start_date, end_date):
         yield start_date + timedelta(n)
 
 
+def getoperator(totalpar, value, time, coursehour):
+    '''
+        2: Katildi
+        1: Yarisina katildi
+        0: Katilmadi
+        -1: Kurs Yapilmadi
+        totalpar: kullanicinin toplam katilim saati
+        value: kullanicinin o gun ve saat icin katilip katilmadigi
+        time: sabah, oglen veya aksamsa eklenecek veya çıkarılacak saat miktari
+        coursehour: yapilan ders saati. kurs yapılmadiysa tahmini kurs saatinden çıkariliyor.
+    '''
+    return {"2": totalpar + time, "1": totalpar + time / 2.0}.get(value, totalpar),\
+           {"-1": coursehour - time}.get(value, coursehour)
+
+
+def calculate_participations(trainessparticipations, site):
+    totalcoursehour = (site.morning + site.afternoon + site.evening) * (
+    int((site.event_end_date - site.event_start_date).days) + 1)
+    totalparticipationhour = 0.0
+    for tp in trainessparticipations:
+        totalparticipationhour, totalcoursehour = getoperator(totalparticipationhour, tp.morning, site.morning,
+                                                              totalcoursehour)
+        totalparticipationhour, totalcoursehour = getoperator(totalparticipationhour, tp.afternoon, site.afternoon,
+                                                              totalcoursehour)
+        totalparticipationhour, totalcoursehour = getoperator(totalparticipationhour, tp.evening, site.evening,
+                                                              totalcoursehour)
+    return totalparticipationhour, totalcoursehour
+
+
 def getparticipationforms(site, courserecord):
     rows = []
     for date in range(1, int((site.event_end_date - site.event_start_date).days) + 2):

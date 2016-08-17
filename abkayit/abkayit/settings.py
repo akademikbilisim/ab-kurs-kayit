@@ -30,6 +30,7 @@ EMAIL_PORT = 25
 
 SEND_REPORT = True
 REPORT_RECIPIENT_LIST = ["kamp-gelismeler@linux.org.tr"]
+
 '''
     PREFERENCE_LIMIT: Kurs tercih limiti
 '''
@@ -53,7 +54,8 @@ USER_TYPES = {"inst": "instructor", "stu": "student", "hepsi": "hepsi"}
 '''
     TRAINESS_PARTICIPATION_STATE: Kursiyerin kursa katilip katilmadigi
 '''
-TRAINESS_PARTICIPATION_STATE = [('-1', 'Kurs Yapılmadı'), ('0', 'Katılmadı'), ('1', 'Yarısına Katıldı'), ('2','Katıldı')]
+TRAINESS_PARTICIPATION_STATE = [('-1', 'Kurs Yapılmadı'), ('0', 'Katılmadı'), ('1', 'Yarısına Katıldı'),
+                                ('2', 'Katıldı')]
 
 '''
    GENDER: Profilde kullaniliyor
@@ -67,7 +69,7 @@ TRANSPORTATION = {'0': 'Uçak', '1': 'Otobüs', '2': 'Araba', '3': 'Diğer'}
 
 CITIES_LIGHT_TRANSLATION_LANGUAGES = ['tr', 'en']
 CITIES_LIGHT_INCLUDE_COUNTRIES = ['TR']
-CITIES_LIGHT_INCLUDE_CITY_TYPES = ['ADM1','ADM2']
+CITIES_LIGHT_INCLUDE_CITY_TYPES = ['ADM1', 'ADM2']
 
 CKEDITOR_UPLOAD_PATH = "/static/"
 CKEDITOR_JQUERY_URL = '//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'
@@ -154,7 +156,7 @@ DATABASES = {
         'USER': DBCONF.getdbuser(),
         'PASSWORD': DBCONF.getdbpass(),
         'HOST': DBCONF.getdbhost(),
-        'PORT'	: DBCONF.getdbport()
+        'PORT': DBCONF.getdbport()
     }
 }
 # Internationalization
@@ -175,10 +177,10 @@ DATE_FORMAT = 'dMY'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
-#STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
-   os.path.join(BASE_DIR, 'static/'),
+    os.path.join(BASE_DIR, 'static/'),
 )
 
 TEMPLATES = [

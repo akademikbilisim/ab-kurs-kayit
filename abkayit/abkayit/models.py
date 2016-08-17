@@ -27,6 +27,12 @@ class Site(models.Model):
     event_start_date = models.DateField(verbose_name=_("Event Start Date"), default=datetime.now)
     event_end_date = models.DateField(verbose_name=_("Event End Date"), default=datetime.now)
     docs_end_date = models.DateField(verbose_name=_("Docs End Date"), default=datetime.now)
+    morning = models.FloatField(verbose_name=_("Total course hours at morning for one day"),
+                                  default=3.0)
+    afternoon = models.FloatField(verbose_name=_("Total course hours at afternoon for one day"),
+                                    default=3.5)
+    evening = models.FloatField(verbose_name=_("Total course hours at evening for one day"),
+                                  default=2.5)
 
     def __unicode__(self):
         return "%s %s" % (self.name, self.year)
