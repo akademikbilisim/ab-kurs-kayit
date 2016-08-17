@@ -32,7 +32,7 @@ from training.tutils import get_approve_start_end_dates_for_inst, save_course_pr
 from training.tutils import get_approve_start_end_dates_for_tra, get_additional_pref_start_end_dates_for_trainess
 from training.tutils import get_approved_trainess, get_trainess_by_course, is_trainess_approved_any_course, \
     gettestsofcourses, cancel_all_prefs, get_approve_first_start_last_end_dates_for_inst, daterange, \
-    getparticipationforms_by_date
+    getparticipationforms_by_date, calculate_participations
 
 log = logging.getLogger(__name__)
 
@@ -292,6 +292,25 @@ def allcourseprefview(request):
     data = getsiteandmenus(request)
     data['datalist'] = TrainessCourseRecord.objects.filter(course__site=data['site'])
     return render_to_response("training/allcourseprefs.html", data, context_instance=RequestContext(request))
+
+
+@staff_member_required
+def allapprovedprefsview(request):
+    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
+    data = getsiteandmenus(request)
+    data['datalist'] = TrainessCourseRecord.objects.filter(course__site=data['site'], approved=True)
+    data['participations'] = {}
+    for tcr in data['datalist']:
+        tprs = TrainessParticipation.objects.filter(
+            courserecord=tcr)  # Bir katilimcinin bu tercihi icin yoklama kayitlari
+        if tprs:
+            totalparticipation, totalcoursehour = calculate_participations(tprs, data['site'])
+            data['participations'][tcr] = "%s saatlik kursun %s lik kısmına katildi" % (
+                totalcoursehour, totalparticipation)
+        else:
+            data['participations'][tcr] = "Bu kisinin yoklama kaydi yok"
+
+    return render_to_response("training/allapprovedprefs.html", data, context_instance=RequestContext(request))
 
 
 @staff_member_required
