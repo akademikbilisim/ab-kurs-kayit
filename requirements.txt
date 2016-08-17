@@ -8,3 +8,4 @@ pysimplesoap
 django-longerusernameandemail
 Pillow
 python-crontab
+django-cities-light
