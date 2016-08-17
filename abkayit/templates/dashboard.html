@@ -44,7 +44,10 @@
             <a href="{% url 'statistic' %}"><i class="fa fa-pie-chart fa-fw"></i> İstatistik</a>
         </li>
         <li>
-            <a href="{% url 'participationstatuses' %}"><i class="glyphicon glyphicon-check"></i>  Yoklama</a>
+            <a href="{% url 'participationstatuses' %}"><i class="glyphicon glyphicon-check"></i>  Yoklama Girişi</a>
+        </li>
+        <li>
+            <a href="{% url 'allapprovedprefs' %}"><i class="glyphicon glyphicon-check"></i>  Tum kabul edilenler</a>
         </li>
         {% else %}
         {%if user.userprofile %}

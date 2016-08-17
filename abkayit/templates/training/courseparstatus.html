@@ -23,6 +23,7 @@
                             <thead>
                             <th>Adı Soyadı</th>
                             <th>E-posta</th>
+                            <th>Profil</th>
                             <th>Sabah</th>
                             <th>Öğlen</th>
                             <th>Akşam</th>
@@ -41,6 +42,7 @@
 
                                 <td>{{ cr.trainess.user.first_name }} {{ cr.trainess.user.last_name }}</td>
                                 <td>{{ cr.trainess.user.username }}</td>
+                                <td> <a href="{% url 'showuserprofile'  cr.trainess.pk cr.pk %}" type="button">{% trans "Show Profile" %} </a></td>
                                 {%for hidden in form.hidden_fields %}
                                 {{hidden}}
                                 {%endfor%}
