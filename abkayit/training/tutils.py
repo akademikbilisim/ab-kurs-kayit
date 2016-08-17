@@ -279,7 +279,7 @@ def calculate_participations(trainessparticipations, site):
 
 def getparticipationforms(site, courserecord):
     rows = []
-    for date in range(1, int((site.event_end_date - site.event_start_date).days) + 2):
+    for date in range(1, int((site.event_end_date - site.event_start_date).days) + 1):
         try:
             tp = TrainessParticipation.objects.get(courserecord=courserecord, day=str(date))
             rows.append(ParticipationForm(instance=tp, prefix="participation" + str(date)))
