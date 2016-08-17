@@ -283,7 +283,7 @@ def getparticipationforms(site, courserecord):
         try:
             tp = TrainessParticipation.objects.get(courserecord=courserecord, day=str(date))
             rows.append(ParticipationForm(instance=tp, prefix="participation" + str(date)))
-        except:
+        except ObjectDoesNotExist as e:
             rows.append(ParticipationForm(initial={'courserecord': courserecord.pk, 'day': str(date)},
                                           prefix="participation" + str(date)))
     return rows

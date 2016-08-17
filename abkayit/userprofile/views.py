@@ -25,7 +25,7 @@ from userprofile.userprofileops import UserProfileOPS
 
 from training.tutils import getparticipationforms, cancel_all_prefs
 from training.forms import ParticipationForm
-from training.models import Course, TrainessCourseRecord
+from training.models import Course, TrainessCourseRecord, TrainessParticipation
 
 from abkayit.models import *
 from abkayit.backend import getsiteandmenus, create_verification_link, send_email_by_operation_name
@@ -472,24 +472,28 @@ def showuserprofile(request, userid, courserecordid):
                     try:
                         data['forms'] = getparticipationforms(data['site'], courserecord)
                         if "save" in request.POST:
-                            formsarevalid = []
-                            frms = []
-                            for f in data['forms']:
-                                frm = ParticipationForm(request.POST,
-                                                        prefix="participation" + str(
-                                                            datetime.strptime(f.initial['day'], '%Y-%m-%d').day))
-                                frm.courserecord = courserecord.pk
-                                frm.day = f.initial['day']
-                                formsarevalid.append(frm.is_valid())
-                                frms.append(frm)
-                            if all(formsarevalid):
-                                for f in frms:
-                                    f.save()
+                            for date in range(1, int((data['site'].event_end_date - data['site'].event_start_date).days)+1):
+                                morning = request.POST.get("participation" + str(date) + "-morning")
+                                afternoon = request.POST.get("participation" + str(date) + "-afternoon")
+                                evening = request.POST.get("participation" + str(date) + "-evening")
                                 data['note'] = 'Seçimleriniz başarıyla kaydedildi.'
-                                log.info("%s nolu kurs kaydinin yoklama kaydi girişi başarılı" % courserecord.pk, extra=d)
-                            else:
-                                data['note'] = 'Hata oluştu!'
-                                log.info("%s nolu kurs kaydinin yoklama kaydi girişi hatalı" % courserecord.pk, extra=d)
+                                log.info("%s nolu kurs kaydinin yoklama kaydi girişi başarılı" % courserecord.pk,
+                                         extra=d)
+                                try:
+                                    tp = TrainessParticipation.objects.get(courserecord=courserecord, day=str(date))
+                                    tp.morning = morning
+                                    tp.afternoon = afternoon
+                                    tp.evening = evening
+                                    tp.save()
+                                except ObjectDoesNotExist as e:
+                                    tp = TrainessParticipation(courserecord=courserecord, day=str(date),
+                                                               morning=morning, afternoon=afternoon, evening=evening)
+                                    tp.save()
+                                except:
+                                    data['note'] = 'Hata oluştu!'
+                                    log.info("%s nolu kurs kaydinin yoklama kaydi girişi hatalı" % courserecord.pk,
+                                             extra=d)
+                                data['forms'] = getparticipationforms(data['site'], courserecord)
                     except Exception as e:
                         log.error(e.message, extra=d)
         else:
