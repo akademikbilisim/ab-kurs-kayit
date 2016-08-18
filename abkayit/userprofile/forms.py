@@ -4,7 +4,6 @@ import logging
 from django import forms
 
 from django.forms.models import ModelForm
-from django.contrib.auth.models import User
 
 from django.utils.translation import ugettext_lazy as _
 from django.forms.extras.widgets import SelectDateWidget
@@ -24,7 +23,7 @@ class CreateUserForm(ModelForm):
     passwordre = forms.CharField(label=_("Confirm Password"),
                                  max_length=30,
                                  widget=forms.PasswordInput(
-                                     attrs={'placeholder': _('Confirm Password'), 'class': 'form-control'}))
+                                         attrs={'placeholder': _('Confirm Password'), 'class': 'form-control'}))
 
     class Meta:
         model = User
@@ -162,7 +161,7 @@ class StuProfileForm(ModelForm):
             'ykimlikno': forms.NumberInput(attrs={'placeholder': _('Foreigner ID No'), 'class': 'form-control'}),
             'gender': forms.Select(attrs={'placeholder': _('Gender'), 'class': 'form-control'}),
             'mobilephonenumber': forms.TextInput(
-                attrs={'placeholder': _('Mobile Phone Number'), 'class': 'form-control'}),
+                    attrs={'placeholder': _('Mobile Phone Number'), 'class': 'form-control'}),
             'address': forms.Textarea(attrs={'placeholder': _('Address'), 'class': 'form-control'}),
             'job': forms.TextInput(attrs={'placeholder': _('Job'), 'class': 'form-control'}),
             'city': forms.Select(attrs={'placeholder': _('Current City'), 'class': 'form-control'},
@@ -176,9 +175,9 @@ class StuProfileForm(ModelForm):
             'department': forms.TextInput(attrs={'placeholder': _('Department'), 'class': 'form-control'}),
             'website': forms.TextInput(attrs={'placeholder': _('Website'), 'class': 'form-control'}),
             'experience': forms.TextInput(
-                attrs={'placeholder': _('Daha önce çalışılan/Staj yapılan yerler'), 'class': 'form-control'}),
+                    attrs={'placeholder': _('Daha önce çalışılan/Staj yapılan yerler'), 'class': 'form-control'}),
             'additional_information': forms.Textarea(
-                attrs={'placeholder': _('Additional Information'), 'class': 'form-control'}),
+                    attrs={'placeholder': _('Additional Information'), 'class': 'form-control'}),
             'userpassedtest': forms.HiddenInput(),
             'user': forms.HiddenInput(),
             'needs_document': forms.HiddenInput(),
@@ -190,11 +189,10 @@ class StuProfileForm(ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        '''
-
+        """
         :param args:
         :param kwargs: ruser: profili olusturulacak kullanıcı tckimlik no dogrulamada kullanılacak.
-        '''
+        """
         self.ruser = kwargs.pop('ruser', None)
         super(StuProfileForm, self).__init__(*args, **kwargs)
         for field in self.fields:
@@ -207,6 +205,7 @@ class StuProfileForm(ModelForm):
     def clean_profilephoto(self):
         profilephoto = self.cleaned_data.get("profilephoto", False)
         if profilephoto and "profilephoto" in self.changed_data:
+            # noinspection PyUnresolvedReferences,PyProtectedMember
             if profilephoto._size > 1024 * 1024:
                 raise forms.ValidationError(_("Image file size too large > 1mb )"))
         return profilephoto
@@ -249,7 +248,7 @@ class ChangePasswordForm(ModelForm):
     passwordre = forms.CharField(label=_("Confirm Password"),
                                  max_length=30,
                                  widget=forms.PasswordInput(
-                                     attrs={'placeholder': _('Confirm Password'), 'class': 'form-control'}))
+                                         attrs={'placeholder': _('Confirm Password'), 'class': 'form-control'}))
 
     class Meta:
         model = User
@@ -277,17 +276,17 @@ class InstructorInformationForm(ModelForm):
         widgets = {
             'transportation': forms.Select(attrs={'placeholder': _('Transportation'), 'class': 'form-control'}),
             'additional_information': forms.TextInput(
-                attrs={'placeholder': _('Additional Information'), 'class': 'form-control'}),
+                    attrs={'placeholder': _('Additional Information'), 'class': 'form-control'}),
             'arrival_date': SelectDateWidget(attrs={'placeholder': _('Arrival Date')}),
             'departure_date': SelectDateWidget(attrs={'placeholder': _('Departure Date')}),
         }
         help_texts = {
             'transportation': _('Select your transportation type'),
             'additional_information': _('If you want to add additional information, please enter here'),
-            'arrival_date': _(
-                'Arrival Date (Example: If your first day at event will be 1st February, please select 1st February'),
+            'arrival_date': _('Arrival Date'
+                              ' (Example: If your first day at event will be 1st February, please select 1st February'),
             'departure_date': _(
-                'Departure Date (Example: If you will stay at 3rd February, please select 3rd February)')
+                    'Departure Date (Example: If you will stay at 3rd February, please select 3rd February)')
         }
 
     def __init__(self, *args, **kwargs):
@@ -303,7 +302,7 @@ class InstructorInformationForm(ModelForm):
         if self.cleaned_data["departure_date"] < self.cleaned_data["arrival_date"]:
             raise ValidationError(_("Can't be prior to Arrival Date"))
         return self.cleaned_data["departure_date"]
-    
+
     def save(self, commit=True):
         if self.site is not None:
             self.instance.site = self.site

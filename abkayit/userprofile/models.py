@@ -14,12 +14,11 @@ from abkayit.settings import USER_TYPES, UNIVERSITIES, GENDER, TRANSPORTATION
 
 from abkayit.models import Site, TextBoxQuestions
 
-
 OCCUPATIONS = [
-    ("kamu",  _("Public")),
-    ("ozel",  _("Private")),
-    ("akdm",  _("Academic")),
-    ("none",    _("Unoccupied")),
+    ("kamu", _("Public")),
+    ("ozel", _("Private")),
+    ("akdm", _("Academic")),
+    ("none", _("Unoccupied")),
 ]
 
 EDUCATIONS = [
@@ -28,8 +27,10 @@ EDUCATIONS = [
     ("univ", _("University")),
     ("yksk", _("Master")),
     ("dktr", _("Doctorate")),
-    ("none",   _("Not a Student")),
+    ("none", _("Not a Student")),
 ]
+
+
 class UserVerification(models.Model):
     user = models.ForeignKey(User)
     activation_key = models.CharField(max_length=40, null=True)
@@ -159,4 +160,3 @@ class TrainessClassicTestAnswers(models.Model):
     class Meta:
         verbose_name = _("Trainess Answer for Classic Question")
         verbose_name_plural = _("Trainess Answers for Classic Questions ")
-

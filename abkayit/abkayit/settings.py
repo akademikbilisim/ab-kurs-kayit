@@ -129,6 +129,8 @@ INSTALLED_APPS = (
     'django_countries',
     'mailing',
     'cities_light',
+    'bootstrap3',
+    'django_extensions',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -136,9 +138,11 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'abkayit.middleware.extra.LogVariablesMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'abkayit.middleware.site.CurrentSiteMiddleware',
 )
 ROOT_URLCONF = 'abkayit.urls'
 
@@ -148,6 +152,8 @@ WSGI_APPLICATION = 'abkayit.wsgi.application'
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
 DBCONF = DBconfig()
+
+LOGIN_REDIRECT_URL = "/"
 
 DATABASES = {
     'default': {
@@ -199,7 +205,9 @@ TEMPLATES = [
                 'django.template.context_processors.media',
                 'django.template.context_processors.static',
                 'django.template.context_processors.tz',
+                'django.template.context_processors.request',
                 'django.contrib.messages.context_processors.messages',
+                'abkayit.context_processors.menu',
             ],
         },
     },

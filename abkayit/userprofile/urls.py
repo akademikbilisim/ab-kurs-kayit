@@ -3,12 +3,11 @@
 from django.conf.urls import patterns, url
 
 urlpatterns = patterns('userprofile.views',
-                       # register,login,logout
+                       # register
                        url(r'^kayit', 'subscribe', name="subscribe"),
                        url(r'^profil', 'createprofile', name="createprofile"),
                        url(r'^getaccomodations/(?P<usertype>[a-zA-Z]+)/(?P<gender>[a-zA-Z]+)', 'getaccomodations',
                            name="getaccomodations"),
-                       url(r'^logout', 'logout', name="logout"),
 
                        # email verification
                        url(r'^active/done/(?P<key>\w+)/$', 'active', name="active"),

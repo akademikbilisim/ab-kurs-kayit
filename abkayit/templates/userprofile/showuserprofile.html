@@ -72,7 +72,7 @@
                     <dt>Evrak:</dt>
                     <dd>
                         {% if tuser.document %}
-                        <a href="https://{{site.home_url}}{{ tuser.document.url }}">{{ tuser.document }}</a>
+                        <a href="https://{{ request.site.home_url}}{{ tuser.document.url }}">{{ tuser.document }}</a>
                         {% else %}
                             Belge yok
                         {% endif %}

@@ -60,13 +60,13 @@ def oldeventprefs(tuser):
 
         for site in sites:
             trainessoldprefs = TrainessCourseRecord.objects.filter(trainess=tuser, course__site=site).order_by(
-                'preference_order')
+                    'preference_order')
             if trainessoldprefs:
                 html += "<section><p>" + site.name + " - " + site.year + "</p><ul>"
                 for top in trainessoldprefs:
                     if top.approved:
                         html += "<li>" + str(
-                            top.preference_order) + ".tercih: " + top.course.name + " (Onaylanmış) </li>"
+                                top.preference_order) + ".tercih: " + top.course.name + " (Onaylanmış) </li>"
                     else:
                         html += "<li>" + str(top.preference_order) + ".tercih: " + top.course.name + " </li>"
                 html += "</ul></section>"

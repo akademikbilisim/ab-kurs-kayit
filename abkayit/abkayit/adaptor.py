@@ -11,7 +11,6 @@ log = logging.getLogger(__name__)
 
 
 def send_email(subject_template, content_template, data, from_email, to_addresses):
-    d = {'clientip': '', 'user': ''}
     try:
         subject_template_instance = Template(subject_template)
         content_template_instace = Template(content_template)
@@ -21,7 +20,7 @@ def send_email(subject_template, content_template, data, from_email, to_addresse
         msg.content_subtype = "html"
         msg.send()
     except Exception as e:
-        log.error(e.message, extra=d)
+        log.error(e.message, extra={'clientip': '', 'user': ''})
         raise Exception(_("Mail could not be sent"))
 
 
