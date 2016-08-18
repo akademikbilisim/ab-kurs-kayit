@@ -41,10 +41,6 @@ def subscribe(request):
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
     data = getsiteandmenus(request)
     if not request.user.is_authenticated():
-        data['buttonname1'] = "register"
-        data['buttonname2'] = "cancel"
-        data['buttonname1_value'] = _("Register")
-        data['buttonname2_value'] = _("Cancel")
         note = _("Register to system to participate in courses before the conferences")
         form = CreateUserForm()
         if 'register' in request.POST:
