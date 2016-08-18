@@ -24,7 +24,7 @@ from userprofile.models import Accommodation, UserProfile, UserAccomodationPref,
 from userprofile.userprofileops import UserProfileOPS
 
 from training.tutils import getparticipationforms, cancel_all_prefs
-from training.forms import ParticipationForm
+
 from training.models import Course, TrainessCourseRecord, TrainessParticipation
 
 from abkayit.models import *
