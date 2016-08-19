@@ -1,4 +1,5 @@
 # -*- coding:utf-8  -*-
+import sys
 import json
 import logging
 import datetime
@@ -38,7 +39,7 @@ log = logging.getLogger(__name__)
 
 
 def subscribe(request):
-    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
+    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user} # d: bu degiskeni loglarda kullanıyoruz
     data = getsiteandmenus(request)
     if not request.user.is_authenticated():
         note = _("Register to system to participate in courses before the conferences")
@@ -69,7 +70,7 @@ def subscribe(request):
 
 @login_required(login_url='/')
 def getaccomodations(request, usertype, gender):
-    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
+    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user} # d: bu degiskeni loglarda kullanıyoruz
     log.info("getaccomodation funtion call", extra=d)
     data = getsiteandmenus(request)
     jsondata = {}
@@ -85,9 +86,9 @@ def getaccomodations(request, usertype, gender):
 @login_required(login_url='/')
 @user_passes_test(active_required, login_url=reverse_lazy("active_resend"))
 def createprofile(request):
-    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
+    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user} # d: bu degiskeni loglarda kullanıyoruz
     data = getsiteandmenus(request)
-    log.info("create profile form", extra=d)
+    log.info("create/update profile form", extra=d)
     data['update_user_form'] = UpdateUserForm(instance=request.user)
     data['accomodations_preference_count'] = range(ACCOMODATION_PREFERENCE_LIMIT)
     data['form'] = None
@@ -137,24 +138,26 @@ def createprofile(request):
                         prefs = UserAccomodationPref.objects.filter(user=request.user.userprofile)
                         if prefs:
                             prefs.delete()
-                        for pref in range(0, len(data['accomodations'])):
-                            if 'tercih' + str(pref + 1) in request.POST.keys():
-                                try:
-                                    uaccpref = UserAccomodationPref(user=profile,
-                                                                    accomodation=Accommodation.objects.get(
-                                                                        pk=request.POST['tercih' + str(pref + 1)]),
-                                                                    usertype="stu", preference_order=pref + 1)
-                                    uaccpref.save()
-                                    note = "Profiliniz başarılı bir şekilde kaydedildi. Kurs tercihleri adımından" \
-                                           " devam edebilirsiniz"
-                                except Exception as e:
-                                    log.error(e.message, extra=d)
-                                    note = "Profiliniz kaydedildi ancak konaklama tercihleriniz kaydedilemedi." \
-                                           " Sistem yöneticisi ile görüşün!"
+
+                        if 'tercih1' in request.POST.keys():
+                            print request.POST.get('tercih1')
+                            #try:
+                            uaccpref = UserAccomodationPref(user=profile,
+                                                            accomodation=Accommodation.objects.get(
+                                                                pk=request.POST.get('tercih1')),
+                                                            usertype="stu", preference_order=1)
+                            uaccpref.save()
+                            note = "Profiliniz başarılı bir şekilde kaydedildi. Kurs tercihleri adımından" \
+                                   " devam edebilirsiniz"
+                            #except Exception as e:
+                            #    log.error(e.message, extra=d)
+                            #    note = "Profiliniz kaydedildi ancak konaklama tercihleriniz kaydedilemedi." \
+                            #           " Sistem yöneticisi ile görüşün!"
                     else:
                         note = "Profiliniz başarılı bir şekilde kaydedildi. Kurs tercihleri adımından" \
                                " devam edebilirsiniz"
                 except Exception as e:
+                    log.error('Error on line {}'.format(sys.exc_info()[-1].tb_lineno), extra=d)
                     log.error(e.message, extra=d)
                     note = "Profiliniz kaydedilirken hata oluştu lütfen sayfayı yeniden yükleyip tekrar deneyin"
             else:
@@ -170,7 +173,7 @@ def createprofile(request):
 @login_required(login_url='/')
 @user_passes_test(active_required, login_url=reverse_lazy("active_resend"))
 def instructor_information_view(request):
-    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
+    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user} # d: bu degiskeni loglarda kullanıyoruz
     if not request.user.userprofile:
         log.error("Kullanıcı Profili Bulunamadı", extra=d)
         return redirect("createprofile")
@@ -214,7 +217,7 @@ def alluserview(request):
     :param request:
     :return:
     """
-    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
+    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user} # d: bu degiskeni loglarda kullanıyoruz
     data = getsiteandmenus(request)
     userlist = []
     try:
@@ -248,7 +251,7 @@ def alluserview(request):
 
 @staff_member_required
 def get_all_trainers_view(request):
-    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
+    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user} # d: bu degiskeni loglarda kullanıyoruz
     data = getsiteandmenus(request)
     try:
         trainers = []
@@ -262,7 +265,7 @@ def get_all_trainers_view(request):
 
 
 def active(request, key):
-    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
+    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user} # d: bu degiskeni loglarda kullanıyoruz
     try:
         user_verification = UserVerification.objects.get(activation_key=key)
         user = user_verification.user
@@ -294,7 +297,7 @@ def active_resend(request):
 
 @login_required(login_url='/')
 def password_reset(request):
-    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
+    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user} # d: bu degiskeni loglarda kullanıyoruz
     data = getsiteandmenus(request)
     form = ChangePasswordForm()
     note = _("Change your password")
@@ -316,7 +319,7 @@ def password_reset(request):
 
 
 def password_reset_key(request):
-    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
+    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user} # d: bu degiskeni loglarda kullanıyoruz
     data = getsiteandmenus(request)
     note = _("Please enter your registered email")
     if request.method == 'POST':
@@ -353,7 +356,7 @@ def password_reset_key(request):
 
 
 def password_reset_key_done(request, key=None):
-    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
+    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user} # d: bu degiskeni loglarda kullanıyoruz
     data = getsiteandmenus(request)
     form = ChangePasswordForm()
     note = _("Change your password")
@@ -386,7 +389,7 @@ def password_reset_key_done(request, key=None):
 
 @login_required(login_url='/')
 def save_note(request):
-    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
+    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user} # d: bu degiskeni loglarda kullanıyoruz
     data = getsiteandmenus(request)
     jsondata = {}
     if request.method == 'POST':
@@ -427,7 +430,7 @@ def backend_login(request, user):
 
 @login_required
 def showuserprofile(request, userid, courserecordid):
-    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
+    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user} # d: bu degiskeni loglarda kullanıyoruz
     data = getsiteandmenus(request)
     if UserProfileOPS.is_instructor(request.user.userprofile) or request.user.is_staff:
         courserecord = None

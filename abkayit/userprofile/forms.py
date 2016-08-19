@@ -12,6 +12,7 @@ from django.forms.widgets import TextInput
 
 from django_countries.widgets import CountrySelectWidget
 
+from abkayit.settings import ACCOMODATION_PREFERENCE_LIMIT
 from userprofile.models import *
 from userprofile.dynamicfields import DynmcFields
 from userprofile.userprofileops import UserProfileOPS
@@ -155,19 +156,18 @@ class StuProfileForm(ModelForm):
     class Meta:
         dyncf = DynmcFields()
         model = UserProfile
-        exclude = {''}
-        # fields=['name','surname','username','email','password','password',]
+        exclude = []
         widgets = {
             'tckimlikno': forms.NumberInput(attrs={'placeholder': _('Turkish ID No'), 'class': 'form-control'}),
             'ykimlikno': forms.NumberInput(attrs={'placeholder': _('Foreigner ID No'), 'class': 'form-control'}),
-            'gender': forms.Select(attrs={'placeholder': _('Gender'), 'class': 'form-control'}),
+            'gender': forms.Select(attrs={'placeholder': _('Gender'), 'class': 'form-control', 'onChange':'genderchanged()'}),
             'mobilephonenumber': forms.TextInput(
                 attrs={'placeholder': _('Mobile Phone Number'), 'class': 'form-control'}),
             'address': forms.Textarea(attrs={'placeholder': _('Address'), 'class': 'form-control'}),
             'job': forms.TextInput(attrs={'placeholder': _('Job'), 'class': 'form-control'}),
             'city': forms.Select(attrs={'placeholder': _('Current City'), 'class': 'form-control'},
                                  choices=Region.objects.all().values_list('name_ascii', 'name_ascii')),
-            'country': CountrySelectWidget(attrs={'placeholder': _('Nationality')}),
+            'country': CountrySelectWidget(attrs={'placeholder': _('Nationality'), 'onChange': 'countrychanged();'}),
             'title': forms.TextInput(attrs={'placeholder': _('Title'), 'class': 'form-control'}),
             'organization': forms.TextInput(attrs={'placeholder': _('Organization'), 'class': 'form-control'}),
             'occupation': forms.Select(attrs={'placeholder': _('Occupation'), 'class': 'form-control'}),
