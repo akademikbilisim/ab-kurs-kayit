@@ -264,8 +264,7 @@ def getoperator(totalpar, value, time, coursehour):
 
 
 def calculate_participations(trainessparticipations, site):
-    totalcoursehour = (site.morning + site.afternoon + site.evening) * (
-    int((site.event_end_date - site.event_start_date).days) + 1)
+    totalcoursehour = (site.morning + site.afternoon + site.evening) * int((site.event_end_date - site.event_start_date).days)
     totalparticipationhour = 0.0
     for tp in trainessparticipations:
         totalparticipationhour, totalcoursehour = getoperator(totalparticipationhour, tp.morning, site.morning,
