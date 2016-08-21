@@ -7,29 +7,29 @@ from django.utils.translation import ugettext_lazy as _
 
 
 from userprofile.models import InstructorInformation, UserProfile, Accommodation, UserAccomodationPref, \
-    UserVerification, TrainessNote
+    UserVerification, TrainessNote, UserProfileBySite
 from training.models import Course
 
 
 admin.site.unregister(User)
 
 
-#def make_needs_document(modeladmin, request, queryset):
-#    for obj in queryset:
-#        up = UserProfile.objects.get(user=obj)
-#        up.needs_document = True
-#        up.save()
-#
-#make_needs_document.short_description = "Seçili nesneleri evrak gerekiyor olarak işaretle"
-#
-#
-#def remove_needs_document(modeladmin, request, queryset):
-#    for obj in queryset:
-#        up = UserProfile.objects.get(user=obj)
-#        up.needs_document = False
-#        up.save()
-#
-#remove_needs_document.short_description = "Seçili nesnelerin evrak gerekiyor işaretini kaldır"
+def make_needs_document(modeladmin, request, queryset):
+    for obj in queryset:
+        up = UserProfileBySite.objects.get_or_create(user=obj)
+        up.needs_document = True
+        up.save()
+
+make_needs_document.short_description = "Seçili nesneleri evrak gerekiyor olarak işaretle"
+
+
+def remove_needs_document(modeladmin, request, queryset):
+    for obj in queryset:
+        up = UserProfileBySite.objects.get_or_create(user=obj)
+        up.needs_document = False
+        up.save()
+
+remove_needs_document.short_description = "Seçili nesnelerin evrak gerekiyor işaretini kaldır"
 
 
 class UserVerificationInline(admin.StackedInline):
@@ -41,12 +41,14 @@ class UserProfileInline(admin.StackedInline):
     model = UserProfile
     extra = 0
 
+class UserProfileBySiteInline(admin.StackedInline):
+    model = UserProfileBySite
+    extra = 0
+
 
 class UserSiteFilter(admin.SimpleListFilter):
     title = _('Trainees Site')
-
     parameter_name = 'treessite'
-
     def lookups(self, request, model_admin):
         return User.objects.all().values_list("userprofile__trainess__site__id", "userprofile__trainess__site__name").distinct()
 
@@ -61,10 +63,11 @@ class UserAdmin(AuthUserAdmin):
     list_display = ['username', 'first_name', 'last_name', 'tckimlikno', 'gender']
     list_filter = AuthUserAdmin.list_filter + (UserSiteFilter,)
     search_fields = ('username', 'first_name', 'last_name', 'userprofile__tckimlikno')
-    #actions = [make_needs_document, remove_needs_document]
+    actions = [make_needs_document, remove_needs_document]
     inlines = [
         UserProfileInline,
         UserVerificationInline,
+        UserProfileBySiteInline,
     ]
 
     def is_instructor(self, obj):

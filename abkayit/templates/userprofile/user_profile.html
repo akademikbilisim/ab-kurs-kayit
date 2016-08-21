@@ -94,43 +94,43 @@
             {% endif %}
         </div>
         {% endfor %}
-        {% if userproformbysite %}
+        {% if userproformbysite and site.needs_document %}
             {% for field in userproformbysite.hidden_fields %}
-            {{ field }}
-            {% if field.errors %}
-            <div class="row">
-                <div class="col-md-6 col-md-offset-2">
-                    <span class="label label-danger">{{ field.label }}: {{ field.errors|striptags }}</span>
+                {{ field }}
+                {% if field.errors %}
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-2">
+                        <span class="label label-danger">{{ field.label }}: {{ field.errors|striptags }}</span>
+                    </div>
                 </div>
-            </div>
-            {% endif %}
-        {% endfor %}
+                {% endif %}
+            {% endfor %}
 
-        {% for field in userproformbysite.visible_fields %}
-        <div class="form-group">
-            <div class="row">
-                <div class="col-md-2">
-                    <b>{{ field.label }}</b>
-                    {% if field.field.required %}
-                    <span class="required"></span>
-                    {% endif %}
+            {% for field in userproformbysite.visible_fields %}
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-2">
+                        <b>{{ field.label }}</b>
+                        {% if field.field.required %}
+                        <span class="required"></span>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        {{ field }}
+                    </div>
                 </div>
-                <div class="col-md-6">
-                    {{ field }}
+                {% if field.help_text%}
+                <span class="helptext">{{field.help_text}}</span>
+                {%endif%}
+                {% if field.errors %}
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-2">
+                        <span class="label label-danger">{{ field.label }}: {{ field.errors|striptags }}</span>
+                    </div>
                 </div>
+                {% endif %}
             </div>
-            {% if field.help_text%}
-            <span class="helptext">{{field.help_text}}</span>
-            {%endif%}
-            {% if field.errors %}
-            <div class="row">
-                <div class="col-md-6 col-md-offset-2">
-                    <span class="label label-danger">{{ field.label }}: {{ field.errors|striptags }}</span>
-                </div>
-            </div>
-            {% endif %}
-        </div>
-        {% endfor %}
+            {% endfor %}
         {% endif %}
         {% if sitewidequestions %}
             {% for sitewidequestion in sitewidequestions %}

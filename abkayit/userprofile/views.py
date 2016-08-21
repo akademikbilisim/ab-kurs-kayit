@@ -101,10 +101,13 @@ def createprofile(request):
                                                  ruser=request.user)
         except UserProfile.DoesNotExist:
             data['userproform'] = StuProfileForm(request.POST, request.FILES, ruser=request.user)
-        if userprobysite:
-            data['userproformbysite'] = UserProfileBySiteForm(request.POST, request.FILES, instance=userprobysite, ruser=request.user, site=data['site'])
-        else:
-            data['userproformbysite'] = UserProfileBySiteForm(request.POST, request.FILES, ruser=request.user, site=data['site'])
+        if data['site'].needs_document:
+            if userprobysite:
+                data['userproformbysite'] = UserProfileBySiteForm(request.POST, request.FILES, instance=userprobysite,
+                                                                  ruser=request.user, site=data['site'])
+            else:
+                data['userproformbysite'] = UserProfileBySiteForm(request.POST, request.FILES, ruser=request.user,
+                                                                  site=data['site'])
         if data['update_user_form'].is_valid():
             data['update_user_form'].save()
             if data['userproform'].is_valid():
@@ -124,35 +127,40 @@ def createprofile(request):
                             prefs.delete()
                         if 'tercih1' in request.POST.keys():
                             try:
-                                uaccpref = UserAccomodationPref(user=profile,
+                                uaccpref = UserAccomodationPref(user=request.user.userprofile,
                                                                 accomodation=Accommodation.objects.get(
                                                                     pk=request.POST.get('tercih1')),
                                                                 usertype="stu", preference_order=1)
                                 uaccpref.save()
-                                note = "Profiliniz başarılı bir şekilde kaydedildi. Kurs tercihleri adımından" \
-                                       " devam edebilirsiniz"
+                                log.info("Kullanıcı profilini ve konaklama tercihini güncelledi.", extra=d)
+                                if data['site'].needs_document:
+                                    if data['userproformbysite'].is_valid():
+                                        data['userproformbysite'].save()
+                                        if 'document' in request.FILES:
+                                            log.info("Kullanıcı evrakını güncelledi.", extra=d)
+                                    else:
+                                        data['note'] = "Profiliniz aşağıdaki sebeplerden dolayı kaydedilemedi"
+                                        return render_to_response("userprofile/user_profile.html", data,
+                                                                  context_instance=RequestContext(request))
                             except Exception as e:
                                 log.error(e.message, extra=d)
-                                note = "Profiliniz kaydedildi ancak konaklama tercihleriniz kaydedilemedi." \
-                                       " Sistem yöneticisi ile görüşün!"
-                        if data['userproformbysite'].is_valid():
-                            data['userproformbysite'].save()
-                            note = "Profiliniz başarıyla kaydedildi."
-                    else:
-                        note = "Profiliniz başarılı bir şekilde kaydedildi. Kurs tercihleri adımından" \
-                               " devam edebilirsiniz"
+                                data['note'] = "Profiliniz kaydedildi ancak konaklama tercihleriniz kaydedilemedi." \
+                                               " Sistem yöneticisi ile görüşün!"
+                                return render_to_response("userprofile/user_profile.html", data,
+                                                          context_instance=RequestContext(request))
+                    data['note'] = "Profiliniz başarılı bir şekilde kaydedildi. Kurs tercihleri adımından" \
+                                   " devam edebilirsiniz"
+                    return render_to_response("userprofile/user_profile.html", data,
+                                              context_instance=RequestContext(request))
                 except Exception as e:
                     log.error('Error on line {}'.format(sys.exc_info()[-1].tb_lineno), extra=d)
                     log.error(e.message, extra=d)
-                    note = "Profiliniz kaydedilirken hata oluştu lütfen sayfayı yeniden yükleyip tekrar deneyin"
-            else:
-                note = "Profiliniz aşağıdaki sebeplerden dolayı oluşturulamadı"
-
-        else:
-            note = "Profiliniz aşağıdaki sebeplerden dolayı oluşturulamadı"
+                    data['note'] = "Profiliniz kaydedilirken hata oluştu lütfen sayfayı yeniden yükleyip tekrar deneyin"
+                    return render_to_response("userprofile/user_profile.html", data,
+                                              context_instance=RequestContext(request))
+        data['note'] = "Profiliniz aşağıdaki sebeplerden dolayı oluşturulamadı"
     elif 'cancel' in request.POST:
         return redirect("createprofile")
-    data['note'] = note
     return render_to_response("userprofile/user_profile.html", data, context_instance=RequestContext(request))
 
 
@@ -223,10 +231,14 @@ def alluserview(request):
                     "gender": up.gender,
                     "job": up.job,
                     "title": up.title,
-                    "document": up.userprofilebysite.document,
-                    "needs_document": up.userprofilebysite.needs_document,
                     "accomodation": up.useraccomodationpref_set.filter(accomodation__site__is_active=True),
                     "courserecordid": "0"}
+                try:
+                    usr['document'] = up.userprofilebysite.document
+                    usr['needs_document'] = up.userprofilebysite.needs_document
+                except:
+                    usr['document'] = None
+                    usr['needs_document'] = False
                 userlist.append(usr)
     except Exception as e:
         log.error("An error occured while showing alluserview", extra=d)
@@ -440,14 +452,22 @@ def showuserprofile(request, userid, courserecordid):
             userprofilebysite = None
             try:
                 userprofilebysite = UserProfileBySite.objects.get(user=user.user)
-                data['userprofilebysiteform'] = UserProfileBySiteForStaffForm(instance=userprofilebysite, ruser=request.user, site=data['site'], user=user.user)
+                data['userprofilebysiteform'] = UserProfileBySiteForStaffForm(instance=userprofilebysite,
+                                                                              ruser=request.user, site=data['site'],
+                                                                              user=user.user)
             except UserProfileBySite.DoesNotExist as e:
-                data['userprofilebysiteform'] = UserProfileBySiteForStaffForm(ruser=request.user, site=data['site'], user=user.user)
+                data['userprofilebysiteform'] = UserProfileBySiteForStaffForm(ruser=request.user, site=data['site'],
+                                                                              user=user.user)
             if "savesitebasedprofile" in request.POST:
                 if userprofilebysite:
-                    data['userprofilebysiteform'] = UserProfileBySiteForStaffForm(request.POST, request.FILES, instance=userprofilebysite, ruser=request.user, site=data['site'], user=user.user)
+                    data['userprofilebysiteform'] = UserProfileBySiteForStaffForm(request.POST, request.FILES,
+                                                                                  instance=userprofilebysite,
+                                                                                  ruser=request.user, site=data['site'],
+                                                                                  user=user.user)
                 else:
-                    data['userprofilebysiteform'] = UserProfileBySiteForStaffForm(request.POST, request.FILES, ruser=request.user, site=data['site'], user=user.user)
+                    data['userprofilebysiteform'] = UserProfileBySiteForStaffForm(request.POST, request.FILES,
+                                                                                  ruser=request.user, site=data['site'],
+                                                                                  user=user.user)
                 if data['userprofilebysiteform'].is_valid():
                     data['userprofilebysiteform'].save()
                     log.info("%s kullanıcısı için etkinlik bazlı profil kaydedildi", extra=d)

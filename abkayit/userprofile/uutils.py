@@ -13,7 +13,7 @@ def getuserprofileforms(user, site, d):
     try:
         user_profile = user.userprofile
         note = _("You can update your profile below")
-        userproform = StuProfileForm(instance=user_profile)
+        userproform = StuProfileForm(instance=user_profile, ruser=user)
         if not UserProfileOPS.is_instructor(user_profile):
             log.debug("egitmen olmayan kullanici icin isleme devam ediliyor", extra=d)
             accomodations = Accommodation.objects.filter(
@@ -21,16 +21,18 @@ def getuserprofileforms(user, site, d):
                 'name')
             accomodation_records = UserAccomodationPref.objects.filter(user=user_profile).order_by(
                 'preference_order')
-        try:
-            userprofilebysite = UserProfileBySite.objects.get(user=user)
-            userprobysiteform = UserProfileBySiteForm(instance=userprofilebysite)
-        except UserProfileBySite.DoesNotExist:
-            userprobysiteform = UserProfileBySiteForm()
+        if site.needs_document:
+            try:
+                userprofilebysite = UserProfileBySite.objects.get(user=user)
+                userprobysiteform = UserProfileBySiteForm(instance=userprofilebysite, ruser=user, site=site)
+            except UserProfileBySite.DoesNotExist:
+                userprobysiteform = UserProfileBySiteForm(ruser=user, site=site)
         log.debug("Profil guncelleme islemi", extra=d)
     except UserProfile.DoesNotExist:
         note = _("If you want to continue please complete your profile.")
-        userproform = StuProfileForm()
-        userprobysiteform = UserProfileBySiteForm()
+        userproform = StuProfileForm(ruser=user)
+        if site.needs_document:
+            userprobysiteform = UserProfileBySiteForm(ruser=user, site=site)
         accomodations = Accommodation.objects.filter(usertype__in=['stu', 'hepsi'],
                                                      gender__in=['K', 'E', 'H'],
                                                      site=site).order_by('name')
