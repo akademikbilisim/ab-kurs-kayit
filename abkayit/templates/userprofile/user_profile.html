@@ -13,13 +13,13 @@
         <div class="alert alert-danger">{{ update_user_form.non_field_errors.as_text }}</div>
         {% endif %}
     {% endif %}
-    {% if form %}
-        {% if form.non_field_errors %}
-        <div class="alert alert-danger">{{ form.non_field_errors.as_text }}</div>
+    {% if userproform %}
+        {% if userproform.non_field_errors %}
+        <div class="alert alert-danger">{{ userproform.non_field_errors.as_text }}</div>
         {% endif %}
     {% endif %}
     <form id="userprofile" name="form-control" class="span4 signup-form" method="POST" enctype="multipart/form-data">{%csrf_token%}
-        {% if form %}
+        {% if userproform %}
             <!-- UPDATE USER FORM -->
             {% if update_user_form %}
                 {% for field in update_user_form.hidden_fields %}
@@ -58,7 +58,7 @@
         {%endif%}
         <!--END USER UPDATE FORM-->
         <!-- START USERPROFILE FORM -->
-        {% for field in form.hidden_fields %}
+        {% for field in userproform.hidden_fields %}
             {{ field }}
             {% if field.errors %}
             <div class="row">
@@ -69,7 +69,7 @@
             {% endif %}
         {% endfor %}
 
-        {% for field in form.visible_fields %}
+        {% for field in userproform.visible_fields %}
         <div class="form-group">
             <div class="row">
                 <div class="col-md-2">
@@ -94,6 +94,44 @@
             {% endif %}
         </div>
         {% endfor %}
+        {% if userproformbysite %}
+            {% for field in userproformbysite.hidden_fields %}
+            {{ field }}
+            {% if field.errors %}
+            <div class="row">
+                <div class="col-md-6 col-md-offset-2">
+                    <span class="label label-danger">{{ field.label }}: {{ field.errors|striptags }}</span>
+                </div>
+            </div>
+            {% endif %}
+        {% endfor %}
+
+        {% for field in userproformbysite.visible_fields %}
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-2">
+                    <b>{{ field.label }}</b>
+                    {% if field.field.required %}
+                    <span class="required"></span>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    {{ field }}
+                </div>
+            </div>
+            {% if field.help_text%}
+            <span class="helptext">{{field.help_text}}</span>
+            {%endif%}
+            {% if field.errors %}
+            <div class="row">
+                <div class="col-md-6 col-md-offset-2">
+                    <span class="label label-danger">{{ field.label }}: {{ field.errors|striptags }}</span>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+        {% endif %}
         {% if sitewidequestions %}
             {% for sitewidequestion in sitewidequestions %}
             <div class="form-group">
@@ -110,7 +148,7 @@
             </div>
             {% endfor %}
         {% endif %}
-        {% if accomodations and accomodations_preference_count %}
+        {% if accomodations %}
             <div class="form-group">
                 <div class="row col-xs-8 col-md-12 col-sm-12 control-label">
                     <strong>{% trans "Accomodation Preferences" %}</strong>
