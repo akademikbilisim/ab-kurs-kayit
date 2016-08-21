@@ -69,11 +69,7 @@ class UserProfile(models.Model):
     department = models.CharField(verbose_name=_("Department"), max_length=50)
     website = models.CharField(verbose_name=_("Website"), max_length=300, null=True, blank=True)
     experience = models.CharField(verbose_name=_("Work Experience"), max_length=1000, null=True, blank=True)
-    additional_information = models.TextField(verbose_name=_("Additional Information"), blank=True, null=True)
-    userpassedtest = models.BooleanField(verbose_name=_("Can Apply"), blank=True, default=False)
     profilephoto = models.ImageField(upload_to=user_directory_path, verbose_name=_("Profile Picture"))
-    document = models.FileField(upload_to=user_directory_path, verbose_name=_("Belge Ekle"), blank=True, null=True)
-    needs_document = models.BooleanField(verbose_name=_("Needs Document"), blank=True, default=False)
 
     def __unicode__(self):
         return self.user.username
@@ -83,6 +79,23 @@ class UserProfile(models.Model):
         verbose_name = _('User Profile')
         verbose_name_plural = _('User Profiles')
 
+class UserProfileBySite(models.Model):
+    user = models.ForeignKey(User)
+    site = models.ForeignKey(Site)
+    document = models.FileField(upload_to=user_directory_path, verbose_name=_("Belge Ekle"), blank=True, null=True)
+    needs_document = models.BooleanField(verbose_name=_("Needs Document"), blank=True, default=False)
+    userpassedtest = models.BooleanField(verbose_name=_("FAQ is answered?"), blank=True, default=False)
+    additional_information = models.TextField(verbose_name=_("Additional Information"), blank=True, null=True)
+    canapply = models.BooleanField(verbose_name=_("Can Apply?"), blank=True, default=False)
+    potentialinstructor = models.BooleanField(verbose_name=_("Potential Instructor"), blank=True, default=False)
+
+    def __unicode__(self):
+        return self.user.username
+
+    class Meta:
+        ordering = ('user__username',)
+        verbose_name = _('User Profile By Site')
+        verbose_name_plural = _('User Profiles By Sites')
 
 class TrainessNote(models.Model):
     note = models.CharField(verbose_name=_("Note"), max_length=500)

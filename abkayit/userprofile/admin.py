@@ -6,9 +6,8 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
 
-from models import Site
 from userprofile.models import InstructorInformation, UserProfile, Accommodation, UserAccomodationPref, \
-    UserVerification, TrainessNote
+    UserVerification, TrainessNote, UserProfileBySite
 from training.models import Course
 
 
@@ -17,7 +16,7 @@ admin.site.unregister(User)
 
 def make_needs_document(modeladmin, request, queryset):
     for obj in queryset:
-        up = UserProfile.objects.get(user=obj)
+        up = UserProfileBySite.objects.get_or_create(user=obj)
         up.needs_document = True
         up.save()
 
@@ -26,7 +25,7 @@ make_needs_document.short_description = "Seçili nesneleri evrak gerekiyor olara
 
 def remove_needs_document(modeladmin, request, queryset):
     for obj in queryset:
-        up = UserProfile.objects.get(user=obj)
+        up = UserProfileBySite.objects.get_or_create(user=obj)
         up.needs_document = False
         up.save()
 
@@ -42,12 +41,14 @@ class UserProfileInline(admin.StackedInline):
     model = UserProfile
     extra = 0
 
+class UserProfileBySiteInline(admin.StackedInline):
+    model = UserProfileBySite
+    extra = 0
+
 
 class UserSiteFilter(admin.SimpleListFilter):
     title = _('Trainees Site')
-
     parameter_name = 'treessite'
-
     def lookups(self, request, model_admin):
         return User.objects.all().values_list("userprofile__trainess__site__id", "userprofile__trainess__site__name").distinct()
 
@@ -66,6 +67,7 @@ class UserAdmin(AuthUserAdmin):
     inlines = [
         UserProfileInline,
         UserVerificationInline,
+        UserProfileBySiteInline,
     ]
 
     def is_instructor(self, obj):
