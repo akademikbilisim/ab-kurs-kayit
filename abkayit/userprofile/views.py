@@ -84,7 +84,8 @@ def getaccomodations(request, usertype, gender):
 def createprofile(request):
     data = {'update_user_form': UpdateUserForm(instance=request.user)}
     (note, userprobysite, data['userproform'], data['userproformbysite'],
-     data['accomodations'], data['accomodation_records']) = getuserprofileforms(request.user, request.site, request.log_extra)
+     data['accomodations'], data['accomodation_records']) = getuserprofileforms(request.user, request.site,
+                                                                                request.log_extra)
     data['sitewidequestions'] = TextBoxQuestions.objects.filter(site=request.site, active=True, is_sitewide=True)
     log.info("create/update profile form", extra=request.log_extra)
     if 'register' in request.POST:
@@ -100,7 +101,7 @@ def createprofile(request):
                                                                   ruser=request.user, site=request.site)
             else:
                 data['userproformbysite'] = UserProfileBySiteForm(request.POST, request.FILES, ruser=request.user,
-                                                                  site=drequest.site)
+                                                                  site=request.site)
         if data['update_user_form'].is_valid():
             data['update_user_form'].save()
             if data['userproform'].is_valid():
@@ -109,6 +110,7 @@ def createprofile(request):
                     data['userproform'].save()
                     if data['sitewidequestions']:
                         for question in data['sitewidequestions']:
+                            # noinspection PyUnresolvedReferences
                             answer = request.POST.get("answer%s" % question.pk, "")
                             if answer:
                                 tca, created = TrainessClassicTestAnswers.objects.get_or_create(
@@ -123,10 +125,11 @@ def createprofile(request):
                             try:
                                 uaccpref = UserAccomodationPref(user=request.user.userprofile,
                                                                 accomodation=Accommodation.objects.get(
-                                                                    pk=request.POST.get('tercih1')),
+                                                                        pk=request.POST.get('tercih1')),
                                                                 usertype="stu", preference_order=1)
                                 uaccpref.save()
-                                log.info("Kullanıcı profilini ve konaklama tercihini güncelledi.", extra=request.log_extra)
+                                log.info("Kullanıcı profilini ve konaklama tercihini güncelledi.",
+                                         extra=request.log_extra)
                                 if request.site.needs_document:
                                     if data['userproformbysite'].is_valid():
                                         data['userproformbysite'].save()
@@ -134,24 +137,20 @@ def createprofile(request):
                                             log.info("Kullanıcı evrakını güncelledi.", extra=request.log_extra)
                                     else:
                                         data['note'] = "Profiliniz aşağıdaki sebeplerden dolayı kaydedilemedi"
-                                        return render_to_response("userprofile/user_profile.html", data,
-                                                                  context_instance=RequestContext(request))
+                                        return render(request, "userprofile/user_profile.html", data)
                             except Exception as e:
                                 log.error(e.message, extra=request.log_extra)
                                 data['note'] = "Profiliniz kaydedildi ancak konaklama tercihleriniz kaydedilemedi." \
                                                " Sistem yöneticisi ile görüşün!"
-                                return render_to_response("userprofile/user_profile.html", data,
-                                                          context_instance=RequestContext(request))
+                                return render(request, "userprofile/user_profile.html", data)
                     data['note'] = "Profiliniz başarılı bir şekilde kaydedildi. Kurs tercihleri adımından" \
                                    " devam edebilirsiniz"
-                    return render_to_response("userprofile/user_profile.html", data,
-                                              context_instance=RequestContext(request))
+                    return render(request, "userprofile/user_profile.html", data)
                 except Exception as e:
                     log.error('Error on line {}'.format(sys.exc_info()[-1].tb_lineno), extra=request.log_extra)
                     log.error(e.message, extra=request.log_extra)
                     data['note'] = "Profiliniz kaydedilirken hata oluştu lütfen sayfayı yeniden yükleyip tekrar deneyin"
-                    return render_to_response("userprofile/user_profile.html", data,
-                                              context_instance=RequestContext(request))
+                    return render(request, "userprofile/user_profile.html", data)
         data['note'] = "Profiliniz aşağıdaki sebeplerden dolayı oluşturulamadı"
     elif 'cancel' in request.POST:
         return redirect("createprofile")

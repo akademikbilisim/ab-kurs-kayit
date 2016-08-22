@@ -36,11 +36,12 @@ class TrainessCourseRecordAdmin(admin.ModelAdmin):
                                                                                                    obj.preference_order)
         if "approved" in form.changed_data:
             if form.cleaned_data['approved']:
-                notestr = "Bu kullanicinin, %s kursu olan %s. tercihi yönetici tarafindan onaylandi." % (obj.course.name,
-                                                                                                   obj.preference_order)
+                notestr = "Bu kullanicinin, %s kursu olan %s. tercihi yönetici tarafindan onaylandi." % (
+                obj.course.name,
+                obj.preference_order)
         if notestr and not TrainessNote.objects.filter(note=notestr):
             note = TrainessNote(note=notestr, note_from_profile=request.user.userprofile, note_to_profile=obj.trainess,
-                                            site=obj.course.site, note_date=timezone.now(), label="tercih")
+                                site=obj.course.site, note_date=timezone.now(), label="tercih")
             note.save()
         super(TrainessCourseRecordAdmin, self).save_model(request, obj, form, change)
 

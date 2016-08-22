@@ -132,10 +132,10 @@ def get_trainess_by_course(course, d):
     trainess = {}
     for i in range(1, PREFERENCE_LIMIT + 1):
         trainess[i] = TrainessCourseRecord.objects.filter(course=course.pk, preference_order=i).prefetch_related(
-            'course')
+                'course')
     for i in range(1, ADDITION_PREFERENCE_LIMIT + 1):
         trainess[-i] = TrainessCourseRecord.objects.filter(course=course.pk, preference_order=-i).prefetch_related(
-            'course')
+                'course')
     return trainess
 
 
@@ -249,7 +249,7 @@ def daterange(start_date, end_date):
 
 
 def getoperator(totalpar, value, time, coursehour):
-    '''
+    """
         2: Katildi
         1: Yarisina katildi
         0: Katilmadi
@@ -258,14 +258,14 @@ def getoperator(totalpar, value, time, coursehour):
         value: kullanicinin o gun ve saat icin katilip katilmadigi
         time: sabah, oglen veya aksamsa eklenecek veya çıkarılacak saat miktari
         coursehour: yapilan ders saati. kurs yapılmadiysa tahmini kurs saatinden çıkariliyor.
-    '''
-    return {"2": totalpar + time, "1": totalpar + time / 2.0}.get(value, totalpar),\
+    """
+    return {"2": totalpar + time, "1": totalpar + time / 2.0}.get(value, totalpar), \
            {"-1": coursehour - time}.get(value, coursehour)
 
 
 def calculate_participations(trainessparticipations, site):
     totalcoursehour = (site.morning + site.afternoon + site.evening) * (
-    int((site.event_end_date - site.event_start_date).days) + 1)
+        int((site.event_end_date - site.event_start_date).days) + 1)
     totalparticipationhour = 0.0
     for tp in trainessparticipations:
         totalparticipationhour, totalcoursehour = getoperator(totalparticipationhour, tp.morning, site.morning,
@@ -388,7 +388,7 @@ def cancel_all_prefs(trainess, cancelnote, site, ruser, d):
             if site.application_end_date < now < site.event_start_date:
                 if approvedpref:
                     context['recipientlist'].extend(approvedpref[0].course.authorized_trainer.all().values_list(
-                        'user__username', flat=True))
+                            'user__username', flat=True))
             send_email_by_operation_name(context, "notice_for_canceled_prefs")
             context['recipientlist'] = [trainess.user.email]
             send_email_by_operation_name(context, "notice_for_canceled_prefs")

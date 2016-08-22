@@ -86,7 +86,7 @@ def apply_to_course(request):
     """
     data['course_records'] = TrainessCourseRecord.objects.filter(trainess__user=request.user,
                                                                  course__site__is_active=True).order_by(
-        'preference_order')
+            'preference_order')
     userprofile = request.user.userprofile
     if not userprofile:
         log.info("userprofile not found", extra=request.log_extra)
@@ -119,7 +119,7 @@ def apply_to_course(request):
                                     tbansw = request.POST.get("answer" + str(question.pk))
                                     if tbansw:
                                         tcta, created = TrainessClassicTestAnswers.objects.get_or_create(
-                                            user=request.user.userprofile, question=question)
+                                                user=request.user.userprofile, question=question)
                                         tcta.answer = tbansw
                                         tcta.save()
                             res = save_course_prefferences(userprofile, course_prefs, request.site, request.log_extra,
@@ -186,7 +186,8 @@ def approve_course_preference(request):
         data["approve_is_open"] = False
         trainess_course_records = TrainessCourseRecord.objects.filter(trainess=request.user.userprofile,
                                                                       course__site__is_active=True)
-        first_start_date_inst, last_end_date_inst = get_approve_first_start_last_end_dates_for_inst(request.site, request.log_extra)
+        first_start_date_inst, last_end_date_inst = get_approve_first_start_last_end_dates_for_inst(request.site,
+                                                                                                    request.log_extra)
         if not trainess_course_records:
             data['note'] = "Henüz herhangi bir kursa başvuru yapmadınız!"
         elif request.site.application_start_date <= datetime.date(now) < request.site.application_end_date:
@@ -293,7 +294,7 @@ def allapprovedprefsview(request):
     data['participations'] = {}
     for tcr in data['datalist']:
         tprs = TrainessParticipation.objects.filter(
-            courserecord=tcr)  # Bir katilimcinin bu tercihi icin yoklama kayitlari
+                courserecord=tcr)  # Bir katilimcinin bu tercihi icin yoklama kayitlari
         if tprs:
             totalparticipation, totalcoursehour = calculate_participations(tprs, request.site)
             data['participations'][tcr] = "%s saatlik kursun %s lik kısmına katildi" % (
@@ -309,50 +310,52 @@ def statistic(request):
     data = {}
     try:
         record_data = TrainessCourseRecord.objects.filter(course__site__is_active=True).values(
-            'course', 'preference_order').annotate(
-            Count('preference_order')).order_by(
-            'course', '-preference_order')
+                'course', 'preference_order').annotate(
+                Count('preference_order')).order_by(
+                'course', '-preference_order')
         statistic_by_course = {}
         for key, group in itertools.groupby(record_data, lambda item: item["course"]):
             course_object = Course.objects.get(pk=key, site__is_active=True)
             statistic_by_course[course_object] = {str(item['preference_order']): item['preference_order__count'] for
                                                   item in group}
             statistic_by_course[course_object]['total_apply'] = len(TrainessCourseRecord.objects.filter(
-                course=course_object))
+                    course=course_object))
             statistic_by_course[course_object]['total_apply_by_trainer'] = len(TrainessCourseRecord.objects.filter(
-                course=course_object, approved=True))
+                    course=course_object, approved=True))
             statistic_by_course[course_object]['applicationbywomen'] = len(
-                TrainessCourseRecord.objects.filter(course=course_object, trainess__gender="K").order_by(
-                    "trainess").values_list("trainess").distinct())
+                    TrainessCourseRecord.objects.filter(course=course_object, trainess__gender="K").order_by(
+                            "trainess").values_list("trainess").distinct())
             statistic_by_course[course_object]['applicationbymen'] = len(
-                TrainessCourseRecord.objects.filter(course=course_object, trainess__gender="E").order_by(
-                    "trainess").values_list("trainess").distinct())
+                    TrainessCourseRecord.objects.filter(course=course_object, trainess__gender="E").order_by(
+                            "trainess").values_list("trainess").distinct())
         data['statistic_by_course'] = statistic_by_course
 
         data['statistic_by_gender_k'] = len(
-            TrainessCourseRecord.objects.filter(course__site__is_active=True, trainess__gender="K").order_by(
-                "trainess").values_list("trainess").distinct())
+                TrainessCourseRecord.objects.filter(course__site__is_active=True, trainess__gender="K").order_by(
+                        "trainess").values_list("trainess").distinct())
         data['statistic_by_gender_e'] = len(
-            TrainessCourseRecord.objects.filter(course__site__is_active=True, trainess__gender="E").order_by(
-                "trainess").values_list("trainess").distinct())
+                TrainessCourseRecord.objects.filter(course__site__is_active=True, trainess__gender="E").order_by(
+                        "trainess").values_list("trainess").distinct())
         data['statistic_by_gender_k_approved'] = len(
-            TrainessCourseRecord.objects.filter(course__site__is_active=True, trainess__gender="K",
-                                                approved=True).order_by("trainess").values_list("trainess").distinct())
+                TrainessCourseRecord.objects.filter(course__site__is_active=True, trainess__gender="K",
+                                                    approved=True).order_by("trainess").values_list(
+                    "trainess").distinct())
         data['statistic_by_gender_e_approved'] = len(
-            TrainessCourseRecord.objects.filter(course__site__is_active=True, trainess__gender="E",
-                                                approved=True).order_by("trainess").values_list("trainess").distinct())
+                TrainessCourseRecord.objects.filter(course__site__is_active=True, trainess__gender="E",
+                                                    approved=True).order_by("trainess").values_list(
+                    "trainess").distinct())
         data['statistic_by_university_for_approved'] = []
         data['statistic_by_university'] = []
         for university in UNIVERSITIES:
             data['statistic_by_university'].append((university[0], len(
-                TrainessCourseRecord.objects.filter(course__site__is_active=True,
-                                                    trainess__university__contains=university[0]).order_by(
-                    "trainess").values_list("trainess").distinct())))
+                    TrainessCourseRecord.objects.filter(course__site__is_active=True,
+                                                        trainess__university__contains=university[0]).order_by(
+                            "trainess").values_list("trainess").distinct())))
             data['statistic_by_university_for_approved'].append((university[0], len(
-                TrainessCourseRecord.objects.filter(course__site__is_active=True,
-                                                    trainess__university__contains=university[0],
-                                                    approved=True).order_by("trainess").values_list(
-                    "trainess").distinct())))
+                    TrainessCourseRecord.objects.filter(course__site__is_active=True,
+                                                        trainess__university__contains=university[0],
+                                                        approved=True).order_by("trainess").values_list(
+                            "trainess").distinct())))
             # data['statistic_by_university'] = sorted(data['statistic_by_university'], key=lambda x: (x[1], x[1]),
         # reverse=True)
 
@@ -362,8 +365,8 @@ def statistic(request):
 
         # kurs bazinda toplam teyitli olanlar
         total_profile = len(
-            TrainessCourseRecord.objects.filter(course__site__is_active=True).order_by("trainess").values(
-                "trainess").distinct())
+                TrainessCourseRecord.objects.filter(course__site__is_active=True).order_by("trainess").values(
+                        "trainess").distinct())
         total_preference = len(TrainessCourseRecord.objects.filter(course__site__is_active=True))
         data['statistic_by_totalsize'] = {'Toplam Profil(Kişi)': total_profile, 'Toplam Tercih': total_preference}
     except Exception as e:
@@ -422,7 +425,7 @@ def get_preferred_courses(request):
         try:
             course_records = TrainessCourseRecord.objects.filter(course__site__is_active=True,
                                                                  trainess__user=request.user).order_by(
-                'preference_order')
+                    'preference_order')
             preferred_courses = [course_record.course.name for course_record in course_records]
             status = "0"
         except Exception as e:
@@ -490,7 +493,8 @@ def addtrainess(request):
                 note.save()
                 data['note'] = "Form kaydedildi. Eklediğiniz katılımcıları 1. tercih listesinde görüntüleyebilirsiniz."
                 log.info("%s kullanicisi %s kullanicisini %s kursuna ekledi." % (
-                    request.user.username, tcourserecord.trainess.user.username, tcourserecord.course.name), extra=request.log_extra)
+                    request.user.username, tcourserecord.trainess.user.username, tcourserecord.course.name),
+                         extra=request.log_extra)
             else:
                 data['note'] = "Form aşağıdaki sebeplerden dolayı kaydedilemedi."
         elif "cancel" in request.POST:

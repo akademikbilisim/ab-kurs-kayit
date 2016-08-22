@@ -5,7 +5,7 @@ import logging
 
 from django import template
 
-from abkayit.models import ApprovalDate, Site
+from abkayit.models import Site
 
 from userprofile.models import TrainessClassicTestAnswers, InstructorInformation
 from userprofile.userprofileops import UserProfileOPS

@@ -140,14 +140,16 @@ class InstProfileForm(ModelForm):
             self.fields[field].required = True
         self.fields['user'].required = False
 
+
 class UserProfileBySiteForStaffForm(ModelForm):
     class Meta:
         model = UserProfileBySite
-        exclude = ['additional_information','canapply', 'userpassedtest']
+        exclude = ['additional_information', 'canapply', 'userpassedtest']
         widgets = {
             'user': forms.HiddenInput(),
             'site': forms.HiddenInput(),
         }
+
     def __init__(self, *args, **kwargs):
         self.ruser = kwargs.pop('ruser')
         self.site = kwargs.pop('site', None)
@@ -172,7 +174,7 @@ class UserProfileBySiteForm(ModelForm):
         exclude = ['canapply', 'needs_document', 'userpassedtest', 'potentialinstructor']
         widgets = {
             'additional_information': forms.Textarea(
-                attrs={'placeholder': _('Additional Information'), 'class': 'form-control'}),
+                    attrs={'placeholder': _('Additional Information'), 'class': 'form-control'}),
             'user': forms.HiddenInput(),
             'site': forms.HiddenInput(),
         }
@@ -193,6 +195,7 @@ class UserProfileBySiteForm(ModelForm):
         self.instance.user = self.ruser
         return super(UserProfileBySiteForm, self).save(commit)
 
+
 class StuProfileForm(ModelForm):
     class Meta:
         dyncf = DynmcFields()
@@ -201,7 +204,8 @@ class StuProfileForm(ModelForm):
         widgets = {
             'tckimlikno': forms.NumberInput(attrs={'placeholder': _('Turkish ID No'), 'class': 'form-control'}),
             'ykimlikno': forms.NumberInput(attrs={'placeholder': _('Foreigner ID No'), 'class': 'form-control'}),
-            'gender': forms.Select(attrs={'placeholder': _('Gender'), 'class': 'form-control', 'onChange':'genderchanged()'}),
+            'gender': forms.Select(
+                attrs={'placeholder': _('Gender'), 'class': 'form-control', 'onChange': 'genderchanged()'}),
             'mobilephonenumber': forms.TextInput(
                     attrs={'placeholder': _('Mobile Phone Number'), 'class': 'form-control'}),
             'address': forms.Textarea(attrs={'placeholder': _('Address'), 'class': 'form-control'}),
@@ -217,7 +221,7 @@ class StuProfileForm(ModelForm):
             'department': forms.TextInput(attrs={'placeholder': _('Department'), 'class': 'form-control'}),
             'website': forms.TextInput(attrs={'placeholder': _('Website'), 'class': 'form-control'}),
             'experience': forms.TextInput(
-                   attrs={'placeholder': _('Daha önce çalışılan/Staj yapılan yerler'), 'class': 'form-control'}),
+                    attrs={'placeholder': _('Daha önce çalışılan/Staj yapılan yerler'), 'class': 'form-control'}),
             'user': forms.HiddenInput(),
             'birthdate': SelectDateWidget(years=dyncf.BirthDateYears),
         }
@@ -282,7 +286,6 @@ class StuProfileForm(ModelForm):
     def save(self, commit=True):
         self.instance.user = self.ruser
         return super(StuProfileForm, self).save(commit)
-
 
 
 class ChangePasswordForm(ModelForm):

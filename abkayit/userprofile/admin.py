@@ -5,7 +5,6 @@ from django.contrib.auth.admin import UserAdmin as AuthUserAdmin
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
-
 from userprofile.models import InstructorInformation, UserProfile, Accommodation, UserAccomodationPref, \
     UserVerification, TrainessNote, UserProfileBySite
 from training.models import Course
@@ -42,6 +41,7 @@ class UserProfileInline(admin.StackedInline):
     model = UserProfile
     extra = 0
 
+
 class UserProfileBySiteInline(admin.StackedInline):
     model = UserProfileBySite
     extra = 0
@@ -50,6 +50,7 @@ class UserProfileBySiteInline(admin.StackedInline):
 class UserSiteFilter(admin.SimpleListFilter):
     title = _('Trainees Site')
     parameter_name = 'treessite'
+
     def lookups(self, request, model_admin):
         return User.objects.all().values_list("userprofile__trainess__site__id",
                                               "userprofile__trainess__site__name").distinct()

@@ -18,9 +18,9 @@ class CreateCourseForm(ModelForm):
         exclude = []
         widgets = {
             'start_date': SelectDateWidget(
-                years=(str(datetime.datetime.now().year), str(datetime.datetime.now().year + 1))),
+                    years=(str(datetime.datetime.now().year), str(datetime.datetime.now().year + 1))),
             'end_date': SelectDateWidget(
-                years=(str(datetime.datetime.now().year), str(datetime.datetime.now().year + 1))),
+                    years=(str(datetime.datetime.now().year), str(datetime.datetime.now().year + 1))),
             'reg_start_date': HiddenInput(),
             'reg_end_date': HiddenInput(),
             'trainess': HiddenInput(),
@@ -74,7 +74,7 @@ class AddTrainessForm(ModelForm):
         if self.ruser:
             self.fields['course'].queryset = Course.objects.filter(trainer=self.ruser.userprofile, site__is_active=True)
         self.fields['trainess'].queryset = UserProfile.objects.exclude(
-            Q(trainesscourserecord__approved=True) | Q(user__is_staff=True))
+                Q(trainesscourserecord__approved=True) | Q(user__is_staff=True))
 
     class Meta:
         model = TrainessCourseRecord

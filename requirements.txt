@@ -1,6 +1,5 @@
 soap2py
 django==1.8.13
-django-settings-context-processor
 psycopg2
 django-ckeditor
 django-countries

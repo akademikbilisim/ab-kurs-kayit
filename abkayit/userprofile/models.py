@@ -80,6 +80,7 @@ class UserProfile(models.Model):
         verbose_name = _('User Profile')
         verbose_name_plural = _('User Profiles')
 
+
 class UserProfileBySite(models.Model):
     user = models.ForeignKey(User)
     site = models.ForeignKey(Site)
@@ -97,6 +98,7 @@ class UserProfileBySite(models.Model):
         ordering = ('user__username',)
         verbose_name = _('User Profile By Site')
         verbose_name_plural = _('User Profiles By Sites')
+
 
 class TrainessNote(models.Model):
     note = models.CharField(verbose_name=_("Note"), max_length=500)
