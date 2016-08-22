@@ -141,33 +141,75 @@ class InstProfileForm(ModelForm):
             self.fields[field].required = True
         self.fields['user'].required = False
 
-
-class DocumentUploadForm(ModelForm):
+class UserProfileBySiteForStaffForm(ModelForm):
     class Meta:
-        model = UserProfile
-        fields = ["user", "document"]
+        model = UserProfileBySite
+        exclude = ['additional_information','canapply', 'userpassedtest']
         widgets = {
-            "user": forms.HiddenInput(),
+            'user': forms.HiddenInput(),
+            'site': forms.HiddenInput(),
+        }
+    def __init__(self, *args, **kwargs):
+        self.ruser = kwargs.pop('ruser')
+        self.site = kwargs.pop('site', None)
+        self.user = kwargs.pop('user')
+        super(UserProfileBySiteForStaffForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].required = False
+        if not self.ruser.is_staff:
+            self.fields.pop('document')
+            self.fields.pop('needs_document')
+
+    def save(self, commit=True):
+        if self.site is not None:
+            self.instance.site = self.site
+        self.instance.user = self.user
+        return super(UserProfileBySiteForStaffForm, self).save(commit)
+
+
+class UserProfileBySiteForm(ModelForm):
+    class Meta:
+        model = UserProfileBySite
+        exclude = ['canapply', 'needs_document', 'userpassedtest', 'potentialinstructor']
+        widgets = {
+            'additional_information': forms.Textarea(
+                attrs={'placeholder': _('Additional Information'), 'class': 'form-control'}),
+            'user': forms.HiddenInput(),
+            'site': forms.HiddenInput(),
+        }
+        help_texts = {
+            'document': 'Görevlendirme yazısı, veli izin yazısı vb.',
         }
 
+    def __init__(self, *args, **kwargs):
+        self.site = kwargs.pop('site', None)
+        self.ruser = kwargs.pop('ruser')
+        super(UserProfileBySiteForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].required = False
+
+    def save(self, commit=True):
+        if self.site is not None:
+            self.instance.site = self.site
+        self.instance.user = self.ruser
+        return super(UserProfileBySiteForm, self).save(commit)
 
 class StuProfileForm(ModelForm):
     class Meta:
         dyncf = DynmcFields()
         model = UserProfile
-        exclude = {''}
-        # fields=['name','surname','username','email','password','password',]
+        exclude = []
         widgets = {
             'tckimlikno': forms.NumberInput(attrs={'placeholder': _('Turkish ID No'), 'class': 'form-control'}),
             'ykimlikno': forms.NumberInput(attrs={'placeholder': _('Foreigner ID No'), 'class': 'form-control'}),
-            'gender': forms.Select(attrs={'placeholder': _('Gender'), 'class': 'form-control'}),
+            'gender': forms.Select(attrs={'placeholder': _('Gender'), 'class': 'form-control', 'onChange':'genderchanged()'}),
             'mobilephonenumber': forms.TextInput(
                 attrs={'placeholder': _('Mobile Phone Number'), 'class': 'form-control'}),
             'address': forms.Textarea(attrs={'placeholder': _('Address'), 'class': 'form-control'}),
             'job': forms.TextInput(attrs={'placeholder': _('Job'), 'class': 'form-control'}),
             'city': forms.Select(attrs={'placeholder': _('Current City'), 'class': 'form-control'},
                                  choices=Region.objects.all().values_list('name_ascii', 'name_ascii')),
-            'country': CountrySelectWidget(attrs={'placeholder': _('Nationality')}),
+            'country': CountrySelectWidget(attrs={'placeholder': _('Nationality'), 'onChange': 'countrychanged();'}),
             'title': forms.TextInput(attrs={'placeholder': _('Title'), 'class': 'form-control'}),
             'organization': forms.TextInput(attrs={'placeholder': _('Organization'), 'class': 'form-control'}),
             'occupation': forms.Select(attrs={'placeholder': _('Occupation'), 'class': 'form-control'}),
@@ -177,16 +219,11 @@ class StuProfileForm(ModelForm):
             'website': forms.TextInput(attrs={'placeholder': _('Website'), 'class': 'form-control'}),
             'experience': forms.TextInput(
                 attrs={'placeholder': _('Daha önce çalışılan/Staj yapılan yerler'), 'class': 'form-control'}),
-            'additional_information': forms.Textarea(
-                attrs={'placeholder': _('Additional Information'), 'class': 'form-control'}),
-            'userpassedtest': forms.HiddenInput(),
             'user': forms.HiddenInput(),
-            'needs_document': forms.HiddenInput(),
             'birthdate': SelectDateWidget(years=dyncf.BirthDateYears),
         }
         help_texts = {
             'organization': 'Kurum Bilgisi; okuyorsanız okuduğunuz kurum, çalışıyorsanız çalıştığınız kurum bilgisidir',
-            'document': 'Görevlendirme yazısı, veli izin yazısı vb.',
         }
 
     def __init__(self, *args, **kwargs):
@@ -198,8 +235,7 @@ class StuProfileForm(ModelForm):
         self.ruser = kwargs.pop('ruser', None)
         super(StuProfileForm, self).__init__(*args, **kwargs)
         for field in self.fields:
-            if field in ['needs_document', 'tckimlikno', 'ykimlikno', 'university', 'userpassedtest', 'user',
-                         'additional_information', 'website', 'experience', 'document']:
+            if field in ['tckimlikno', 'ykimlikno', 'university', 'user', 'website', 'experience']:
                 self.fields[field].required = False
             else:
                 self.fields[field].required = True
@@ -243,6 +279,11 @@ class StuProfileForm(ModelForm):
         else:
             raise forms.ValidationError(_("User not found"))
         return cleaned_data
+
+    def save(self, commit=True):
+        self.instance.user = self.ruser
+        return super(StuProfileForm, self).save(commit)
+
 
 
 class ChangePasswordForm(ModelForm):

@@ -29,8 +29,6 @@
                     <dt>Kurum:</dt><dd>{{ tuser.organization }}</dd>
                     <dt>Üniversite:</dt><dd>{{ tuser.university }}</dd>
                     <dt>Bölüm:</dt><dd>{{ tuser.department }}</dd>
-                    <dt>Evrak:</dt><dd>{{ tuser.document }}</dd>
-                    <dt>Ek Bilgiler:</dt><dd>{{ tuser.additional_information }}</dd>
                     <dt>Seçtiği kurslar:</dt>
                     <dd>
                         {% for tcr in tuser.trainesscourserecord_set.all%}
@@ -68,20 +66,48 @@
                             <p> <input id="trainessnotetext" type="text" class="form-control input-note" value=""/>
                            <input id="trainessnoteuser" type="hidden" class="input-username" value="{{ tuser.user.username }}"/><input id="save-score" class="btn btn-primary" type="button" value="Ekle" /></p>
                     </dd>
-                    {% if ruser.is_staff %}
-                    <dt>Evrak:</dt>
+                    <dt>Etkinlik bazlı Profil</dt>
                     <dd>
-                        {% if tuser.document %}
-                        <a href="https://{{site.home_url}}{{ tuser.document.url }}">{{ tuser.document }}</a>
-                        {% else %}
-                            Belge yok
-                        {% endif %}
-                        {%if documentform %}
                         <form name="form-control" class="span4 signup-form" method="POST" enctype="multipart/form-data">{% csrf_token %}
-                            {{ documentform }}
-                            <input type="submit" name="save-document" id="save-document" class="btn btn-primary" value="{% trans 'Save' %}">
+                            {% if userprofilebysiteform %}
+                                {% for field in userprofilebysiteform.hidden_fields %}
+                                {{ field }}
+                                {% if field.errors %}
+                                <div class="row">
+                                    <div class="col-md-6 col-md-offset-2">
+                                        <span class="label label-danger">{{ field.label }}: {{ field.errors|striptags }}</span>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% for field in userprofilebysiteform.visible_fields %}
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <b>{{ field.label }}</b>
+                                        {% if field.field.required %}
+                                        <span class="required"></span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {{ field }}
+                                    </div>
+                                </div>
+                                {% if field.help_text%}
+                                <span class="helptext">{{field.help_text}}</span>
+                                {%endif%}
+                                {% if field.errors %}
+                                <div class="row">
+                                    <div class="col-md-6 col-md-offset-2">
+                                        <span class="label label-danger">{{ field.label }}: {{ field.errors|striptags }}</span>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                            <input type="submit" name="savesitebasedprofile" id="savesitebasedprofile" class="btn btn-primary" value="{% trans 'Save' %}">
                         </form>
-                        {% endif %}
                     </dd>
                     {% endif %}
                     {% getanswers tuser ruser courseid %}
@@ -108,12 +134,11 @@
                     </dl>
                 </form>
                 {% endif %}
-
                 </div>
             </div>
         </div>
-
-    </div>{% endif %}
+    </div>
+{% endif %}
 
 </div>
 
