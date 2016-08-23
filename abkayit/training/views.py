@@ -22,7 +22,7 @@ from abkayit.decorators import active_required
 from abkayit.settings import PREFERENCE_LIMIT, ADDITION_PREFERENCE_LIMIT, EMAIL_FROM_ADDRESS, REQUIRE_TRAINESS_APPROVE, \
     UNIVERSITIES
 
-from userprofile.models import UserProfile, TrainessNote, TrainessClassicTestAnswers
+from userprofile.models import UserProfile, TrainessNote, TrainessClassicTestAnswers, UserProfileBySite
 from userprofile.forms import InstProfileForm, CreateInstForm
 from userprofile.userprofileops import UserProfileOPS
 
@@ -279,25 +279,35 @@ def control_panel(request, courseid):
             return render_to_response("training/controlpanel.html", data, context_instance=RequestContext(request))
         elif request.user.userprofile in course.trainer.all():
             data['note'] = "Kursiyerler için not ekleyebilirsiniz."
-            if "save-score" in request.POST:
+            if "savescore" in request.POST:
                 trainessnote = request.POST.get('trainessnotetext')
                 trainessusername = request.POST.get('trainessnoteuser')
                 user = User.objects.get(username=trainessusername)
-                tnote = TrainessNote(note_to_profile=user.userprofile,
-                                     note_from_profile=request.user.userprofile,
-                                     note=trainessnote,
-                                     site=data['site'],
-                                     label='egitim')
-                tnote.save()
+                potentialinst = request.POST.get('potential-%s' % user.pk)
+                if trainessnote:
+                    tnote = TrainessNote(note_to_profile=user.userprofile,
+                                         note_from_profile=request.user.userprofile,
+                                         note=trainessnote,
+                                         site=data['site'],
+                                         label='egitim')
+                    tnote.save()
+                uprobysite, created = UserProfileBySite.objects.get_or_create(user=user, site=data['site'])
+                if potentialinst == 'on':
+                    uprobysite.potentialinstructor = True
+                else:
+                    uprobysite.potentialinstructor = False
+                uprobysite.save()
                 data['savednoteuserid'] = user.userprofile.pk
                 data['notesavedsuccessful'] = True
                 data['note'] = "Kursiyer notu başarıyla kaydedildi."
-            return render_to_response("training/controlpanelforunauthinst.html", data, context_instance=RequestContext(request))
+            return render_to_response("training/controlpanelforunauthinst.html", data,
+                                      context_instance=RequestContext(request))
         elif not request.user.is_staff:
             return redirect("applytocourse")
         return redirect("statistic")
     except UserProfile.DoesNotExist:
         return redirect("createprofile")
+
 
 @login_required
 def select_course_for_control_panel(request):
@@ -310,7 +320,7 @@ def select_course_for_control_panel(request):
             courses = Course.objects.filter(site=data['site'], approved=True, trainer__user=request.user)
             if courses:
                 log.info("egitmenin " + str(len(courses)) + " tane kursu var", extra=d)
-                data['courses'] =courses
+                data['courses'] = courses
             else:
                 note = "Bu etkinlikte kursunuz yok."
             data['note'] = note
@@ -320,6 +330,7 @@ def select_course_for_control_panel(request):
         return redirect("statistic")
     except UserProfile.DoesNotExist:
         return redirect("createprofile")
+
 
 @staff_member_required
 def allcourseprefview(request):
