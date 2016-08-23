@@ -6,7 +6,7 @@ from django import template
 from abkayit.models import ApprovalDate
 from abkayit.settings import REQUIRE_TRAINESS_APPROVE
 from training.models import TrainessCourseRecord
-from userprofile.models import TrainessClassicTestAnswers
+from userprofile.models import TrainessClassicTestAnswers, TrainessNote, UserProfileBySite
 from userprofile.userprofileops import UserProfileOPS
 from training.tutils import getparticipationforms, getparticipationforms_by_date
 
@@ -174,3 +174,39 @@ def getparforms(site, cr):
 def getparformsbydate(cr, date):
     form = getparticipationforms_by_date(cr, date)
     return form.as_ul()
+
+
+@register.simple_tag(name="usernotesaddedbyinst")
+def usernotesaddedbyinst(ruser, tuser):
+    trainessnotes = TrainessNote.objects.filter(note_from_profile=ruser.userprofile, note_to_profile=tuser)
+    html = "<h3>Eklediğiniz Notlar</h3>"
+    if trainessnotes:
+        for trainessnote in trainessnotes:
+            html += """
+            <section>
+                <p> %s - %s</p>
+                <ul>
+                    <li> <b>Not:</b><p>%s</p></li>
+                    <li> <b>Tarih:</b><p>%s</p></li>
+                </ul>
+            </section>
+            """ % (trainessnote.site.name, trainessnote.site.year, trainessnote.note,
+                   trainessnote.note_date.strftime('%d-%m-%Y'))
+    else:
+        html = "Not Yok."
+    return html
+
+
+@register.simple_tag(name="potentialinstform")
+def potentialinstform(tuser):
+    html = "<label for='potential-%s'> Potansiyel Eğitmen </label>" % tuser.pk
+    try:
+        tuserprofilebysite = UserProfileBySite.objects.get(user=tuser)
+        if tuserprofilebysite.potentialinstructor:
+            html += "<input type = 'checkbox' id='potential-%s' name='potential-%s' checked />" % (tuser.pk, tuser.pk)
+        else:
+            html += "<input type='checkbox' id='potential-%s' name='potential-%s' />" % (tuser.pk, tuser.pk)
+        return html
+    except UserProfileBySite.DoesNotExist:
+        html += "<input type='checkbox' id='potential-%s' name='potential-%s' />" % (tuser.pk, tuser.pk)
+        return html
