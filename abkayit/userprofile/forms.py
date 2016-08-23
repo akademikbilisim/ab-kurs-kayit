@@ -2,6 +2,7 @@
 import logging
 
 from django import forms
+from django.contrib.auth.models import User
 
 from django.forms.models import ModelForm
 
@@ -11,7 +12,7 @@ from django.forms.widgets import TextInput
 
 from django_countries.widgets import CountrySelectWidget
 
-from userprofile.models import *
+from userprofile.models import UserProfile, UserProfileBySite, InstructorInformation
 from userprofile.dynamicfields import DynmcFields
 from userprofile.userprofileops import UserProfileOPS
 from cities_light.models import Region
