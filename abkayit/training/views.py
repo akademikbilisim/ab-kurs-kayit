@@ -15,14 +15,14 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Count
 from django.utils import timezone
-
+from django.contrib.auth.models import User
 from abkayit.backend import getsiteandmenus, send_email_by_operation_name
 from abkayit.models import Site, Menu, ApprovalDate, Answer, TextBoxQuestions
 from abkayit.decorators import active_required
 from abkayit.settings import PREFERENCE_LIMIT, ADDITION_PREFERENCE_LIMIT, EMAIL_FROM_ADDRESS, REQUIRE_TRAINESS_APPROVE, \
     UNIVERSITIES
 
-from userprofile.models import UserProfile, TrainessNote, TrainessClassicTestAnswers
+from userprofile.models import UserProfile, TrainessNote, TrainessClassicTestAnswers, UserProfileBySite
 from userprofile.forms import InstProfileForm, CreateInstForm
 from userprofile.userprofileops import UserProfileOPS
 
@@ -252,33 +252,79 @@ def approve_course_preference(request):
 
 
 @login_required
-def control_panel(request):
+def control_panel(request, courseid):
     d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
     data = getsiteandmenus(request)
-    note = _("You can accept trainees")
+    data['note'] = _("You can accept trainees")
     now = timezone.now()
+    data["user"] = request.user
+    try:
+        course = Course.objects.get(pk=courseid)
+        data['now'] = now
+        data['dates'] = get_approve_start_end_dates_for_inst(data['site'], d)
+        data['trainess'] = {}
+        data['notesavedsuccessful'] = False
+        if data['dates']:
+            if now <= data['dates'].get(1).end_date:
+                data['trainess'][course] = get_trainess_by_course(course, d)
+            else:
+                data['note'] = _("Consent period is closed")
+                data['trainess'][course] = get_approved_trainess(course, d)
+        if request.user.userprofile in course.authorized_trainer.all():
+            log.info("Kullanıcı %s kursunda degisiklik yapiyor" % course.name, extra=d)
+            if "send" in request.POST:
+                log.info("kursiyer onay islemi basladi", extra=d)
+                log.info(request.POST, extra=d)
+                data['note'] = applytrainerselections(request.POST, course, data, d)
+            return render_to_response("training/controlpanel.html", data, context_instance=RequestContext(request))
+        elif request.user.userprofile in course.trainer.all():
+            data['note'] = "Kursiyerler için not ekleyebilirsiniz."
+            if "savescore" in request.POST:
+                trainessnote = request.POST.get('trainessnotetext')
+                trainessusername = request.POST.get('trainessnoteuser')
+                user = User.objects.get(username=trainessusername)
+                potentialinst = request.POST.get('potential-%s' % user.pk)
+                if trainessnote:
+                    tnote = TrainessNote(note_to_profile=user.userprofile,
+                                         note_from_profile=request.user.userprofile,
+                                         note=trainessnote,
+                                         site=data['site'],
+                                         label='egitim')
+                    tnote.save()
+                uprobysite, created = UserProfileBySite.objects.get_or_create(user=user, site=data['site'])
+                if potentialinst == 'on':
+                    uprobysite.potentialinstructor = True
+                else:
+                    uprobysite.potentialinstructor = False
+                uprobysite.save()
+                data['savednoteuserid'] = user.userprofile.pk
+                data['notesavedsuccessful'] = True
+                data['note'] = "Kursiyer notu başarıyla kaydedildi."
+            return render_to_response("training/controlpanelforunauthinst.html", data,
+                                      context_instance=RequestContext(request))
+        elif not request.user.is_staff:
+            return redirect("applytocourse")
+        return redirect("statistic")
+    except UserProfile.DoesNotExist:
+        return redirect("createprofile")
+
+
+@login_required
+def select_course_for_control_panel(request):
+    d = {'clientip': request.META['REMOTE_ADDR'], 'user': request.user}
+    data = getsiteandmenus(request)
+    note = "İşlem Yapmak İstediğiniz Kursu Seçiniz"
     data["user"] = request.user
     try:
         if UserProfileOPS.is_instructor(request.user.userprofile):
             courses = Course.objects.filter(site=data['site'], approved=True, trainer__user=request.user)
             if courses:
                 log.info("egitmenin " + str(len(courses)) + " tane kursu var", extra=d)
-                data['now'] = now
-                data['dates'] = get_approve_start_end_dates_for_inst(data['site'], d)
-                data['trainess'] = {}
-                if data['dates']:
-                    for course in courses:
-                        if now <= data['dates'].get(1).end_date:
-                            data['trainess'][course] = get_trainess_by_course(course, d)
-                        else:
-                            note = _("Consent period is closed")
-                            data['trainess'][course] = get_approved_trainess(course, d)
-                if "send" in request.POST:
-                    log.info("kursiyer onay islemi basladi", extra=d)
-                    log.info(request.POST, extra=d)
-                    note = applytrainerselections(request.POST, courses, data, d)
+                data['courses'] = courses
+            else:
+                note = "Bu etkinlikte kursunuz yok."
             data['note'] = note
-            return render_to_response("training/controlpanel.html", data, context_instance=RequestContext(request))
+            return render_to_response("training/courselistforinst.html", data, context_instance=RequestContext(request))
         elif not request.user.is_staff:
             return redirect("applytocourse")
         return redirect("statistic")
@@ -510,10 +556,10 @@ def addtrainess(request):
             else:
                 data['note'] = "Form aşağıdaki sebeplerden dolayı kaydedilemedi."
         elif "cancel" in request.POST:
-            return redirect("controlpanel")
+            return redirect("selectcoursefcp")
         return render_to_response('training/addtrainess.html', data, context_instance=RequestContext(request))
     else:
-        return redirect("controlpanel")
+        return redirect("selectcoursefcp")
 
 
 @staff_member_required

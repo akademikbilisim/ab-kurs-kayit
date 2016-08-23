@@ -79,6 +79,7 @@ class UserProfile(models.Model):
         verbose_name = _('User Profile')
         verbose_name_plural = _('User Profiles')
 
+
 class UserProfileBySite(models.Model):
     user = models.ForeignKey(User)
     site = models.ForeignKey(Site)
