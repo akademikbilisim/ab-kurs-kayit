@@ -27,7 +27,7 @@ from training.tutils import getparticipationforms, cancel_all_prefs
 
 from training.models import Course, TrainessCourseRecord, TrainessParticipation
 
-from abkayit.models import *
+from abkayit.models import TextBoxQuestions
 from abkayit.backend import create_verification_link, send_email_by_operation_name
 
 from abkayit.decorators import active_required
@@ -63,7 +63,7 @@ def subscribe(request):
         data['createuserform'] = form
         return render(request, "userprofile/subscription.html", data)
     else:
-        return redirect("controlpanel")
+        return redirect("selectcoursefcp")
 
 
 @login_required(login_url='/')
@@ -82,12 +82,13 @@ def getaccomodations(request, usertype, gender):
 @login_required(login_url='/')
 @user_passes_test(active_required, login_url=reverse_lazy("active_resend"))
 def createprofile(request):
-    data = {'update_user_form': UpdateUserForm(instance=request.user)}
-    (note, userprobysite, data['userproform'], data['userproformbysite'],
-     data['accomodations'], data['accomodation_records']) = getuserprofileforms(request.user, request.site,
-                                                                                request.log_extra)
-    data['sitewidequestions'] = TextBoxQuestions.objects.filter(site=request.site, active=True, is_sitewide=True)
+    data = {}
     log.info("create/update profile form", extra=request.log_extra)
+    data['update_user_form'] = UpdateUserForm(instance=request.user)
+    data['note'] = "Profilinizi güncelleyebilirsiniz."
+    note, userprobysite, data['userproform'], data['userproformbysite'], data['accomodations'], data[
+        'accomodation_records'] = getuserprofileforms(request.user, request.site, request.log_extra)
+    data['sitewidequestions'] = TextBoxQuestions.objects.filter(site=request.site, active=True, is_sitewide=True)
     if 'register' in request.POST:
         data['update_user_form'] = UpdateUserForm(data=request.POST, instance=request.user)
         try:
@@ -208,7 +209,7 @@ def alluserview(request):
     data = {}
     userlist = []
     try:
-        allcourserecord = TrainessCourseRecord.objects.filter(course__site__is_active=True).values_list(
+        allcourserecord = TrainessCourseRecord.objects.filter(course__site=request.site).values_list(
                 'trainess').order_by('trainess').distinct()
         if allcourserecord:
 
@@ -223,7 +224,7 @@ def alluserview(request):
                     "gender": up.gender,
                     "job": up.job,
                     "title": up.title,
-                    "accomodation": up.useraccomodationpref_set.filter(accomodation__site__is_active=True),
+                    "accomodation": up.useraccomodationpref_set.filter(accomodation__site=request.site),
                     "courserecordid": "0"}
                 try:
                     usr['document'] = up.userprofilebysite.document
@@ -245,7 +246,7 @@ def get_all_trainers_view(request):
     data = {}
     try:
         trainers = []
-        courses = Course.objects.filter(site__is_active=True)
+        courses = Course.objects.filter(site=request.site)
         for course in courses:
             trainers.extend(course.trainer.all())
         data['trainers'] = set(trainers)
@@ -408,15 +409,14 @@ def showuserprofile(request, userid, courserecordid):
         try:
             courserecord = TrainessCourseRecord.objects.get(pk=courserecordid,
                                                             trainess=UserProfile.objects.get(pk=userid))
-            if not request.user.is_staff \
-                    and request.user.userprofile not in courserecord.course.trainer.all() \
-                    and request.user.userprofile not in courserecord.course.authorized_trainer.all():
-                return redirect("controlpanel")
+            if not request.user.is_staff and request.user.userprofile not in courserecord.course.trainer.all() and \
+                            request.user.userprofile not in courserecord.course.authorized_trainer.all():
+                return redirect("selectcoursefcp")
         except Exception as e:
             log.warning(e.message, extra=request.log_extra)
             log.warning("Staff user show user profile", extra=request.log_extra)
             if not request.user.is_staff:
-                return redirect("controlpanel")
+                return redirect("selectcoursefcp")
         user = UserProfile.objects.get(pk=userid)
         data['tuser'] = user
         data['ruser'] = request.user

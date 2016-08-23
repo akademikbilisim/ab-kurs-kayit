@@ -166,7 +166,7 @@ def save_course_prefferences(userprofile, course_prefs, site, d, answersforcours
     res = {'status': '-1', 'message': 'error'}
     if len(course_prefs) <= PREFERENCE_LIMIT:
         context = {}
-        oldprefs = TrainessCourseRecord.objects.filter(course__site__is_active=True, trainess=userprofile)
+        oldprefs = TrainessCourseRecord.objects.filter(course__site=site, trainess=userprofile)
 
         context['oldprefs'] = {}
         is_changed = False
@@ -204,7 +204,6 @@ def save_course_prefferences(userprofile, course_prefs, site, d, answersforcours
             res['message'] = "Tercihleriniz başarılı bir şekilde güncellendi"
             context['user'] = userprofile.user
             context['course_prefs'] = course_records
-            context['site'] = site
             domain = site.home_url
             context['domain'] = domain.rstrip('/')
             try:
@@ -300,9 +299,9 @@ def getparticipationforms_by_date(courserecord, date):
     return form
 
 
-def is_trainess_approved_anothercourse(trainess, cur_pref_order):
+def is_trainess_approved_anothercourse(trainess, cur_pref_order, site):
     trainessapprovedprefs = TrainessCourseRecord.objects.filter(trainess=trainess, approved=True,
-                                                                course__site__is_active=True)
+                                                                course__site=site)
     for tp in trainessapprovedprefs:
         if cur_pref_order < tp.preference_order:
             '''
@@ -317,65 +316,63 @@ def is_trainess_approved_anothercourse(trainess, cur_pref_order):
     return None
 
 
-def applytrainerselections(postrequest, courses, data, d):
-    note = ""
+def applytrainerselections(postrequest, course, data, site, d):
     now = timezone.now()
     if UserProfileOPS.is_authorized_inst(data["user"].userprofile):
         sendconsentemail = postrequest.get("send_consent_email", False)
-        for course in courses:
-            try:
-                data["changedprefs"] = []
-                data["course"] = course
-                approvedr = postrequest.getlist('students' + str(course.pk))
-                sendconsentmailprefs = postrequest.getlist('consentmail' + str(course.pk))
-                for pref in data['dates']:
-                    if data['dates'][pref].start_date <= now <= data['dates'][pref].end_date:
-                        allprefs = TrainessCourseRecord.objects.filter(course=course.pk, preference_order=pref)
-                        for p in allprefs:
-                            if not p.consentemailsent:
-                                if str(p.pk) not in approvedr and p.approved:
-                                    p.approved = False
-                                    p.trainess_approved = False
-                                    data["changedprefs"].append(p)
-                                elif str(p.pk) in approvedr and not p.approved:
+        try:
+            data["changedprefs"] = []
+            data["course"] = course
+            approvedr = postrequest.getlist('students' + str(course.pk))
+            sendconsentmailprefs = postrequest.getlist('consentmail' + str(course.pk))
+            for pref in data['dates']:
+                if data['dates'][pref].start_date <= now <= data['dates'][pref].end_date:
+                    allprefs = TrainessCourseRecord.objects.filter(course=course.pk, preference_order=pref)
+                    for p in allprefs:
+                        if not p.consentemailsent:
+                            if str(p.pk) not in approvedr and p.approved:
+                                p.approved = False
+                                p.trainess_approved = False
+                                data["changedprefs"].append(p)
+                            elif str(p.pk) in approvedr and not p.approved:
+                                data['approvedpref'] = p
+                                trainess_approved_pref = is_trainess_approved_anothercourse(p.trainess, pref, site)
+                                if trainess_approved_pref:
+                                    data['changedpref'] = trainess_approved_pref
+                                    data["recipientlist"] = trainess_approved_pref.course.authorized_trainer.all() \
+                                        .values_list('user__username', flat=True)
+                                    send_email_by_operation_name(data, "inform_trainers_about_changes")
+                                p.approved = True
+                                p.instapprovedate = now
+                                course.trainess.add(p.trainess)
+                                course.save()
+                                if not REQUIRE_TRAINESS_APPROVE:
+                                    p.trainess_approved = True
+                                data["changedprefs"].append(p)
+                            if sendconsentemail == "on" and str(p.pk) in sendconsentmailprefs:
+                                if p.preference_order == 1 and p.approved:
                                     data['approvedpref'] = p
-                                    trainess_approved_pref = is_trainess_approved_anothercourse(p.trainess, pref)
-                                    if trainess_approved_pref:
-                                        data['changedpref'] = trainess_approved_pref
-                                        data["recipientlist"] = trainess_approved_pref.course.authorized_trainer.all() \
-                                            .values_list('user__username', flat=True)
-                                        send_email_by_operation_name(data, "inform_trainers_about_changes")
-                                    p.approved = True
-                                    p.instapprovedate = now
-                                    course.trainess.add(p.trainess)
-                                    course.save()
-                                    if not REQUIRE_TRAINESS_APPROVE:
-                                        p.trainess_approved = True
-                                    data["changedprefs"].append(p)
-                                if sendconsentemail == "on" and str(p.pk) in sendconsentmailprefs:
-                                    if p.preference_order == 1 and p.approved:
-                                        data['approvedpref'] = p
-                                        data["recipientlist"] = [p.trainess.user.username]
-                                        res = send_email_by_operation_name(data, "send_consent_email")
-                                        if res == 1:
-                                            p.consentemailsent = True
-                                p.save()
-                note = "Seçimleriniz başarılı bir şekilde kaydedildi."
-                if data["changedprefs"]:
-                    data["recipientlist"] = data['course'].authorized_trainer.all().values_list('user__username',
-                                                                                                flat=True)
-                    send_email_by_operation_name(data, "inform_about_changes")
-            except Exception as e:
-                note = "Beklenmedik bir hata oluştu!"
-                log.error('Error on line {}'.format(sys.exc_info()[-1].tb_lineno), extra=d)
-                log.error(e.message, extra=d)
+                                    data["recipientlist"] = [p.trainess.user.username]
+                                    res = send_email_by_operation_name(data, "send_consent_email")
+                                    if res == 1:
+                                        p.consentemailsent = True
+                            p.save()
+            note = "Seçimleriniz başarılı bir şekilde kaydedildi."
+            if data["changedprefs"]:
+                data["recipientlist"] = data['course'].authorized_trainer.all().values_list('user__username',
+                                                                                            flat=True)
+                send_email_by_operation_name(data, "inform_about_changes")
+        except Exception as e:
+            note = "Beklenmedik bir hata oluştu!"
+            log.error('Error on line {}'.format(sys.exc_info()[-1].tb_lineno), extra=d)
+            log.error(e.message, extra=d)
     else:
         note = "Bu işlemi yapmaya yetkiniz yok!"
     return note
 
 
 def cancel_all_prefs(trainess, cancelnote, site, ruser, d):
-    trainess_course_records = TrainessCourseRecord.objects.filter(course__site__is_active=True,
+    trainess_course_records = TrainessCourseRecord.objects.filter(course__site=site,
                                                                   trainess=trainess)
     now = datetime.date.today()
     try:
@@ -383,7 +380,7 @@ def cancel_all_prefs(trainess, cancelnote, site, ruser, d):
         try:
             context['recipientlist'] = REPORT_RECIPIENT_LIST
             context['course_prefs'] = trainess_course_records
-            approvedpref = TrainessCourseRecord.objects.filter(course__site__is_active=True, trainess=trainess,
+            approvedpref = TrainessCourseRecord.objects.filter(course__site=site, trainess=trainess,
                                                                approved=True, consentemailsent=True)
             if site.application_end_date < now < site.event_start_date:
                 if approvedpref:

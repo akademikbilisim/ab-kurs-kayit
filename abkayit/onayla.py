@@ -82,7 +82,7 @@ def push_note_to_trainess(note, filename):
     from userprofile.models import UserProfile, TrainessNote
     from abkayit.models import Site
     if note and filename:
-        site = Site.objects.get(is_active=True)
+        site = Site.objects.get(is_active=True)  # FIXME is_active birden fazla olabilir!
         fromup = UserProfile.objects.get(user__username="ozge@kripton.rocks")
         with open(filename) as f:
             userlist = f.readlines()

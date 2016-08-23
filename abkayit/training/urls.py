@@ -3,9 +3,10 @@ from django.conf.urls import patterns, url
 
 urlpatterns = patterns('training.views',
                        url(r'^submit', 'submitandregister', name="submit"),
-                       url(r'^controlpanel', 'control_panel', name="controlpanel"),
+                       url(r'^controlpanel/(?P<courseid>[0-9]+)/$', 'control_panel', name="controlpanel"),
+                       url(r'^selectcourse/', 'select_course_for_control_panel', name="selectcoursefcp"),
                        url(r'^listcourses', 'list_courses', name="listcourses"),
-                       url(r'^showcourse/(?P<course_id>[1-9]+)/$', 'show_course', name="showcourse"),
+                       url(r'^showcourse/(?P<course_id>[0-9]+)/$', 'show_course', name="showcourse"),
                        url(r'^applytocourse', 'apply_to_course', name="applytocourse"),
                        url(r'^additionprefapply/$', 'apply_course_in_addition', name="applytocourseinaddition"),
                        url(r'^basvurular', 'allcourseprefview', name="allcoursepref"),

@@ -69,10 +69,12 @@ class AddTrainessForm(ModelForm):
                               widget=Select(attrs={'class': 'form-control'}))
 
     def __init__(self, *args, **kwargs):
-        self.ruser = kwargs.pop('ruser', None)
+        self.request = kwargs.pop('request', None)
+        self.ruser = self.request.user
+        self.site = self.request.site
         super(AddTrainessForm, self).__init__(*args, **kwargs)
         if self.ruser:
-            self.fields['course'].queryset = Course.objects.filter(trainer=self.ruser.userprofile, site__is_active=True)
+            self.fields['course'].queryset = Course.objects.filter(trainer=self.ruser.userprofile, site=self.site)
         self.fields['trainess'].queryset = UserProfile.objects.exclude(
                 Q(trainesscourserecord__approved=True) | Q(user__is_staff=True))
 

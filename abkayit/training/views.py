@@ -5,7 +5,7 @@ import logging
 import itertools
 from datetime import datetime
 
-from django.shortcuts import render, RequestContext, redirect
+from django.shortcuts import render, redirect
 from django.http.response import HttpResponse
 from django.contrib.auth.decorators import user_passes_test, login_required
 
@@ -16,20 +16,19 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Count
 from django.utils import timezone
 
-from abkayit.backend import send_email_by_operation_name
-from abkayit.models import Site, Menu, ApprovalDate, Answer
+from abkayit.models import ApprovalDate, Answer
 from abkayit.decorators import active_required
-from abkayit.settings import PREFERENCE_LIMIT, ADDITION_PREFERENCE_LIMIT, EMAIL_FROM_ADDRESS, REQUIRE_TRAINESS_APPROVE, \
+from abkayit.settings import PREFERENCE_LIMIT, ADDITION_PREFERENCE_LIMIT, REQUIRE_TRAINESS_APPROVE, \
     UNIVERSITIES
 
-from userprofile.models import UserProfile, TrainessNote, TrainessClassicTestAnswers
+from userprofile.models import UserProfile, TrainessNote, TrainessClassicTestAnswers, UserProfileBySite
 from userprofile.forms import InstProfileForm, CreateInstForm
 from userprofile.userprofileops import UserProfileOPS
 
 from training.models import Course, TrainessCourseRecord, TrainessParticipation
-from training.forms import CreateCourseForm, ParticipationForm, AddTrainessForm
+from training.forms import CreateCourseForm, AddTrainessForm
 from training.tutils import get_approve_start_end_dates_for_inst, save_course_prefferences, applytrainerselections
-from training.tutils import get_approve_start_end_dates_for_tra, get_additional_pref_start_end_dates_for_trainess
+from training.tutils import get_additional_pref_start_end_dates_for_trainess
 from training.tutils import get_approved_trainess, get_trainess_by_course, is_trainess_approved_any_course, \
     gettestsofcourses, cancel_all_prefs, get_approve_first_start_last_end_dates_for_inst, daterange, \
     getparticipationforms_by_date, calculate_participations
@@ -85,7 +84,7 @@ def apply_to_course(request):
     course_records: katilimcinin, mevcut etkinlikteki tercihleri
     """
     data['course_records'] = TrainessCourseRecord.objects.filter(trainess__user=request.user,
-                                                                 course__site__is_active=True).order_by(
+                                                                 course__site=request.site).order_by(
             'preference_order')
     userprofile = request.user.userprofile
     if not userprofile:
@@ -96,7 +95,7 @@ def apply_to_course(request):
             log.info("in between application start and end date", extra=request.log_extra)
             if userprofile.userpassedtest:
                 data['closed'] = False
-                note = _("You can choose courses in order of preference.")
+                data['note '] = _("You can choose courses in order of preference.")
                 if request.GET:
                     course_prefs = request.GET
                     pref_tests = gettestsofcourses(course_prefs)
@@ -132,7 +131,6 @@ def apply_to_course(request):
                         data['note'] = res['message']
                     data['note'] = res['message']
                     return render(request, "training/applytocourse.html", data)
-                data['note'] = note
             else:
                 return redirect("testbeforeapply")
         elif datetime.date(now) < request.site.application_start_date:
@@ -185,7 +183,7 @@ def approve_course_preference(request):
 
         data["approve_is_open"] = False
         trainess_course_records = TrainessCourseRecord.objects.filter(trainess=request.user.userprofile,
-                                                                      course__site__is_active=True)
+                                                                      course__site=request.site)
         first_start_date_inst, last_end_date_inst = get_approve_first_start_last_end_dates_for_inst(request.site,
                                                                                                     request.log_extra)
         if not trainess_course_records:
@@ -196,7 +194,7 @@ def approve_course_preference(request):
         else:
             recordapprovedbyinst = TrainessCourseRecord.objects.filter(trainess=request.user.userprofile, approved=True,
                                                                        consentemailsent=True,
-                                                                       course__site__is_active=True)
+                                                                       course__site=request.site)
             if not recordapprovedbyinst:
 
                 if first_start_date_inst.start_date <= now < last_end_date_inst.end_date:
@@ -214,7 +212,7 @@ def approve_course_preference(request):
                 if REQUIRE_TRAINESS_APPROVE:
                     recordapprovedbytra = recordapprovedbyinst.filter(trainess_approved=True)
                     if not recordapprovedbytra:
-                        tra_approvaldate = ApprovalDate.objects.get(site__is_active=True, for_trainess=True,
+                        tra_approvaldate = ApprovalDate.objects.get(site=request.site, for_trainess=True,
                                                                     preference_order=recordapprovedbyinst[
                                                                         0].preference_order)
                         if tra_approvaldate.start_date <= now <= tra_approvaldate.end_date:
@@ -247,32 +245,71 @@ def approve_course_preference(request):
 
 
 @login_required
-def control_panel(request):
-    data = {}
-    note = _("You can accept trainees")
+def control_panel(request, courseid):
+    data = {'note': _("You can accept trainees")}
     now = timezone.now()
-    data["user"] = request.user
+    try:
+        course = Course.objects.get(pk=courseid)
+        data['now'] = now
+        data['dates'] = get_approve_start_end_dates_for_inst(request.site, request.log_extra)
+        data['trainess'] = {}
+        data['notesavedsuccessful'] = False
+        if data['dates']:
+            if now <= data['dates'].get(1).end_date:
+                data['trainess'][course] = get_trainess_by_course(course, request.log_extra)
+            else:
+                data['note'] = _("Consent period is closed")
+                data['trainess'][course] = get_approved_trainess(course, request.log_extra)
+        if request.user.userprofile in course.authorized_trainer.all():
+            log.info("Kullanıcı %s kursunda degisiklik yapiyor" % course.name, extra=request.log_extra)
+            if "send" in request.POST:
+                log.info("kursiyer onay islemi basladi", extra=request.log_extra)
+                log.info(request.POST, extra=request.log_extra)
+                data['note'] = applytrainerselections(request.POST, course, data, site, request.log_extra)
+            return render(request, "training/controlpanel.html", data)
+        elif request.user.userprofile in course.trainer.all():
+            data['note'] = "Kursiyerler için not ekleyebilirsiniz."
+            if "savescore" in request.POST:
+                trainessnote = request.POST.get('trainessnotetext')
+                trainessusername = request.POST.get('trainessnoteuser')
+                user = User.objects.get(username=trainessusername)
+                potentialinst = request.POST.get('potential-%s' % user.pk)
+                if trainessnote:
+                    tnote = TrainessNote(note_to_profile=user.userprofile,
+                                         note_from_profile=request.user.userprofile,
+                                         note=trainessnote,
+                                         site=request.site,
+                                         label='egitim')
+                    tnote.save()
+                uprobysite, created = UserProfileBySite.objects.get_or_create(user=user, site=request.site)
+                if potentialinst == 'on':
+                    uprobysite.potentialinstructor = True
+                else:
+                    uprobysite.potentialinstructor = False
+                uprobysite.save()
+                data['savednoteuserid'] = user.userprofile.pk
+                data['notesavedsuccessful'] = True
+                data['note'] = "Kursiyer notu başarıyla kaydedildi."
+            return render(request, "training/controlpanelforunauthinst.html", data)
+        elif not request.user.is_staff:
+            return redirect("applytocourse")
+        return redirect("statistic")
+    except UserProfile.DoesNotExist:
+        return redirect("createprofile")
+
+
+@login_required
+def select_course_for_control_panel(request):
+    data = {'note': "İşlem Yapmak İstediğiniz Kursu Seçiniz", 'user': request.user}
     try:
         if UserProfileOPS.is_instructor(request.user.userprofile):
             courses = Course.objects.filter(site=request.site, approved=True, trainer__user=request.user)
             if courses:
                 log.info("egitmenin " + str(len(courses)) + " tane kursu var", extra=request.log_extra)
-                data['now'] = now
-                data['dates'] = get_approve_start_end_dates_for_inst(request.site, request.log_extra)
-                data['trainess'] = {}
-                if data['dates']:
-                    for course in courses:
-                        if now <= data['dates'].get(1).end_date:
-                            data['trainess'][course] = get_trainess_by_course(course, request.log_extra)
-                        else:
-                            note = _("Consent period is closed")
-                            data['trainess'][course] = get_approved_trainess(course, request.log_extra)
-                if "send" in request.POST:
-                    log.info("kursiyer onay islemi basladi", extra=request.log_extra)
-                    log.info(request.POST, extra=request.log_extra)
-                    note = applytrainerselections(request.POST, courses, data, request.log_extra)
-            data['note'] = note
-            return render(request, "training/controlpanel.html", data)
+                data['courses'] = courses
+            else:
+                data['note'] = "Bu etkinlikte kursunuz yok."
+            return render("training/courselistforinst.html", data)
         elif not request.user.is_staff:
             return redirect("applytocourse")
         return redirect("statistic")
@@ -309,13 +346,13 @@ def allapprovedprefsview(request):
 def statistic(request):
     data = {}
     try:
-        record_data = TrainessCourseRecord.objects.filter(course__site__is_active=True).values(
+        record_data = TrainessCourseRecord.objects.filter(course__site=request.site).values(
                 'course', 'preference_order').annotate(
                 Count('preference_order')).order_by(
                 'course', '-preference_order')
         statistic_by_course = {}
         for key, group in itertools.groupby(record_data, lambda item: item["course"]):
-            course_object = Course.objects.get(pk=key, site__is_active=True)
+            course_object = Course.objects.get(pk=key, site=request.site)
             statistic_by_course[course_object] = {str(item['preference_order']): item['preference_order__count'] for
                                                   item in group}
             statistic_by_course[course_object]['total_apply'] = len(TrainessCourseRecord.objects.filter(
@@ -331,28 +368,28 @@ def statistic(request):
         data['statistic_by_course'] = statistic_by_course
 
         data['statistic_by_gender_k'] = len(
-                TrainessCourseRecord.objects.filter(course__site__is_active=True, trainess__gender="K").order_by(
+                TrainessCourseRecord.objects.filter(course__site=request.site, trainess__gender="K").order_by(
                         "trainess").values_list("trainess").distinct())
         data['statistic_by_gender_e'] = len(
-                TrainessCourseRecord.objects.filter(course__site__is_active=True, trainess__gender="E").order_by(
+                TrainessCourseRecord.objects.filter(course__site=request.site, trainess__gender="E").order_by(
                         "trainess").values_list("trainess").distinct())
         data['statistic_by_gender_k_approved'] = len(
-                TrainessCourseRecord.objects.filter(course__site__is_active=True, trainess__gender="K",
+                TrainessCourseRecord.objects.filter(course__site=request.site, trainess__gender="K",
                                                     approved=True).order_by("trainess").values_list(
-                    "trainess").distinct())
+                        "trainess").distinct())
         data['statistic_by_gender_e_approved'] = len(
-                TrainessCourseRecord.objects.filter(course__site__is_active=True, trainess__gender="E",
+                TrainessCourseRecord.objects.filter(course__site=request.site, trainess__gender="E",
                                                     approved=True).order_by("trainess").values_list(
-                    "trainess").distinct())
+                        "trainess").distinct())
         data['statistic_by_university_for_approved'] = []
         data['statistic_by_university'] = []
         for university in UNIVERSITIES:
             data['statistic_by_university'].append((university[0], len(
-                    TrainessCourseRecord.objects.filter(course__site__is_active=True,
+                    TrainessCourseRecord.objects.filter(course__site=request.site,
                                                         trainess__university__contains=university[0]).order_by(
                             "trainess").values_list("trainess").distinct())))
             data['statistic_by_university_for_approved'].append((university[0], len(
-                    TrainessCourseRecord.objects.filter(course__site__is_active=True,
+                    TrainessCourseRecord.objects.filter(course__site=request.site,
                                                         trainess__university__contains=university[0],
                                                         approved=True).order_by("trainess").values_list(
                             "trainess").distinct())))
@@ -365,9 +402,9 @@ def statistic(request):
 
         # kurs bazinda toplam teyitli olanlar
         total_profile = len(
-                TrainessCourseRecord.objects.filter(course__site__is_active=True).order_by("trainess").values(
+                TrainessCourseRecord.objects.filter(course__site=request.site).order_by("trainess").values(
                         "trainess").distinct())
-        total_preference = len(TrainessCourseRecord.objects.filter(course__site__is_active=True))
+        total_preference = len(TrainessCourseRecord.objects.filter(course__site=request.site))
         data['statistic_by_totalsize'] = {'Toplam Profil(Kişi)': total_profile, 'Toplam Tercih': total_preference}
     except Exception as e:
         log.error(e.message, extra=request.log_extra)
@@ -423,7 +460,7 @@ def get_preferred_courses(request):
     if request.POST:
         preferred_courses = []
         try:
-            course_records = TrainessCourseRecord.objects.filter(course__site__is_active=True,
+            course_records = TrainessCourseRecord.objects.filter(course__site=request.site,
                                                                  trainess__user=request.user).order_by(
                     'preference_order')
             preferred_courses = [course_record.course.name for course_record in course_records]
@@ -443,7 +480,7 @@ def apply_course_in_addition(request):
             userprofile = UserProfile.objects.get(user=request.user)
         except ObjectDoesNotExist:
             return redirect("createprofile")
-        TrainessCourseRecord.objects.filter(course__site__is_active=True, trainess=userprofile).delete()
+        TrainessCourseRecord.objects.filter(course__site=request.site, trainess=userprofile).delete()
         course_prefs = json.loads(request.POST.get('course'))
         if len(course_prefs) <= ADDITION_PREFERENCE_LIMIT:
             if len(set([i['value'] for i in course_prefs])) == len([i['value'] for i in course_prefs]):
@@ -474,12 +511,12 @@ def apply_course_in_addition(request):
 def addtrainess(request):
     data = {}
     now = datetime.date(datetime.now())
-    if UserProfileOPS.is_authorized_inst(request.user.userprofile) and request.site.event_start_date > now > data[
-        'site'].application_end_date:
-        data['form'] = AddTrainessForm(ruser=request.user)
+    if UserProfileOPS.is_authorized_inst(
+            request.user.userprofile) and request.site.event_start_date > now > request.site.application_end_date:
+        data['form'] = AddTrainessForm(request=request)
         data['note'] = "Kursunuza eklemek istediğiniz katilimciyi seçin (E-posta adresine göre)"
         if "add" in request.POST:
-            data['form'] = AddTrainessForm(request.POST, ruser=request.user)
+            data['form'] = AddTrainessForm(request.POST, request=request)
             if data['form'].is_valid():
                 tcourserecord = data['form'].save(commit=False)
                 tcourserecord.preference_order = 1
@@ -487,10 +524,10 @@ def addtrainess(request):
                 tcourserecord.approved = True
                 tcourserecord.save()
                 notestr = "Bu kullanicinin %s kursu tercihi eğitmen tarafından eklendi." % tcourserecord.course.name
-                note = TrainessNote(note=notestr, note_from_profile=request.user.userprofile,
-                                    note_to_profile=tcourserecord.trainess,
-                                    site=tcourserecord.course.site, note_date=timezone.now(), label="tercih")
-                note.save()
+                tnote = TrainessNote(note=notestr, note_from_profile=request.user.userprofile,
+                                     note_to_profile=tcourserecord.trainess,
+                                     site=tcourserecord.course.site, note_date=timezone.now(), label="tercih")
+                tnote.save()
                 data['note'] = "Form kaydedildi. Eklediğiniz katılımcıları 1. tercih listesinde görüntüleyebilirsiniz."
                 log.info("%s kullanicisi %s kullanicisini %s kursuna ekledi." % (
                     request.user.username, tcourserecord.trainess.user.username, tcourserecord.course.name),
@@ -498,10 +535,10 @@ def addtrainess(request):
             else:
                 data['note'] = "Form aşağıdaki sebeplerden dolayı kaydedilemedi."
         elif "cancel" in request.POST:
-            return redirect("controlpanel")
+            return redirect("selectcoursefcp")
         return render(request, 'training/addtrainess.html', data)
     else:
-        return redirect("controlpanel")
+        return redirect("selectcoursefcp")
 
 
 @staff_member_required
@@ -554,8 +591,7 @@ def submitandregister(request):
     :return:
     """
     userops = UserProfileOPS()
-    data = {}
-    note = "Kurs onerisi olustur:"
+    data = {'note': "Kurs onerisi olustur:"}
     curinstprofform = InstProfileForm(prefix="cur")
     forms = {}
     for x in xrange(4):
@@ -593,9 +629,9 @@ def submitandregister(request):
                 course.trainer.add(instxprof)
             course.trainer.add(curinst)
             course.save()
-            note = "Egitim oneriniz basari ile alindi."
+            data['note'] = "Egitim oneriniz basari ile alindi."
         else:
-            note = "Olusturulamadi"
+            data['note'] = "Olusturulamadi"
     data['note'] = note
     data['form'] = form
     data['curinstprofform'] = curinstprofform
