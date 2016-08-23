@@ -1,0 +1,160 @@
+{% extends "dashboard.html" %}
+{% block content %}
+{% load staticfiles %}
+{% load i18n %}
+{% load template_filter %}
+{% load trainingtags %}
+
+<link href="{% static '/static/css/courses.css' %}" rel="stylesheet" type="text/css"/>
+<script style="javascript">
+function fnFormatDetails ( dTable, nTr )
+{
+    var aData = dTable.fnGetData( nTr );
+    var sOut = '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
+    sOut += '<tr><td><b>Ünvan:</b></td><td>'+aData[6]+'</td></tr>';
+    sOut += '</table>';
+    sOut += '</br>';
+    return sOut;
+}
+
+$(document).ready(function(){
+    $('[data-id="course_table"]').DataTable({
+            "dom": 'Bfrtip',
+            "language": {
+                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Turkish.json"
+            },
+            "searching": true,
+            "bJQueryUI": false,
+            "ordering": true,
+            "paging" : false,
+            buttons : [
+              'copyHtml5',
+              'excelHtml5',
+              'csvHtml5',
+              'pdfHtml5'
+            ],
+    });
+    $('[data-id="course_table_control_panel"]').each(function(){
+
+       var dTable = $(this).dataTable({
+            "dom": 'Bfrtip',
+            "language": {
+              "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Turkish.json"
+            },
+            "columnDefs": [
+               {
+                "targets": [ 6 ],
+                "visible": false
+               },
+            ],
+            "searching": false,
+            "bJQueryUI": false,
+            "ordering": true,
+            "paging" : false,
+             buttons : [
+              'copyHtml5',
+              'excelHtml5',
+              'csvHtml5',
+              'pdfHtml5'
+            ],
+
+      });
+
+      dTable.find('tbody a').click(function(){
+             var nTr = $(this).parents('tr')[0];
+          if ( dTable.fnIsOpen(nTr) )
+          {
+              dTable.fnClose( nTr );
+          }
+          else
+          {
+              dTable.fnOpen( nTr, fnFormatDetails(dTable, nTr), 'details' );
+
+          }
+      });
+
+    });
+
+	$('#course_table tbody tr').click(function(){
+		var attr = 	$(this).attr('href');
+		if (typeof attr !== typeof undefined && attr !== false) {
+			window.location=attr;
+		}
+	});
+});
+
+</script>
+<p class="container-fluid" style="margin-top:20px;">
+    {% if trainess %}
+    <div class="alert alert-info">{{ note }}</div>
+    {% manuallyaddtrainess site user%}
+    <form name="select-student{{course.id}}" method="POST">{% csrf_token %}
+        <h4>
+            <span class="avaliable-trainee label">Seçim Yapabilirsiniz</span>
+            <span class="label checked-trainee-for-another-course">Katılımcının Diğer Tercihi Onaylanmış</span>
+            <span class="label checked-trainee-course">Katılımcı Bu Kurs İçin Onaylanmış</span>
+            <span class="label approved-trainess-for-this-course">Katılımcı Bu Kursa Geleceğini Teyit Etti</span>
+        </h4>
+            {% for course,value in trainess.items %}
+                <h2><strong>{{ course.name }}</strong></h2>
+                {% for pref,trs in value.items %}
+                    {% if trs %}
+                        {% if pref > 0 %}
+                        <h3> {{ pref }}. tercih </h3>
+                        {% else %}
+                        <h3> {% mod pref %}. ek tercih </h3>
+                        {% endif %}
+                        <table data-id="course_table_control_panel_for_unauthorized_inst" id="course_table_for_inst{{course.id}}{{pref}}"
+                               class="table table-hover table-striped">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Basvuru No</th>
+                                <th>Foto</th>
+                                <th>İsim</th>
+                                <th>Soyisim</th>
+                                <th>E-posta</th>
+                                <th>Not ekle</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for t in trs %}
+                            <tr>
+                                <td>
+                                    <a class="clickableRow">Detay</a>
+                                </td>
+                                <td>{{ t.pk }}</td>
+                                <td><img src="{{ t.trainess.profilephoto.url }}" style="width: 50px; height:50px;" class="img-circle"></td>
+                                <td>{{ t.trainess.user.first_name }}</td>
+                                <td>{{ t.trainess.user.last_name }}</td>
+                                <td>{{ t.trainess.user.email }}</td>
+                                <td>
+                                    {{ savednoteuserid  }}
+                                    {{ t.trainess.pk }}
+                                    {{ notesavedsuccessful }}
+                                    {% if notesavedsuccessful and savednoteuserid == t.trainess.pk %}
+                                        <p>Notun başarıyla eklendi. Başka not ekleyebilirsin!</p>
+                                    {% endif %}
+                                    <p>
+                                        <input id="trainessnotetext" type="text" class="form-control input-note" value=""/>
+                                        <input id="trainessnoteuser" type="hidden" class="input-username"
+                                               value="{{ t.trainess.user.username }}"/>
+                                        <input id="save-score" class="btn btn-primary" type="submit" value="Ekle"/></p>
+
+                                </td>
+                                {% empty %}
+                            <tr>
+                                <td>Goruntulenecek basvuru yok</td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
+                {% endfor %}
+                {% authorizedforelection site user%}
+            {% endfor %}
+    </form>
+</div>
+{% endif %}
+{% endblock %}
+

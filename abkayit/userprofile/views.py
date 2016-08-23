@@ -66,7 +66,7 @@ def subscribe(request):
         data['note'] = note
         return render_to_response("userprofile/subscription.html", data, context_instance=RequestContext(request))
     else:
-        return redirect("controlpanel")
+        return redirect("selectcoursefcp")
 
 
 @login_required(login_url='/')
@@ -91,6 +91,7 @@ def createprofile(request):
     data = getsiteandmenus(request)
     log.info("create/update profile form", extra=d)
     data['update_user_form'] = UpdateUserForm(instance=request.user)
+    data['note'] = "Profilinizi güncelleyebilirsiniz."
     note, userprobysite, data['userproform'], data['userproformbysite'], data['accomodations'], data[
         'accomodation_records'] = getuserprofileforms(request.user, data['site'], d)
     data['sitewidequestions'] = TextBoxQuestions.objects.filter(site=data["site"], active=True, is_sitewide=True)
@@ -438,12 +439,12 @@ def showuserprofile(request, userid, courserecordid):
                                                             trainess=UserProfile.objects.get(pk=userid))
             if not request.user.is_staff and request.user.userprofile not in courserecord.course.trainer.all() and \
                             request.user.userprofile not in courserecord.course.authorized_trainer.all():
-                return redirect("controlpanel")
+                return redirect("selectcoursefcp")
         except Exception as e:
             log.warning(e.message, extra=d)
             log.warning("Staff user show user profile", extra=d)
             if not request.user.is_staff:
-                return redirect("controlpanel")
+                return redirect("selectcoursefcp")
         user = UserProfile.objects.get(pk=userid)
         data['tuser'] = user
         data['ruser'] = request.user
@@ -515,4 +516,4 @@ def showuserprofile(request, userid, courserecordid):
         else:
             data['note'] = "Böyle Bir kullanıcı yoktur."
         return render_to_response("userprofile/showuserprofile.html", data, context_instance=RequestContext(request))
-    return redirect("controlpanel")
+    return redirect("selectcoursefcp")
