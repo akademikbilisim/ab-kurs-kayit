@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from django.contrib import admin
-from mailing.models import *
+from mailing.models import EmailTemplate
 
 
 @admin.register(EmailTemplate)

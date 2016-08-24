@@ -51,7 +51,7 @@
 			</th>
 			<th>
 				{% if data.document %}
-                                 <a href="https://{{site.home_url}}{{ data.document.url }}">{{ data.document }}</a>
+                                 <a href="https://{{ request.site.home_url}}{{ data.document.url }}">{{ data.document }}</a>
 				{% else %}
 				  Belge Yok
 				{% endif %}

@@ -8,12 +8,12 @@ from pysimplesoap.client import SoapClient
 from abkayit.settings import TCKIMLIK_SORGULAMA_WS, EMAIL_FROM_ADDRESS
 from training.models import Course
 
-
 '''
     General operations that are used in userprofile app.
 '''
 
 log = logging.getLogger(__name__)
+
 
 class UserProfileOPS:
     def __init__(self):
@@ -51,4 +51,3 @@ class UserProfileOPS:
             return True
         else:
             return False
-

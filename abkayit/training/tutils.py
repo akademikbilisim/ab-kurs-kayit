@@ -132,10 +132,10 @@ def get_trainess_by_course(course, d):
     trainess = {}
     for i in range(1, PREFERENCE_LIMIT + 1):
         trainess[i] = TrainessCourseRecord.objects.filter(course=course.pk, preference_order=i).prefetch_related(
-            'course')
+                'course')
     for i in range(1, ADDITION_PREFERENCE_LIMIT + 1):
         trainess[-i] = TrainessCourseRecord.objects.filter(course=course.pk, preference_order=-i).prefetch_related(
-            'course')
+                'course')
     return trainess
 
 
@@ -166,7 +166,7 @@ def save_course_prefferences(userprofile, course_prefs, site, d, answersforcours
     res = {'status': '-1', 'message': 'error'}
     if len(course_prefs) <= PREFERENCE_LIMIT:
         context = {}
-        oldprefs = TrainessCourseRecord.objects.filter(course__site__is_active=True, trainess=userprofile)
+        oldprefs = TrainessCourseRecord.objects.filter(course__site=site, trainess=userprofile)
 
         context['oldprefs'] = {}
         is_changed = False
@@ -204,7 +204,6 @@ def save_course_prefferences(userprofile, course_prefs, site, d, answersforcours
             res['message'] = "Tercihleriniz başarılı bir şekilde güncellendi"
             context['user'] = userprofile.user
             context['course_prefs'] = course_records
-            context['site'] = site
             domain = site.home_url
             context['domain'] = domain.rstrip('/')
             try:
@@ -249,7 +248,7 @@ def daterange(start_date, end_date):
 
 
 def getoperator(totalpar, value, time, coursehour):
-    '''
+    """
         2: Katildi
         1: Yarisina katildi
         0: Katilmadi
@@ -258,14 +257,14 @@ def getoperator(totalpar, value, time, coursehour):
         value: kullanicinin o gun ve saat icin katilip katilmadigi
         time: sabah, oglen veya aksamsa eklenecek veya çıkarılacak saat miktari
         coursehour: yapilan ders saati. kurs yapılmadiysa tahmini kurs saatinden çıkariliyor.
-    '''
-    return {"2": totalpar + time, "1": totalpar + time / 2.0}.get(value, totalpar),\
+    """
+    return {"2": totalpar + time, "1": totalpar + time / 2.0}.get(value, totalpar), \
            {"-1": coursehour - time}.get(value, coursehour)
 
 
 def calculate_participations(trainessparticipations, site):
     totalcoursehour = (site.morning + site.afternoon + site.evening) * (
-    int((site.event_end_date - site.event_start_date).days) + 1)
+        int((site.event_end_date - site.event_start_date).days) + 1)
     totalparticipationhour = 0.0
     for tp in trainessparticipations:
         totalparticipationhour, totalcoursehour = getoperator(totalparticipationhour, tp.morning, site.morning,
@@ -300,9 +299,9 @@ def getparticipationforms_by_date(courserecord, date):
     return form
 
 
-def is_trainess_approved_anothercourse(trainess, cur_pref_order):
+def is_trainess_approved_anothercourse(trainess, cur_pref_order, site):
     trainessapprovedprefs = TrainessCourseRecord.objects.filter(trainess=trainess, approved=True,
-                                                                course__site__is_active=True)
+                                                                course__site=site)
     for tp in trainessapprovedprefs:
         if cur_pref_order < tp.preference_order:
             '''
@@ -317,7 +316,7 @@ def is_trainess_approved_anothercourse(trainess, cur_pref_order):
     return None
 
 
-def applytrainerselections(postrequest, course, data, d):
+def applytrainerselections(postrequest, course, data, site, d):
     now = timezone.now()
     if UserProfileOPS.is_authorized_inst(data["user"].userprofile):
         sendconsentemail = postrequest.get("send_consent_email", False)
@@ -337,7 +336,7 @@ def applytrainerselections(postrequest, course, data, d):
                                 data["changedprefs"].append(p)
                             elif str(p.pk) in approvedr and not p.approved:
                                 data['approvedpref'] = p
-                                trainess_approved_pref = is_trainess_approved_anothercourse(p.trainess, pref)
+                                trainess_approved_pref = is_trainess_approved_anothercourse(p.trainess, pref, site)
                                 if trainess_approved_pref:
                                     data['changedpref'] = trainess_approved_pref
                                     data["recipientlist"] = trainess_approved_pref.course.authorized_trainer.all() \
@@ -373,7 +372,7 @@ def applytrainerselections(postrequest, course, data, d):
 
 
 def cancel_all_prefs(trainess, cancelnote, site, ruser, d):
-    trainess_course_records = TrainessCourseRecord.objects.filter(course__site__is_active=True,
+    trainess_course_records = TrainessCourseRecord.objects.filter(course__site=site,
                                                                   trainess=trainess)
     now = datetime.date.today()
     try:
@@ -381,12 +380,12 @@ def cancel_all_prefs(trainess, cancelnote, site, ruser, d):
         try:
             context['recipientlist'] = REPORT_RECIPIENT_LIST
             context['course_prefs'] = trainess_course_records
-            approvedpref = TrainessCourseRecord.objects.filter(course__site__is_active=True, trainess=trainess,
+            approvedpref = TrainessCourseRecord.objects.filter(course__site=site, trainess=trainess,
                                                                approved=True, consentemailsent=True)
             if site.application_end_date < now < site.event_start_date:
                 if approvedpref:
                     context['recipientlist'].extend(approvedpref[0].course.authorized_trainer.all().values_list(
-                        'user__username', flat=True))
+                            'user__username', flat=True))
             send_email_by_operation_name(context, "notice_for_canceled_prefs")
             context['recipientlist'] = [trainess.user.email]
             send_email_by_operation_name(context, "notice_for_canceled_prefs")

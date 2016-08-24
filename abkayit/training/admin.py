@@ -15,7 +15,7 @@ class CourseAdmin(admin.ModelAdmin):
     filter_horizontal = ('trainess', 'trainer', 'authorized_trainer',)
     search_fields = ('name', 'trainer__user__username')
 
-    def formfield_for_manytomany(self, db_field, request, **kwargs):
+    def formfield_for_manytomany(self, db_field, request=None, **kwargs):
         if db_field.name == "question":
             kwargs["queryset"] = Question.objects.filter(is_faq=False, active=True)
         elif db_field.name == "textboxquestion":
@@ -36,11 +36,12 @@ class TrainessCourseRecordAdmin(admin.ModelAdmin):
                                                                                                    obj.preference_order)
         if "approved" in form.changed_data:
             if form.cleaned_data['approved']:
-                notestr = "Bu kullanicinin, %s kursu olan %s. tercihi yönetici tarafindan onaylandi." % (obj.course.name,
-                                                                                                   obj.preference_order)
+                notestr = "Bu kullanicinin, %s kursu olan %s. tercihi yönetici tarafindan onaylandi." % (
+                obj.course.name,
+                obj.preference_order)
         if notestr and not TrainessNote.objects.filter(note=notestr):
             note = TrainessNote(note=notestr, note_from_profile=request.user.userprofile, note_to_profile=obj.trainess,
-                                            site=obj.course.site, note_date=timezone.now(), label="tercih")
+                                site=obj.course.site, note_date=timezone.now(), label="tercih")
             note.save()
         super(TrainessCourseRecordAdmin, self).save_model(request, obj, form, change)
 

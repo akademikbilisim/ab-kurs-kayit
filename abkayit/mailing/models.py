@@ -17,4 +17,3 @@ class EmailTemplate(models.Model):
     class Meta:
         verbose_name = 'E-posta sablonu'
         verbose_name_plural = 'E-posta sablonlari'
-

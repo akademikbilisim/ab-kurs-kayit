@@ -5,7 +5,6 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now
 
-from django.contrib.auth.models import User
 
 from userprofile.models import UserProfile
 
