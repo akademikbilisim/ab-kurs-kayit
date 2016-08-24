@@ -9,6 +9,7 @@ abkayit/abkayit/migrations/*
 abkayit/training/migrations/*
 abkayit/userprofile/migrations/*
 abkayit/mailing/migrations/*
+abkayit/surman/migrations/*
 abkayit/static/images/*
 abkayit/abkayit/settings.py
 abkayit/egitmenler

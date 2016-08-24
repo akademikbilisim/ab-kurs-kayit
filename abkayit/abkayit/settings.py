@@ -128,6 +128,7 @@ INSTALLED_APPS = (
     'ckeditor_uploader',
     'django_countries',
     'mailing',
+    'surman',
     'cities_light',
     'bootstrap3',
     'django_extensions',
