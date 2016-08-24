@@ -4,7 +4,7 @@ from django.conf.urls import patterns, url
 
 urlpatterns = patterns('userprofile.views',
                        # register
-                       url(r'^subscribe', 'subscribe', name="subscribe"),
+                       url(r'^kayit', 'subscribe', name="subscribe"),
                        url(r'^profil', 'createprofile', name="createprofile"),
                        url(r'^getaccomodations/(?P<usertype>[a-zA-Z]+)/(?P<gender>[a-zA-Z]+)', 'getaccomodations',
                            name="getaccomodations"),
