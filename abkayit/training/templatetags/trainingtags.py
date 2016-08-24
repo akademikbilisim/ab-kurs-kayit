@@ -43,10 +43,10 @@ def manuallyaddtrainess(site, user):
     return ""
 
 
-@register.simple_tag(name="authorizedforelection")
-def authorizedforelection(site, user):
+@register.simple_tag(name="authorizedforelection", takes_context=True)
+def authorizedforelection(context, site, user):
     now = datetime.date(datetime.now())
-    approvaldates = ApprovalDate.objects.filter(site__is_active=True).order_by("start_date")
+    approvaldates = ApprovalDate.objects.filter(site=context['request'].site).order_by("start_date")
     if approvaldates:
         if site.event_start_date > now and datetime.now() >= approvaldates[0].start_date and \
                 UserProfileOPS.is_authorized_inst(user.userprofile):
@@ -63,14 +63,14 @@ def authorizedforelection(site, user):
     return ""
 
 
-@register.simple_tag(name="isdategtnow_body")
-def isdategtnow_body(datedict, key, t, course, user):
+@register.simple_tag(name="isdategtnow_body", takes_context=True)
+def isdategtnow_body(context, datedict, key, t, course, user):
     now = datetime.now()
     adate = datedict.get(key)
     if adate:
         if adate.end_date >= now >= adate.start_date and UserProfileOPS.is_authorized_inst(
                 user.userprofile) and not t.consentemailsent:
-            approvedprefs = TrainessCourseRecord.objects.filter(trainess=t.trainess, course__site__is_active=True,
+            approvedprefs = TrainessCourseRecord.objects.filter(trainess=t.trainess, course__site=context['request'].site,
                                                                 approved=True)
             is_selectable = True
             priviliged_pref = None
@@ -115,23 +115,23 @@ def getanswer(question, user):
         return ""
 
 
-@register.simple_tag(name="gettrainesscolor")
-def gettrainesscolor(trainess, courserecord):
+@register.simple_tag(name="gettrainesscolor", takes_context=True)
+def gettrainesscolor(context, trainess, courserecord):
     if courserecord.trainess_approved:
         return "<div class =\"approved-trainess-for-this-course\" ></div >"
     elif courserecord.approved:
         return "<div class =\"checked-trainee-course\" ></div>"
     else:
-        is_approved_another_course = TrainessCourseRecord.objects.filter(course__site__is_active=True,
+        is_approved_another_course = TrainessCourseRecord.objects.filter(course__site=context['request'].site,
                                                                          trainess=trainess, approved=True)
         if is_approved_another_course:
             return "<div class =\"checked-for-another-course\" > </div>"
     return ""
 
 
-@register.simple_tag(name="getapprovedcourse")
-def gettrainessapprovedpref(courserecord):
-    trainess_approved_prefs = TrainessCourseRecord.objects.filter(course__site__is_active=True,
+@register.simple_tag(name="getapprovedcourse", takes_context=True)
+def gettrainessapprovedpref(context, courserecord):
+    trainess_approved_prefs = TrainessCourseRecord.objects.filter(course__site=context['request'].site,
                                                                   trainess=courserecord.trainess,
                                                                   approved=True).exclude(
         pk=courserecord.pk)
@@ -142,9 +142,9 @@ def gettrainessapprovedpref(courserecord):
     return html
 
 
-@register.simple_tag(name="getallprefs")
-def getallprefs(courserecord):
-    trainess_all_prefs = TrainessCourseRecord.objects.filter(course__site__is_active=True,
+@register.simple_tag(name="getallprefs", takes_context=True)
+def getallprefs(context, courserecord):
+    trainess_all_prefs = TrainessCourseRecord.objects.filter(course__site=context['request'].site,
                                                              trainess=courserecord.trainess).exclude(
         pk=courserecord.pk)
     html = ""

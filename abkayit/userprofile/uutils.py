@@ -5,6 +5,7 @@ from userprofile.forms import StuProfileForm, UserProfileBySiteForm
 from django.utils.translation import ugettext_lazy as _
 from userprofileops import UserProfileOPS
 from userprofile.models import UserProfile, Accommodation, UserAccomodationPref, UserProfileBySite
+
 log = logging.getLogger(__name__)
 
 
@@ -17,10 +18,10 @@ def getuserprofileforms(user, site, d):
         if not UserProfileOPS.is_instructor(user_profile):
             log.debug("egitmen olmayan kullanici icin isleme devam ediliyor", extra=d)
             accomodations = Accommodation.objects.filter(
-                usertype__in=['stu', 'hepsi'], gender__in=[user_profile.gender, 'H'], site=site).order_by(
-                'name')
+                    usertype__in=['stu', 'hepsi'], gender__in=[user_profile.gender, 'H'], site=site).order_by(
+                    'name')
             accomodation_records = UserAccomodationPref.objects.filter(user=user_profile).order_by(
-                'preference_order')
+                    'preference_order')
         if site.needs_document:
             try:
                 userprofilebysite = UserProfileBySite.objects.get(user=user)

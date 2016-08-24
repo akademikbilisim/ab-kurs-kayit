@@ -50,7 +50,7 @@ def savecourses():
                 print "olustu"
                 cols=kurs.split('|')
                 kursm = Course(no=cols[0],name=cols[1],description='',
-                               approved=True,site=Site.objects.get(is_active=True),
+                               approved=True, site=Site.objects.get(is_active=True),
                                url="http://ab.org.tr/ab16/kursdir/"+str(cols[0])+".html")
                 kursm.save()
                 for egit in cols[2].split(','):

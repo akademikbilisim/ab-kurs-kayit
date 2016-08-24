@@ -17,7 +17,7 @@ class CourseSubOps:
         uprof = UserProfileOPS()
         for i in xrange(numofinst):
             n_str = str(i) + '-'
-            upass = uprof.generatenewpass()  # uretilen parola olusturulan kullaniciya gonderilecek.
+            upass = uprof.generatenewpass(10)  # uretilen parola olusturulan kullaniciya gonderilecek.
             inst = User(first_name=postrequest[n_str + 'first_name'], last_name=postrequest[n_str + 'last_name'],
                         email=postrequest[n_str + 'email'], username=postrequest[n_str + 'email'], password=upass)
             inst.save()
