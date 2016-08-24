@@ -27,7 +27,7 @@ class CurrentSiteMiddleware(object):
 
         from abkayit.models import Site
         try:
-            request.site = Site.objects.get(domain=domain)
+            request.site = Site.objects.get(domain=domain, is_active=True)
         except Site.MultipleObjectsReturned as e:
             log.error(e.message, extra=request.log_extra)
             raise Http404
