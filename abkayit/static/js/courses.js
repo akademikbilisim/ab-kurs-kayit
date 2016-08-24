@@ -15,7 +15,13 @@ function fnFormatDetails ( dTable, nTr )
     return sOut;
 }
 
+
 $(document).ready(function(){
+    $('#trainessnotetext').textcounter({
+    max: 500,
+    stopInputAtMaximum: true,
+        countDown:true,
+    })
     $('[data-id="course_table"]').DataTable({
             "dom": 'Bfrtip',
             "language": {

@@ -5,7 +5,8 @@
 {% endblock %}
 {% block content %}
 {% load userprofiletags %}
-<script src="{% static '/static/js/courses.js' %}"></script>
+    <script src="https://cdn.rawgit.com/ractoon/jQuery-Text-Counter/master/textcounter.js"></script>
+    <script src="{% static '/static/js/courses.js' %}"></script>
 <link href="{% static '/static/css/courses.css' %}" rel="stylesheet" type="text/css"/>
 <div class="container-fluid">
     <div class="alert alert-info">{{ note }}</div>
@@ -63,8 +64,11 @@
                         </dd>
                     <dt>Not Ekle: </dt>
                     <dd>
-                            <p> <input id="trainessnotetext" type="text" class="form-control input-note" value=""/>
-                           <input id="trainessnoteuser" type="hidden" class="input-username" value="{{ tuser.user.username }}"/><input id="save-score" class="btn btn-primary" type="button" value="Ekle" /></p>
+                            <p>
+                                <textarea id="trainessnotetext" cols="30" rows="5" class="form-control input-note"></textarea>
+                                <input id="trainessnoteuser" type="hidden" class="input-username" value="{{ tuser.user.username }}"/>
+                                <input id="save-score" class="btn btn-primary" type="button" value="Ekle" />
+                            </p>
                     </dd>
                     <dt>Etkinlik bazlı Profil</dt>
                     <dd>

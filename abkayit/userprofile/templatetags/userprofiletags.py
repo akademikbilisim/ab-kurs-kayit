@@ -52,7 +52,7 @@ def getanswers(context, tuser, ruser, courseid):
         return ""
 
 
-@register.simple_tag(name="oldeventprefs")
+@register.simple_tag(name="oldeventprefs", takes_context=True)
 def oldeventprefs(context, tuser):
     html = ""
     try:
