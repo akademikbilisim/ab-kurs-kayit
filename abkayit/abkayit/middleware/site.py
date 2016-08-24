@@ -1,5 +1,6 @@
 import logging
 
+from django.core.urlresolvers import reverse
 from django.http import Http404
 
 log = logging.getLogger(__name__)
@@ -7,6 +8,9 @@ log = logging.getLogger(__name__)
 
 class CurrentSiteMiddleware(object):
     def process_request(self, request):
+        if request.path.startswith(reverse('admin:index')):
+            return
+
         domain_parts = request.get_host().split('.')
 
         if len(domain_parts) > 2:
