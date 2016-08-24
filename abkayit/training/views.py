@@ -7,6 +7,7 @@ from datetime import datetime
 
 from django.shortcuts import render, redirect
 from django.http.response import HttpResponse
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import user_passes_test, login_required
 
 from django.core.exceptions import ObjectDoesNotExist
@@ -274,6 +275,7 @@ def control_panel(request, courseid):
                 trainessusername = request.POST.get('trainessnoteuser')
                 user = User.objects.get(username=trainessusername)
                 potentialinst = request.POST.get('potential-%s' % user.pk)
+                print potentialinst
                 if trainessnote:
                     tnote = TrainessNote(note_to_profile=user.userprofile,
                                          note_from_profile=request.user.userprofile,
@@ -309,7 +311,7 @@ def select_course_for_control_panel(request):
                 data['courses'] = courses
             else:
                 data['note'] = "Bu etkinlikte kursunuz yok."
-            return render("training/courselistforinst.html", data)
+            return render(request, "training/courselistforinst.html", data)
         elif not request.user.is_staff:
             return redirect("applytocourse")
         return redirect("statistic")

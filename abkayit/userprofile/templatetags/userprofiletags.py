@@ -83,7 +83,7 @@ def getoperationsmenu(uprofile):
 
     if UserProfileOPS.is_instructor(uprofile):
         html += """<li>
-        <a href="/egitim/controlpanel"><i class="fa fa-book fa-fw"></i> Kursum</a>
+        <a href="/egitim/selectcourse/"><i class="fa fa-book fa-fw"></i> Kurslarım</a>
         </li>
         <li>
             <a href="/egitim/katilimciekle"><i class="fa fa-book fa-fw"></i> Kursiyer Ekle</a>

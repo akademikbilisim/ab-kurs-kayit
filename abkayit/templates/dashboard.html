@@ -76,15 +76,15 @@
                     <li class="divider"></li>
                     </hr>
                     <li>
-                        <a href="{%url 'createprofile'%}"><i class="fa fa-user fa-fw"></i> {% trans "User Profile"
-                            %}</a>
+                        <a href="{%url 'createprofile'%}"><i class="fa fa-user fa-fw"></i>
+                            {% trans "User Profile" %}</a>
                     </li>
                     {% if user.userprofile %}
                     {% instinfo user.userprofile %}
                     {% endif %}
                     <li>
-                        <a href="{%url 'account_reset_password' %}"><i class="fa fa-key fa-fw"></i> {% trans "Change
-                            Password" %}</a>
+                        <a href="{%url 'account_reset_password' %}"><i class="fa fa-key fa-fw"></i>
+                            {% trans "Change Password" %}</a>
                     </li>
                     <li class="divider"></li>
                     <li>
@@ -99,8 +99,9 @@
             <!-- START ANONYMOUS USER -->
             {% else %}
             <div class="text-center">
-                <a href="{% url "authlogin" %}" class="btn btn-primary btn-lg">{% trans "Login" %}</a>
-                <a href="{% url "account_reset_password_key" %}" class="btn btn-warning btn-lg">{% trans "Forgot Password" %}</a>
+                <a href="{% url 'authlogin' %}" class="btn btn-primary btn-lg">{% trans "Login" %}</a>
+                <a href="{% url 'account_reset_password_key' %}" class="btn btn-warning btn-lg">
+                    {% trans "Forgot Password" %}</a>
             </div>
             {% endif %}
             <!-- END ANONYMOUS USER -->

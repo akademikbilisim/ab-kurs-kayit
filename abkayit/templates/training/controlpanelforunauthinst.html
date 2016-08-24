@@ -93,7 +93,7 @@ $(document).ready(function(){
 <p class="container-fluid" style="margin-top:20px;">
     {% if trainess %}
 <div class="alert alert-info">{{ note }}</div>
-{% manuallyaddtrainess site user%}
+{% manuallyaddtrainess request.site user%}
 <form name="select-student{{course.id}}" method="POST">{% csrf_token %}
     {% for course,value in trainess.items %}
     <h2><strong>{{ course.name }}</strong></h2>
@@ -154,7 +154,7 @@ $(document).ready(function(){
     </table>
     {% endif %}
     {% endfor %}
-    {% authorizedforelection site user%}
+    {% authorizedforelection request.site user%}
     {% endfor %}
 </form>
 
