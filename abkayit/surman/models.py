@@ -1,5 +1,6 @@
 from django.db import models
 from django.template.defaultfilters import truncatechars
+from django.utils import timezone
 
 from abkayit.models import Site
 from training.models import Course
@@ -33,7 +34,7 @@ class Question(models.Model):
 
 class AnswerGroup(models.Model):
     token = models.CharField(max_length=10, unique=True)
-    created = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(default=timezone.now)
 
     def __unicode__(self):
         return u"#{} {}".format(self.id, self.token)
