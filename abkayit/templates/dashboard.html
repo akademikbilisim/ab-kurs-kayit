@@ -103,8 +103,9 @@
             <!-- START ANONYMOUS USER -->
             {% else %}
             <div class="text-center">
-                <a href="{% url "authlogin" %}" class="btn btn-primary btn-lg">{% trans "Login" %}</a>
-                <a href="{% url "account_reset_password_key" %}" class="btn btn-warning btn-lg">{% trans "Forgot Password" %}</a>
+                <a href="{% url 'authlogin' %}" class="btn btn-primary btn-lg">{% trans "Login" %}</a>
+                <a href="{% url 'account_reset_password_key' %}" class="btn btn-warning btn-lg">
+                    {% trans "Forgot Password" %}</a>
             </div>
             {% endif %}
             <!-- END ANONYMOUS USER -->
