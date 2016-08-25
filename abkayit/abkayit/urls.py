@@ -16,7 +16,8 @@ urlpatterns = patterns('abkayit.views',
                        url(r'^auth/logout$', "auth_logout", name="authlogout"),
                        url(r'^accounts/', include('userprofile.urls')),
                        url(r'^egitim/', include('training.urls')),
-                       url(r'^admin/', include(admin.site.urls)),
+                       url(r'^admin/', include(admin.site.urls), name="admin_entrypoint"),
+                       url(r'^survey/', include("surman.urls")),
                        url(r'^ckeditor/', include('ckeditor_uploader.urls')),
                        )
 urlpatterns += staticfiles_urlpatterns()
