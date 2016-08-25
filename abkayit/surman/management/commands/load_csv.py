@@ -18,7 +18,7 @@ class Command(BaseCommand):
         # Positional arguments
         parser.add_argument('file', type=argparse.FileType('r'))
         parser.add_argument('key_file', type=argparse.FileType('r'))
-        parser.add_argument('site', type=str)
+        parser.add_argument('site', type=int)
         parser.add_argument('survey', type=str)
         parser.add_argument('-ts', '--timestamp_name', type=str, default="Timestamp")
         parser.add_argument('-tk', '--token_name', type=str, default="Fiş")
@@ -27,7 +27,7 @@ class Command(BaseCommand):
         from abkayit.models import Site
         from surman.models import Survey
         try:
-            site = Site.objects.get(name=options["site"])
+            site = Site.objects.get(id=options["site"])
         except Site.DoesNotExist as e:
             raise CommandError("Site not found")
         try:
