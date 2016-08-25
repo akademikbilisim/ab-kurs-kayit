@@ -1,6 +1,7 @@
 {% load staticfiles %}
 {% load userprofiletags %}
 {% load i18n %}
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -83,7 +84,41 @@
     </div>
     {%endif%}
     {% block nav %}{% endblock %}
+    <div {% if is_paginated %}style="margin-bottom: 86px"{% endif %}>
 	{% block body %}{% endblock %}
+    </div>
+	{% block pagination %}
+    {% if is_paginated %}
+        <footer class="navbar-fixed-bottom">
+        <form method="get" id="pageform"></form>
+        <div class="row">
+            <div class="col-md-10 col-md-offset-1">
+                <ul class="pagination pagination-lg pull-right">
+                    {% if page_obj.has_previous %}
+                        <li>
+                            <a href="?page=1"><span><i class="fa fa-angle-double-left"></i></span></a>
+                        </li>
+                        <li>
+                            <a href="?page={{ page_obj.previous_page_number }}"><span><i class="fa fa-angle-left"></i></span></a>
+                        </li>
+                    {% endif %}
+                    <li class="disabled">
+                        <span>Page <input type="number" name="page" min="1" max="{{ page_obj.paginator.num_pages }}" step="1" value="{{ page_obj.number }}" style="width: 50px; height: 16px; border: 0 solid;margin-bottom: 0; padding: 0;" form="pageform"> of {{ page_obj.paginator.num_pages }}.</span>
+                    </li>
+                    {% if page_obj.has_next %}
+                        <li>
+                            <a href="?page={{ page_obj.next_page_number }}"><span><i class="fa fa-angle-right"></i></span></a>
+                        </li>
+                        <li>
+                            <a href="?page={{ page_obj.paginator.num_pages }}"><span><i class="fa fa-angle-double-right"></i></span></a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+        </footer>
+    {% endif %}
+    {% endblock %}
   </body>
 	{% block afterbody %}{% endblock %}
 </html>
