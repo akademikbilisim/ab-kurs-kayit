@@ -367,35 +367,6 @@ def password_reset_key_done(request, key=None):
     return render(request, "userprofile/change_password.html", data)
 
 
-@login_required(login_url='/')
-def save_note(request):
-    jsondata = {}
-    if request.method == 'POST':
-        trainess_username = request.POST['trainess_username']
-        t_note = request.POST['note']
-        if trainess_username and trainess_username != '':
-            try:
-                userprofile = UserProfile.objects.get(user__username=trainess_username)
-                trainess_note = TrainessNote.objects.create(note_to_profile=userprofile, site=request.site)
-                trainess_note.label = "kurs"
-                trainess_note.note = t_note
-                trainess_note.note_from_profile = request.user.userprofile
-                trainess_note.note_date = datetime.now()
-                trainess_note.save()
-                jsondata['status'] = "0"
-                jsondata['message'] = "Durum güncellendi!"
-            except Exception as e:
-                jsondata['status'] = "-1"
-                jsondata['message'] = "Durum güncelleme sırasında hata olustu"
-                log.error(e.message, extra=request.log_extra)
-        else:
-            jsondata['status'] = "-1"
-            jsondata['message'] = "Hata: Kullanıcı adı boş olamaz!"
-            log.error("username bos olamaz", extra=request.log_extra)
-
-    return HttpResponse(json.dumps(jsondata), content_type="application/json")
-
-
 def backend_login(request, user):
     user.backend = 'django.contrib.auth.backends.ModelBackend'
     login(request, user)
@@ -409,14 +380,13 @@ def showuserprofile(request, userid, courserecordid):
         try:
             courserecord = TrainessCourseRecord.objects.get(pk=courserecordid,
                                                             trainess=UserProfile.objects.get(pk=userid))
-            if not request.user.is_staff and request.user.userprofile not in courserecord.course.trainer.all() and \
-                            request.user.userprofile not in courserecord.course.authorized_trainer.all():
+            if not UserProfileOPS.is_user_trainer_ofcourse_or_staff(request.user, courserecord.course):
                 return redirect("selectcoursefcp")
         except Exception as e:
             log.warning(e.message, extra=request.log_extra)
-            log.warning("Staff user show user profile", extra=request.log_extra)
             if not request.user.is_staff:
                 return redirect("selectcoursefcp")
+            log.warning("Staff user show user profile", extra=request.log_extra)
         user = UserProfile.objects.get(pk=userid)
         data['tuser'] = user
         data['ruser'] = request.user
@@ -454,35 +424,23 @@ def showuserprofile(request, userid, courserecordid):
                     data['note'] = "Kullanıcının Tüm Başvuruları Silindi"
                 else:
                     data['note'] = "Kullanıcının Başvuruları silinirken hata oluştu"
+            if "savescore" in request.POST:
+                '''
+                    Kullanıcı için not girişi
+                '''
+                trainessnote = request.POST.get('trainessnotetext')
+                data['note'] = UserProfileOPS.savenote(request, user.user, trainessnote)
             if courserecord:
+                '''
+                    Kullanıcı profilindeki yoklamalar buradan alınıyor. (Görevli kullanıcı erişebilir)
+                '''
                 data['courseid'] = courserecord.course.pk
                 if request.user.is_staff and courserecord.consentemailsent:
                     try:
                         data['forms'] = getparticipationforms(request.site, courserecord)
                         if "save" in request.POST:
-                            for date in range(1, int(
-                                    (request.site.event_end_date - request.site.event_start_date).days) + 1):
-                                morning = request.POST.get("participation" + str(date) + "-morning")
-                                afternoon = request.POST.get("participation" + str(date) + "-afternoon")
-                                evening = request.POST.get("participation" + str(date) + "-evening")
-                                data['note'] = 'Seçimleriniz başarıyla kaydedildi.'
-                                log.info("%s nolu kurs kaydinin yoklama kaydi girişi başarılı" % courserecord.pk,
-                                         extra=request.log_extra)
-                                try:
-                                    tp = TrainessParticipation.objects.get(courserecord=courserecord, day=str(date))
-                                    tp.morning = morning
-                                    tp.afternoon = afternoon
-                                    tp.evening = evening
-                                    tp.save()
-                                except ObjectDoesNotExist as e:
-                                    tp = TrainessParticipation(courserecord=courserecord, day=str(date),
-                                                               morning=morning, afternoon=afternoon, evening=evening)
-                                    tp.save()
-                                except:
-                                    data['note'] = 'Hata oluştu!'
-                                    log.info("%s nolu kurs kaydinin yoklama kaydi girişi hatalı" % courserecord.pk,
-                                             extra=request.log_extra)
-                                data['forms'] = getparticipationforms(request.site, courserecord)
+                            data['note'] = UserProfileOPS.saveparticipation(request, courserecord)
+                            data['forms'] = getparticipationforms(request.site, courserecord)
                     except Exception as e:
                         log.error(e.message, extra=request.log_extra)
         else:

@@ -8,6 +8,7 @@
     <script src="https://cdn.rawgit.com/ractoon/jQuery-Text-Counter/master/textcounter.js"></script>
     <script src="{% static '/static/js/courses.js' %}"></script>
 <link href="{% static '/static/css/courses.css' %}" rel="stylesheet" type="text/css"/>
+<form name="form-control" class="span4 signup-form" method="POST" enctype="multipart/form-data">{% csrf_token %}
 <div class="container-fluid">
     <div class="alert alert-info">{{ note }}</div>
     {% if tuser %}
@@ -65,14 +66,14 @@
                     <dt>Not Ekle: </dt>
                     <dd>
                             <p>
-                                <textarea id="trainessnotetext" cols="30" rows="5" class="form-control input-note"></textarea>
-                                <input id="trainessnoteuser" type="hidden" class="input-username" value="{{ tuser.user.username }}"/>
-                                <input id="save-score" class="btn btn-primary" type="button" value="Ekle" />
+                                <textarea id="trainessnotetext" name="trainessnotetext" cols="30" rows="5" maxlength="500" class="form-control input-note"></textarea>
+                                <input id="trainessnoteuser" name="trainessnoteuser" type="hidden" class="input-username" value="{{ tuser.user.username }}"/>
+                                <input id="savescore" name="savescore" class="btn btn-primary" type="submit" value="Ekle" />
                             </p>
                     </dd>
                     <dt>Etkinlik bazlı Profil</dt>
                     <dd>
-                        <form name="form-control" class="span4 signup-form" method="POST" enctype="multipart/form-data">{% csrf_token %}
+
                             {% if userprofilebysiteform %}
                                 {% for field in userprofilebysiteform.hidden_fields %}
                                 {{ field }}
@@ -111,7 +112,6 @@
                             </div>
                             {% endfor %}
                             <input type="submit" name="savesitebasedprofile" id="savesitebasedprofile" class="btn btn-primary" value="{% trans 'Save' %}">
-                        </form>
                     </dd>
                     {% endif %}
                     {% getanswers tuser ruser courseid %}
@@ -119,16 +119,14 @@
                 </dl>
                 {% if tuser.trainesscourserecord_set.all %}
                     {% if ruser.is_staff %}
-                        <form name="form-control" class="span4 signup-form" method="POST">{% csrf_token %}
-                            <dl class="dl-horizontal">
-                                <dt>İptal sebebi: </dt><dd><input id="trainesscancelnotetext" name="trainesscancelnotetext" type="text" class="form-control input-note" value=""/></dd>
-                                <dd><input type="submit" class="btn btn-danger" id="cancelall" name="cancelall" value="Tüm Başvurularını İptal Et"></dd>
-                            </dl>
-                        </form>
+
+                       <dl class="dl-horizontal">
+                           <dt>İptal sebebi: </dt><dd><input id="trainesscancelnotetext" name="trainesscancelnotetext" type="text" class="form-control input-note" value=""/></dd>
+                           <dd><input type="submit" class="btn btn-danger" id="cancelall" name="cancelall" value="Tüm Başvurularını İptal Et"></dd>
+                       </dl>
                     {% endif %}
                 {% endif %}
                 {% if forms %}
-                <form name="form-control" class="span4 signup-form" method="POST">{% csrf_token %}
                     <dl class="dl-horizontal">
                         {% for form in forms %}
                         <dt> {{form.initial.day}}. gün: </dt>
@@ -136,7 +134,6 @@
                         {% endfor %}
                         <dd><input type="submit" name="save" id="save" class="btn btn-primary" value="{% trans 'Save' %}"></dd>
                     </dl>
-                </form>
                 {% endif %}
                 </div>
             </div>
@@ -145,6 +142,7 @@
 {% endif %}
 
 </div>
+</form>
 
 
 {% endblock %}

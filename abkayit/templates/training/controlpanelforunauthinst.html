@@ -138,7 +138,7 @@ $(document).ready(function(){
                     {% potentialinstform t.trainess.user %}
                 <p>
                 <p>
-                    <input name="trainessnotetext" type="text" class="form-control input-note" value=""/>
+                    <textarea name="trainessnotetext" id="trainessnotetext" maxlength="500" cols="30" rows="5" class="form-control input-note"></textarea>
                     <input name="trainessnoteuser" type="hidden" class="input-username"
                            value="{{ t.trainess.user.username }}"/>
 

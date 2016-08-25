@@ -22,9 +22,6 @@ urlpatterns = patterns('userprofile.views',
                        url(r'^showuser/(?P<userid>[0-9]+)/(?P<courserecordid>[0-9]+)', 'showuserprofile',
                            name="showuserprofile"),
 
-                       # instructor for trainess
-                       url(r'^savenote', 'save_note', name="save_note"),
-
                        # password reset
                        url(r"^password/reset/$", 'password_reset', name="account_reset_password"),
                        url(r"^password/reset/key/$", 'password_reset_key', name="account_reset_password_key"),
