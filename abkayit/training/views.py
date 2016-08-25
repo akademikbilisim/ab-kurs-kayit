@@ -70,11 +70,8 @@ def apply_to_course(request):
       eger profili yoksa createprofile yönlendirilir
       eger sıkca sorulan sorulara cevap vermemisse sıkca sorulan sorulara yonlendirilir.
     """
-    data = {}
-    data['closed'] = True
-    data['additional1_pref_closed'] = True
-    data['PREFERENCE_LIMIT'] = PREFERENCE_LIMIT
-    data['ADDITION_PREFERENCE_LIMIT'] = ADDITION_PREFERENCE_LIMIT
+    data = {'closed': True, 'additional1_pref_closed': True, 'PREFERENCE_LIMIT': PREFERENCE_LIMIT,
+            'ADDITION_PREFERENCE_LIMIT': ADDITION_PREFERENCE_LIMIT}
     now = datetime.now()
     data['may_cancel_all'] = True if request.site.event_start_date > datetime.date(now) else False
     """
@@ -177,8 +174,7 @@ def approve_course_preference(request):
     """
     message = ""
     status = "1"
-    data = {}
-    data["note"] = "Başvuru Durumunuz"
+    data = {"note": "Başvuru Durumunuz"}
     now = datetime.now()
     try:
 
@@ -274,15 +270,8 @@ def control_panel(request, courseid):
                 trainessnote = request.POST.get('trainessnotetext')
                 trainessusername = request.POST.get('trainessnoteuser')
                 user = User.objects.get(username=trainessusername)
+                data['note'] = UserProfileOPS.savenote(request, user, trainessnote)
                 potentialinst = request.POST.get('potential-%s' % user.pk)
-                print potentialinst
-                if trainessnote:
-                    tnote = TrainessNote(note_to_profile=user.userprofile,
-                                         note_from_profile=request.user.userprofile,
-                                         note=trainessnote,
-                                         site=request.site,
-                                         label='egitim')
-                    tnote.save()
                 uprobysite, created = UserProfileBySite.objects.get_or_create(user=user, site=request.site)
                 if potentialinst == 'on':
                     uprobysite.potentialinstructor = True
@@ -291,7 +280,6 @@ def control_panel(request, courseid):
                 uprobysite.save()
                 data['savednoteuserid'] = user.userprofile.pk
                 data['notesavedsuccessful'] = True
-                data['note'] = "Kursiyer notu başarıyla kaydedildi."
             return render(request, "training/controlpanelforunauthinst.html", data)
         elif not request.user.is_staff:
             return redirect("applytocourse")
