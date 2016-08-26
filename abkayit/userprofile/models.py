@@ -73,7 +73,10 @@ class UserProfile(models.Model):
     profilephoto = models.ImageField(upload_to=user_directory_path, verbose_name=_("Profile Picture"))
 
     def __unicode__(self):
-        return self.user.first_name + " " + self.user.last_name + " " + self.user.username
+        if self.user.get_full_name():
+            return u"{u} ({fn})".format(u=self.user.username, fn=self.user.get_full_name())
+        else:
+            return self.user.username
 
     class Meta:
         ordering = ('user__username',)
