@@ -1,14 +1,19 @@
 from django.contrib import admin
 
 # Register your models here.
+from django_extensions.admin import ForeignKeyAutocompleteAdmin
+
 from surman.models import Answer, AnswerGroup, Question, Survey
 
 
+
 @admin.register(Question)
-class QuestionAdmin(admin.ModelAdmin):
+class QuestionAdmin(ForeignKeyAutocompleteAdmin):
     list_display = ["survey", "key", "related_course", "related_trainer"]
     list_filter = ["survey", "survey__site"]
-
+    related_search_fields = {
+        'related_trainer': ["user__first_name", "user__last_name", "user__email"],
+    }
 
 @admin.register(Survey)
 class SurveyAdmin(admin.ModelAdmin):
