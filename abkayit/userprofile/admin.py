@@ -4,6 +4,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as AuthUserAdmin
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
+from django_extensions.admin import ForeignKeyAutocompleteAdmin
 
 from userprofile.models import InstructorInformation, UserProfile, Accommodation, UserAccomodationPref, \
     UserVerification, TrainessNote, UserProfileBySite
@@ -36,6 +37,21 @@ class UserVerificationInline(admin.StackedInline):
     model = UserVerification
     extra = 0
 
+
+@admin.register(UserProfile)
+class UserProfileAdmin(ForeignKeyAutocompleteAdmin):
+    """Bu admin modeli admin arayuzunde gozukmeyecek
+    fakat autocomplete'in calismasi icin register edilmesi gerekli"""
+    search_fields = ["user__first_name", "user__last_name", "user__email"]
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def has_add_permission(self, request, obj=None):
+        return False
 
 class UserProfileInline(admin.StackedInline):
     model = UserProfile
