@@ -117,6 +117,14 @@
     <!-- START MENU CONTENT -->
     <div id="content" class="body-content">
       <div id="page-wrapper" style="margin-left: 0!important;">
+          {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
         {% block content %}
             {% if content%}
                 {% autoescape off %}
