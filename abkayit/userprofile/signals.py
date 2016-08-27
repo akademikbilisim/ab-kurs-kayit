@@ -73,6 +73,12 @@ def definenotapprovedtrainesscronjob_signal(instance, created, **kwargs):
                      extra={'clientip': '', 'user': ''})
 
 
+def titleize_user_fullnames(instance, **kwargs):
+    instance.first_name = instance.first_name.title()
+    instance.last_name = instance.last_name.title()
+
+
 signals.post_save.connect(send_confirm_link, sender=User)
 signals.post_save.connect(defineconsentmailcronjob_signal, sender=Site)
 signals.post_save.connect(definenotapprovedtrainesscronjob_signal, sender=Site)
+signals.pre_save.connect(titleize_user_fullnames, sender=User)
