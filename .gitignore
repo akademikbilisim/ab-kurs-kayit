@@ -1,4 +1,4 @@
-*.pyc
+*.py[cod]
 abkayit/logfile*
 abkayit/documents/*
 .project
@@ -10,7 +10,7 @@ abkayit/training/migrations/*
 abkayit/userprofile/migrations/*
 abkayit/mailing/migrations/*
 abkayit/surman/migrations/*
-abkayit/static/images/*
+abkayit/staticfiles/
 abkayit/abkayit/settings.py
 abkayit/egitmenler
 abkayit/kurslar
@@ -19,3 +19,4 @@ venv
 media/
 abkayit/geribildirim.csv
 abkayit/keys.txt
+.env

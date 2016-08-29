@@ -1,0 +1,6 @@
+.selected {
+    background-color: blue;
+}
+.selectable.selected {
+    background-color: #33CC33;
+}

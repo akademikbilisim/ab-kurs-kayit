@@ -1,0 +1,39 @@
+{% extends "base/dashboard.html" %}
+{% load i18n %}
+{% block content %}
+{% load static %}
+<script src="{% static 'training/js/course_table.js' %}"></script>
+
+<div class="container-fluid">
+<table data-id="course_table" id="course_table" class="table table-hover table-striped">
+	<thead>
+	    <tr>
+            <th>{% trans "Submission ID" %}</th>
+	        <th>{% trans "Course Name" %}</th>
+	        <th>{% trans "Trainers" %}</th>
+			<th>{% trans "Days for participation status" %}</th>
+	    </tr>
+	</thead>
+	<tbody>
+	{% for course in allcourses %}
+
+            <th>{{course.no}}</th>
+			<th>{{course.name}}</th>
+			<th>
+				{% for t in course.trainer.all %}
+					{{t.user}} </br>
+				{% endfor %}
+			</th>
+			<th>
+				{% for date in daylist %}
+					<a href="{% url 'editparticipationstatusebycourse' course.pk forloop.counter %}">{{ forloop.counter }}. Gun</a>
+				{% endfor %}
+			</th>
+
+		</tr>
+	{% endfor %}
+	</tbody>
+</table>
+</div>
+
+{% endblock %}
