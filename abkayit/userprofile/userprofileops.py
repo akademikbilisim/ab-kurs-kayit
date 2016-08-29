@@ -22,6 +22,19 @@ class UserProfileOPS:
         pass
 
     @staticmethod
+    def check_profile_fields(userprofile):
+        fields = list(field.attname for field in userprofile._meta.fields)
+        for field in fields:
+            if field == "ykimlikno" and getattr(userprofile, "country") == "TR":
+                continue
+            elif field == "tckimlikno" and getattr(userprofile, "country") != "TR":
+                continue
+            else:
+                if len(str(getattr(userprofile, field))) == 0:
+                    return False
+        return True
+
+    @staticmethod
     def generatenewpass(plen):
         chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789abcdefghijkmnpqrstuvwxyz'
         password = ''.join(random.choice(chars) for i in range(plen))
