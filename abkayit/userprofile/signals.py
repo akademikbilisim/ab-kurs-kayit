@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from unicode_tr import unicode_tr
 import logging
 from datetime import datetime, timedelta
 
@@ -79,8 +80,8 @@ def definenotapprovedtrainesscronjob_signal(instance, created, **kwargs):
 
 
 def titleize_user_fullnames(instance, **kwargs):
-    instance.first_name = instance.first_name.title()
-    instance.last_name = instance.last_name.title()
+    instance.first_name = unicode_tr(instance.first_name).title()
+    instance.last_name = unicode_tr(instance.last_name).title()
 
 
 def check_user_complete_profile(sender, user, request, **kwargs):
