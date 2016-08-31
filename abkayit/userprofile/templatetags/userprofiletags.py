@@ -87,7 +87,7 @@ def getoperationsmenu(uprofile):
             <a href="/survey/answers/"><i class="fa fa-file-text-o fa-fw"></i> Anket Sonuçları</a>
         </li>
         <li>
-        <a href="/egitim/controlpanel"><i class="fa fa-book fa-fw"></i> Kurslarım </a>
+        <a href="/egitim/selectcourse/"><i class="fa fa-book fa-fw"></i> Kurslarım </a>
         </li>
         <li>
             <a href="/egitim/katilimciekle"><i class="fa fa-book fa-fw"></i> Kursiyer Ekle</a>
