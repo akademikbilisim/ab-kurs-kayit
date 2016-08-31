@@ -5,11 +5,6 @@ abkayit/documents/*
 .pydevproject
 .settings/
 */__init__.py
-abkayit/abkayit/migrations/*
-abkayit/training/migrations/*
-abkayit/userprofile/migrations/*
-abkayit/mailing/migrations/*
-abkayit/surman/migrations/*
 abkayit/staticfiles/
 abkayit/abkayit/settings.py
 abkayit/egitmenler
