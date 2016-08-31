@@ -1,0 +1,174 @@
+{% extends "base/dashboard.html" %}
+{% block content %}
+{% load static %}
+{% load i18n %}
+{% load template_filter %}
+{% load trainingtags %}
+
+<script style="javascript">
+function fnFormatDetails ( dTable, nTr )
+{
+    var aData = dTable.fnGetData( nTr );
+    var sOut = '<table cellpadding="20" cellspacing="0" border="0" style="padding-left:50px;padding-right:250px;" class="table table-hover table-striped">';
+    sOut += '<tr><td colspan="2">'+aData[6]+'</td></tr>';
+    sOut += '<tr><td><b>Not Ekle</b></td><td>'+aData[7]+'</td></tr>';
+    sOut += '</table>';
+    sOut += '</br>';
+    return sOut;
+}
+
+$(document).ready(function(){
+    $('[data-id="course_table_control_panel"]').each(function(){
+
+       var dTable = $(this).dataTable({
+            "dom": 'Bfrtip',
+            "language": {
+              "url": "/static/base/Turkish.json"
+            },
+            "columnDefs": [
+               {
+                "targets": [ 6 ],
+                "visible": false
+               },
+               {
+                "targets": [ 7 ],
+                "visible": false
+               },
+            ],
+            "searching": false,
+            "bJQueryUI": false,
+            "ordering": true,
+            "paging" : false,
+             buttons : [
+              'copyHtml5',
+              'excelHtml5',
+              'csvHtml5',
+              'pdfHtml5'
+            ],
+
+      });
+
+      dTable.find('tbody a').click(function(){
+             var nTr = $(this).parents('tr')[0];
+          if ( dTable.fnIsOpen(nTr) )
+          {
+              dTable.fnClose( nTr );
+          }
+          else
+          {
+              dTable.fnOpen( nTr, fnFormatDetails(dTable, nTr), 'details' );
+
+          }
+      });
+
+    });
+});
+</script>
+<link href="{% static 'training/css/courses.css' %}" rel="stylesheet" type="text/css"/>
+
+<div class="container-fluid" style="margin-top:20px;">
+    {% if trainess %}
+    <div class="alert alert-info">{{ note }}</div>
+    {% manuallyaddtrainess request.site user%}
+    <form name="select-student{{course.id}}" method="POST">{% csrf_token %}
+        <h4>
+            <span class="avaliable-trainee label">Seçim Yapabilirsiniz</span>
+            <span class="label checked-trainee-for-another-course">Katılımcının Diğer Tercihi Onaylanmış</span>
+            <span class="label checked-trainee-course">Katılımcı Bu Kurs İçin Onaylanmış</span>
+            <span class="label approved-trainess-for-this-course">Katılımcı Bu Kursa Geleceğini Teyit Etti</span>
+        </h4>
+            {% for course,value in trainess.items %}
+                <h2><strong>{{ course.name }}</strong></h2>
+                {% for pref,trs in value.items %}
+                    {% if trs %}
+                        {% if pref > 0 %}
+                        <h3> {{ pref }}. tercih </h3>
+                        {% else %}
+                        <h3> {% mod pref %}. ek tercih </h3>
+                        {% endif %}
+                        <table data-id="course_table_control_panel" id="course_table{{course.id}}{{pref}}"
+                               class="table table-hover table-striped">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Basvuru No</th>
+                                <th>İsim</th>
+                                <th>Soyisim</th>
+                                <th>E-posta</th>
+                                <th>Konaklama Tercihi</th>
+                                <th>Cinsiyet</th>
+                                <th>Kurum</th>
+                                <th>
+                                    {% isdategtnow_head dates pref %}
+                                </th>
+                                <th>Kabul e-postası gönderilsin mi?</th>
+                                <th>Ünvan</th>
+
+                                <th>Üniversite</th>
+                                <th>Bölüm</th>
+                                <th>Ek Bilgiler</th>
+                                <th>Seçilen Kurslar</th>
+                                <th>Onaylandı mı?</th>
+                                <th>Detaylı Profil</th>
+
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for t in trs %}
+                            <tr>
+                                <td>
+                                    <a class="clickableRow">Detay</a>
+                                </td>
+                                <td>{{ t.pk }}</td>
+                                <td>{{ t.trainess.user.first_name }}</td>
+                                <td>{{ t.trainess.user.last_name }}</td>
+                                <td>{{ t.trainess.user.email }}</td>
+                                <td>
+                                    {% for pref in t.trainess.useraccomodationpref_set.all %}
+                                    {% if pref.accomodation.site.is_active %}
+                                    {{ pref.accomodation }}
+                                    {% endif %}
+                                    {% endfor %}
+                                </td>
+                                <td>{{ t.trainess.gender }}</td>
+                                <td>{{ t.trainess.organization }}</td>
+                                <td>
+                                    {% gettrainesscolor t.trainess t%}
+                                    {% isdategtnow_body dates pref t course user %}
+                                </td>
+                                <td>
+                                    {% getconsentmailfield t user%}
+                                </td>
+                                <td>{{ t.trainess.title }}</td>
+                                <td>{{ t.trainess.university }}</td>
+                                <td>{{ t.trainess.department }}</td>
+                                <td>{{ t.trainess.additional_information }}</td>
+                                <td>
+                                    {% getallprefs t %}
+                                </td>
+                                <td>
+                                    {% getapprovedcourse t %}
+                                    {% if t.approved %}
+                                    Evet
+                                    {% else %}
+                                    Hayır
+                                    {% endif %}
+                                </td>
+                                <td><a href="{% url 'showuserprofile' t.trainess.pk t.pk %}" type="button"> Profil Detayı </a></td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td>Goruntulenecek basvuru yok</td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
+                {% endfor %}
+                {% authorizedforelection request.site user%}
+            {% endfor %}
+    </form>
+</div>
+{% endif %}
+{% endblock %}
+

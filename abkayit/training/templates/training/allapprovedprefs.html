@@ -1,0 +1,44 @@
+{% extends "base/dashboard.html" %}
+{% load i18n %}
+{% block content %}
+{% load static %}
+<script src="{% static 'training/js/datatable_init.js' %}"></script>
+
+<div class="container-fluid">
+<table id="list_table" class="table table-hover table-striped">
+	<thead>
+	    <tr>
+	        <th>{% trans "Application No" %}</th>
+	        <th>{% trans "First Name" %}</th>
+	        <th>{% trans "Last Name" %}</th>
+	        <th>{% trans "E-mail" %}</th>
+	        <th>{% trans "Gender" %}</th>
+	        <th>{% trans "TC Identity Number / Foreign Identity Number" %}</th>
+	        <th>{% trans "Preference Order" %}</th>
+	        <th>{% trans "Course Name" %}</th>
+	        <th>{% trans "Is approved" %}</th>
+            <th>{% trans "Is consent email sent" %}</th>
+            <th>{% trans "Participation" %}</th>
+	    </tr>
+	</thead>
+	<tbody>
+	{% for tcr, par in participations.items %}
+		<tr>
+			<th>{{ tcr.id }}</th>
+			<th>{{ tcr.trainess.user.first_name }}</th>
+			<th>{{ tcr.trainess.user.last_name }}</th>
+			<th>{{ tcr.trainess.user.email }}</th>
+			<th>{{ tcr.trainess.gender }}</th>
+            <th>{{ tcr.trainess.tckimlikno }}{{ tcr.trainess.ykimlikno }}</th>
+			<th>{{ tcr.preference_order }}</th>
+			<th>{{ tcr.course.name }}</th>
+			<th>{{ tcr.approved }}</th>
+            <th>{{ tcr.consentemailsent }}</th>
+            <th>{{ par }}</th>
+		</tr>
+	{% endfor %}
+	</tbody>
+</table>
+</div>
+
+{% endblock %}
