@@ -1,0 +1,67 @@
+{% extends "base/dashboard.html" %}
+{% load i18n %}
+{% block content %}
+{% load static %}
+<script src="{% static 'userprofile/js/datatable_init.js' %}"></script>
+
+<div class="container-fluid">
+<table id="list_table" class="table table-hover table-striped">
+	<thead>
+	    <tr>
+	        <th>{% trans "First Name" %}</th>
+	        <th>{% trans "Last Name" %}</th>
+	        <th>{% trans "E-mail" %}</th>
+	        <th>{% trans "TC Identity No / Foreign Identity No" %}</th>
+	        <th>{% trans "University" %}</th>
+	        <th>{% trans "Gender" %}</th>
+	        <th>{% trans "Job" %}</th>
+	        <th>{% trans "Title" %}</th>
+	        <th>{% trans "Accomodation Preference Seq." %}</th>
+			<th>{% trans "Needs Document" %}
+			<th>{% trans "Document" %}</th>
+            <th>{% trans "Detailed Profile" %}</th>
+	    </tr>
+	</thead>
+	<tbody>
+	{% for data in datalist %}
+		<tr>
+			<th>{{data.firstname}}</th>
+			<th>{{data.lastname}}</th>
+			<th>{{data.email}}</th>
+			<th>{{data.tcino}}</th>
+            <th>{{data.university}}</th>
+            <th>{{data.gender}}</th>
+            <th>{{data.job}}</th>
+            <th>{{data.title}}</th>
+			<th>
+				{% for a in data.accomodation %}
+                    <span>&nbsp;</span>
+                    {{a.preference_order}},{{a.accomodation.name}}
+                    <span>&nbsp;</span>
+                {% endfor %}
+                </ul>
+			</th>
+
+			<th>
+				{% if data.needs_document %}
+					Evet
+				{% else%}
+				    Hayır
+				{% endif %}
+			</th>
+			<th>
+				{% if data.document %}
+                                 <a href="https://{{ request.site.home_url}}{{ data.document.url }}">{{ data.document }}</a>
+				{% else %}
+				  Belge Yok
+				{% endif %}
+			</th>
+			<th><a href="{% url 'showuserprofile'  data.pk data.courserecordid %}" type="button">{% trans "Show Profile" %} </a></th>
+		</tr>
+	{% endfor %}
+	</tbody>
+</table>
+</div>
+
+{% endblock %}
+

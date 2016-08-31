@@ -32,7 +32,7 @@ def index(request):
     except Exception as e:
         log.error("%s error occured %s " % (request.user, e.message), extra=request.log_extra)
     data['content'] = content
-    return render(request, 'dashboard.html', data)
+    return render(request, 'base/dashboard.html', data)
 
 
 @csrf_exempt

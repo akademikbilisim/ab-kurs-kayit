@@ -178,40 +178,40 @@ msgstr ""
 msgid "Login Failed!"
 msgstr "Giriş Başarısız!"
 
-#: templates/dashboard.html:109 userprofile/models.py:83
+#: templates/base/dashboard.html:109 userprofile/models.py:83
 msgid "User Profile"
 msgstr "Kullanıcı Profili"
 
-#: templates/dashboard.html:115
+#: templates/base/dashboard.html:115
 msgid "Change Password"
 msgstr "Parola Değiştir"
 
-#: templates/dashboard.html:120
+#: templates/base/dashboard.html:120
 msgid "Log out"
 msgstr "Çıkış"
 
-#: templates/dashboard.html:132
+#: templates/base/dashboard.html:132
 msgid "Email adress"
 msgstr "E-posta adresi"
 
-#: templates/dashboard.html:133
+#: templates/base/dashboard.html:133
 #: templates/userprofile/change_password_key_request.html:14
 #: templates/userprofile/change_password_key_request.html:17
 #: userprofile/forms.py:104
 msgid "Email"
 msgstr "E-posta"
 
-#: templates/dashboard.html:136 templates/dashboard.html:137
+#: templates/base/dashboard.html:136 templates/base/dashboard.html:137
 #: userprofile/forms.py:35 userprofile/forms.py:44 userprofile/forms.py:256
 #: userprofile/forms.py:262
 msgid "Password"
 msgstr "Parola"
 
-#: templates/dashboard.html:140
+#: templates/base/dashboard.html:140
 msgid "Log in"
 msgstr "Giriş"
 
-#: templates/dashboard.html:145
+#: templates/base/dashboard.html:145
 msgid "Forgot password"
 msgstr "Parolamı unuttum"
 
