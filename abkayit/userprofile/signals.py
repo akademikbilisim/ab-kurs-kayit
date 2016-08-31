@@ -9,6 +9,7 @@ from django.contrib.auth import user_logged_in
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import signals
+from django.core.urlresolvers import reverse
 
 from abkayit.adaptor import define_crontab, deleteoldjobs
 from abkayit.models import Site, ApprovalDate
@@ -85,17 +86,18 @@ def titleize_user_fullnames(instance, **kwargs):
 
 
 def check_user_complete_profile(sender, user, request, **kwargs):
-    try:
-        profile = user.userprofile
-        check = UserProfileOPS.check_profile_fields(profile)
-        if not check:
+    if not request.path.startswith(reverse('admin:index')):
+        try:
+            profile = user.userprofile
+            check = UserProfileOPS.check_profile_fields(profile)
+            if not check:
+                message = _(
+                    "Profilinizde eksikler bulunuyor. Başvurularınızın daha sağlıklı biçimde değerlendirilebilmesi için profilinizdeki eksikleri tamamlamanızı öneriyoruz.")
+                messages.add_message(request, messages.WARNING, message)
+        except ObjectDoesNotExist:
             message = _(
                 "Profilinizde eksikler bulunuyor. Başvurularınızın daha sağlıklı biçimde değerlendirilebilmesi için profilinizdeki eksikleri tamamlamanızı öneriyoruz.")
             messages.add_message(request, messages.WARNING, message)
-    except ObjectDoesNotExist:
-        message = _(
-            "Profilinizde eksikler bulunuyor. Başvurularınızın daha sağlıklı biçimde değerlendirilebilmesi için profilinizdeki eksikleri tamamlamanızı öneriyoruz.")
-        messages.add_message(request, messages.WARNING, message)
 
 signals.post_save.connect(send_confirm_link, sender=User)
 signals.post_save.connect(defineconsentmailcronjob_signal, sender=Site)
