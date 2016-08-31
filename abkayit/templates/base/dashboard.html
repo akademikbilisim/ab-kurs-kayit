@@ -2,6 +2,7 @@
 {% load staticfiles %}
 {% load userprofiletags %}
 {% load i18n %}
+{% load bootstrap3 %}
 
 {% block head %}
     {{ block.super }}
@@ -117,6 +118,8 @@
     <!-- START MENU CONTENT -->
     <div id="content" class="body-content">
       <div id="page-wrapper" style="margin-left: 0!important;">
+          {% bootstrap_messages %}
+
         {% block content %}
             {% if content%}
                 {% autoescape off %}
