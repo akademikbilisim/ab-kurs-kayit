@@ -1,18 +1,25 @@
 # -*- coding: utf-8 -*-
 
+from unicode_tr import unicode_tr
 import logging
 from datetime import datetime, timedelta
 
+from django.contrib import messages
+from django.contrib.auth import user_logged_in
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import signals
+from django.core.urlresolvers import reverse
 
 from abkayit.adaptor import define_crontab, deleteoldjobs
 from abkayit.models import Site, ApprovalDate
 from abkayit.settings import PROJECT_HOME_DIR, VIRTUAL_ENV_PATH
 from abkayit.backend import create_verification_link, send_email_by_operation_name
 from userprofile.models import UserVerification
-
+from django.utils.translation import ugettext_lazy as _
 from training.tutils import daterange
+
+from userprofile.userprofileops import UserProfileOPS
 
 log = logging.getLogger(__name__)
 
@@ -73,6 +80,27 @@ def definenotapprovedtrainesscronjob_signal(instance, created, **kwargs):
                      extra={'clientip': '', 'user': ''})
 
 
+def titleize_user_fullnames(instance, **kwargs):
+    instance.first_name = unicode_tr(instance.first_name).title()
+    instance.last_name = unicode_tr(instance.last_name).title()
+
+
+def check_user_complete_profile(sender, user, request, **kwargs):
+    if not request.path.startswith(reverse('admin:index')):
+        try:
+            profile = user.userprofile
+            check = UserProfileOPS.check_profile_fields(profile)
+            if not check:
+                message = _(
+                    "Profilinizde eksikler bulunuyor. Başvurularınızın daha sağlıklı biçimde değerlendirilebilmesi için profilinizdeki eksikleri tamamlamanızı öneriyoruz.")
+                messages.add_message(request, messages.WARNING, message)
+        except ObjectDoesNotExist:
+            message = _(
+                "Profilinizde eksikler bulunuyor. Başvurularınızın daha sağlıklı biçimde değerlendirilebilmesi için profilinizdeki eksikleri tamamlamanızı öneriyoruz.")
+            messages.add_message(request, messages.WARNING, message)
+
 signals.post_save.connect(send_confirm_link, sender=User)
 signals.post_save.connect(defineconsentmailcronjob_signal, sender=Site)
 signals.post_save.connect(definenotapprovedtrainesscronjob_signal, sender=Site)
+signals.pre_save.connect(titleize_user_fullnames, sender=User)
+user_logged_in.connect(check_user_complete_profile)
