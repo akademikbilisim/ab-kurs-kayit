@@ -51,7 +51,7 @@ def subscribe(request):
                     user.set_password(user.password)
                     try:
                         user.save()
-                        data['note'] = _("Your account has been created. Please check your email for activation link")
+                        data['note'] = _("Your account has been created. Please check your e-mail for activation link")
                     except Exception as e:
                         data['note'] = e.message
                     form = None

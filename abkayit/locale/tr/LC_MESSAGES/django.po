@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: None\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-03 00:58+0300\n"
+"POT-Creation-Date: 2016-09-03 22:56+0300\n"
 "PO-Revision-Date: 2016-08-15 21:47+0200\n"
 "Last-Translator: Özge Barbaros <ozgebarbaros@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,7 +19,9 @@ msgstr ""
 "X-Generator: Poedit 1.5.4\n"
 
 #: abkayit/adaptor.py:24
-msgid "Mail could not be sent"
+#, fuzzy
+#| msgid "Mail could not be sent"
+msgid "E-Mail could not be sent"
 msgstr "E-posta gönderilemedi"
 
 #: abkayit/models.py:20
@@ -118,7 +120,7 @@ msgstr "Soru"
 
 #: abkayit/models.py:70
 msgid "Is Frequently Asked Question?"
-msgstr "Sıkça Sorulan Soru"
+msgstr "Sıkça Sorulan Soru mu?"
 
 #: abkayit/models.py:74
 msgid "Questions"
@@ -130,7 +132,7 @@ msgstr "Detay"
 
 #: abkayit/models.py:83
 msgid "Is Right Answer"
-msgstr "Doğru cevap"
+msgstr "Doğru cevap mı"
 
 #: abkayit/models.py:86
 msgid "Answer"
@@ -182,9 +184,9 @@ msgid "Approval Dates"
 msgstr "Kabul Tarihleri"
 
 #: abkayit/templates/registration/login.html:15
-#: templates/base/dashboard.html:106
+#: templates/base/dashboard.html:107
 msgid "Login"
-msgstr ""
+msgstr "Giriş Yap"
 
 #: abkayit/views.py:22
 msgid ""
@@ -193,19 +195,19 @@ msgid ""
 msgstr ""
 "Eğer bir hesabınız varsa, sayfanın sağ üst tarafından oturum açabilirsiniz"
 
-#: templates/base/dashboard.html:84 userprofile/models.py:83
+#: templates/base/dashboard.html:85 userprofile/models.py:83
 msgid "User Profile"
 msgstr "Kullanıcı Profili"
 
-#: templates/base/dashboard.html:91
+#: templates/base/dashboard.html:92
 msgid "Change Password"
 msgstr "Parola Değiştir"
 
-#: templates/base/dashboard.html:97
+#: templates/base/dashboard.html:98
 msgid "Log out"
 msgstr "Çıkış"
 
-#: templates/base/dashboard.html:108
+#: templates/base/dashboard.html:109
 #, fuzzy
 #| msgid "Forgot password"
 msgid "Forgot Password"
@@ -234,7 +236,7 @@ msgstr "Kursiyerler"
 
 #: training/models.py:24
 msgid "Trainer"
-msgstr "Eğitmenler"
+msgstr "Eğitmen"
 
 #: training/models.py:26
 msgid "Authorized Trainers"
@@ -338,7 +340,7 @@ msgstr "Onaylandı mı?"
 
 #: training/templates/training/allapprovedprefs.html:20
 msgid "Is consent email sent"
-msgstr ""
+msgstr "Kabul epostası yollandı mı"
 
 #: training/templates/training/allapprovedprefs.html:21
 msgid "Participation"
@@ -394,7 +396,7 @@ msgstr "Tercih Ekle"
 #, fuzzy
 #| msgid "Course"
 msgid "Course ID"
-msgstr "Kurs"
+msgstr "Kurs ID"
 
 #: training/templates/training/courseparstatus.html:32
 #: userprofile/templates/userprofile/instructor_information.html:35
@@ -418,13 +420,31 @@ msgstr "Eğitmenler"
 
 #: training/templates/training/participationstatuses.html:14
 msgid "Days for participation status"
-msgstr ""
+msgstr "Derse katılım günleri"
+
+#: training/views.py:51
+#, fuzzy
+#| msgid "User not found"
+msgid "Course not found!"
+msgstr "Kullanıcı bulunamadı"
 
 #: training/views.py:96
-msgid "You can choose courses in order of preference."
+#, fuzzy
+#| msgid "You can choose courses in order of preference."
+msgid ""
+"You can choose courses in order of preference. You can choose at least 1 and "
+"maximum 3 courses."
 msgstr ""
 "Başvurmak istediğiniz kursları lütfen tercih sırasına göre aşağıdan "
 "ekleyiniz. En az 1, en çok 3 tercih yapabilirsiniz."
+
+#: training/views.py:101
+msgid "Please answer the questions below."
+msgstr "Lütfen aşağıdaki soruları cevaplayın."
+
+#: training/views.py:113
+msgid "Please fill all the quiestions!"
+msgstr "Lütfen tüm soruları doldurun!"
 
 #: training/views.py:154
 msgid "You can make additional preference."
@@ -673,7 +693,7 @@ msgstr "Daha önce çalışılan/Staj yapılan yerler"
 
 #: userprofile/models.py:73
 msgid "Profile Picture"
-msgstr "Foto"
+msgstr "Profil Fotoğrafı"
 
 #: userprofile/models.py:84
 msgid "User Profiles"
@@ -691,7 +711,7 @@ msgstr "Evrak Gerekli"
 
 #: userprofile/models.py:92
 msgid "FAQ is answered?"
-msgstr ""
+msgstr "SSS cevaplandı mı?"
 
 #: userprofile/models.py:94
 msgid "Can Apply?"
@@ -757,6 +777,12 @@ msgstr "Klasik Soruya Katılımcının Cevabı"
 msgid "Trainess Answers for Classic Questions "
 msgstr "Klasik Sorulara Katılımcıların Cevapları"
 
+#: userprofile/signals.py:95 userprofile/signals.py:99
+msgid ""
+"Profilinizde eksikler bulunuyor. Başvurularınızın daha sağlıklı biçimde "
+"değerlendirilebilmesi için profilinizdeki eksikleri tamamlamanızı öneriyoruz."
+msgstr ""
+
 #: userprofile/templates/userprofile/activate_resend.html:10
 msgid "Send Activation Link"
 msgstr "Aktifleştirme Bağlantısı Gönder"
@@ -818,19 +844,22 @@ msgid "You can update your profile below"
 msgstr "Profilinizi aşağıda güncelleyebilirsiniz"
 
 #: userprofile/uutils.py:33
-msgid "If you want to continue please complete your profile."
-msgstr ""
-"Devam edebilmek için lütfen önce profilinizi tamamlayın.Eğer devam etmek "
-"istiyorsanız profilinizi tamamlamalısınız. Konaklama seçenekleri profilinizi "
-"oluşturduktan sonra etkin olacaktır"
+msgid ""
+"If you want to continue please complete your profile. Accommodation options "
+"will be available after you complete your profile."
+msgstr "Devam edebilmek için lütfen önce profilinizi tamamlayın. Konaklama seçenekleri profilinizi "
+"oluşturduktan sonra etkin olacaktır."
 
 #: userprofile/views.py:44
 msgid "Register to system to participate in courses before the conferences"
 msgstr "Kurslara katılabilmek için sisteme kaydolun"
 
 #: userprofile/views.py:54
+#, fuzzy
+#| msgid ""
+#| "Your account has been created. Please check your email for activation link"
 msgid ""
-"Your account has been created. Please check your email for activation link"
+"Your account has been created. Please check your e-mail for activation link"
 msgstr ""
 "Hesabınız oluşturuldu. Lütfen aktifleştirme bağlantısı için e-posta "
 "adresinizi kontrol ediniz"
@@ -891,6 +920,12 @@ msgstr "Parola sıfırlama işlemi başarısız"
 #: userprofile/views.py:336
 msgid "Email field can not be empty"
 msgstr "E-posta alanı boş olamaz"
+
+#~ msgid "If you want to continue please complete your profile."
+#~ msgstr ""
+#~ "Devam edebilmek için lütfen önce profilinizi tamamlayın.Eğer devam etmek "
+#~ "istiyorsanız profilinizi tamamlamalısınız. Konaklama seçenekleri "
+#~ "profilinizi oluşturduktan sonra etkin olacaktır"
 
 #~ msgid "Login Failed!"
 #~ msgstr "Giriş Başarısız!"

@@ -30,7 +30,7 @@ def getuserprofileforms(user, site, d):
                 userprobysiteform = UserProfileBySiteForm(ruser=user, site=site)
         log.debug("Profil guncelleme islemi", extra=d)
     except UserProfile.DoesNotExist:
-        note = _("If you want to continue please complete your profile.")
+        note = _("If you want to continue please complete your profile. Accommodation options will be available after you complete your profile.")
         userproform = StuProfileForm(ruser=user)
         if site.needs_document:
             userprobysiteform = UserProfileBySiteForm(ruser=user, site=site)

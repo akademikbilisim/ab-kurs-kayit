@@ -48,7 +48,7 @@ def show_course(request, course_id):
         data['course'] = course
         return render(request, 'training/course_detail.html', data)
     except ObjectDoesNotExist:
-        return HttpResponse("Kurs Bulunamadi")
+        return HttpResponse(_("Course not found!"))
 
 
 @login_required
@@ -93,12 +93,12 @@ def apply_to_course(request):
             log.info("in between application start and end date", extra=request.log_extra)
             if userprofile.userpassedtest:
                 data['closed'] = False
-                data['note '] = _("You can choose courses in order of preference.")
+                data['note '] = _("You can choose courses in order of preference. You can choose at least 1 and maximum 3 courses.")
                 if request.GET:
                     course_prefs = request.GET
                     pref_tests = gettestsofcourses(course_prefs)
                     if pref_tests:
-                        data['note'] = "Lutfen asağidaki soruları yanıtlayın"
+                        data['note'] = _("Please answer the questions below.")
                         data['pref_tests'] = pref_tests
                         if "submitanswers" in request.POST:
                             answersforcourse = {}
@@ -110,7 +110,7 @@ def apply_to_course(request):
                                     if ranswer:
                                         answersforcourse[course].append(ranswer)
                                     else:
-                                        data["note"] = "Lütfen tüm soruları doldurun!"
+                                        data["note"] = _("Please fill all the quiestions!")
                                         return render(request, "training/testforapplication.html", data)
                                 for question in questions[1]:
                                     tbansw = request.POST.get("answer" + str(question.pk))
@@ -428,7 +428,7 @@ def cancel_all_preference(request):
 #                course.application_is_open = True
 #                message = "Bu Kurs İçin Başvurular Açıldı"
 #                status = "0"
-#            else: 
+#            else:
 #                course.application_is_open = False
 #                message = "Bu Kurs İçin Başvurular Kapandı"
 #                status = "0"
