@@ -96,13 +96,12 @@ def createprofile(request):
                                                  ruser=request.user)
         except UserProfile.DoesNotExist:
             data['userproform'] = StuProfileForm(request.POST, request.FILES, ruser=request.user)
-        if request.site.needs_document:
-            if userprobysite:
-                data['userproformbysite'] = UserProfileBySiteForm(request.POST, request.FILES, instance=userprobysite,
-                                                                  ruser=request.user, site=request.site)
-            else:
-                data['userproformbysite'] = UserProfileBySiteForm(request.POST, request.FILES, ruser=request.user,
-                                                                  site=request.site)
+        if userprobysite:
+            data['userproformbysite'] = UserProfileBySiteForm(request.POST, request.FILES, instance=userprobysite,
+                                                              ruser=request.user, site=request.site)
+        else:
+            data['userproformbysite'] = UserProfileBySiteForm(request.POST, request.FILES, ruser=request.user,
+                                                              site=request.site)
         if data['update_user_form'].is_valid():
             data['update_user_form'].save()
             if data['userproform'].is_valid():

@@ -5,6 +5,11 @@ import os
 import django
 import re
 
+def get_users_with_edu():
+    from userprofile.models import UserProfile
+    users = UserProfile.objects.filter(user__username__contains="edu.tr")
+    for user in users:
+        print user
 
 def onayla():
     from django.contrib.auth.models import User
@@ -121,8 +126,10 @@ if __name__ == "__main__":
         sys.path.append(path)
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "abkayit.settings")
     django.setup()
+    get_users_with_edu()
+
     # karalisteimport()
     # push_note_to_trainess("note", "filename")
-    import_participation("lyk2016_kabuledilenler_tercihno.csv")
+#    import_participation("lyk2016_kabuledilenler_tercihno.csv")
     # except:
     #    print "Project path can not be empty!"

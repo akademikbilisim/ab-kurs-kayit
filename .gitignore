@@ -15,3 +15,5 @@ media/
 abkayit/geribildirim.csv
 abkayit/keys.txt
 .env
+abkayit/.well-known/
+abkayit/onayla.py

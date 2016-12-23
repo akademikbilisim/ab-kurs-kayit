@@ -94,7 +94,7 @@
             {% endif %}
         </div>
         {% endfor %}
-        {% if userproformbysite and site.needs_document %}
+        {% if userproformbysite and request.site.needs_document %}
             {% for field in userproformbysite.hidden_fields %}
                 {{ field }}
                 {% if field.errors %}

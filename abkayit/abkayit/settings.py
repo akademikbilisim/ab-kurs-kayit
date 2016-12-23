@@ -20,13 +20,15 @@ sys.path.insert(0, os.path.join(BASE_DIR, "abkayit"))
     COMMON_CONFIG_FILE: Veri tabani ayarlari ve secret key bu dosyada yer alir.
 '''
 COMMON_CONFIG_FILE = '/opt/kampyazilim.conf'
+from readconf import *
 
 '''
     EMAIL_FROM_ADDRESS: Sistemden gonderilecek maillerin from adresi
 '''
-EMAIL_FROM_ADDRESS = "kamp@linux.org.tr"
-EMAIL_HOST = "postaci.linux.org.tr"
-EMAIL_PORT = 25
+emailsettings = EmailSettings()
+EMAIL_FROM_ADDRESS = emailsettings.fromaddress
+EMAIL_HOST = emailsettings.host
+EMAIL_PORT = emailsettings.port
 
 SEND_REPORT = True
 REPORT_RECIPIENT_LIST = ["kamp-gelismeler@linux.org.tr"]
@@ -98,7 +100,6 @@ MEDIA_URL = '/media/'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
-from readconf import *
 
 # SECURITY WARNING: keep the secret key used in production secret!
 DJANGOSETTINGS = DjangoSettings()

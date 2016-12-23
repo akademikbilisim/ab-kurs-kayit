@@ -13,6 +13,7 @@ class CourseAdmin(admin.ModelAdmin):
     list_display = ['no', 'name', 'approved']
     list_filter = ('approved', 'site')
     filter_horizontal = ('trainess', 'trainer', 'authorized_trainer',)
+    #raw_id_fields = filter_horizontal = ('trainess', 'trainer', 'authorized_trainer',)
     search_fields = ('name', 'trainer__user__username')
 
     def formfield_for_manytomany(self, db_field, request=None, **kwargs):

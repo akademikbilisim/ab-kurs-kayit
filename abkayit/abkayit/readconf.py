@@ -80,3 +80,20 @@ class DjangoSettings:
 
     def getsecretkey(self):
         return self.secret_key
+
+class EmailSettings:
+    fromaddress = None
+    host = None
+    port = None
+
+    def __init__(self):
+        config = ConfigParser.ConfigParser()
+        config.read(COMMON_CONFIG_FILE)
+        section = "EMAIL"
+        self.fromaddress = config.get(section, "from")
+        self.host = config.get(section, "host")
+        self.port = config.get(section, "port")
+
+
+    def getsecretkey(self):
+        return self.secret_key

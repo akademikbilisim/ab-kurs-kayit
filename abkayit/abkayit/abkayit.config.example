@@ -7,3 +7,8 @@ pass: <db password>
 
 [DJANGO]
 secret_key:<application_secretkey> 
+
+[EMAIL]
+from:<from address>
+host:<smtp server>
+port:<smtp port>
