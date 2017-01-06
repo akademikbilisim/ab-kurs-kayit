@@ -393,7 +393,7 @@ def showuserprofile(request, userid, courserecordid):
         if user:
             userprofilebysite = None
             try:
-                userprofilebysite = UserProfileBySite.objects.get(user=user.user)
+                userprofilebysite = UserProfileBySite.objects.get(user=user.user, site=request.site)
                 data['userprofilebysiteform'] = UserProfileBySiteForStaffForm(instance=userprofilebysite,
                                                                               ruser=request.user, site=request.site,
                                                                               user=user.user)

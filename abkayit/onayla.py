@@ -11,6 +11,15 @@ def get_users_with_edu():
     for user in users:
         print user
 
+def application_opens():
+    from training.models import Course
+    courses = Course.objects.filter(site__is_active=True)
+    for course in courses:
+        print course.no
+        course.application_is_open = True
+        course.save()
+
+
 def onayla():
     from django.contrib.auth.models import User
     from userprofile.models import UserProfile
@@ -126,8 +135,8 @@ if __name__ == "__main__":
         sys.path.append(path)
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "abkayit.settings")
     django.setup()
-    get_users_with_edu()
-
+#    get_users_with_edu()
+    application_opens()
     # karalisteimport()
     # push_note_to_trainess("note", "filename")
 #    import_participation("lyk2016_kabuledilenler_tercihno.csv")

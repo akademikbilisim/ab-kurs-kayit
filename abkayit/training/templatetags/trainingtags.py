@@ -201,7 +201,7 @@ def usernotesaddedbyinst(ruser, tuser):
 def potentialinstform(tuser):
     html = "<label for='potential-%s'> Potansiyel Eğitmen </label>" % tuser.pk
     try:
-        tuserprofilebysite = UserProfileBySite.objects.get(user=tuser)
+        tuserprofilebysite = UserProfileBySite.objects.get(user=tuser, site__is_active=True)
         if tuserprofilebysite.potentialinstructor:
             html += "<input type = 'checkbox' id='potential-%s' name='potential-%s' checked />" % (tuser.pk, tuser.pk)
         else:

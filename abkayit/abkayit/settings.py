@@ -174,7 +174,8 @@ LOCALE_PATHS = (os.path.join(BASE_DIR, 'locale/'), '/usr/local/lib/python2.7/dis
 LANGUAGE_CODE = 'tr'
 
 # TIME_ZONE = 'GMT'
-TIME_ZONE = 'Europe/Istanbul'
+#TIME_ZONE = 'Europe/Istanbul'
+TIME_ZONE = 'Asia/Baghdad'
 
 USE_I18N = True
 

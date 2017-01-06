@@ -9,7 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.decorators import login_required
 
 from abkayit.models import Menu, Content, Question, Answer
-
+from userprofile.models import UserProfileBySite
 log = logging.getLogger(__name__)
 
 
@@ -40,7 +40,8 @@ def index(request):
 def testbeforeapply(request):
     data = {"note": "Kurs tercihi yapabilmek için aşağıdaki sorulara doğru yanıt vermelisiniz!"}
     try:
-        if not request.user.userprofile.userpassedtest:
+        uprofilebysite, created = UserProfileBySite.objects.get_or_create(site=request.site, user=request.user)
+        if not uprofilebysite.userpassedtest:
             questions = Question.objects.filter(active=True, is_faq=True).order_by('no')
             if questions:
                 data['questions'] = questions
@@ -58,15 +59,15 @@ def testbeforeapply(request):
                             wronganswers += "%s " % q.no
                             userpasstest = False
                     if userpasstest:
-                        request.user.userprofile.userpassedtest = True
-                        request.user.userprofile.save()
+                        uprofilebysite.userpassedtest = True
+                        uprofilebysite.save()
                         return redirect("applytocourse")
                     else:
                         data["note"] = "Tüm sorulara doğru cevap veriniz yanlış cevaplar %s" % wronganswers
                 return render(request, 'abkayit/faqtest.html', data)
             else:
-                request.user.userprofile.userpassedtest = True
-                request.user.userprofile.save()
+                uprofilebysite.userpassedtest = True
+                uprofilebysite.save()
         return redirect("applytocourse")
     except ObjectDoesNotExist:
         return redirect('createprofile')

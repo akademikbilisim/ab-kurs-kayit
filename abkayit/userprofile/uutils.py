@@ -24,7 +24,7 @@ def getuserprofileforms(user, site, d):
                     'preference_order')
         if site.needs_document:
             try:
-                userprofilebysite = UserProfileBySite.objects.get(user=user)
+                userprofilebysite = UserProfileBySite.objects.get(user=user, site=site)
                 userprobysiteform = UserProfileBySiteForm(instance=userprofilebysite, ruser=user, site=site)
             except UserProfileBySite.DoesNotExist:
                 userprobysiteform = UserProfileBySiteForm(ruser=user, site=site)

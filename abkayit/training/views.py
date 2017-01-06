@@ -91,7 +91,8 @@ def apply_to_course(request):
     if data['courses']:
         if request.site.application_start_date <= datetime.date(now) <= request.site.application_end_date:
             log.info("in between application start and end date", extra=request.log_extra)
-            if userprofile.userpassedtest:
+            ubysite, created = UserProfileBySite.objects.get_or_create(site=request.site, user=request.user)
+            if ubysite.userpassedtest:
                 data['closed'] = False
                 data['note '] = _("You can choose courses in order of preference.")
                 if request.GET:
