@@ -383,23 +383,33 @@ def statistic(request):
                     TrainessCourseRecord.objects.filter(course__site=request.site,
                                                         trainess__university__contains=university[0],
                                                         approved=True).order_by("trainess").values_list(
-                            "trainess").distinct())))
-            # data['statistic_by_university'] = sorted(data['statistic_by_university'], key=lambda x: (x[1], x[1]),
-        # reverse=True)
+                            "trainess").distinct())
+            data['statistic_by_university'] = TrainessCourseRecord.objects.filter(course__site=request.site).order_by(
+                "-trainess__id__count").values("trainess__university").annotate(Count("trainess__university"),
+                                                                                Count("trainess__id", distinct=True))
 
-        # data['statistic_by_university_for_approved'] = sorted(data['statistic_by_university_for_approved'],
-        #                                                      key=lambda x: (x[1], x[1]),
-        #                                                      reverse=True)
+            data['statistic_by_university_for_approved'] = TrainessCourseRecord.objects.filter(
+                course__site=request.site, approved=True).order_by("-trainess__id__count").values("trainess__university").annotate(
+                Count("trainess__university"), Count("trainess__id", distinct=True))
 
-        # kurs bazinda toplam teyitli olanlar
-        total_profile = len(
-                TrainessCourseRecord.objects.filter(course__site=request.site).order_by("trainess").values(
-                        "trainess").distinct())
-        total_preference = len(TrainessCourseRecord.objects.filter(course__site=request.site))
-        data['statistic_by_totalsize'] = {'Toplam Profil(Kişi)': total_profile, 'Toplam Tercih': total_preference}
-    except Exception as e:
-        log.error(e.message, extra=request.log_extra)
-    return render(request, "training/statistic.html", data)
+            data['statistic_by_city'] = TrainessCourseRecord.objects.filter(course__site=request.site).order_by(
+                "-trainess__id__count").values("trainess__city").annotate(Count("trainess__city"),
+                                                                                Count("trainess__id", distinct=True))
+            data['statistic_by_city_for_approved'] = TrainessCourseRecord.objects.filter(course__site=request.site, approved=True).order_by(
+                "-trainess__id__count").values("trainess__city").annotate(Count("trainess__city"),
+                                                                          Count("trainess__id", distinct=True))
+
+            # kurs bazinda toplam teyitli olanlar
+            total_profile = len(
+                    TrainessCourseRecord.objects.filter(course__site=request.site).order_by("trainess").values(
+                            "trainess").distinct())
+            total_preference = len(TrainessCourseRecord.objects.filter(course__site=request.site))
+            data['statistic_by_totalsize'] = {'Toplam Profil(Kişi)': total_profile, 'Toplam Tercih': total_preference}
+        except Exception as e:
+            log.error(e.message, extra=request.log_extra)
+        return render(request, "training/statistic.html", data)
+    else:
+        return redirect("index")
 
 
 @login_required
@@ -453,7 +463,7 @@ def get_preferred_courses(request):
         try:
             course_records = TrainessCourseRecord.objects.filter(course__site=request.site,
                                                                  trainess__user=request.user).order_by(
-                    'preference_order')
+                'preference_order')
             preferred_courses = [course_record.course.name for course_record in course_records]
             status = "0"
         except Exception as e:

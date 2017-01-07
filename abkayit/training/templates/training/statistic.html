@@ -15,7 +15,7 @@
       coursePreferenceTotalApplyByTrainer = [],
       applicationbywomen = [],
       applicationbymen = [];
-  {% for course,course_stat;_detail in statistic_by_course.items%}
+  {% for course,course_stat_detail in statistic_by_course.items%}
     courseList.push("{{ course.name }}");
     coursePreference1.push({{ course_stat_detail.1 }});
     coursePreference2.push({{ course_stat_detail.2 }});
@@ -29,7 +29,8 @@
   $(function () {
       $('#statistic-by-course').highcharts({
           chart: {
-              type: 'bar'
+              type: 'bar',
+              height: 2000
           },
           title: {
               text: 'Tercihler'
@@ -81,30 +82,36 @@
           series: [
           {
               name: 'Toplam Tercih',
-              data: coursePreferenceTotalApply
+              data: coursePreferenceTotalApply,
+              visible: false
           }, {
               name: 'Toplam Kabul',
-              data: coursePreferenceTotalApplyByTrainer
+              data: coursePreferenceTotalApplyByTrainer,
+              visible: false
           },
           {
               name: 'Kadın (Başvuru)',
               data: applicationbywomen,
+              visible: false
           },
           {
               name: 'Erkek (Başvuru)',
               data: applicationbymen,
+              visible: false
           },
           {
               name: '1. Tercih',
-              data: coursePreference1,
+              data: coursePreference1
           },
           {
               name: '2. Tercih',
               data: coursePreference2,
+              visible: false
           },
            {
               name: '3. Tercih',
               data: coursePreference3,
+              visible: false
           },
           ]
   });
@@ -114,13 +121,14 @@
   universityList = [];
   userSize = [];
   {% for item in statistic_by_university %}
-    universityList.push("{{ item.0 }}");
-    userSize.push({{ item.1 }});
+    universityList.push("{{ item.trainess__university }}");
+    userSize.push({{ item.trainess__id__count }});
   {% endfor%}
   $(function () {
       $('#statistic-by-university').highcharts({
           chart: {
-              type: 'bar'
+              type: 'bar',
+              height: 2000
           },
           title: {
               text: 'Üniversite/Katılım'
@@ -177,13 +185,14 @@
   universityListForApproved = [];
   userSizeForApproved = [];
   {% for item in statistic_by_university_for_approved%}
-    universityListForApproved.push("{{ item.0 }}");
-    userSizeForApproved.push({{ item.1 }});
+    universityListForApproved.push("{{ item.trainess__university }}");
+    userSizeForApproved.push({{ item.trainess__id__count }});
   {% endfor%}
   $(function () {
       $('#statistic-by-university-for-approved').highcharts({
           chart: {
-              type: 'bar'
+              type: 'bar',
+              height: 2000
           },
           title: {
               text: 'Üniversite/Katılım(Kabul Edilenler)'
@@ -236,6 +245,132 @@
 
 
 
+  cityList = [];
+  cityStatisticUserSize = [];
+  {% for item in statistic_by_city %}
+    cityList.push("{{ item.trainess__city }}");
+    cityStatisticUserSize.push({{ item.trainess__id__count }});
+  {% endfor%}
+  $(function () {
+      $('#statistic-by-city').highcharts({
+          chart: {
+              type: 'bar',
+              height: 2000
+          },
+          title: {
+              text: 'Şehir/Katılım'
+          },
+          xAxis: {
+              categories: cityList,
+              title: {
+                  text: null
+              }
+          },
+          yAxis: {
+              min: 0,
+              title: {
+                  align: 'high'
+              },
+              labels: {
+                  overflow: 'justify'
+              }
+          },
+          tooltip: {
+              valueSuffix: ' kişi'
+          },
+          plotOptions: {
+              bar: {
+                  dataLabels: {
+                      enabled: true
+                  }
+              }
+          },
+          legend: {
+              layout: 'vertical',
+              align: 'right',
+              verticalAlign: 'top',
+              x: -40,
+              y: 80,
+              floating: true,
+              borderWidth: 1,
+              backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
+              shadow: true
+          },
+          credits: {
+              enabled: false
+          },
+          series: [{
+              name: 'Katılım',
+              data: cityStatisticUserSize
+          }]
+      });
+  });
+
+
+
+
+  cityListForApproved = [];
+  cityStatisticUserSizeForApproved = [];
+  {% for item in statistic_by_city_for_approved%}
+    cityListForApproved.push("{{ item.trainess__university }}");
+    cityStatisticUserSizeForApproved.push({{ item.trainess__id__count }});
+  {% endfor%}
+  $(function () {
+      $('#statistic-by-city-for-approved').highcharts({
+          chart: {
+              type: 'bar',
+              height: 2000
+          },
+          title: {
+              text: 'Şehir/Katılım(Kabul Edilenler)'
+          },
+          xAxis: {
+              categories: cityListForApproved,
+              title: {
+                  text: null
+              }
+          },
+          yAxis: {
+              min: 0,
+              title: {
+                  align: 'high'
+              },
+              labels: {
+                  overflow: 'justify'
+              }
+          },
+          tooltip: {
+              valueSuffix: ' kişi'
+          },
+          plotOptions: {
+              bar: {
+                  dataLabels: {
+                      enabled: true
+                  }
+              }
+          },
+          legend: {
+              layout: 'vertical',
+              align: 'right',
+              verticalAlign: 'top',
+              x: -40,
+              y: 80,
+              floating: true,
+              borderWidth: 1,
+              backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
+              shadow: true
+          },
+          credits: {
+              enabled: false
+          },
+          series: [{
+              name: 'Katılım',
+              data: cityStatisticUserSizeForApproved
+          }]
+      });
+  });
+
+
 
 
 
@@ -250,7 +385,8 @@
   $(function () {
       $('#statistic_by_totalsize').highcharts({
           chart: {
-              type: 'bar'
+              type: 'bar',
+              height: 300
           },
           title: {
               text: 'Toplam Kişi ve Tercih Sayısı'
@@ -375,27 +511,48 @@
 });
   
 </script>
-
-<div id="statistic-by-course" style="min-width: 360px; max-width: 800px; height: 1000px; margin: 0 auto"></div>
-
+<br>
+<br>
+    <div class="row">
+        <div class="column col-md-6">
+            <div class="row">
+                <div id="statistic_by_totalsize" class="column col-md-8"></div>
+            </div>
+            <br>
+            <br>
+            <br>
+            <div class="row">
+                <div id="statistic-by-gender" class="column col-md-6"></div>
+            </div>
+            <br>
+            <br>
+            {% if statistic_by_gender_k_approved or statistic_by_gender_e_approved%}
+            <div class="row">
+                <div id="statistic-by-gender-for-approved" class="column col-md-6"></div>
+            </div>
+            {% endif %}
+        </div>
+        <div class="column col-md-6">
+            <div id="statistic-by-course"></div>
+        </div>
+    </div>
 <br>
 <br>
 <br>
 <div class="row">
-<div id="statistic-by-university" class="pull-left" style="min-width: 360px; max-width: 500px; height: 2000px; margin: 0 auto"></div>
-<div id="statistic-by-university-for-approved" class="pull-right" style="min-width: 360px; max-width: 500px; height: 2000px; margin: 0 auto"></div>
+    <div id="statistic-by-university" class="column col-md-6"></div>
+    <div id="statistic-by-city" class="column col-md-6"></div>
 </div>
-<br>
-<br>
-<br>
-<div id="statistic_by_totalsize" style="min-width: 360px; max-width: 800px; height: 300px; margin: 0 auto"></div>
-
-<br>
 <br>
 <br>
 <div class="row">
-<div id="statistic-by-gender" class="pull-left" style="min-width: 310px; height: 400px; max-width: 400px; margin: 0 auto"></div>
-<div id="statistic-by-gender-for-approved" class="pull-right" style="min-width: 310px; height: 400px; max-width: 400px; margin: 0 auto"></div>
+    {% if statistic_by_university_for_approved %}
+         <div id="statistic-by-university-for-approved" class="column col-md-6"></div>
+     {% endif %}
+    {% if statistic_by_city_for_approved %}
+        <div id="statistic-by-city-for-approved" class="column col-md-6"></div>
+    {% endif %}
 </div>
-
+<br>
+<br>
 {%endblock%}
