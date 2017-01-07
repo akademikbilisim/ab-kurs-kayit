@@ -61,6 +61,7 @@
                     </li>
                     {% else %}
                         {%if user.userprofile %}
+                            {% inststatistic user.userprofile %}
                             {% getoperationsmenu user.userprofile %}
                         {% endif%}
                     {% endif %}

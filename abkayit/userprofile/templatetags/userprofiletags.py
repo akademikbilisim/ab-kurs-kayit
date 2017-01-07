@@ -114,6 +114,12 @@ def instinfo(uprofile):
 
     return html
 
+@register.simple_tag(name="inststatistic")
+def inststatistic(uprofile):
+    html = ""
+    if UserProfileOPS.is_instructor(uprofile):
+        html += "<li><a href='/egitim/istatistik/'><i class='fa fa-pie-chart fa-fw'></i> İstatistik </a></li>"
+    return html
 
 @register.simple_tag(name="getinstinfo")
 def getinstinfo(uprofile, site):

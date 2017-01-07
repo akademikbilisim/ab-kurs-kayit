@@ -333,55 +333,43 @@ def allapprovedprefsview(request):
     return render(request, "training/allapprovedprefs.html", data)
 
 
-@staff_member_required
 def statistic(request):
-    data = {}
-    try:
-        record_data = TrainessCourseRecord.objects.filter(course__site=request.site).values(
-                'course', 'preference_order').annotate(
-                Count('preference_order')).order_by(
-                'course', '-preference_order')
-        statistic_by_course = {}
-        for key, group in itertools.groupby(record_data, lambda item: item["course"]):
-            course_object = Course.objects.get(pk=key, site=request.site)
-            statistic_by_course[course_object] = {str(item['preference_order']): item['preference_order__count'] for
-                                                  item in group}
-            statistic_by_course[course_object]['total_apply'] = len(TrainessCourseRecord.objects.filter(
-                    course=course_object))
-            statistic_by_course[course_object]['total_apply_by_trainer'] = len(TrainessCourseRecord.objects.filter(
-                    course=course_object, approved=True))
-            statistic_by_course[course_object]['applicationbywomen'] = len(
-                    TrainessCourseRecord.objects.filter(course=course_object, trainess__gender="K").order_by(
-                            "trainess").values_list("trainess").distinct())
-            statistic_by_course[course_object]['applicationbymen'] = len(
-                    TrainessCourseRecord.objects.filter(course=course_object, trainess__gender="E").order_by(
-                            "trainess").values_list("trainess").distinct())
-        data['statistic_by_course'] = statistic_by_course
+    if request.user.is_staff or UserProfileOPS.is_instructor(request.user.userprofile):
+        data = {}
+        try:
+            record_data = TrainessCourseRecord.objects.filter(course__site=request.site).values(
+                    'course', 'preference_order').annotate(
+                    Count('preference_order')).order_by(
+                    'course', '-preference_order')
+            statistic_by_course = {}
+            for key, group in itertools.groupby(record_data, lambda item: item["course"]):
+                course_object = Course.objects.get(pk=key, site=request.site)
+                statistic_by_course[course_object] = {str(item['preference_order']): item['preference_order__count'] for
+                                                      item in group}
+                statistic_by_course[course_object]['total_apply'] = len(TrainessCourseRecord.objects.filter(
+                        course=course_object))
+                statistic_by_course[course_object]['total_apply_by_trainer'] = len(TrainessCourseRecord.objects.filter(
+                        course=course_object, approved=True))
+                statistic_by_course[course_object]['applicationbywomen'] = len(
+                        TrainessCourseRecord.objects.filter(course=course_object, trainess__gender="K").order_by(
+                                "trainess").values_list("trainess").distinct())
+                statistic_by_course[course_object]['applicationbymen'] = len(
+                        TrainessCourseRecord.objects.filter(course=course_object, trainess__gender="E").order_by(
+                                "trainess").values_list("trainess").distinct())
+            data['statistic_by_course'] = statistic_by_course
 
-        data['statistic_by_gender_k'] = len(
-                TrainessCourseRecord.objects.filter(course__site=request.site, trainess__gender="K").order_by(
-                        "trainess").values_list("trainess").distinct())
-        data['statistic_by_gender_e'] = len(
-                TrainessCourseRecord.objects.filter(course__site=request.site, trainess__gender="E").order_by(
-                        "trainess").values_list("trainess").distinct())
-        data['statistic_by_gender_k_approved'] = len(
-                TrainessCourseRecord.objects.filter(course__site=request.site, trainess__gender="K",
-                                                    approved=True).order_by("trainess").values_list(
-                        "trainess").distinct())
-        data['statistic_by_gender_e_approved'] = len(
-                TrainessCourseRecord.objects.filter(course__site=request.site, trainess__gender="E",
-                                                    approved=True).order_by("trainess").values_list(
-                        "trainess").distinct())
-        data['statistic_by_university_for_approved'] = []
-        data['statistic_by_university'] = []
-        for university in UNIVERSITIES:
-            data['statistic_by_university'].append((university[0], len(
-                    TrainessCourseRecord.objects.filter(course__site=request.site,
-                                                        trainess__university__contains=university[0]).order_by(
-                            "trainess").values_list("trainess").distinct())))
-            data['statistic_by_university_for_approved'].append((university[0], len(
-                    TrainessCourseRecord.objects.filter(course__site=request.site,
-                                                        trainess__university__contains=university[0],
+            data['statistic_by_gender_k'] = len(
+                    TrainessCourseRecord.objects.filter(course__site=request.site, trainess__gender="K").order_by(
+                            "trainess").values_list("trainess").distinct())
+            data['statistic_by_gender_e'] = len(
+                    TrainessCourseRecord.objects.filter(course__site=request.site, trainess__gender="E").order_by(
+                            "trainess").values_list("trainess").distinct())
+            data['statistic_by_gender_k_approved'] = len(
+                    TrainessCourseRecord.objects.filter(course__site=request.site, trainess__gender="K",
+                                                        approved=True).order_by("trainess").values_list(
+                            "trainess").distinct())
+            data['statistic_by_gender_e_approved'] = len(
+                    TrainessCourseRecord.objects.filter(course__site=request.site, trainess__gender="E",
                                                         approved=True).order_by("trainess").values_list(
                             "trainess").distinct())
             data['statistic_by_university'] = TrainessCourseRecord.objects.filter(course__site=request.site).order_by(
