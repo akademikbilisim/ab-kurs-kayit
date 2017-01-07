@@ -21,7 +21,7 @@ def send_email(subject_template, content_template, data, from_email, to_addresse
         msg.send()
     except Exception as e:
         log.error(e.message, extra={'clientip': '', 'user': ''})
-        raise Exception(_("Mail could not be sent"))
+        raise Exception(_("E-Mail could not be sent"))
 
 
 def deleteoldjobs(command):

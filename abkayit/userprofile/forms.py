@@ -222,7 +222,7 @@ class StuProfileForm(ModelForm):
             'department': forms.TextInput(attrs={'placeholder': _('Department'), 'class': 'form-control'}),
             'website': forms.TextInput(attrs={'placeholder': _('Website'), 'class': 'form-control'}),
             'experience': forms.TextInput(
-                    attrs={'placeholder': _('Daha önce çalışılan/Staj yapılan yerler'), 'class': 'form-control'}),
+                    attrs={'placeholder': _('Institutions that previously studied/interned before'), 'class': 'form-control'}),
             'user': forms.HiddenInput(),
             'birthdate': SelectDateWidget(years=dyncf.BirthDateYears),
         }
@@ -271,7 +271,7 @@ class StuProfileForm(ModelForm):
                 tcknosorgu = UserProfile.objects.filter(tckimlikno=cleaned_data['tckimlikno'])
                 if tcknosorgu:
                     if tcknosorgu[0].user.username != ruser.username:
-                        raise forms.ValidationError(_("Bu TC Kimlik numarasına sahip başka hesap var."))
+                        raise forms.ValidationError(_("Another account already has this TC Identification Number."))
                 tckisvalid = UserProfileOPS.validateTCKimlikNo(cleaned_data['tckimlikno'].rstrip().lstrip(), first_name,
                                                                last_name, byear)
                 if tckisvalid == -1:
