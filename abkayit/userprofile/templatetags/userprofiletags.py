@@ -92,6 +92,9 @@ def getoperationsmenu(uprofile):
         <li>
             <a href="/egitim/katilimciekle"><i class="fa fa-book fa-fw"></i> Kursiyer Ekle</a>
         </li>
+        <li>
+            <a href="/egitim/istatistik/"><i class="fa fa-pie-chart fa-fw"></i> İstatistik </a>
+        </li>
         """
     else:
         html += """
