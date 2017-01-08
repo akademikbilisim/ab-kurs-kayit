@@ -56,8 +56,7 @@ def getanswers(context, tuser, ruser, courseid):
 def oldeventprefs(context, tuser):
     html = ""
     try:
-        sites = context['request'].site
-
+        sites = Site.objects.all()
         for site in sites:
             trainessoldprefs = TrainessCourseRecord.objects.filter(trainess=tuser, course__site=site).order_by(
                     'preference_order')

@@ -48,8 +48,8 @@ def authorizedforelection(context, site, user):
     now = datetime.date(datetime.now())
     approvaldates = ApprovalDate.objects.filter(site=context['request'].site).order_by("start_date")
     if approvaldates:
-        if site.event_start_date > now and datetime.now() >= approvaldates[0].start_date and \
-                UserProfileOPS.is_authorized_inst(user.userprofile):
+        if site.event_start_date > now and approvaldates[0].start_date <= datetime.now() <= approvaldates[
+            0].end_date and UserProfileOPS.is_authorized_inst(user.userprofile):
             return """
             <div class="alert alert-danger">
                 Uyarı: <p>* Onay tarihleri içerisinde kabul e-postaları onayladığınız 1. tercihi kursunuz olan katılımcılara gönderilir.</p>
@@ -70,7 +70,8 @@ def isdategtnow_body(context, datedict, key, t, course, user):
     if adate:
         if adate.end_date >= now >= adate.start_date and UserProfileOPS.is_authorized_inst(
                 user.userprofile) and not t.consentemailsent:
-            approvedprefs = TrainessCourseRecord.objects.filter(trainess=t.trainess, course__site=context['request'].site,
+            approvedprefs = TrainessCourseRecord.objects.filter(trainess=t.trainess,
+                                                                course__site=context['request'].site,
                                                                 approved=True)
             is_selectable = True
             priviliged_pref = None
