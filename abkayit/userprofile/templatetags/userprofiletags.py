@@ -69,7 +69,8 @@ def oldeventprefs(context, tuser):
                             TrainessParticipation.objects.filter(courserecord=top), site)
                         percentage = 0
                         if totalcoursehour:
-                            percentage = (totalparticipationhour * 100) / totalcoursehour
+                            if totalcoursehour:
+                                percentage = (totalparticipationhour * 100) / totalcoursehour
                         html += "<li>" + str(
                             top.preference_order) + ".tercih: " + top.course.name + " (Onaylanmış. Kursun %" + str(int(percentage)) + "'ine katıldı.) </li>"
                     else:
