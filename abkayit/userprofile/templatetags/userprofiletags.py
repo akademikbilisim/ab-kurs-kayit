@@ -10,7 +10,8 @@ from abkayit.models import Site
 from userprofile.models import TrainessClassicTestAnswers, InstructorInformation
 from userprofile.userprofileops import UserProfileOPS
 
-from training.models import Course, TrainessCourseRecord
+from training.models import Course, TrainessCourseRecord, TrainessParticipation
+from training.tutils import calculate_participations
 
 log = logging.getLogger(__name__)
 
@@ -59,13 +60,18 @@ def oldeventprefs(context, tuser):
         sites = Site.objects.filter(is_active=False)
         for site in sites:
             trainessoldprefs = TrainessCourseRecord.objects.filter(trainess=tuser, course__site=site).order_by(
-                    'preference_order')
+                'preference_order')
             if trainessoldprefs:
                 html += "<section><p>" + site.name + " - " + site.year + "</p><ul>"
                 for top in trainessoldprefs:
                     if top.approved:
+                        totalparticipationhour, totalcoursehour = calculate_participations(
+                            TrainessParticipation.objects.filter(courserecord=top), site)
+                        percentage = 0
+                        if totalcoursehour:
+                            percentage = (totalparticipationhour * 100) / totalcoursehour
                         html += "<li>" + str(
-                                top.preference_order) + ".tercih: " + top.course.name + " (Onaylanmış) </li>"
+                            top.preference_order) + ".tercih: " + top.course.name + " (Onaylanmış. Kursun %" + str(int(percentage)) + "'ine katıldı.) </li>"
                     else:
                         html += "<li>" + str(top.preference_order) + ".tercih: " + top.course.name + " </li>"
                 html += "</ul></section>"
@@ -113,12 +119,14 @@ def instinfo(uprofile):
 
     return html
 
+
 @register.simple_tag(name="inststatistic")
 def inststatistic(uprofile):
     html = ""
     if UserProfileOPS.is_instructor(uprofile):
         html += "<li><a href='/egitim/istatistik/'><i class='fa fa-pie-chart fa-fw'></i> İstatistik </a></li>"
     return html
+
 
 @register.simple_tag(name="getinstinfo")
 def getinstinfo(uprofile, site):
