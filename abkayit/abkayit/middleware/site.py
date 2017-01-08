@@ -27,7 +27,7 @@ class CurrentSiteMiddleware(object):
 
         from abkayit.models import Site
         try:
-            request.site = Site.objects.get(domain=request.get_host(), is_active=True)
+            request.site = Site.objects.get(is_active=True)
             log.info("%s" % request.get_host(), extra=request.log_extra)
         except Site.MultipleObjectsReturned as e:
             log.error(e.message, extra=request.log_extra)

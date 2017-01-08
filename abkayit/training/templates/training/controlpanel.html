@@ -10,8 +10,13 @@ function fnFormatDetails ( dTable, nTr )
 {
     var aData = dTable.fnGetData( nTr );
     var sOut = '<table cellpadding="20" cellspacing="0" border="0" style="padding-left:50px;padding-right:250px;" class="table table-hover table-striped">';
-    sOut += '<tr><td colspan="2">'+aData[6]+'</td></tr>';
-    sOut += '<tr><td><b>Not Ekle</b></td><td>'+aData[7]+'</td></tr>';
+    sOut += '<tr><td>Ünvan</td><td>'+aData[10]+'</td></tr>';
+    sOut += '<tr><td>Üniversite</td><td>'+aData[11]+'</td></tr>';
+    sOut += '<tr><td>Bölüm</td><td>'+aData[12]+'</td></tr>';
+    sOut += '<tr><td>Ek Bilgiler</td><td>'+aData[13]+'</td></tr>';
+    sOut += '<tr><td>Seçilen Kurslar</td><td>'+aData[14]+'</td></tr>';
+    sOut += '<tr><td>Kabul Edildiği Kurs</td><td>'+aData[15]+'</td></tr>';
+    sOut += '<tr><td></td><td>'+aData[16]+'</td></tr>';
     sOut += '</table>';
     sOut += '</br>';
     return sOut;
@@ -27,13 +32,34 @@ $(document).ready(function(){
             },
             "columnDefs": [
                {
-                "targets": [ 6 ],
+                "targets": [ 10 ],
                 "visible": false
                },
                {
-                "targets": [ 7 ],
+                "targets": [ 11 ],
                 "visible": false
                },
+                    {
+                "targets": [ 12 ],
+                "visible": false
+               },
+                    {
+                "targets": [ 13 ],
+                "visible": false
+               },
+                    {
+                "targets": [ 14 ],
+                "visible": false
+               },
+                    {
+                "targets": [ 15 ],
+                "visible": false
+               },
+                    {
+                "targets": [ 16 ],
+                "visible": false
+               },
+
             ],
             "searching": false,
             "bJQueryUI": false,
@@ -103,12 +129,11 @@ $(document).ready(function(){
                                 </th>
                                 <th>Kabul e-postası gönderilsin mi?</th>
                                 <th>Ünvan</th>
-
                                 <th>Üniversite</th>
                                 <th>Bölüm</th>
                                 <th>Ek Bilgiler</th>
                                 <th>Seçilen Kurslar</th>
-                                <th>Onaylandı mı?</th>
+                                <th>Kabul Edildiği Kurs</th>
                                 <th>Detaylı Profil</th>
 
                             </tr>
@@ -148,11 +173,13 @@ $(document).ready(function(){
                                 </td>
                                 <td>
                                     {% getapprovedcourse t %}
+                                    {% comment %}
                                     {% if t.approved %}
                                     Evet
                                     {% else %}
                                     Hayır
                                     {% endif %}
+                                    {% endcomment %}
                                 </td>
                                 <td><a href="{% url 'showuserprofile' t.trainess.pk t.pk %}" type="button"> Profil Detayı </a></td>
                             </tr>
