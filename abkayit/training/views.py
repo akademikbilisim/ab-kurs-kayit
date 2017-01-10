@@ -249,6 +249,7 @@ def control_panel(request, courseid):
     try:
         course = Course.objects.get(pk=courseid)
         data['now'] = now
+        data['user'] = request.user
         data['dates'] = get_approve_start_end_dates_for_inst(request.site, request.log_extra)
         data['trainess'] = {}
         data['notesavedsuccessful'] = False
@@ -263,7 +264,7 @@ def control_panel(request, courseid):
             if "send" in request.POST:
                 log.info("kursiyer onay islemi basladi", extra=request.log_extra)
                 log.info(request.POST, extra=request.log_extra)
-                data['note'] = applytrainerselections(request.POST, course, data, site, request.log_extra)
+                data['note'] = applytrainerselections(request.POST, course, data, request.site, request.log_extra)
             return render(request, "training/controlpanel.html", data)
         elif request.user.userprofile in course.trainer.all():
             data['note'] = "Kursiyerler için not ekleyebilirsiniz."
