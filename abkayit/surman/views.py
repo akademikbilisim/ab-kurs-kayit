@@ -1,7 +1,6 @@
 from django.db.models import Q
 
 # Create your views here.
-from django.db.models.query import EmptyQuerySet
 from django.views.generic import ListView
 from django.views.generic.base import TemplateView
 
