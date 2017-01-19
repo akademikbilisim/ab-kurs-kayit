@@ -241,6 +241,18 @@ def approve_course_preference(request):
         return HttpResponse(json.dumps({'status': status, 'message': message}), content_type="application/json")
     return render(request, "training/confirm_course_preference.html", data)
 
+@login_required
+def view_pdf(request, rid):
+    path = "/opt/ab-kurs-kayit/abkayit/mektuplar/Kurslar/%s.pdf" % (str(rid))
+    tcr = TrainessCourseRecord.objects.filter(pk=rid, consentemailsent=True).first()
+    if tcr:
+        if request.user == tcr.trainess.user:
+            with open(path, 'r') as pdf:
+                response = HttpResponse(pdf.read(), content_type='application/pdf')
+                response['Content-Disposition'] = 'inline;filename=some_file.pdf'
+                return response
+            pdf.closed
+    return HttpResponse("yetkiniz yok.")
 
 @login_required
 def control_panel(request, courseid):

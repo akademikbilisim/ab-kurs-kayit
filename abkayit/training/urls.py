@@ -20,4 +20,5 @@ urlpatterns = patterns('training.views',
                            name="approve_course_preference"),
                        url(r'^participationstatuses/$', 'participationstatuses', name='participationstatuses'),
                        url(r'^editparticipationstatus/(?P<courseid>[0-9]+)/(?P<date>[0-9]+)/$', 'editparticipationstatusebycourse', name='editparticipationstatusebycourse'),
+                       url(r'^view_pdf/(?P<rid>[0-9]+)/$', 'view_pdf', name='view_pdf'),
                        )
