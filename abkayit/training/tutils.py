@@ -378,7 +378,8 @@ def cancel_all_prefs(trainess, cancelnote, site, ruser, d):
     try:
         context = {"trainess": trainess, "site": site, "cancelnote": cancelnote}
         try:
-            context['recipientlist'] = REPORT_RECIPIENT_LIST
+            context['recipientlist'] = trainess_course_records.values_list('course__trainer__user__email', flat=True)
+
             context['course_prefs'] = trainess_course_records
             approvedpref = TrainessCourseRecord.objects.filter(course__site=site, trainess=trainess,
                                                                approved=True, consentemailsent=True)

@@ -404,7 +404,7 @@ def cancel_all_preference(request):
     hres = {'status': '-1', 'message': "Başvurularınız Silinirken Hata Oluştu"}
     if request.POST:
         cancelnote = request.POST.get('cancelnote', '')
-        res = cancel_all_prefs(request.user.userprofile, cancelnote, request.site, request.user, request.extra_log)
+        res = cancel_all_prefs(request.user.userprofile, cancelnote, request.site, request.user, request.log_extra)
         if res == 1:
             hres = {'status': '1', 'message': "Tüm Başvurularınız Silindi"}
         else:

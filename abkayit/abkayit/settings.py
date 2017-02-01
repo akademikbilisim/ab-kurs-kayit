@@ -18,8 +18,15 @@ sys.path.insert(0, os.path.join(BASE_DIR, "abkayit"))
 
 '''
     COMMON_CONFIG_FILE: Veri tabani ayarlari ve secret key bu dosyada yer alir.
+    export COMMON_CONFIG_FILE=/path/to/kampyazilim.conf
 '''
-COMMON_CONFIG_FILE = '/opt/kampyazilim.conf'
+try:
+    COMMON_CONFIG_FILE = os.environ['COMMON_CONFIG_FILE']
+except KeyError:
+    error_message = 'Please export the COMMON_CONFIG_FILE path as a shell variable: ' \
+                    '"export COMMON_CONFIG_FILE=/path/to/kampyazilim.conf"'
+    raise KeyError(error_message)
+
 
 '''
     EMAIL_FROM_ADDRESS: Sistemden gonderilecek maillerin from adresi
