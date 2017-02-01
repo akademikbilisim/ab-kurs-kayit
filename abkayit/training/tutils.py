@@ -378,16 +378,15 @@ def cancel_all_prefs(trainess, cancelnote, site, ruser, d):
     try:
         context = {"trainess": trainess, "site": site, "cancelnote": cancelnote}
         try:
-            context['recipientlist'] = REPORT_RECIPIENT_LIST
             context['course_prefs'] = trainess_course_records
+            context['recipientlist'] = [trainess.user.email] + REPORT_RECIPIENT_LIST
+            
             approvedpref = TrainessCourseRecord.objects.filter(course__site=site, trainess=trainess,
                                                                approved=True, consentemailsent=True)
             if site.application_end_date < now < site.event_start_date:
                 if approvedpref:
-                    context['recipientlist'] = approvedpref[0].course.authorized_trainer.all().values_list(
-                            'user__username', flat=True)
-            send_email_by_operation_name(context, "notice_for_canceled_prefs")
-            context['recipientlist'] = [trainess.user.email]
+                    context['recipientlist'].extend(approvedpref[0].course.authorized_trainer.all().values_list(
+                            'user__username', flat=True))
             send_email_by_operation_name(context, "notice_for_canceled_prefs")
             trainess_course_records.delete()
         except Exception as e:
