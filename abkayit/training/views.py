@@ -84,12 +84,15 @@ def apply_to_course(request):
     data['course_records'] = TrainessCourseRecord.objects.filter(trainess__user=request.user,
                                                                  course__site=request.site).order_by(
             'preference_order')
+    data['approved_course'] = TrainessCourseRecord.objects.filter(trainess__user=request.user, course__site=request.site, approved=True)
     userprofile = request.user.userprofile
     if not userprofile:
         log.info("userprofile not found", extra=request.log_extra)
         return redirect("createprofile")
     if data['courses']:
-        if request.site.application_start_date <= datetime.date(now) <= request.site.application_end_date:
+        if data['approved_course']:
+            data['note'] = "Kabul edildiginiz kursu gormek icin Islemler > Basvuru Durum/Onayla sayfasini ziyaret ediniz."
+        elif request.site.application_start_date <= datetime.date(now) <= request.site.application_end_date:
             log.info("in between application start and end date", extra=request.log_extra)
             ubysite, created = UserProfileBySite.objects.get_or_create(site=request.site, user=request.user)
             if ubysite.userpassedtest:
@@ -182,11 +185,12 @@ def approve_course_preference(request):
         data["approve_is_open"] = False
         trainess_course_records = TrainessCourseRecord.objects.filter(trainess=request.user.userprofile,
                                                                       course__site=request.site)
+        trainessapprovedrecord = TrainessCourseRecord.objects.filter(trainess=request.user.userprofile,course__site=request.site,approved=True, consentemailsent=True)
         first_start_date_inst, last_end_date_inst = get_approve_first_start_last_end_dates_for_inst(request.site,
                                                                                                     request.log_extra)
         if not trainess_course_records:
             data['note'] = "Henüz herhangi bir kursa başvuru yapmadınız!"
-        elif request.site.application_start_date <= datetime.date(now) < request.site.application_end_date:
+        elif request.site.application_start_date <= datetime.date(now) < request.site.application_end_date and not trainessapprovedrecord:
             data['note'] = "Başvurunuz için teşekkürler. Değerlendirme sürecinin başlaması için " \
                            "tüm başvuruların tamamlanması beklenmektedir."
         else:

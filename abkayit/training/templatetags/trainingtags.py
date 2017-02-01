@@ -75,10 +75,15 @@ def isdategtnow_body(context, datedict, key, t, course, user):
                                                                 approved=True)
             is_selectable = True
             priviliged_pref = None
+
             for approvedpref in approvedprefs:
-                if t.preference_order > approvedpref.preference_order:
+                if approvedpref.consentemailsent:
                     is_selectable = False
                     priviliged_pref = approvedpref
+                elif t.preference_order > approvedpref.preference_order:
+                    is_selectable = False
+                    priviliged_pref = approvedpref
+               
             if is_selectable:
                 dom = "<div>"
                 if t.approved:
@@ -97,8 +102,11 @@ def isdategtnow_body(context, datedict, key, t, course, user):
 
 @register.simple_tag(name="getconsentmailfield")
 def getconsentmailfield(tcr, user):
+    consentemailsentt = TrainessCourseRecord.objects.filter(trainess=tcr.trainess, course__site__is_active=True, consentemailsent=True).first()
     if tcr.consentemailsent:
         return "Gönderildi"
+    elif consentemailsentt and  consentemailsentt != tcr:
+        return "%s. tercihi icin gonderildi" % str(consentemailsentt.preference_order)
     elif not tcr.consentemailsent and tcr.preference_order == 1 and UserProfileOPS.is_authorized_inst(user.userprofile):
         dom = "<div>"
         dom += "<input type=\"checkbox\" name=\"consentmail%s\" value=\"%s\"/>" % (tcr.course.pk, tcr.pk)

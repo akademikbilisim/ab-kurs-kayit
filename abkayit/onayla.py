@@ -13,7 +13,8 @@ def get_users_with_edu():
 
 def application_opens():
     from training.models import Course
-    courses = Course.objects.filter(site__is_active=True)
+    coursesin = ['36', '50', '61', '105', '121', '126', '40']
+    courses = Course.objects.filter(site__is_active=True, no__in=coursesin)
     for course in courses:
         print course.no
         course.application_is_open = True
@@ -127,6 +128,24 @@ def import_participation(filename):
                 trp = TrainessParticipation(courserecord=tcr, day=i, morning='2', afternoon='2', evening='2')
                 trp.save()
 
+def correct_wrongs():
+    from training.models import TrainessCourseRecord
+    wrongs = TrainessCourseRecord.objects.filter(consentemailsent=True,approved=False,course__site__is_active=True)
+    for w in wrongs:
+        print "\n"
+        print "First approve", w.trainess, w.course
+        wrongapprove = TrainessCourseRecord.objects.get(trainess=w.trainess, consentemailsent=True, approved=True,course__site__is_active=True)
+        print wrongapprove
+        wrongapprove.consentemailsent = False
+        wrongapprove.approved = False
+        wrongapprove.trainess_approved = False
+        wrongapprove.save()
+        print "Second approve", wrongapprove.trainess, wrongapprove.course
+        w.consentemailsent = True
+        w.approved = True
+        w.trainess_approved = True
+        w.save()
+        print "change successful"
 
 if __name__ == "__main__":
     # try:
@@ -136,7 +155,8 @@ if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "abkayit.settings")
     django.setup()
 #    get_users_with_edu()
-    application_opens()
+#    application_opens()
+    correct_wrongs()
     # karalisteimport()
     # push_note_to_trainess("note", "filename")
 #    import_participation("lyk2016_kabuledilenler_tercihno.csv")
