@@ -12,10 +12,10 @@ function fnFormatDetails ( dTable, nTr )
     var sOut = '<table cellpadding="20" cellspacing="0" border="0" style="padding-left:50px;padding-right:250px;" class="table table-hover table-striped">';
     sOut += '<tr><td>Ünvan</td><td>'+aData[10]+'</td></tr>';
     sOut += '<tr><td>Üniversite</td><td>'+aData[11]+'</td></tr>';
-    sOut += '<tr><td>Bölüm</td><td>'+aData[12]+'</td></tr>';
+    sOut += '<tr><td>Bolum</td><td>'+aData[12]+'</td></tr>';
     sOut += '<tr><td>Ek Bilgiler</td><td>'+aData[13]+'</td></tr>';
-    sOut += '<tr><td>Seçilen Kurslar</td><td>'+aData[14]+'</td></tr>';
-    sOut += '<tr><td>Kabul Edildiği Kurs</td><td>'+aData[15]+'</td></tr>';
+    sOut += '<tr><td>Secilen Kurslar</td><td>'+aData[14]+'</td></tr>';
+    sOut += '<tr><td>Kabul Edildigi Kurs</td><td>'+aData[15]+'</td></tr>';
     sOut += '<tr><td></td><td>'+aData[16]+'</td></tr>';
     sOut += '</table>';
     sOut += '</br>';
@@ -127,7 +127,7 @@ $(document).ready(function(){
                                 <th>
                                     {% isdategtnow_head dates pref %}
                                 </th>
-                                <th>Kabul e-postası gönderilsin mi?</th>
+                                <th>Kabul e-postasi gonderilsin mi?</th>
                                 <th>Ünvan</th>
                                 <th>Üniversite</th>
                                 <th>Bölüm</th>
@@ -192,7 +192,7 @@ $(document).ready(function(){
                         </table>
                     {% endif %}
                 {% endfor %}
-                {% authorizedforelection request.site user%}
+                {% authorizedforelection request.site user course %}
             {% endfor %}
     </form>
 </div>

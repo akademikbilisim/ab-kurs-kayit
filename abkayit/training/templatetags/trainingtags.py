@@ -44,12 +44,12 @@ def manuallyaddtrainess(site, user):
 
 
 @register.simple_tag(name="authorizedforelection", takes_context=True)
-def authorizedforelection(context, site, user):
+def authorizedforelection(context, site, user, course):
     now = datetime.date(datetime.now())
     approvaldates = ApprovalDate.objects.filter(site=context['request'].site).order_by("start_date")
     if approvaldates:
         if site.event_start_date > now and approvaldates[0].start_date <= datetime.now() <= approvaldates[
-            0].end_date and UserProfileOPS.is_authorized_inst(user.userprofile):
+            0].end_date and UserProfileOPS.is_authorized_inst(user.userprofile, course=course):
             return """
             <div class="alert alert-danger">
                 Uyarı: <p>* Onay tarihleri içerisinde kabul e-postaları onayladığınız 1. tercihi kursunuz olan katılımcılara gönderilir.</p>
@@ -69,7 +69,7 @@ def isdategtnow_body(context, datedict, key, t, course, user):
     adate = datedict.get(key)
     if adate:
         if adate.end_date >= now >= adate.start_date and UserProfileOPS.is_authorized_inst(
-                user.userprofile) and not t.consentemailsent:
+                user.userprofile, course=course) and not t.consentemailsent:
             approvedprefs = TrainessCourseRecord.objects.filter(trainess=t.trainess,
                                                                 course__site=context['request'].site,
                                                                 approved=True)
@@ -99,7 +99,6 @@ def isdategtnow_body(context, datedict, key, t, course, user):
     else:
         return "Hayir"
 
-
 @register.simple_tag(name="getconsentmailfield")
 def getconsentmailfield(tcr, user):
     consentemailsentt = TrainessCourseRecord.objects.filter(trainess=tcr.trainess, course__site__is_active=True, consentemailsent=True).first()
@@ -107,11 +106,17 @@ def getconsentmailfield(tcr, user):
         return "Gönderildi"
     elif consentemailsentt and  consentemailsentt != tcr:
         return "%s. tercihi icin gonderildi" % str(consentemailsentt.preference_order)
-    elif not tcr.consentemailsent and tcr.preference_order == 1 and UserProfileOPS.is_authorized_inst(user.userprofile):
-        dom = "<div>"
-        dom += "<input type=\"checkbox\" name=\"consentmail%s\" value=\"%s\"/>" % (tcr.course.pk, tcr.pk)
-        dom += "</div>"
-        return dom
+    elif not tcr.consentemailsent and tcr.preference_order == 1 and UserProfileOPS.is_authorized_inst(user.userprofile, course=tcr.course):
+        now = datetime.date(datetime.now())
+        approvaldates = ApprovalDate.objects.filter(site=tcr.course.site).order_by("start_date")
+        if approvaldates:
+            if tcr.course.site.event_start_date > now and approvaldates[0].start_date <= datetime.now() <= approvaldates[
+                0].end_date:
+                dom = "<div>"
+                dom += "<input type=\"checkbox\" name=\"consentmail%s\" value=\"%s\"/>" % (tcr.course.pk, tcr.pk)
+                dom += "</div>"
+                return dom
+        return "Gonderilmedi"
     else:
         return "Gönderilmedi"
 
@@ -162,6 +167,7 @@ def getallprefs(context, courserecord):
     return html
 
 
+
 @register.simple_tag(name="getparticipationheader")
 def getparticipationheader(site):
     html = ""
@@ -169,6 +175,14 @@ def getparticipationheader(site):
         html += "<th>%s. gun</th>" % str(date)
     return html
 
+@register.simple_tag(name="getapprovedtrainess")
+def getapprovedtrainess(course):
+    
+    tcrs = TrainessCourseRecord.objects.filter(course=course,approved=True)
+    html = ""
+    for tcr in tcrs:
+        html += "<tr><th>%s</th><th>%s</th><th>%s</th><th></th><th></th></tr>" % (str(tcr.pk),tcr.trainess.user.first_name,tcr.trainess.user.last_name)
+    return html
 
 @register.simple_tag(name="getparforms")
 def getparforms(site, cr):

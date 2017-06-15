@@ -12,7 +12,8 @@ $(document).ready(function(){
               'copyHtml5',
               'excelHtml5',
               'csvHtml5',
-              'pdfHtml5'
+              'pdfHtml5',
+              'printHtml5'
             ],
     });
     $('#course_table tbody tr').click(function(){

@@ -559,6 +559,16 @@ def participationstatuses(request):
     data['note'] = "İşlem yapmak istediğiniz kursu seçiniz."
     return render(request, 'training/participationstatuses.html', data)
 
+@staff_member_required
+def printparticipationpages(request):
+    """
+    Admin veya is_staff yetkisi verilmiş başka bir kullanıcı ile buraya view ile yoklama kaydı girilecek.
+    :param request: HttpRequest
+    """
+    data = {}
+    data['allcourses'] = Course.objects.filter(site=request.site)
+    data['daylist'] = list(daterange(request.site.event_start_date, request.site.event_end_date))
+    return render(request, 'training/participationpages.html', data)
 
 @staff_member_required
 def editparticipationstatusebycourse(request, courseid, date):

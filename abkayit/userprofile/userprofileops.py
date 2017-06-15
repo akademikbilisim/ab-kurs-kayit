@@ -55,12 +55,15 @@ class UserProfileOPS:
             return False
 
     @staticmethod
-    def is_authorized_inst(uprofile):
-        courses = Course.objects.filter(site__is_active=True, authorized_trainer=uprofile)
-        if courses:
-            return True
+    def is_authorized_inst(uprofile, course=None):
+        if course:
+            if uprofile in course.authorized_trainer.all():
+                return True
         else:
-            return False
+            courses = Course.objects.filter(site__is_active=True, authorized_trainer=uprofile)
+            if courses:
+                return True
+        return False
 
     @staticmethod
     def is_user_trainer_ofcourse_or_staff(user, course):

@@ -318,7 +318,7 @@ def is_trainess_approved_anothercourse(trainess, cur_pref_order, site):
 
 def applytrainerselections(postrequest, course, data, site, d):
     now = timezone.now()
-    if UserProfileOPS.is_authorized_inst(data["user"].userprofile):
+    if UserProfileOPS.is_authorized_inst(data["user"].userprofile, course=course):
         sendconsentemail = postrequest.get("send_consent_email", False)
         try:
             data["changedprefs"] = []
