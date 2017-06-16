@@ -133,7 +133,12 @@ INSTALLED_APPS = (
     'cities_light',
     'bootstrap3',
     'django_extensions',
+    'captcha'
 )
+
+captchasettings = CaptchaSettings()
+RECAPTCHA_PUBLIC_KEY = captchasettings.get_public_key()
+RECAPTCHA_PRIVATE_KEY = captchasettings.get_private_key()
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -279,6 +284,13 @@ LOGGING = {
 
     }
 }
+
+sms_settings = SMSSettings()
+SMS_URL = sms_settings.get_url()
+SMS_USERCODE = sms_settings.get_usercode()
+SMS_PASSWORD = sms_settings.get_password()
+SMS_MSGHEADER = sms_settings.get_msgheader()
+
 UNIVERSITIES = [('Abant İzzet Baysal Üniversitesi (Bolu)', 'Abant İzzet Baysal Üniversitesi (Bolu)'),
                 ('Abdullah Gül Üniversitesi (Kayseri)', 'Abdullah Gül Üniversitesi (Kayseri)'),
                 (

@@ -4,6 +4,7 @@ import hashlib
 import logging
 import random
 
+from django.contrib.auth.tokens import default_token_generator
 
 from abkayit.settings import EMAIL_FROM_ADDRESS
 from abkayit.adaptor import send_email
@@ -14,8 +15,7 @@ log = logging.getLogger(__name__)
 
 
 def create_verification_link(user):
-    salt = hashlib.sha1(str(random.random())).hexdigest()[:5]
-    return hashlib.sha1(salt + user.username).hexdigest()
+    return default_token_generator.make_token(user)
 
 
 def send_email_by_operation_name(context, operation_name):

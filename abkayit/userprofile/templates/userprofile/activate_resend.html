@@ -5,7 +5,7 @@
   <div class="container-fluid">
 
     <div class="alert alert-info">{{ note }}</div>
-	<form method="POST" action="{% url "active_resend" %}">
+	<form method="POST" action="{% url 'active_resend' %}">
 		{% csrf_token %}
 	    <button type="submit" name="create" class="btn btn-primary">{% trans "Send Activation Link"%}</button>
 	</form>

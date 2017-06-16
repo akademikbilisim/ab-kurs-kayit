@@ -12,3 +12,13 @@ secret_key:<application_secretkey>
 from:<from address>
 host:<smtp server>
 port:<smtp port>
+
+[SMS]
+url: <api url>
+usercode: <usercode>
+password: <password>
+msgheader: <msgheader>
+
+[CAPTCHA]
+publickey: <https://www.google.com/recaptcha account public key>
+privatekey: <https://www.google.com/recaptcha account private key>

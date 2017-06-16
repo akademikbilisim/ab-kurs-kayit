@@ -11,6 +11,8 @@ from django.forms.extras.widgets import SelectDateWidget
 from django.forms.widgets import TextInput
 
 from django_countries.widgets import CountrySelectWidget
+from django.contrib.auth.forms import PasswordResetForm
+from captcha.fields import ReCaptchaField
 
 from userprofile.models import UserProfile, UserProfileBySite, InstructorInformation
 from userprofile.dynamicfields import DynmcFields
@@ -302,6 +304,37 @@ class ChangePasswordForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ChangePasswordForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].required = True
+        self.fields['password'].label = _("Password")
+
+    def clean_passwordre(self):
+        password = self.cleaned_data.get('password')
+        passwordre = self.cleaned_data.get('passwordre')
+        if password != passwordre:
+            raise forms.ValidationError(_("Your passwords do not match"))
+        return passwordre
+
+
+class ChangePasswordWithSMSForm(ModelForm):
+    passwordre = forms.CharField(label=_("Confirm Password"),
+                                 max_length=30,
+                                 widget=forms.PasswordInput(
+                                         attrs={'placeholder': _('Confirm Password'), 'class': 'form-control'}))
+
+    key = forms.CharField(label="SMS ile gonderilen kod",
+                                 max_length=30,
+                                 widget=forms.TextInput(
+                                     attrs={'placeholder': "Kod", 'class': 'form-control'}))
+    captcha = ReCaptchaField(attrs={'theme': 'clean'})
+
+    class Meta:
+        model = User
+        fields = ['password']
+        widgets = {'password': forms.PasswordInput(attrs={'placeholder': _('Password'), 'class': 'form-control'})}
+
+    def __init__(self, *args, **kwargs):
+        super(ChangePasswordWithSMSForm, self).__init__(*args, **kwargs)
         for field in self.fields:
             self.fields[field].required = True
         self.fields['password'].label = _("Password")

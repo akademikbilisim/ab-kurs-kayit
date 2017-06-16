@@ -81,6 +81,7 @@ class DjangoSettings:
     def getsecretkey(self):
         return self.secret_key
 
+
 class EmailSettings:
     fromaddress = None
     host = None
@@ -95,5 +96,47 @@ class EmailSettings:
         self.port = config.get(section, "port")
 
 
-    def getsecretkey(self):
-        return self.secret_key
+class SMSSettings:
+    url = None
+    usercode = None
+    password = None
+    msgheader = None
+
+    def __init__(self):
+        config = ConfigParser.ConfigParser()
+        config.read(COMMON_CONFIG_FILE)
+        section = "SMS"
+        self.url = config.get(section, "url")
+        self.usercode = config.get(section, "usercode")
+        self.password = config.get(section, "password")
+        self.msgheader = config.get(section, "msgheader")
+
+    def get_url(self):
+        return self.url
+
+    def get_usercode(self):
+        return self.usercode
+
+    def get_password(self):
+        return self.password
+
+    def get_msgheader(self):
+        return self.msgheader
+
+
+class CaptchaSettings:
+    publickey = None
+    privatekey = None
+
+    def __init__(self):
+        config = ConfigParser.ConfigParser()
+        config.read(COMMON_CONFIG_FILE)
+        section = "CAPTCHA"
+        self.publickey = config.get(section, 'publickey')
+        self.privatekey = config.get(section, 'privatekey')
+
+    def get_public_key(self):
+        return self.publickey
+
+    def get_private_key(self):
+        return self.privatekey

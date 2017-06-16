@@ -2,12 +2,13 @@
 
 import random
 import logging
+import requests
 
 from django.contrib.auth.models import User
 
 from pysimplesoap.client import SoapClient
 
-from abkayit.settings import TCKIMLIK_SORGULAMA_WS, EMAIL_FROM_ADDRESS
+from abkayit.settings import TCKIMLIK_SORGULAMA_WS, EMAIL_FROM_ADDRESS, SMS_URL, SMS_USERCODE, SMS_PASSWORD, SMS_MSGHEADER
 from training.models import Course, TrainessParticipation
 from userprofile.models import TrainessNote
 '''
@@ -125,3 +126,16 @@ class UserProfileOPS:
                 log.info("%s nolu kurs kaydinin yoklama kaydi girişi hatalı" % courserecord.pk,
                          extra=request.log_extra)
         return note
+
+    @staticmethod
+    def send_sms(request, user, key):
+        message = """ %s - %s parola gucelleme icin gecici parola: %s""" % (request.site.name, request.site.year, key)
+        mobilephonenumber = user.userprofile.mobilephonenumber.replace(' ', '').replace('(', '').replace(')', '').replace('-','')
+        if mobilephonenumber:
+            mobilephonenumber = mobilephonenumber[-10:]
+        smsurl = "%s?usercode=%s&password=%s&gsmno=%s&message=%s&msgheader=%s&dil=TR" % (
+            SMS_URL, SMS_USERCODE, SMS_PASSWORD, mobilephonenumber, message, SMS_MSGHEADER)
+        r = requests.get(smsurl)
+        log.info("%s kullanicisi icin sms gonderildi. cevap: %s" % (user.username, r.text), extra=request.log_extra)
+        return r.text
+

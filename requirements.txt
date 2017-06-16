@@ -11,3 +11,5 @@ django-cities-light==3.3.0
 django-bootstrap3
 django-extensions
 pytz
+requests
+django-recaptcha

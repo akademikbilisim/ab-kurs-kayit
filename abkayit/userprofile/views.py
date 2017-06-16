@@ -2,7 +2,7 @@
 import sys
 import json
 import logging
-from datetime import datetime
+from datetime import datetime,timedelta
 
 from django.shortcuts import render, redirect
 from django.http.response import HttpResponse
@@ -15,9 +15,10 @@ from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse_lazy
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.tokens import default_token_generator
 
 from userprofile.forms import CreateUserForm, UpdateUserForm, StuProfileForm, InstructorInformationForm, \
-    ChangePasswordForm, UserProfileBySiteForm, UserProfileBySiteForStaffForm
+    ChangePasswordForm, UserProfileBySiteForm, UserProfileBySiteForStaffForm, ChangePasswordWithSMSForm
 from userprofile.models import Accommodation, UserProfile, UserAccomodationPref, InstructorInformation, \
     UserVerification, TrainessNote, TrainessClassicTestAnswers, UserProfileBySite
 from userprofile.userprofileops import UserProfileOPS
@@ -257,10 +258,11 @@ def get_all_trainers_view(request):
 def active(request, key):
     try:
         user_verification = UserVerification.objects.get(activation_key=key)
-        user = user_verification.user
-        user.is_active = True
-        user.save()
-        backend_login(request, user)
+        if default_token_generator.check_token(user_verification.user, key):
+            user = user_verification.user
+            user.is_active = True
+            user.save()
+            backend_login(request, user)
     except ObjectDoesNotExist as e:
         log.error(e.message, extra=request.log_extra)
     except Exception as e:
@@ -306,20 +308,33 @@ def password_reset(request):
 
 def password_reset_key(request):
     data = {'note': _("Please enter your registered email")}
-    if request.method == 'POST':
+    if 'create' in request.POST:
         email = request.POST['email']
         if email and email != "":
             try:
-                user = User.objects.get(username=request.POST['email'])
+                user = User.objects.get(email=request.POST['email'])
                 user_verification, created = UserVerification.objects.get_or_create(user=user)
-                user_verification.password_reset_key = create_verification_link(user)
-                user_verification.save()
-                data['ruser'] = user
-                data['activation_key'] = user_verification.password_reset_key
-                domain = request.site.home_url
-                data['domain'] = domain.rstrip('/')
-                data['recipientlist'] = [user.username]
-                data['note'] = send_email_by_operation_name(data, "send_reset_password_key")
+                user_verification.activation_key_expires = datetime.now() + timedelta(days=1)
+                if request.POST.get('issms') == 'on':
+                    password = User.objects.make_random_password()
+                    user_verification.temporary_code = password
+                    user_verification.save()
+                    note = UserProfileOPS.send_sms(request, user, password)
+                    if note.startswith("00"):
+                        data['note'] = "SMS basarili bir sekilde gonderildi"
+                        return redirect('password_reset_by_sms')
+                    else:
+                        data['note'] = "sms gonderilemedi: " + note
+
+                else:
+                    user_verification.password_reset_key = create_verification_link(user)
+                    user_verification.save()
+                    data['ruser'] = user
+                    data['activation_key'] = user_verification.password_reset_key
+                    domain = request.site.home_url
+                    data['domain'] = domain.rstrip('/')
+                    data['recipientlist'] = [user.username]
+                    data['note'] = send_email_by_operation_name(data, "send_reset_password_key")
                 if data['note']:
                     data['note'] = "Parola sıfırlama e-postası adresinize gönderildi."
                 else:
@@ -327,17 +342,17 @@ def password_reset_key(request):
             except ObjectDoesNotExist:
                 data['note'] = _("""There isn't any user record with this e-mail on the system""")
                 log.error(data['note'], extra=request.log_extra)
-            except Exception as e:
-                data['note'] = _("""Password reset operation failed""")
-                log.error(data['note'], extra=request.log_extra)
-                log.error(e.message, extra=request.log_extra)
+            #except Exception as e:
+            #    data['note'] = _("""Password reset operation failed""")
+            #    log.error(data['note'], extra=request.log_extra)
+            #    log.error(e.message, extra=request.log_extra)
         else:
             data['note'] = _("""Email field can not be empty""")
             log.error(data['note'], extra=request.log_extra)
     return render(request, "userprofile/change_password_key_request.html", data)
 
 
-def password_reset_key_done(request, key=None):
+def password_reset_key_done(request, note=None):
     data = {'note': _("Change your password")}
     form = ChangePasswordForm()
     try:
@@ -345,6 +360,7 @@ def password_reset_key_done(request, key=None):
         user = user_verification.user
         user.is_authenticated = False
         user.save()
+        user_verification.delete()
         request.user = user
     except Exception as e:
         data['note'] = _("""Password reset operation failed""")
@@ -363,6 +379,30 @@ def password_reset_key_done(request, key=None):
                 log.error(e.message, extra=request.log_extra)
     data['changepasswordform'] = form
     data['user'] = request.user
+    return render(request, "userprofile/change_password.html", data)
+
+
+def password_reset_by_sms(request):
+    data = {'note': _("Change your password")}
+    form = ChangePasswordWithSMSForm()
+    if "updatepassword" in request.POST:
+        form = ChangePasswordWithSMSForm(request.POST)
+        if form.is_valid():
+            try:
+                user_verification = UserVerification.objects.get(temporary_code=form.cleaned_data.get('key'))
+                if user_verification:
+                    user = user_verification.user
+                    user.is_authenticated = False
+                    user.set_password(form.cleaned_data.get('password'))
+                    user.save()
+                    user_verification.delete()
+                    return redirect('index')
+                else:
+                    data['note'] = "Geçersiz Kod"
+            except Exception as e:
+                data['note'] = _("""Password reset operation failed""")
+                log.error(e.message, extra=request.log_extra)
+    data['changepasswordform'] = form
     return render(request, "userprofile/change_password.html", data)
 
 

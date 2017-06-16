@@ -37,6 +37,7 @@ class UserVerification(models.Model):
     password_reset_key = models.CharField(max_length=40, null=True, blank=True)
     activation_key_expires = models.DateTimeField(null=True, blank=True)
     password_reset_key_expires = models.DateTimeField(null=True, blank=True)
+    temporary_code = models.CharField(max_length=10, null=True, blank=True)
 
     def __unicode__(self):
         return self.user.username
