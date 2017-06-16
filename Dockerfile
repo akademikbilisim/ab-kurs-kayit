@@ -9,10 +9,12 @@ RUN apt-get update \
 		libpng-dev \
 		libjpeg-dev \
 		libpq-dev \
+		git \
 	&& rm -rf /var/lib/apt/lists/* \
 	&& pip install --no-cache-dir -r /tmp/requirements.txt
 
 WORKDIR /usr/src/app
-
 CMD [ "python", "manage.py", "runserver" ]
+
+COPY ./abkayit .
 
