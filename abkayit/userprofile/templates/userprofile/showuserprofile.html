@@ -114,7 +114,14 @@
                             <input type="submit" name="savesitebasedprofile" id="savesitebasedprofile" class="btn btn-primary" value="{% trans 'Save' %}">
                     </dd>
                     {% endif %}
-                    {% getanswers tuser ruser courseid %}
+                    {% getanswers tuser ruser courseid as answers%}
+                    {% if answers %}
+                        <dt>Cevaplar:</dt><dd><section><ul> 
+                        {% for answer in answers%}
+                          <li> <b>{{ answer.question.detail }}</b> <p>{{ answer.answer }}</p> </li>
+                        {% endfor %}
+                        </section></ul></dd>
+                        {% endif %} 
 
                 </dl>
                 {% if tuser.trainesscourserecord_set.all %}

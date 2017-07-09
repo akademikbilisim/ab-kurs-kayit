@@ -1,0 +1,37 @@
+{% extends "base/dashboard.html" %}
+{% load i18n %}
+{% block content %}
+{% load static %}
+{% load trainingtags %}
+<script src="{% static 'training/js/course_table.js' %}"></script>
+
+<div class="container-fluid">
+
+{% for course in allcourses %}
+{% for date in daylist %}
+<th><b>{{course.no}} - {{course.name}} {{ date }}</b></th>
+<table data-id="course_table" id="course_table" class="cell-border">
+	<thead>
+	    <tr>
+            <th>{% trans "Basvuru No" %}</th>
+	        <th>{% trans "Ad" %}</th>
+	        <th>{% trans "Soyad" %}</th>
+		<th>{% trans "1. yarim gun" %}</th>
+		<th>{% trans "2. yarim gun" %}</th>
+	    </tr>
+	</thead>
+	<tbody>
+            {% getapprovedtrainess course %}
+             
+	</tbody>
+</table>
+<br/>
+<br/>
+<br/>
+<br/>
+
+{% endfor %}
+{% endfor %}
+
+</div>
+{% endblock %}

@@ -10,7 +10,7 @@ urlpatterns = patterns('userprofile.views',
                            name="getaccomodations"),
 
                        # email verification
-                       url(r'^active/done/(?P<key>\w+)/$', 'active', name="active"),
+                       url(r'^active/done/(?P<key>[\w,-]+)/$', 'active', name="active"),
                        url(r'^active/resend/$', 'active_resend', name="active_resend"),
 
                        # for admins
@@ -25,7 +25,7 @@ urlpatterns = patterns('userprofile.views',
                        # password reset
                        url(r"^password/reset/$", 'password_reset', name="account_reset_password"),
                        url(r"^password/reset/key/$", 'password_reset_key', name="account_reset_password_key"),
-                       url(r'^password/reset/key/(?P<key>\w+)/$', 'password_reset_key_done',
+                       url(r'^password/reset/key/(?P<key>[\w,-]+)/$', 'password_reset_key_done',
                            name="account_reset_password_key_done"),
                        url(r'^password/reset/sms/$', 'password_reset_by_sms', name='password_reset_by_sms'),
                        )

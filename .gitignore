@@ -20,3 +20,6 @@ abkayit/onayla.py
 abkayit/mektuplar/
 abkayit/oldlogs.tar.gz
 .DS_Store
+userprofile/migrations/0021_userverification_temporary_code.py
+abkayit/ab2017_gelmeyenler.txt
+abkayit/Yoklama_duzeltmece.py

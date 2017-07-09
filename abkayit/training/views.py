@@ -92,7 +92,7 @@ def apply_to_course(request):
     if data['courses']:
         if data['approved_course']:
             data['note'] = "Kabul edildiginiz kursu gormek icin Islemler > Basvuru Durum/Onayla sayfasini ziyaret ediniz."
-        elif request.site.application_start_date <= datetime.date(now) <= request.site.application_end_date:
+        elif request.site.application_start_date <= datetime.date(now) < request.site.application_end_date:
             log.info("in between application start and end date", extra=request.log_extra)
             ubysite, created = UserProfileBySite.objects.get_or_create(site=request.site, user=request.user)
             if ubysite.userpassedtest:

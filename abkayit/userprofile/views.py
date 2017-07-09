@@ -258,7 +258,7 @@ def get_all_trainers_view(request):
 def active(request, key):
     try:
         user_verification = UserVerification.objects.get(activation_key=key)
-        if default_token_generator.check_token(user_verification.user, key):
+        if user_verification:
             user = user_verification.user
             user.is_active = True
             user.save()
@@ -352,16 +352,16 @@ def password_reset_key(request):
     return render(request, "userprofile/change_password_key_request.html", data)
 
 
-def password_reset_key_done(request, note=None):
+def password_reset_key_done(request, key=None):
     data = {'note': _("Change your password")}
     form = ChangePasswordForm()
+    user = None
+    user_verification = None
     try:
         user_verification = UserVerification.objects.get(password_reset_key=key)
         user = user_verification.user
         user.is_authenticated = False
         user.save()
-        user_verification.delete()
-        request.user = user
     except Exception as e:
         data['note'] = _("""Password reset operation failed""")
         log.error(e.message, extra=request.log_extra)
@@ -369,8 +369,9 @@ def password_reset_key_done(request, note=None):
         form = ChangePasswordForm(request.POST)
         if form.is_valid():
             try:
-                request.user.set_password(form.cleaned_data['password'])
-                request.user.save()
+                user.set_password(form.cleaned_data['password'])
+                user.save()
+                user_verification.delete()
                 data['note'] = _("""Your password has been changed""")
                 form = None
                 redirect("index")
@@ -378,7 +379,7 @@ def password_reset_key_done(request, note=None):
                 data['note'] = _("""Your password couldn't be changed""")
                 log.error(e.message, extra=request.log_extra)
     data['changepasswordform'] = form
-    data['user'] = request.user
+    data['user'] = user
     return render(request, "userprofile/change_password.html", data)
 
 

@@ -26,7 +26,7 @@ def getanswer(question, user):
         return ""
 
 
-@register.simple_tag(name="getanswers", takes_context=True)
+@register.assignment_tag(name="getanswers", takes_context=True)
 def getanswers(context, tuser, ruser, courseid):
     try:
         answers = []
@@ -36,21 +36,24 @@ def getanswers(context, tuser, ruser, courseid):
             course = Course.objects.get(pk=int(courseid))
             questions = course.textboxquestion.all()
             for q in questions:
-                answers.append(TrainessClassicTestAnswers.objects.get(question=q, user=tuser))
+                try:
+                    answers.append(TrainessClassicTestAnswers.objects.get(question=q, user=tuser))
+                except:
+                    print "answers couldnt find"
             answers.extend(TrainessClassicTestAnswers.objects.filter(user=tuser, question__site=context["request"].site,
                                                                      question__is_sitewide=True))
 
-        html = ""
-        if answers:
-            html = "<dt>Cevaplar:</dt><dd><section><ul>"
-            for answer in answers:
-                html += "<li> <b>" + answer.question.detail + "</b> <p>" + answer.answer + "</p> </li>"
-            html += "</section></ul></dd>"
+        #html = ""
+        #if answers:
+        #    html = "<dt>Cevaplar:</dt><dd><section><ul>"
+        #    for answer in answers:
+        #        html += "<li> <b>" + answer.question.detail + "</b> <p>" + answer.answer + "</p> </li>"
+        #    html += "</section></ul></dd>"
 
-        return html
+        return answers
     except Exception as e:
         log.error(e.message, extra={'clientip': '', 'user': ruser})
-        return ""
+        return None
 
 
 @register.simple_tag(name="oldeventprefs", takes_context=True)

@@ -147,6 +147,76 @@ def correct_wrongs():
         w.save()
         print "change successful"
 
+def cancel_course(course_no):
+    from training.models import TrainessCourseRecord
+    from django.db.models import Q
+   
+    linux3tercih_edenler = TrainessCourseRecord.objects.filter(course__no=course_no, course__site__is_active=True)
+    for tercih in linux3tercih_edenler:
+        print tercih.trainess
+        diger_tercihleri = TrainessCourseRecord.objects.filter(trainess=tercih.trainess).filter(~Q(course__no=course_no))
+        if tercih.preference_order == 1:
+            for dtercih in diger_tercihleri:
+                if dtercih.preference_order == 2:
+                    dtercih.preference_order=1
+                    dtercih.save()
+                    print dtercih.pk
+                    print "preference order changed to 1"
+                elif dtercih.preference_order == 3:
+                    dtercih.preference_order=2
+                    dtercih.save()
+                    print dtercih.pk
+                    print "preference order changed to 2"
+        if tercih.preference_order == 2:
+            for dtercih in diger_tercihleri:
+                if dtercih.preference_order == 3:
+                    dtercih.preference_order=2
+                    dtercih.save()
+                    print dtercih.pk
+                    print "preference order changed to 2"
+        tercih.delete()
+def write_par():
+    from abkayit.models import Site
+    from training.models import Course, TrainessCourseRecord, TrainessParticipation
+    
+    gelmeyenler_dict = {}
+    print "parsing text file..."
+    with open("ab2017_gelmeyenler.txt", "r") as f:
+        kisiler=  f.readlines()
+        for kisi in kisiler:
+            print kisi
+            course_no =  kisi.split("-")[0]
+            isim_soyisim =  kisi.split("-")[1].rstrip("\n")
+            course = Course.objects.get(pk=course_no)
+            try:
+                gelmeyenler_dict[course.pk].append(isim_soyisim)
+            except:
+                gelmeyenler_dict[course.pk] = [isim_soyisim]
+    
+    print "participation..."
+    site = Site.objects.get(name__contains="Akademik Bil", year="2017")
+    courses = Course.objects.filter(site=site)
+    print courses
+    print "hebelek"
+    for c in courses:
+        print "hebelek 2"
+        tcrs = TrainessCourseRecord.objects.filter(course=c, approved=True)
+        print tcrs
+        for tcr in tcrs:
+            print tcr.pk
+            kursiyer_ismi = tcr.trainess.user.first_name + " " + tcr.trainess.user.last_name
+            gelmeyenlerlist = gelmeyenler_dict.get(c.pk, None)
+            if gelmeyenlerlist and kursiyer_ismi not in gelmeyenler_dict[c.pk]:
+                for i in range(1, 5):
+                    trp = TrainessParticipation(courserecord=tcr,day=i, morning="2", afternoon="2", evening="-1")
+                    trp.save()
+            else:
+                for i in range(1, 5):
+                    trp = TrainessParticipation(courserecord=tcr,day=i, morning="0", afternoon="0", evening="-1")
+                    trp.save()
+    else:
+         print "bos" 
+
 if __name__ == "__main__":
     # try:
     path = sys.argv[1]
@@ -156,7 +226,9 @@ if __name__ == "__main__":
     django.setup()
 #    get_users_with_edu()
 #    application_opens()
-    correct_wrongs()
+    #correct_wrongs()
+    #cancel_course('3')
+    write_par()
     # karalisteimport()
     # push_note_to_trainess("note", "filename")
 #    import_participation("lyk2016_kabuledilenler_tercihno.csv")
