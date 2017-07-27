@@ -1,5 +1,5 @@
 # ab-kurs-kayit
-[![License (GPL version 2)](https://img.shields.io/badge/license-GNU%20GPL%20version%202-red.svg?style=flat-square)](http://opensource.org/licenses/GPL-2.0) [![Language (Python)](https://img.shields.io/badge/powered_by-Python-blue.svg?style=flat-square)](https://www.python.org/) [![Platform (GNU/Linux)](https://img.shields.io/badge/platform-GNU/Linux-yellow.svg?style=flat-square)](http://www.kernel.org)
+[![License (GPL version 3)](https://img.shields.io/badge/license-GNU%20GPL%20version%203-red.svg?style=flat-square)](http://opensource.org/licenses/GPL-3.0) [![Language (Python)](https://img.shields.io/badge/powered_by-Python-blue.svg?style=flat-square)](https://www.python.org/) [![Platform (GNU/Linux)](https://img.shields.io/badge/platform-GNU/Linux-yellow.svg?style=flat-square)](http://www.kernel.org)
 
 ## Başlangıç
 
@@ -18,4 +18,5 @@ Projeye destek olmak için [Topluluk desteği](https://github.com/akademikbilisi
 - Dökümanlarda bahsedilen ayar dosyasını oluşturun
 
 ## Lisans
-Bu uygulama GPLv2 lisansı ile geliştirilmektedir. Orjinal lisans dökümanını LICENSE dosyasından okuyabilirsiniz.
+Bu uygulama GPLv3 lisansı ile geliştirilmektedir. Orjinal lisans dökümanını LICENSE dosyasından okuyabilirsiniz.
+Markdown formatında lisans -> LICENSE.md
